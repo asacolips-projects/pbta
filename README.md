@@ -2,7 +2,7 @@
 
 1. Go to the setup page and choose **Game Systems**.
 2. Click the **Install System** button, and paste in this manifest link:
-    * Foundry 0.5.x: [https://gitlab.com/asacolips-projects/foundry-mods/pbta/raw/master/system.json](https://gitlab.com/asacolips-projects/foundry-mods/pbta/raw/master/system.json)
+    * Foundry 0.5.x: [https://gitlab.com/asacolips-projects/foundry-mods/pbta/raw/beta/system.json](https://gitlab.com/asacolips-projects/foundry-mods/pbta/raw/beta/system.json)
 3. Create a Game World using the Powered by the Apocalypse system.
 
 Compatible with FoundryVTT 0.7.x
