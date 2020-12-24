@@ -1,0 +1,14 @@
+<section class="pbta-chat-card">
+  <div class="cell cell--chat">
+    <h2 class="cell__title">{{title}}</h2>
+    {{#if flavor}}<div class="row"><em>{{flavor}}</em></div>{{/if}}
+    {{#if trigger}}<div class="row"><strong>Trigger:</strong> {{trigger}}</div>{{/if}}
+    {{#if details}}<div class="row">{{{details}}}</div>{{/if}}
+    {{#if result}}<div class="result {{result}}">{{localize (concat "PBTA." . result)}}</div>{{/if}}
+    {{#if rollPbta}}<div class="roll{{#if result}} {{result}}{{/if}}">{{{rollPbta}}}</div>{{/if}}
+    {{#if tags}}
+      <hr>
+      {{{pbtaTags tags}}}
+    {{/if}}
+  </div>
+</section>

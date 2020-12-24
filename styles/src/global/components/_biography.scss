@@ -1,0 +1,19 @@
+.sheet-tab {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+  padding: 0;
+
+  .cell--abilities {
+    flex: 1;
+  }
+
+  .cell--bio {
+    flex: 100;
+
+    textarea {
+      min-height: 350px;
+      resize: none;
+    }
+  }
+}

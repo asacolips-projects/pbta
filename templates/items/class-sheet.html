@@ -1,0 +1,145 @@
+<form class="{{cssClass}} class item-form flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+      <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize "PBTA.Common.Name"}}"/></h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-navigation sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize "PBTA.Common.Description" }}</a>
+    <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
+    <a class="item" data-tab="equipment">{{localize "PBTA.Equipment"}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+    </div>
+
+    {{!-- Details Tab --}}
+    <div class="tab" data-group="primary" data-tab="details">
+      <div class="class-fields grid grid-3col">
+        {{!-- Races --}}
+        <div class="cell resource">
+          <div class="cell__title">
+            <label>{{localize "PBTA.Races"}}</label>
+            <a class="class-control" data-action="create" data-type="races"><i class="fas fa-plus"></i></a>
+          </div>
+          <ul class="items-list">
+          {{#each data.races as |race id|}}
+            <li class="item race" data-index="{{id}}">
+              <div class="flexrow">
+                <input type="text" class="input input--title" name="data.races.{{id}}.label" value="{{race.label}}" data-dtype="string"/>
+                <a class="class-control" data-action="delete" data-type="races"><i class="fas fa-trash"></i></a>
+              </div>
+              <textarea class="race" name="data.races.{{id}}.description" rows="5" title="What's your race?" data-dtype="String">{{race.description}}</textarea>
+            </li>
+          {{/each}}
+          </ul>
+        </div>
+        {{!-- Alignments --}}
+        <div class="cell resource">
+          <div class="cell__title">
+            <label>{{localize "PBTA.Alignments"}}</label>
+            <a class="class-control" data-action="create" data-type="alignments"><i class="fas fa-plus"></i></a>
+          </div>
+          <ul class="items-list">
+          {{#each data.alignments as |alignment id|}}
+            <li class="item alignment" data-index="{{id}}">
+              <div class="flexrow">
+                <input type="text" class="input input--title" name="data.alignments.{{id}}.label" value="{{alignment.label}}" data-dtype="string"/>
+                <a class="class-control" data-action="delete" data-type="alignments"><i class="fas fa-trash"></i></a>
+              </div>
+              <textarea class="alignment" name="data.alignments.{{id}}.description" rows="5" title="What's your alignment?" data-dtype="String">{{alignment.description}}</textarea>
+            </li>
+          {{/each}}
+          </ul>
+        </div>
+        {{!-- Other fields. --}}
+        <div class="cell resource resource--settings">
+          <div class="resource-wrapper">
+            <div class="cell__title">
+              <label>{{localize "PBTA.ClassSettings"}}</label>
+            </div>
+            <div class="resource">
+              <label>{{localize "PBTA.ClassBaseHp"}}</label>
+              <div class="help-text">{{localize "PBTA.ClassBaseHpHelp"}}</div>
+              <input type="text" name="data.hp" value="{{data.hp}}" data-dtype="Number">
+            </div>
+            <div class="resource">
+              <label>{{localize "PBTA.ClassBaseLoad"}}</label>
+              <div class="help-text">{{localize "PBTA.ClassBaseLoadHelp"}}</div>
+              <input type="text" name="data.load" value="{{data.load}}" data-dtype="Number">
+            </div>
+            <div class="resource">
+              <label>{{localize "PBTA.ClassDamage"}}</label>
+              <div class="help-text">{{localize "PBTA.ClassDamageHelp"}}</div>
+              <select name="data.damage" data-dtype="String">
+                {{#select data.damage}}
+                <option value="">—</option>
+                <option value="d4">d4</option>
+                <option value="d6">d6</option>
+                <option value="d8">d8</option>
+                <option value="d10">d10</option>
+                <option value="d12">d12</option>
+                {{/select}}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="equipment">
+
+      <div class="class-fields">
+
+        <div class="cell resource resource--equipment-help flexrow">
+          <div>
+            <p>{{localize "PBTA.ClassEquipmentGroupHelp"}}</p>
+          </div>
+          <div class="class-controls">
+            <button class="class-control" data-action="create" data-type="equipment-groups"><i class="fas fa-plus"></i> {{localize "PBTA.ClassAddEquipmentGroup"}}</button>
+          </div>
+        </div>
+
+        <div class="equipment-grid grid grid-2col">
+
+          {{#each data.equipment as |equipmentGroup groupId|}}
+            <div class="cell resource equipment-group" data-index="{{groupId}}">
+              <div class="cell__title">
+                <input type="text" name="data.equipment.{{groupId}}.label" placeholder="{{localize "PBTA.ClassEquipmentGroupPlaceholder"}}" value="{{equipmentGroup.label}}">
+                <select name="data.equipment.{{groupId}}.mode">
+                  {{#select equipmentGroup.mode}}
+                  <option value="radio">{{localize "PBTA.ChooseOne"}}</option>
+                  <option value="checkbox">{{localize "PBTA.ChooseAny"}}</option>
+                  {{/select}}
+                </select>
+                <div class="class-controls">
+                  <a class="class-control" data-action="delete" data-type="equipment-groups" data-index="{{groupId}}"><i class="fas fa-trash"></i></a>
+                </div>
+              </div>
+              <div class="item-container drop-area" data-group="{{groupId}}">
+                {{#if equipmentGroup.objects }}
+                  <ul class="tags">
+                  {{#each equipmentGroup.objects as |item key|}}
+                    <li class="tag" data-item-id="{{item.data._id}}">{{item.data.name}}<span class="remove-tag delete-equipment" role="button" data-action="delete"></span></span></li>
+                  {{/each}}
+                  </ul>
+                {{else}}
+                <span>{{localize "PBTA.ClassEquipmentDropText"}}</span>
+                {{/if}}
+              </div>
+            </div>
+          {{/each}}
+
+        </div>
+      </div>
+    </div>
+  </section>
+</form>

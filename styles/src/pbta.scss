@@ -1,0 +1,99 @@
+@import 'init';
+
+// Base styles.
+@import 'global/base/grid';
+@import 'global/base/overrides';
+
+// Tags.
+@import 'global/base/tags';
+
+// Theme overrides.
+.vtt {
+  @import 'global/application/window';
+  @import 'global/application/chat';
+  @import 'global/application/sidebar';
+  @import 'global/components/combat';
+}
+
+.pbta {
+  font-family: $font-stack-base;
+
+  textarea {
+    resize: vertical;
+  }
+
+  .window-content {
+    background: $c-white;
+  }
+
+  &.actor {
+    .window-content {
+      position: relative;
+      background: $c-white;
+      background-image:
+        linear-gradient(#d8d8d8 250px, #ffffff 250px, #ffffff);
+      background-repeat: no-repeat;
+      background-size:
+        100% 264px,
+        100%;
+      background-position:
+        0 0,
+        0 262px;
+      background-attachment: local;
+
+      form {
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    &.npc {
+      .window-content {
+        background-size:
+          100% 230px,
+          100%;
+        background-position:
+          0 0,
+          0 228px;
+      }
+    }
+  }
+
+  // Import components, scoped within the sheet.
+  &.sheet {
+    // Generic.
+    @import 'global/base/input';
+    @import 'global/base/sheet-wrapper';
+    @import 'global/base/cell';
+    @import 'global/components/tabs';
+    // Specific.
+    @import 'global/components/item-form';
+    // @import 'global/components/tags';
+    @import 'global/components/header';
+    @import 'global/components/attributes';
+    @import 'global/components/stats';
+    @import 'global/components/biography';
+    @import 'global/components/moves';
+    @import 'global/components/look';
+    @import 'global/components/npc';
+    @import 'global/components/pbta-level-up';
+    @import 'global/components/class';
+  }
+}
+
+// Language overrides.
+.lang-de {
+  .ability {
+    .cell__title {
+      font-size: 12px;
+    }
+  }
+
+  .vtt {
+    .sidebar-tab {
+      .directory-item--labels {
+        font-size: 10px;
+      }
+    }
+  }
+}

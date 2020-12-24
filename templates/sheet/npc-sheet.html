@@ -1,0 +1,69 @@
+<form class="{{cssClass}}" autocomplete="off">
+
+  <div class="sheet-wrapper">
+
+    {{!-- Sheet Header --}}
+    <header class="sheet-header">
+      <div class="cell cell--image">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
+      </div>
+      <div class="sheet-header__fields">
+        <input class="input--title" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+      </div>
+    </header>
+
+    {{!-- Main --}}
+    <section class="sheet-main">
+      {{!-- Attributes --}}
+      <section class="sheet-attributes sheet-attributes--npc">
+
+        <div class="cell cell--damage">
+          <label class="cell__title damage-rollable rollable" data-roll="{{data.attributes.damage.value}}" data-label="{{localize "PBTA.Damage"}}" data-flavor="{{data.attributes.damage.piercing}}"><i class="fas fa-dice-d20"></i> {{localize "PBTA.Damage"}}</label>
+          <input type="text" name="data.attributes.damage.value" value="{{data.attributes.damage.value}}" placeholder="e.g. 2d12+7" data-dtype="String"/>
+          <input type="text" name="data.attributes.damage.piercing" value="{{data.attributes.damage.piercing}}" placeholder="e.g. 4 piercing" data-dtype="String"/>
+        </div>
+
+        <div class="cell cell--ac">
+          <label class="cell__title">{{localize "PBTA.Armor"}}</label>
+          <input type="text" name="data.attributes.ac.value" value="{{data.attributes.ac.value}}" data-dtype="Number"/>
+        </div>
+
+        <div class="cell cell--hp">
+          <label for="data.attributes.hp.value" class="cell__title">{{localize "PBTA.HP"}}</label>
+          <div class="cell__counter">
+            <input type="text" name="data.attributes.hp.value" value="{{data.attributes.hp.value}}" data-dtype="Number"/>
+            <span> / </span>
+            <input type="text" name="data.attributes.hp.max" value="{{data.attributes.hp.max}}" data-dtype="Number"/>
+          </div>
+        </div>
+
+        <div class="cell cell--tags">
+          <label for="tag" class="control-label">{{localize "PBTA.Tags"}}</label>
+          <div class="help-text"><p>{{localize "PBTA.TagsHelp" }}</p></div>
+          <input type="hidden" name="data.tagsString" value="{{ data.tagsString }}" />
+          <input name='data.tags' class='some_class_name' placeholder='write some tags' value='{{ data.tags }}'/>
+        </div>
+
+      </section>
+
+      {{!-- Sheet Body --}}
+      <section class="sheet-body">
+
+        <div class="cell cell--special-qualities">
+          <label class="cell__title">{{localize "PBTA.SpecialQualities"}}</label>
+          <input type="text" name="data.attributes.specialQualities.value" value="{{data.attributes.specialQualities.value}}" data-dtype="String"/>
+        </div>
+
+        {{!-- Main Tab --}}
+        <label class="cell__title">{{localize "PBTA.Description"}}</label>
+        {{!-- We're avoiding WYSIWYGs... for now... --}}
+        {{editor content=data.details.biography target="data.details.biography" button=true owner=owner editable=editable}}
+        {{!-- <textarea class="biography" name="data.details.biography" rows="5" title="Hey there! Who are you!?"
+                data-dtype="String">{{#if data.details.biography}}{{data.details.biography}}{{/if}}</textarea> --}}
+      </section>
+
+    </section>
+
+  </div>
+
+</form>

@@ -1,0 +1,66 @@
+&.npc {
+  .cell--image {
+    flex: 0 0 80px;
+    width: auto;
+    height: auto;
+    background: rgba(255, 255, 255, 0.25);
+
+    img {
+      width: auto;
+      height: auto;
+      margin: 0 auto;
+    }
+  }
+
+  .sheet-attributes {
+    display: grid;
+    grid-column: span 4;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0px 10px;
+    margin: 0 0 10px 0;
+    padding: 0;
+
+    .cell--ac,
+    .cell--hp {
+      grid-column: span 1;
+    }
+
+    .cell--tags {
+      grid-column: span 4;
+    }
+
+    .cell--damage {
+      grid-column: span 2;
+
+      input + input {
+        margin-left: 5px;
+      }
+    }
+  }
+
+  .help-text {
+    margin-left: 5px;
+  }
+
+  .tagify {
+    width: 100%;
+    text-align: left;
+    background: $c-white;
+  }
+
+  .sheet-main {
+    display: flex;
+    flex-direction: column;
+
+    .sheet-body {
+      flex: 1;
+    }
+
+    .editor {
+      height: calc(100% - 34px - 73px);
+      background: $ct-gray;
+      padding: 4px;
+      border-radius: 4px;
+    }
+  }
+}

@@ -1,0 +1,44 @@
+.sheet-look {
+  .cell__title {
+    font-size: 14px;
+    margin: 20px 0 0;
+    border-bottom: 1px solid;
+  }
+
+  .cell--image {
+    cursor: pointer;
+
+    img {
+      border: 0;
+    }
+  }
+}
+
+.cell--bonds {
+  .items-list {
+    padding: 0;
+  }
+
+  .item {
+    margin-bottom: 4px;
+  }
+
+  .flexrow {
+    flex-wrap: nowrap;
+  }
+
+  .item-description {
+    flex: 200px 1 1;
+    padding: 2px 4px;
+    background: rgba(0, 0, 0, 0.05);
+
+    &:hover,
+    &:focus {
+      box-shadow: 0 0 5px rgba($c-navy-up, 0.25);
+    }
+  }
+
+  .item-delete {
+    padding-left: 8px;
+  }
+}

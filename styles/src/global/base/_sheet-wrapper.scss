@@ -1,0 +1,107 @@
+.sheet-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 100%;
+
+  .sheet-header {
+    // Use 101% to force a line break;
+    width: 101%;
+    order: 0;
+    margin-bottom: 10px;
+    max-height: 80px;
+    min-height: 50px;
+
+    input {
+      &::placeholder {
+        color: $c-navy-top;
+      }
+    }
+  }
+
+  .sheet-notifications {
+    width: 101%;
+
+    .error,
+    .warning {
+      margin-bottom: 10px;
+    }
+  }
+
+  .sheet-look {
+    flex: 33% 1 1;
+    order: 1;
+    max-width: 33%;
+    transition: max-width ease-in-out 0.25s;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    height: calc(100% - 80px);
+
+    .cell--aesthetics {
+      transition: max-width ease-in-out 0.25s;
+      max-width: 100%;
+    }
+
+    &.closed {
+      max-width: 40px;
+      overflow: hidden;
+      padding: 0;
+
+      .cell--aesthetics {
+        max-width: 0%;
+        overflow: hidden;
+      }
+    }
+
+    .toggle--look {
+      flex: 20px 1 1;
+      margin: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      transition: all ease-in-out 0.25s;
+      height: 225px;
+
+      &:hover {
+        background: #bbb;
+      }
+
+      &:focus {
+        box-shadow: none;
+      }
+
+      &.closed {
+        margin-left: 0;
+      }
+
+      .fas {
+        transition: all ease-in-out 0.25s;
+      }
+
+      &.closed {
+        .fas {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+
+  .sheet-main {
+    flex: 66% 1 1;
+    order: 2;
+    height: calc(100% - 80px);
+  }
+
+  .sheet-body {
+
+    .tab,
+    .sheet-tab {
+      height: 100%;
+    }
+  }
+}

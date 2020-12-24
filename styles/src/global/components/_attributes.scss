@@ -1,0 +1,183 @@
+.sheet-attributes,
+.sheet-resources {
+  display: grid;
+  grid-column: span 16;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  gap: 0px 10px;
+  margin: 0 0 10px 0;
+  padding: 0;
+
+  .cell {
+    text-align: center;
+
+    > .cell__title {
+      justify-content: center;
+
+      .fas {
+        margin-right: 5px;
+
+        &.attribute-icon {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  select,
+  input,
+  textarea {
+    background: $c-white;
+  }
+
+  .cell__title {
+    position: relative;
+
+    .attribute-icon {
+      position: absolute;
+      top: 0;
+      right: 2px;
+      bottom: 0;
+      text-align: center;
+      margin: 0;
+      font-size: 30px;
+      z-index: 0;
+      opacity: 0.25;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .cell--abilities {
+    text-align: left;
+
+    > .cell__title {
+      justify-content: flex-start;
+    }
+  }
+
+  .cell {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: relative;
+
+    .cell__title {
+      flex: 100%;
+      background: $c-navy;
+      color: $c-white;
+      padding: $padding-sm;
+      height: 34px;
+
+      &.rollable:hover {
+        background: $c-navy-up;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .cell__counter {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cell--damage {
+    grid-column: span 4;
+
+    .damage-inputs {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    select {
+      flex: 1 1;
+    }
+
+    span {
+      padding: 0 4px;
+    }
+
+    input {
+      flex: 1 1;
+    }
+  }
+
+  .cell--ac,
+  .cell--hp,
+  .cell--weight,
+  .cell--coin {
+    grid-column: span 3;
+  }
+
+  .cell--ongoing,
+  .cell--forward,
+  .cell--hold,
+  .cell--resource1 {
+    grid-column: span 4;
+
+    input {
+      background-color: $ct-gray;
+      margin: 0;
+    }
+
+    .cell__wrapper {
+      position: relative;
+    }
+
+    .resource-control {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      line-height: 1;
+      text-align: center;
+      margin: auto;
+      border: 1px solid #bcc8de;
+    }
+
+    .resource-decrease {
+      left: 5px;
+    }
+
+    .resource-increase {
+      right: 5px;
+    }
+  }
+
+  .cell--resource1 {
+    .cell__title input {
+      background-color: $ct-white;
+      color: $c-white;
+    }
+  }
+
+  .encumbered {
+    .cell__title {
+      background: $c-orange;
+      color: $c-white;
+
+    }
+
+    input[name="data.attributes.weight.value"] {
+      color: $c-orange;
+    }
+  }
+
+  .overencumbered {
+    .cell__title {
+      background: $c-red;
+    }
+
+    input[name="data.attributes.weight.value"] {
+      color: $c-red;
+    }
+  }
+}

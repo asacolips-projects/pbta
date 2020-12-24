@@ -1,0 +1,159 @@
+.window-app {
+  background: $c-navy;
+
+  a,
+  &.filepicker .file-directory > li {
+    &:hover,
+    &:focus {
+      color: $c-navy-up;
+      text-shadow: 0 0 5px rgba($c-navy-up, 0.25);
+    }
+  }
+
+  .tabs {
+    .item.active {
+      color: $c-navy-up;
+      text-shadow: 0 0 5px rgba($c-navy-up, 0.25);
+    }
+  }
+
+  input,
+  button,
+  select,
+  textarea {
+    font-family: $font-stack-base;
+    font-size: 14px;
+    border: 0;
+
+    &:hover,
+    &:focus {
+      box-shadow: 0 0 5px #38366378;
+      border: 0;
+      outline: 0;
+    }
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    zoom: 0.9;
+    margin-right: 5px;
+
+    &:hover,
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  input[type="radio"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  input,
+  textarea {
+    border: 0;
+    margin: 5px 0;
+
+    &::placeholder {
+      color: #bfbfbf;
+    }
+
+    &.disabled {
+      opacity: 0.5;
+    }
+  }
+
+  button {
+    font-family: $font-stack-base;
+    border: 0;
+    background: $c-light;
+
+    &:hover,
+    &:focus {
+      box-shadow: 0 0 5px rgba($c-navy-up, 0.25);
+      background-color: $c-navy-top;
+    }
+  }
+
+  .window-header {
+    .window-title {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .dialog-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+
+  .dialog-buttons .dialog-button,
+  .dialog-button {
+    flex: 1;
+    background: $c-navy;
+    color: $c-white;
+    border: 0;
+
+    &:hover {
+      background: $c-navy-up;
+    }
+  }
+}
+
+.window-header {
+  color: $c-white;
+  font-family: $font-stack-secondary;
+
+  a {
+    &:hover,
+    &:focus {
+      color: $c-navy-top;
+    }
+  }
+}
+
+.window-content {
+  background: $c-white;
+}
+
+// TODO: Tagify
+.tags-look .tagify__dropdown__item{
+  display: inline-block;
+  border-radius: 3px;
+  padding: .3em .5em;
+  border: 1px solid #CCC;
+  background: #F3F3F3;
+  margin: .2em;
+  font-size: .85em;
+  color: black;
+  transition: 0s;
+}
+
+.tags-look .tagify__dropdown__item--active{
+  color: black;
+}
+
+.tags-look .tagify__dropdown__item:hover{
+  background: lightyellow;
+  border-color: gold;
+}
+
+.sidebar-tab {
+  .directory-header {
+    .header-search {
+      input {
+        background-color: $c-light;
+        color: $c-navy;
+
+        &::placeholder {
+          color: $c-navy-up;
+        }
+      }
+    }
+  }
+}

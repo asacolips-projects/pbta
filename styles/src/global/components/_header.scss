@@ -1,0 +1,128 @@
+.sheet-header {
+  background: $c-navy;
+  color: $c-white;
+
+  h1,
+  input {
+    color: $c-white;
+    flex: 1;
+    border: 0;
+  }
+
+  h1 {
+    flex: 2;
+  }
+
+  input {
+    color: $c-white;
+    border-bottom: 2px solid $c-navy-up;
+    margin: 0 10px;
+    font-size: 18px;
+    height: 32px;
+    line-height: 32px;
+    flex: 100px 2;
+
+    &:hover,
+    &:focus {
+      background: $c-navy-up;
+      box-shadow: 0 0 8px $c-navy-up;
+    }
+  }
+
+  .charclass {
+    flex: 2;
+  }
+
+  .flex-item {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    padding-right: 48px;
+    margin-right: 10px;
+    text-align: right;
+
+    label {
+      flex: 1;
+      font-size: 18px;
+    }
+
+    input {
+      color: $c-navy;
+      background: $c-white;
+      border: 0;
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-radius: 50px;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      text-align: center;
+      font-size: 18px;
+      line-height: 18px;
+
+      &:hover,
+      &:focus {
+        box-shadow: 0 0 12px $c-navy-up;
+        border: 2px solid $c-navy-up;
+      }
+    }
+
+    &.flex-item--xp {
+      position: relative;
+
+      input {
+        border: 2px solid $c-navy-up;
+      }
+
+      .progress-ring {
+        position: absolute;
+        right: 0;
+        pointer-events: none;
+
+        circle {
+          stroke: $c-green;
+        }
+      }
+    }
+
+    &.flex-item--level-up {
+      flex: 0 0 44px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+
+      a {
+        color: $c-white;
+
+        &.disabled-level-up {
+          cursor: inherit;
+          pointer-events: none;
+          opacity: 0.25;
+          text-shadow: none !important;
+        }
+
+        &:hover {
+          text-shadow: 0 0 12px $c-navy-up;
+        }
+      }
+
+      .fas {
+        font-size: 32px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.sheet-header__fields {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}

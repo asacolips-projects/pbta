@@ -1,0 +1,21 @@
+.input--title {
+  font-weight: bold;
+  font-size: 18px;
+  font-family: $font-stack-secondary;
+}
+
+label,
+h1,
+h2 {
+  font-family: $font-stack-secondary;
+  font-weight: bold;
+  border-color: inherit;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-stack-base;
+  font-weight: bold;
+}

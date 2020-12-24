@@ -1,0 +1,53 @@
+<form class="{{cssClass}} item-form flexcol" autocomplete="off">
+    <header class="sheet-header flexrow">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize "PBTA.Common.Name"}}"/></h1>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-navigation sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="description">{{localize "PBTA.Common.Description" }}</a>
+        <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+
+        {{!-- Description Tab --}}
+        <div class="tab" data-group="primary" data-tab="description">
+            {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+        </div>
+
+        {{!-- Details Tab --}}
+        <div class="tab" data-group="primary" data-tab="details">
+          <div class="resource">
+            <label>{{localize "PBTA.Class"}}</label>
+            <select name="data.class">
+              {{#select data.class}}
+                <option value="">—</option>
+                {{#each data.classlist as |class id|}}
+                <option value="{{class}}">{{class}}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+
+          <div class="resource">
+            <label>{{localize "PBTA.SpellLevel"}}</label>
+              <input type="text" name="data.spellLevel" value="{{data.spellLevel}}" data-dtype="Number"/>
+          </div>
+
+          <div class="resource">
+            <label>{{localize "PBTA.SpellPrepared"}}</label>
+            <input type="checkbox" name="data.prepared" {{checked data.prepared}}/>
+          </div>
+
+          <div class="resource">
+            <label>{{localize "PBTA.SpellRollFormula"}}</label>
+              <input type="text" name="data.rollFormula" value="{{data.rollFormula}}" placeholder="e.g. 1d4+3" data-dtype="String"/>
+          </div>
+        </div>
+    </section>
+</form>

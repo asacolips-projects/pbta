@@ -1,0 +1,12 @@
+$padding-sm: 5px;
+$padding-md: 10px;
+$padding-lg: 20px;
+
+@mixin grid {
+  display: grid;
+  grid-column: span 3 / span 3;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0px 10px;
+  margin: 10px 0;
+  padding: 0;
+}

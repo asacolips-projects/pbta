@@ -1,0 +1,140 @@
+.cell--basic-moves,
+.cell--starting-moves,
+.cell--advanced-moves,
+.cell--special-moves,
+.cell--other-moves,
+.cell--equipment,
+.cell--spells {
+
+  .items-list {
+    padding: 0;
+
+    // .item + .item {
+    //   border-top: 1px solid $c-navy-top;
+    // }
+
+    .item {
+      padding: 10px 0;
+    }
+  }
+
+  .item-name {
+    font-size: 18px;
+    font-weight: bold;
+    flex: 2;
+    margin: 0;
+
+    .rollable {
+      display: inline-block;
+      transition: all ease-in-out 0.25s;
+      min-width: 40px;
+      text-align: center;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  .item-controls {
+    text-align: right;
+    flex: 0 0 40px;
+  }
+
+  .item-description {
+    display: none;
+    flex: none;
+    width: 100%;
+  }
+
+  .item-icon {
+    flex: 1;
+    vertical-align: top;
+    border: 0;
+    height: 24px;
+    width: 24px;
+    padding: 0;
+    margin: 0 2px;
+    border-radius: 4px;
+    box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.35);
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  .item-meta {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    flex: 100px;
+
+    > span {
+      margin: 0;
+
+      + span {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .item-label {
+    border-left: 2px solid;
+    padding-left: 4px;
+
+    &::after {
+      display: block;
+      content: '';
+      width: 0;
+      height: 0;
+      margin-top: 2px;
+      border-bottom: 2px solid;
+      transition: all ease-in-out 0.25s;
+    }
+
+    &:hover {
+      &::after {
+        width: 100%;
+      }
+
+      .item-details-toggle {
+        transform: scale(1.2);
+      }
+    }
+
+    .fas {
+      transition: all ease-in-out 0.25s;
+    }
+
+    &.open {
+      &::after {
+        width: 100%;
+      }
+
+      .fas {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .item-details-toggle {
+    display: inline-block;
+    width: 24px;
+    height: 16px;
+    text-align: center;
+    border-radius: 5px;
+    transition: all ease-in-out 0.25s;
+  }
+
+  .rollable {
+    &:hover,
+    &:focus {
+      color: $c-navy-up;
+      text-shadow: 0 0 5px rgba($c-navy-up, 0.25);
+      cursor: pointer;
+    }
+  }
+}
+
+.cell--spells {
+  .unprepared {
+    background-color: $c-pink;
+  }
+}

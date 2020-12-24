@@ -1,0 +1,69 @@
+#chat-log {
+  .message {
+    background: $c-white;
+    font-family: $font-stack-base;
+
+    &.whisper {
+      background: #e0ecff;
+    }
+
+    .result {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .failure {
+      color: $c-failure;
+    }
+
+    .partial {
+      color: $c-partial;
+    }
+
+    .success {
+      color: $c-success;
+    }
+  }
+
+  .message-sender {
+    font-size: 12px;
+  }
+
+  .cell__title {
+    font-family: $font-stack-secondary;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: $font-stack-secondary;
+    font-weight: bold;
+  }
+
+  .row {
+    font-size: 13px;
+  }
+
+  .dice-roll {
+    .dice-formula {
+      cursor: pointer;
+
+      &:hover,
+      &:focus {
+        box-shadow: 0 0 5px rgba($c-navy-up, 0.25);
+        background-color: $c-navy-top;
+      }
+    }
+  }
+}
+
+#chat-form {
+  textarea {
+    background: $c-white;
+  }
+}

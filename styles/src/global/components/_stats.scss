@@ -1,0 +1,78 @@
+.cell--stats {
+  grid-column: span 16;
+  // background: rgba($c-navy-up, 0.25);
+  // padding: 0 10px;
+  padding: 0;
+
+  .stats-list {
+    display: grid;
+    grid-column: span 3 / span 3;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0px 10px;
+    margin: 10px 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: relative;
+    min-height: 76px;
+
+    .cell__title {
+      flex: 100%;
+      background: $c-navy;
+      color: $c-white;
+      padding: $padding-sm;
+      margin-right: 8px;
+      border-radius: 0 50px 0 0;
+    }
+
+    .rollable:hover {
+      background: $c-navy-up;
+      cursor: pointer;
+    }
+
+    // .stat-value {
+    //   flex: 32px;
+    //   flex-grow: 0;
+    // }
+
+    .stat-value {
+      position: absolute;
+      top: -23px;
+      right: -2px;
+      bottom: 0;
+      margin: auto;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      border: 2px solid $c-navy;
+      border-radius: 50px;
+      line-height: 38px;
+      font-size: 24px;
+      background: $c-white;
+      color: $c-navy;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-toggle {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      margin: 0 8px;
+      font-size: 10px;
+      position: relative;
+      top: -14px;
+
+      input {
+        margin-right: 4px;
+      }
+    }
+  }
+}
