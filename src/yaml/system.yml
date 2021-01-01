@@ -9,10 +9,15 @@ author: Asacolips
 esmodules:
   - module/pbta.js
 styles:
+  - styles/lib/codemirror.css
+  - styles/lib/codemirror.material-palenight.css
   - styles/lib/tagify.css
   - styles/dist/pbta.css
 scripts:
   - scripts/lib/tagify.min.js
+  - scripts/lib/codemirror.js
+  - scripts/lib/codemirror.toml.js
+  - scripts/lib/toml.min.js
 packs: []
 languages:
   - lang: en

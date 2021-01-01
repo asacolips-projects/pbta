@@ -1,0 +1,42 @@
+rollFormula = "2d6"
+
+[stats]
+  cool = "Cool"
+  hard = "Hard"
+  hot = "Hot"
+  sharp = "Sharp"
+  weird = "Weird"
+
+[attributes]
+  [attributes.armor]
+    type = "Number"
+  [attributes.harm]
+    type = "Clock"
+    max = 6
+  [attributes.improvement]
+    type = "Xp"
+    max = 5
+  [attributes.customResource]
+    type = "Resource"
+
+[details]
+  look = "LongText"
+  hx = "LongText"
+
+[moveTypes]
+  basic = "Basic"
+  advanced = "Advanced"
+
+[rollResults]
+  [rollResults.failure]
+    range = "6-"
+    label = "Complications..."
+  [rollResults.partial]
+    range = "7-9"
+    label = "Partial success"
+  [rollResults.success]
+    range = "10+"
+    label = "Success!"
+  [rollResults.critical]
+    range = false
+    label = "Critical Success!"

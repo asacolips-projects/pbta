@@ -17,6 +17,7 @@ import { PbtaRegisterHelpers } from "./handlebars.js";
 import { PbtaUtility } from "./utility.js";
 import { CombatSidebarPbta } from "./combat/combat.js";
 import { MigratePbta } from "./migrate/migrate.js";
+import { PbtaSettingsConfigDialog } from "./settings.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -91,6 +92,24 @@ Hooks.once("init", async function() {
     config: true,
     type: Boolean,
     default: true
+  });
+
+  game.settings.registerMenu("pbta", "sheetConfigMenu", {
+    name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
+    label: game.i18n.localize("PBTA.Settings.sheetConfig.label"),
+    hint: game.i18n.localize("PBTA.Settings.sheetConfig.hint"),
+    icon: "fas fa-bars",               // A Font Awesome icon used in the submenu button
+    type: PbtaSettingsConfigDialog,   // A FormApplication subclass which should be created
+    restricted: true,                   // Restrict this submenu to gamemaster only?
+    scope: 'world'
+  });
+
+  game.settings.register("pbta", "sheetConfig", {
+    name: "PBTA Sheet Config",
+    scope: "world",
+    config: false,
+    type: Object,
+    default: 0
   });
 
   PbtaUtility.replaceRollData();

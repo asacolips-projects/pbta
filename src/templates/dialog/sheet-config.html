@@ -1,0 +1,21 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  <p class="notes">{{localize 'PBTA.Settings.sheetConfig.notes'}}</p>
+
+  {{!-- <pre class="toml-code"><textarea name="tomlString" id="pbta-sheet-config-toml" cols="30" rows="30">{{tomlString}}</textarea></pre> --}}
+
+  <section class="sheet-config-editor">
+      <textarea name="tomlString" class="pbta-sheet-config" rows="30">
+      {{~" "}}{{{tomlString}}}{{" "~}}
+      </textarea>
+  </section>
+
+  <div class="form-group">
+      <button type="submit" name="submit">
+          <i class="fas fa-save"></i> {{localize 'PERMISSION.Submit'}}
+      </button>
+
+      <button type="button" name="reset">
+          <i class="fas fa-sync"></i> {{localize 'PERMISSION.Reset'}}
+      </button>
+  </div>
+</form>

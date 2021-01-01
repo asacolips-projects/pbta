@@ -1,0 +1,13 @@
+#pbta-sheet-config {
+  form {
+    height: 100%;
+  }
+
+  .sheet-config-editor {
+    height: calc(100% - 60px);
+  }
+
+  .CodeMirror {
+    height: 100%;
+  }
+}
