@@ -1,0 +1,43 @@
+image: node:12
+
+before_script:
+  - apt-get update
+  - apt-get install zip
+
+cache:
+  paths:
+    - node_modules/
+
+build-beta:
+  stage: build
+  script:
+    - export
+    - npm ci
+    - npm run build
+    - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME --versionpre=$CI_PIPELINE_IID
+    - cp ./dist/system.json ./system.json
+    - mv dist dungeonworld
+    - zip -q dungeonworld.zip -r dungeonworld
+  artifacts:
+    paths:
+      - dungeonworld.zip
+      - system.json
+  only:
+    - beta
+
+build-prod:
+  stage: build
+  script:
+    - export
+    - npm ci
+    - npm run build
+    - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG
+    - cp ./dist/system.json ./system.json
+    - mv dist dungeonworld
+    - zip -q dungeonworld.zip -r dungeonworld
+  artifacts:
+    paths:
+      - dungeonworld.zip
+      - system.json
+  only:
+    - tags
