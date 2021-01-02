@@ -17,7 +17,7 @@ import { PbtaRegisterHelpers } from "./handlebars.js";
 import { PbtaUtility } from "./utility.js";
 import { CombatSidebarPbta } from "./combat/combat.js";
 import { MigratePbta } from "./migrate/migrate.js";
-import { PbtaSettingsConfigDialog } from "./settings.js";
+import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */

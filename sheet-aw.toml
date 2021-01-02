@@ -1,5 +1,6 @@
 rollFormula = "2d6"
 
+# Define stats.
 [stats]
   cool = "Cool"
   hard = "Hard"
@@ -7,26 +8,30 @@ rollFormula = "2d6"
   sharp = "Sharp"
   weird = "Weird"
 
-[attributes]
-  [attributes.armor]
+# Define attributes.
+[attributesTop]
+  [attributesTop.armor]
     type = "Number"
-  [attributes.harm]
+  [attributesTop.harm]
     type = "Clock"
     max = 6
-  [attributes.improvement]
+  [attributesTop.improvement]
     type = "Xp"
     max = 5
-  [attributes.customResource]
+  [attributesTop.customResource]
     type = "Resource"
 
-[details]
+# Define sidebar details.
+[attributesLeft]
   look = "LongText"
   hx = "LongText"
 
+# Define logical groups for moves.
 [moveTypes]
   basic = "Basic"
   advanced = "Advanced"
 
+# Define roll result ranges.
 [rollResults]
   [rollResults.failure]
     range = "6-"

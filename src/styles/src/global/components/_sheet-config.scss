@@ -1,13 +1,43 @@
-#pbta-sheet-config {
-  form {
-    height: 100%;
-  }
+// #pbta-sheet-config {
+//   form {
+//     height: 100%;
+//   }
 
-  .sheet-config-editor {
-    height: calc(100% - 60px);
+//   .sheet-config-editor {
+//     height: calc(100% - 60px);
+//   }
+
+//   .CodeMirror {
+//     height: 100%;
+//   }
+// }
+
+.pbta-sheet-config-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .notes {
+    flex: 0;
   }
+}
+
+.pbta-sheet-config-editor {
+  flex-grow: 1;
+  margin-bottom: 8px;
+  overflow: hidden;
 
   .CodeMirror {
     height: 100%;
+    cursor: text;
   }
+
+  .CodeMirror-scroll {
+    width: 100%;
+  }
+}
+
+.pbta-sheet-config {
+  font-family: 'Courier New', Courier, monospace;
+  height: 100%;
 }

@@ -1,3 +1,5 @@
+import { codeMirrorAddToml } from './codemirror.toml.js';
+
 export class PbtaSettingsConfigDialog extends FormApplication {
   /** @override */
 	static get defaultOptions() {
@@ -21,14 +23,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       data.tomlString = '';
     }
     return data;
-    // return {
-    //   roles: Object.keys(CONST.USER_ROLES).reduce((obj, r) => {
-    //     if ( r === "NONE" ) return obj;
-    //     obj[r] = `USER.Role${r.titleCase()}`;
-    //     return obj;
-    //   }, {}),
-    //   permissions: this._getPermissions(current)
-    // }
   }
 
   /* -------------------------------------------- */
@@ -39,6 +33,13 @@ export class PbtaSettingsConfigDialog extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
     html.find('button[name="reset"]').click(this._onResetDefaults.bind(this));
+    // Load toml syntax. This is a failsafe in case other modules that use
+    // CodeMirror (such as Custom CSS Rules) are enabled.
+    if (!CodeMirror.modes.toml) {
+      codeMirrorAddToml();
+    }
+
+    // Enable the CodeMirror code editor.
     this.codeEditor = CodeMirror.fromTextArea(html.find(".pbta-sheet-config")[0], {
       mode: "toml",
       indentUnit: 4,
@@ -82,7 +83,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
   async close(options) {
     super.close(options);
-    // window.location.reload();
+    window.location.reload();
   }
 
   /* -------------------------------------------- */
