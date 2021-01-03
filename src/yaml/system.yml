@@ -18,7 +18,7 @@ scripts:
   - scripts/lib/codemirror.js
   - scripts/lib/codemirror.toml.js
   - scripts/lib/codemirror.loadmode.js
-  - scripts/lib/toml.min.js
+  - scripts/lib/toml-node.js
 packs: []
 languages:
   - lang: en

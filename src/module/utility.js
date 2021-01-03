@@ -16,6 +16,90 @@ export class PbtaUtility {
     return [null, false, undefined, 0, ''].includes(arg);
   }
 
+  static convertAttr(attrGroup) {
+    let attrs = {};
+    for (let [attrKey, attrValue] of Object.entries(attrGroup)) {
+      let attr = {};
+
+      attr.label = attrValue.label ?? attrKey;
+
+      if (!attrValue.type) {
+        // If an object structure was used and no type was specified, it's invalid.
+        if (typeof attrValue == 'object') {
+          continue;
+        }
+        // Otherwise, conver the value into the type (short syntax).
+        let val = attrValue;
+        attrValue = { type: val };
+      }
+
+      switch (attrValue.type) {
+        case "Number":
+          attr.type = attrValue.type;
+          attr.value = 0;
+          break;
+
+        case "Clock":
+          attr.type = attrValue.type;
+          attr.value = 0;
+          attr.max = attrValue.max ?? 0;
+
+        case 'Xp':
+          attr.type = attrValue.type;
+          attr.value = 0;
+          attr.max = attrValue.max ?? 0;
+
+        case 'Resource':
+          attr.type = attrValue.type;
+          attr.value = 0;
+          attr.max = attrValue.max ?? 0;
+
+        case 'Text':
+          attr.type = attrValue.type;
+          attr.value = '';
+
+        case 'LongText':
+          attr.type = attrValue.type;
+          attr.value = '';
+
+        case 'Checkbox':
+          attr.type = attrValue.type;
+          attr.value = false;
+
+        default:
+          break;
+      }
+
+      attrs[attrKey] = attr;
+    }
+
+    return attrs;
+  }
+
+  static applyActorTemplates() {
+    let templates = game.system.template.Actor;
+    let actorTypes = game.system.template.Actor.types;
+
+    for (let type of actorTypes) {
+      console.log(type);
+      if (game.pbta.sheetConfig.actorTypes[type]) {
+        let template = {};
+        let v = game.pbta.sheetConfig.actorTypes[type];
+
+        console.log(v);
+        if (v.stats) template.stats = v.stats;
+        if (v.attrTop) template.attrTop = v.attrTop;
+        if (v.attrLeft) template.attrLeft = v.attrLeft;
+
+        let orig = duplicate(templates[type]);
+        templates[type] = mergeObject(orig, template);
+      }
+    }
+
+    console.log(templates);
+    console.log(game.system.template);
+  }
+
   static async getEquipment(update = false) {
     if (typeof game.items == 'undefined') {
       return false;

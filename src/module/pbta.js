@@ -18,6 +18,7 @@ import { PbtaUtility } from "./utility.js";
 import { CombatSidebarPbta } from "./combat/combat.js";
 import { MigratePbta } from "./migrate/migrate.js";
 import { PbtaSettingsConfigDialog } from "./settings/settings.js";
+import { PbtaActorTemplates } from "./pbta/pbta-actors.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -122,17 +123,71 @@ Hooks.once("ready", async function() {
   PBTA.playbooks = await PbtaPlaybooks.getPlaybooks();
   CONFIG.PBTA = PBTA;
 
-  // Grab default stats.
-  let statsSetting = game.settings.get('pbta', 'stats');
-  let statArray = statsSetting.split(',');
-  let stats = {};
-  if (statArray.length > 0) {
-    statArray.forEach(s => {
-      let stat = PbtaUtility.cleanClass(s, false);
-      stats[stat] = s.trim();
-    });
+  // Build out character data structures.
+  const pbtaSettings = game.settings.get('pbta', 'sheetConfig');
+  const sheetConfig = {};
+  if (pbtaSettings.computed) {
+    for (let [k,v] of Object.entries(pbtaSettings.computed)) {
+      console.log({k: k, v: v});
+      if (k == 'rollFormula') {
+        let rollFormula = v;
+        let validRoll = new Roll(rollFormula.trim()).evaluate();
+        sheetConfig.rollFormula = validRoll ? rollFormula.trim() : '';
+      }
+
+      if (k == "rollResults") {
+        // Set result ranges.
+      }
+
+      // Actors.
+      if (v.stats || v.attributesTop || v.attributesLeft || v.moveTypes) {
+        let actorType = {};
+        if (v.stats) {
+          actorType.stats = {};
+          for (let [statKey, statLabel] of Object.entries(v.stats)) {
+            actorType.stats[PbtaUtility.cleanClass(statKey, false)] = {
+              label: statLabel,
+              value: 0
+            };
+          }
+        }
+
+        if (v.attributesTop) actorType.attrTop = PbtaUtility.convertAttr(v.attributesTop);
+        if (v.attributesLeft) actorType.attrLeft = PbtaUtility.convertAttr(v.attributesLeft);
+
+        if (v.moveTypes) {
+          actorType.moveTypes = {};
+          for (let [mtKey, mtLabel] of Object.entries(v.moveTypes)) {
+            actorType.moveTypes[PbtaUtility.cleanClass(mtKey, false)] = {
+              label: mtLabel,
+              moves: []
+            };
+          }
+        }
+
+        if (!sheetConfig.actorTypes) sheetConfig.actorTypes = {};
+        sheetConfig.actorTypes[k] = actorType;
+      }
+    }
   }
-  game.pbta.stats = stats;
+
+  // Update stored config.
+  game.pbta.sheetConfig = sheetConfig;
+
+  // Apply structure to actor types.
+  PbtaUtility.applyActorTemplates();
+
+  // Grab default stats.
+  // let statsSetting = game.settings.get('pbta', 'stats');
+  // let statArray = statsSetting.split(',');
+  // let stats = {};
+  // if (statArray.length > 0) {
+  //   statArray.forEach(s => {
+  //     let stat = PbtaUtility.cleanClass(s, false);
+  //     stats[stat] = s.trim();
+  //   });
+  // }
+  // game.pbta.stats = stats;
 
   // Add a lang class to the body.
   const lang = game.settings.get('core', 'language');
@@ -180,60 +235,22 @@ Hooks.once("setup", function() {
 /*  Actor Updates                               */
 /* -------------------------------------------- */
 Hooks.on('createActor', async (actor, options, id) => {
-  // Allow the character to levelup up when their level changes.
-  if (actor.data.type == 'character') {
-    actor.setFlag('pbta', 'levelup', true);
-
-    // Get the item moves as the priority.
-    let moves = game.items.entities.filter(i => i.type == 'move' && i.data.data.moveType == 'basic');
-    let pack = game.packs.get(`pbta.basic-moves`);
-    let compendium = pack ? await pack.getContent() : [];
-    const actorMoves = actor.data.items.filter(i => i.type == 'move');
-    // Get the compendium moves next.
-    let moves_compendium = compendium.filter(m => {
-      const notTaken = actorMoves.filter(i => i.name == m.data.name);
-      return notTaken.length < 1;
-    });
-    // Append compendium moves to the item moves.
-    let moves_list = moves.map(m => {
-      return m.data.name;
-    })
-    for (let move of moves_compendium) {
-      if (!moves_list.includes(move.data.name)) {
-        moves.push(move);
-        moves_list.push(move.data.name);
-      }
-    }
-
-    // Sort the moves and build our groups.
-    moves.sort((a, b) => {
-      const aSort = a.data.name.toLowerCase();
-      const bSort = b.data.name.toLowerCase();
-      if (aSort < bSort) {
-        return -1;
-      }
-      if (aSort > bSort) {
-        return 1;
-      }
-      return 0;
-    });
-
-    // Add to the actor.
-    const movesToAdd = moves.map(m => duplicate(m));
-    await actor.createEmbeddedEntity('OwnedItem', movesToAdd);
-    await actor.update({ 'data.details.look': game.i18n.localize("Pbta.DefaultLook") });
-  }
+  await PbtaActorTemplates.applyActorTemplate(actor, options, id);
+  // // Allow the character to levelup up when their level changes.
+  // if (actor.data.type == 'character') {
+  //   actor.setFlag('pbta', 'levelup', true);
+  // }
 });
 
 Hooks.on('preUpdateActor', (actor, data, options, id) => {
-  if (actor.data.type == 'character') {
-    // Allow the character to levelup up when their level changes.
-    if (data.data && data.data.attributes && data.data.attributes.level) {
-      if (data.data.attributes.level.value > actor.data.data.attributes.level.value) {
-        actor.setFlag('pbta', 'levelup', true);
-      }
-    }
-  }
+  // if (actor.data.type == 'character') {
+  //   // Allow the character to levelup up when their level changes.
+  //   if (data.data && data.data.attributes && data.data.attributes.level) {
+  //     if (data.data.attributes.level.value > actor.data.data.attributes.level.value) {
+  //       actor.setFlag('pbta', 'levelup', true);
+  //     }
+  //   }
+  // }
 });
 
 /* -------------------------------------------- */

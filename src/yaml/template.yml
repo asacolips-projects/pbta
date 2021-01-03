@@ -4,13 +4,12 @@ Actor:
     - npc
   templates:
     base:
-      attributes: []
-      details:
-        biography: ''
+      stats: {}
+      attributesTop: {}
+      attributesLeft: {}
   character:
     templates:
       - base
-    stats: {}
     details:
       playbook: ''
   npc:

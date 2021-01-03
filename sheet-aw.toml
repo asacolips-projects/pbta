@@ -1,36 +1,5 @@
 rollFormula = "2d6"
 
-# Define stats.
-[stats]
-  cool = "Cool"
-  hard = "Hard"
-  hot = "Hot"
-  sharp = "Sharp"
-  weird = "Weird"
-
-# Define attributes.
-[attributesTop]
-  [attributesTop.armor]
-    type = "Number"
-  [attributesTop.harm]
-    type = "Clock"
-    max = 6
-  [attributesTop.improvement]
-    type = "Xp"
-    max = 5
-  [attributesTop.customResource]
-    type = "Resource"
-
-# Define sidebar details.
-[attributesLeft]
-  look = "LongText"
-  hx = "LongText"
-
-# Define logical groups for moves.
-[moveTypes]
-  basic = "Basic"
-  advanced = "Advanced"
-
 # Define roll result ranges.
 [rollResults]
   [rollResults.failure]
@@ -45,3 +14,63 @@ rollFormula = "2d6"
   [rollResults.critical]
     range = false
     label = "Critical Success!"
+
+########################################
+## CHARACTERS ##########################
+########################################
+[character]
+
+  # Define stats.
+  [character.stats]
+    cool = "Cool"
+    hard = "Hard"
+    hot = "Hot"
+    sharp = "Sharp"
+    weird = "Weird"
+
+  # Define attributes.
+  [character.attributesTop]
+    [character.attributesTop.armor]
+      type = "Number"
+    [character.attributesTop.harm]
+      type = "Clock"
+      max = 6
+    [character.attributesTop.improvement]
+      type = "Xp"
+      max = 5
+    [character.attributesTop.customResource]
+      type = "Resource"
+      label = "Custom Resource"
+
+  # Define sidebar details.
+  [character.attributesLeft]
+    look = "LongText"
+    hx = "LongText"
+
+  # Define logical groups for moves.
+  [character.moveTypes]
+    basic = "Basic"
+    advanced = "Advanced"
+
+########################################
+## NPCS ################################
+########################################
+# Define stats.
+[npc]
+  stats = false
+  attributesLeft = false
+
+  # Define attributes.
+  [npc.attributesTop]
+    [npc.attributesTop.armor]
+      type = "Number"
+    [npc.attributesTop.harm]
+      type = "Clock"
+      max = 6
+    [npc.attributesTop.damage]
+      type = "Roll"
+      default = "d10"
+
+  # Define logical groups for moves.
+  [npc.moveTypes]
+    basic = "Basic"

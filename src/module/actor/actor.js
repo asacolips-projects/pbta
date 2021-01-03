@@ -24,22 +24,36 @@ export class ActorPbta extends Actor {
   _prepareCharacterData(actorData) {
     const data = actorData.data;
 
-    let statsSetting = game.settings.get('pbta', 'stats');
-    let statsArray = statsSetting.split(',');
-    let stats = data.stats;
+    // let statsSetting = game.settings.get('pbta', 'stats');
+    // let statsArray = statsSetting.split(',');
+    // let stats = data.stats;
 
-    if (statsArray.length > 0) {
-      statsArray.forEach(s => {
-        let stat = PbtaUtility.cleanClass(s, false);
-        stats[stat] = {
-          label: s.trim(),
-          value: stats[stat]?.value ?? 0,
-          toggle: stats[stat]?.toggle ?? false
-        };
-      });
-    }
+    // if (statsArray.length > 0) {
+    //   statsArray.forEach(s => {
+    //     let stat = PbtaUtility.cleanClass(s, false);
+    //     stats[stat] = {
+    //       label: s.trim(),
+    //       value: stats[stat]?.value ?? 0,
+    //       toggle: stats[stat]?.toggle ?? false
+    //     };
+    //   });
+    // }
 
-    data.stats = stats;
+    // let stats = data.stats ?? {};
+
+    // if (game.pbta.sheetConfig?.character) {
+    //   let cfg = game.pbta.sheetConfig.character;
+    //   console.log(cfg);
+    //   if (cfg.stats) {
+    //     for (let [k,v] of Object.entries(cfg.stats)) {
+    //       if (!stats[k]) {
+    //         stats[k] = v;
+    //       }
+    //     }
+    //   }
+    // }
+
+    // data.stats = stats;
   }
 
   /**
