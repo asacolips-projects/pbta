@@ -79,10 +79,11 @@ export class ActorPbta extends Actor {
     let titleText = null;
     let flavorText = null;
     let templateData = {};
+    let dice = PbtaUtility.getRollFormula('2d6');
 
     // Handle rolls coming directly from the ability score.
     if ($(a).hasClass('ability-rollable') && data.mod) {
-      formula = `2d6+${data.mod}`;
+      formula = `${dice}+${data.mod}`;
       flavorText = data.label;
       if (data.debility) {
         flavorText += ` (${data.debility})`;
@@ -118,6 +119,7 @@ export class ActorPbta extends Actor {
     let actorData = actor.data.data;
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
+    let dice = PbtaUtility.getRollFormula('2d6');
     // GM rolls.
     let chatData = {
       user: game.user._id,
@@ -133,7 +135,7 @@ export class ActorPbta extends Actor {
       let formula = '';
       // Handle bond (user input).
       if (roll == 'BOND') {
-        formula = form.bond.value ? `2d6+${form.bond.value}` : '2d6';
+        formula = form.bond.value ? `${dice}+${form.bond.value}` : dice;
         if (dataset.mod && dataset.mod != 0) {
           formula += `+${dataset.mod}`;
         }
@@ -144,7 +146,7 @@ export class ActorPbta extends Actor {
       }
       // Handle moves.
       else {
-        formula = `2d6+${actorData.abilities[roll].mod}`;
+        formula = `${dice}+${actorData.abilities[roll].mod}`;
         if (dataset.mod && dataset.mod != 0) {
           formula += `+${dataset.mod}`;
         }
@@ -154,7 +156,7 @@ export class ActorPbta extends Actor {
         let roll = new Roll(`${formula}`, actor.getRollData());
         roll.roll();
         // Add success notification.
-        if (formula.includes('2d6')) {
+        if (formula.includes(dice)) {
           if (roll.total < 7) {
             templateData.result = 'failure';
           }

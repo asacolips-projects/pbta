@@ -51,6 +51,8 @@ export class ItemPbta extends Item {
    */
   async roll({ configureDialog = true } = {}) {
 
+    let dice = PbtaUtility.getRollFormula('2d6');
+
     // Basic template rendering data
     const token = this.actor.token;
     const item = this.data;
@@ -61,7 +63,7 @@ export class ItemPbta extends Item {
     let formula = null;
 
     if (item.type == 'move') {
-      formula = '2d6';
+      formula = dice;
       templateData = {
         title: item.name,
         trigger: null,
@@ -142,6 +144,7 @@ export class ItemPbta extends Item {
   async rollMove(roll, actorData, dataset, templateData, form = null) {
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
+    let dice = PbtaUtility.getRollFormula('2d6');
     // GM rolls.
     let chatData = {
       user: game.user._id,
@@ -157,7 +160,7 @@ export class ItemPbta extends Item {
       let formula = '';
       // Handle prompt (user input).
       if (roll == 'PROMPT') {
-        formula = form.prompt?.value ? `2d6+${form.prompt.value}` : '2d6';
+        formula = form.prompt?.value ? `${dice}+${form.prompt.value}` : dice;
         if (dataset.value && dataset.value != 0) {
           formula += `+${dataset.value}`;
         }
@@ -168,7 +171,7 @@ export class ItemPbta extends Item {
       }
       // Handle moves.
       else {
-        formula = `2d6+${actorData.stats[roll].value}`;
+        formula = `${dice}+${actorData.stats[roll].value}`;
         if (dataset.value && dataset.value != 0) {
           formula += `+${dataset.value}`;
         }
@@ -178,7 +181,7 @@ export class ItemPbta extends Item {
         let roll = new Roll(`${formula}`, this.actor.getRollData());
         roll.roll();
         // Add success notification.
-        if (formula.includes('2d6')) {
+        if (formula.includes(dice)) {
           if (roll.total < 7) {
             templateData.result = 'failure';
           }

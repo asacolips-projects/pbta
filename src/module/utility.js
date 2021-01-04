@@ -72,6 +72,7 @@ export class PbtaUtility {
 
         case 'Checkbox':
           attr.type = attrValue.type;
+          attr.checkboxLabel = attrValue.checkboxLabel ?? false;
           attr.value = false;
           break;
 
@@ -107,6 +108,10 @@ export class PbtaUtility {
         templates[type] = mergeObject(orig, template);
       }
     }
+  }
+
+  static getRollFormula(defaultFormula = '2d6') {
+    return game.pbta.sheetConfig.rollFormula ?? defaultFormula;
   }
 
   static async getEquipment(update = false) {
@@ -184,46 +189,46 @@ export class PbtaUtility {
   }
 
   static replaceRollData() {
-    /**
-     * Override the default getRollData() method to add abbreviations for the
-     * abilities and attributes properties.
-     */
-    const original = Actor.prototype.getRollData;
-    Actor.prototype.getRollData = function() {
-      // Use the actor by default.
-      let actor = this;
+    // /**
+    //  * Override the default getRollData() method to add abbreviations for the
+    //  * abilities and attributes properties.
+    //  */
+    // const original = Actor.prototype.getRollData;
+    // Actor.prototype.getRollData = function() {
+    //   // Use the actor by default.
+    //   let actor = this;
 
-      // Use the current token if possible.
-      let token = canvas.tokens.controlled.find(t => t.actor.data._id == this.data._id);
-      if (token) {
-        actor = token.actor;
-      }
+    //   // Use the current token if possible.
+    //   let token = canvas.tokens.controlled.find(t => t.actor.data._id == this.data._id);
+    //   if (token) {
+    //     actor = token.actor;
+    //   }
 
-      const data = original.call(actor);
+    //   const data = original.call(actor);
 
-      // Re-map all attributes onto the base roll data
-      let newData = mergeObject(data.attributes, data.abilities);
-      delete data.init;
-      for (let [k, v] of Object.entries(newData)) {
-        switch (k) {
-          // case 'level':
-          //   data.lvl = v.value;
-          //   break;
+    //   // Re-map all attributes onto the base roll data
+    //   let newData = mergeObject(data.attributes, data.stats);
+    //   delete data.init;
+    //   for (let [k, v] of Object.entries(newData)) {
+    //     switch (k) {
+    //       // case 'level':
+    //       //   data.lvl = v.value;
+    //       //   break;
 
-          default:
-            if (!(k in data)) {
-              v.val = v.value;
-              delete v.value;
-              data[k] = v;
-            }
-            break;
-        }
-      }
+    //       default:
+    //         if (!(k in data)) {
+    //           v.val = v.value;
+    //           delete v.value;
+    //           data[k] = v;
+    //         }
+    //         break;
+    //     }
+    //   }
 
-      // Old syntax shorthand.
-      data.attr = data.attributes;
-      data.abil = data.abilities;
-      return data;
-    };
+    //   // Old syntax shorthand.
+    //   data.attr = data.attributes;
+    //   data.abil = data.stats;
+    //   return data;
+    // };
   }
 }

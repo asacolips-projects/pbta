@@ -97,12 +97,20 @@ export class PbtaActorSheet extends ActorSheet {
   _prepareCharacterItems(sheetData) {
     const actorData = sheetData.actor;
 
+    let moveTypes = game.pbta.sheetConfig?.actorTypes?.character?.moveTypes;
+    actorData.moveTypes = Object.keys(moveTypes);
+    actorData.moves = {};
+
+    for (let [k,v] of Object.entries(moveTypes)) {
+      actorData.moves[k] = [];
+    }
+
     // Initialize containers.
-    const moves = [];
-    const basicMoves = [];
-    const startingMoves = [];
-    const advancedMoves = [];
-    const specialMoves = [];
+    // const moves = [];
+    // const basicMoves = [];
+    // const startingMoves = [];
+    // const advancedMoves = [];
+    // const specialMoves = [];
     const equipment = [];
 
     // Iterate through items, allocating to containers
@@ -112,27 +120,35 @@ export class PbtaActorSheet extends ActorSheet {
       i.img = i.img || DEFAULT_TOKEN;
       // If this is a move, sort into various arrays.
       if (i.type === 'move') {
-        switch (i.data.moveType) {
-          case 'basic':
-            basicMoves.push(i);
-            break;
-
-          case 'starting':
-            startingMoves.push(i);
-            break;
-
-          case 'advanced':
-            advancedMoves.push(i);
-            break;
-
-          case 'special':
-            specialMoves.push(i);
-            break;
-
-          default:
-            moves.push(i);
-            break;
+        if (actorData.moves[i.data.moveType]) {
+          actorData.moves[i.data.moveType].push(i);
         }
+        else {
+          if (!actorData.moves.pbta_undefined) actorData.moves.pbta_undefined = [];
+          actorData.moves.pbta_undefined.push(i);
+        }
+
+        // switch (i.data.moveType) {
+        //   case 'basic':
+        //     basicMoves.push(i);
+        //     break;
+
+        //   case 'starting':
+        //     startingMoves.push(i);
+        //     break;
+
+        //   case 'advanced':
+        //     advancedMoves.push(i);
+        //     break;
+
+        //   case 'special':
+        //     specialMoves.push(i);
+        //     break;
+
+        //   default:
+        //     moves.push(i);
+        //     break;
+        // }
       }
       // If this is equipment, we currently lump it together.
       else if (i.type === 'equipment') {
@@ -140,12 +156,14 @@ export class PbtaActorSheet extends ActorSheet {
       }
     }
 
+    console.log(actorData);
+
     // Assign and return
-    actorData.moves = moves;
-    actorData.basicMoves = basicMoves;
-    actorData.startingMoves = startingMoves;
-    actorData.advancedMoves = advancedMoves;
-    actorData.specialMoves = specialMoves;
+    // actorData.moves = moves;
+    // actorData.basicMoves = basicMoves;
+    // actorData.startingMoves = startingMoves;
+    // actorData.advancedMoves = advancedMoves;
+    // actorData.specialMoves = specialMoves;
     // Equipment
     actorData.equipment = equipment;
   }
@@ -800,9 +818,11 @@ export class PbtaActorSheet extends ActorSheet {
     let flavorText = null;
     let templateData = {};
 
+    let dice = PbtaUtility.getRollFormula('2d6');
+
     // Handle rolls coming directly from the ability score.
-    if ($(a).hasClass('ability-rollable') && data.mod) {
-      formula = `2d6+${data.mod}`;
+    if ($(a).hasClass('stat-rollable') && data.mod) {
+      formula = `${dice}+${data.mod}`;
       flavorText = data.label;
       if (data.debility) {
         flavorText += ` (${data.debility})`;
@@ -837,6 +857,7 @@ export class PbtaActorSheet extends ActorSheet {
   rollMove(roll, actorData, dataset, templateData, form = null) {
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
+    let dice = PbtaUtility.getRollFormula('2d6');
     // GM rolls.
     let chatData = {
       user: game.user._id,
@@ -852,7 +873,7 @@ export class PbtaActorSheet extends ActorSheet {
       let formula = '';
       // Handle bond (user input).
       if (roll == 'BOND') {
-        formula = form.bond.value ? `2d6+${form.bond.value}` : '2d6';
+        formula = form.bond.value ? `${dice}+${form.bond.value}` : dice;
         if (dataset.mod && dataset.mod != 0) {
           formula += `+${dataset.mod}`;
         }
@@ -863,7 +884,7 @@ export class PbtaActorSheet extends ActorSheet {
       }
       // Handle moves.
       else {
-        formula = `2d6+${actorData.abilities[roll].mod}`;
+        formula = `${dice}+${actorData.abilities[roll].mod}`;
         if (dataset.mod && dataset.mod != 0) {
           formula += `+${dataset.mod}`;
         }
@@ -873,7 +894,7 @@ export class PbtaActorSheet extends ActorSheet {
         let roll = new Roll(`${formula}`);
         roll.roll();
         // Add success notification.
-        if (formula.includes('2d6')) {
+        if (formula.includes(dice)) {
           if (roll.total < 7) {
             templateData.result = 'failure';
           }

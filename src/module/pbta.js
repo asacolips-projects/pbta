@@ -19,6 +19,7 @@ import { CombatSidebarPbta } from "./combat/combat.js";
 import { MigratePbta } from "./migrate/migrate.js";
 import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 import { PbtaActorTemplates } from "./pbta/pbta-actors.js";
+import { preloadHandlebarsTemplates } from "./templates.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -76,15 +77,6 @@ Hooks.once("init", async function() {
     default: 0
   });
 
-  game.settings.register("pbta", "stats", {
-    name: game.i18n.localize("PBTA.Settings.stats.name"),
-    hint: game.i18n.localize("PBTA.Settings.stats.hint"),
-    scope: 'world',
-    config: true,
-    type: String,
-    default: 'Cool,Hard,Hot,Sharp,Weird'
-  });
-
   // Configurable system settings.
   game.settings.register("pbta", "itemIcons", {
     name: game.i18n.localize("PBTA.Settings.itemIcons.name"),
@@ -114,6 +106,9 @@ Hooks.once("init", async function() {
   });
 
   PbtaUtility.replaceRollData();
+
+  // Preload template partials.
+  preloadHandlebarsTemplates();
 });
 
 Hooks.once("ready", async function() {

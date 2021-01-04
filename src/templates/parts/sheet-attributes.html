@@ -1,0 +1,43 @@
+<div class="cell cell--{{class}}">
+  {{#each attrs as |attr key|}}
+    <div class="cell cell--{{key}}">
+      <label for="data.{{../group}}.{{key}}.value" class="cell__title">{{attr.label}}</label>
+      {{!-- Text area --}}
+      {{#if (eq attr.type "LongText")}}
+        <textarea class="textarea textarea--title" name="data.{{../group}}.{{key}}.value" rows="5">{{attr.value}}</textarea>
+      {{!-- Checkbox --}}
+      {{else if (eq attr.type "Checkbox")}}
+        {{#if attr.checkboxLabel}}<label>{{/if}}
+        <input type="checkbox" name="data.{{../group}}.{{key}}.value" {{checked attr.value}}/>
+        {{#if attr.checkboxLabel}}{{attr.checkboxLabel}}</label>{{/if}}
+      {{!-- Number --}}
+      {{else if (eq attr.type "Number")}}
+        <input type="text" name="data.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
+      {{!-- Resource with value/max --}}
+      {{else if (eq attr.type "Resource")}}
+        <div class="cell__counter">
+          <input type="text" name="data.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
+          <span> / </span>
+          <input type="text" name="data.{{../group}}.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
+        </div>
+      {{!-- TODO: Replace this with stylized checkboxes per xp pip. --}}
+      {{else if (eq attr.type "Xp")}}
+        <div class="cell__counter">
+          <input type="text" name="data.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
+          <span> / </span>
+          <input type="text" name="data.{{../group}}.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
+        </div>
+      {{!-- TODO: Replace this with checkboxes per clock pip. --}}
+      {{else if (eq attr.type "Clock")}}
+        <div class="cell__counter">
+          <input type="text" name="data.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
+          <span> / </span>
+          <input type="text" name="data.{{../group}}.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
+        </div>
+      {{!-- Fallback to a text field. --}}
+      {{else}}
+        <input type="text" class="input input--title" name="data.{{../group}}.{{key}}.value" value="{{attr.value}}"/>
+      {{/if}}
+    </div>
+  {{/each}}
+</div>

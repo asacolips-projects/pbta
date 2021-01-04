@@ -40,16 +40,7 @@
             <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
           </div>
 
-          {{#each data.attrLeft as |attr key|}}
-            <div class="cell cell--{{key}}">
-              <label for="data.attrLeft.{{key}}.value" class="cell__title">{{attr.label}}</label>
-              {{#if (eq attr.type "LongText")}}
-                <textarea class="textarea textarea--title" name="data.attrLeft.{{key}}.value" rows="5">{{attr.value}}</textarea>
-              {{else}}
-                <input type="text" class="input input--title" name="data.attrLeft.{{key}}.value" value="{{attr.value}}"/>
-              {{/if}}
-            </div>
-          {{/each}}
+          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left"}}
 
           {{!-- <div class="cell cell--look">
             <label class="cell__title">{{localize "PBTA.Look"}}</label>
@@ -84,7 +75,7 @@
             <ol class="stats-list">
             {{#each data.stats as |stat key|}}
                 <li class="stat flexrow" data-stat="{{key}}">
-                    <label for="data.stats.{{key}}.value" class="cell__title stat-rollable rollable" data-mod="{{stat.mod}}" data-label="{{stat.label}}">{{ stat.label }}</label>
+                    <label for="data.stats.{{key}}.value" class="cell__title stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}">{{ stat.label }}</label>
                     <input class="stat-value" type="text" name="data.stats.{{key}}.value" value="{{stat.value}}" data-dtype="{{stat.dtype}}"/>
                     <label class="stat-toggle checkbox"><input type="checkbox" name="data.stats.{{key}}.toggle" {{checked stat.toggle}}/>Toggle</label>
                 </li>
@@ -92,18 +83,7 @@
             </ol>
           </div>
 
-          <div class="cell cell--attributes-top">
-          {{#each data.attrTop as |attr key|}}
-            <div class="cell cell--{{key}}">
-              <label for="data.attrTop.{{key}}.value" class="cell__title">{{attr.label}}</label>
-              {{#if (eq attr.type "LongText")}}
-                <textarea class="textarea textarea--title" name="data.attrTop.{{key}}.value" rows="5">{{attr.value}}</textarea>
-              {{else}}
-                <input type="text" class="input input--title" name="data.attrTop.{{key}}.value" value="{{attr.value}}"/>
-              {{/if}}
-            </div>
-          {{/each}}
-          </div>
+          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrTop group="attrTop" class="attributes-top"}}
 
         </section>
 

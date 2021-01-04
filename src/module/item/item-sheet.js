@@ -35,9 +35,12 @@ export class PbtaItemSheet extends ItemSheet {
     data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
 
     // Add stats.
-    data.data.stats = duplicate(game.pbta.stats);
-    data.data.stats['PROMPT'] = 'Prompt';
-    data.data.stats['ASK'] = 'Ask';
+    data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes?.character?.stats);
+    data.data.stats['PROMPT'] = {label: 'Prompt'};
+    data.data.stats['ASK'] = {label: 'Ask'};
+
+    // Add move types.
+    data.data.moveTypes = game.pbta.sheetConfig?.actorTypes?.character?.moveTypes ?? {};
 
     // Handle preprocessing for tagify data.
     if (data.entity.type == 'equipment') {

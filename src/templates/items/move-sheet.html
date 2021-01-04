@@ -21,7 +21,6 @@
       </div>
 
       {{!-- Details Tab --}}
-      {{log data}}
       <div class="tab" data-group="primary" data-tab="details">
         <div class="resource">
           <label>{{localize "PBTA.Roll"}}</label>
@@ -30,7 +29,7 @@
               <option value="">—</option>
               {{#if data.stats}}
                 {{#each data.stats as |stat key|}}
-                  <option value="{{key}}">{{stat}}</option>
+                  <option value="{{key}}">{{stat.label}}</option>
                 {{/each}}
               {{/if}}
             {{/select}}
@@ -59,10 +58,9 @@
           <select name="data.moveType" data-dtype="String">
             {{#select data.moveType}}
             <option value="">—</option>
-            <option value="basic">{{localize "PBTA.MoveBasic"}}</option>
-            <option value="starting">{{localize "PBTA.MoveStarting"}}</option>
-            <option value="advanced">{{localize "PBTA.MoveAdvanced"}}</option>
-            <option value="special">{{localize "PBTA.MoveSpecial"}}</option>
+            {{#each data.moveTypes as |move key|}}
+            <option value="{{key}}">{{move.label}}</option>
+            {{/each}}
             {{/select}}
           </select>
         </div>
