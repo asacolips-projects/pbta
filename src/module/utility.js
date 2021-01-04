@@ -30,8 +30,11 @@ export class PbtaUtility {
         }
         // Otherwise, conver the value into the type (short syntax).
         let val = attrValue;
-        attrValue = { type: val };
+        attrValue = { type: val, value: '' };
+        console.log(attrValue);
       }
+
+      if (attrValue.type == 'Number') {}
 
       switch (attrValue.type) {
         case "Number":
@@ -43,35 +46,45 @@ export class PbtaUtility {
           attr.type = attrValue.type;
           attr.value = 0;
           attr.max = attrValue.max ?? 0;
+          break;
 
         case 'Xp':
           attr.type = attrValue.type;
           attr.value = 0;
           attr.max = attrValue.max ?? 0;
+          break;
 
         case 'Resource':
           attr.type = attrValue.type;
           attr.value = 0;
           attr.max = attrValue.max ?? 0;
+          break;
 
         case 'Text':
           attr.type = attrValue.type;
           attr.value = '';
+          break;
 
         case 'LongText':
           attr.type = attrValue.type;
           attr.value = '';
+          break;
 
         case 'Checkbox':
           attr.type = attrValue.type;
           attr.value = false;
+          break;
 
         default:
           break;
       }
 
+      if (attrKey == 'hx') console.log(attr);
+
       attrs[attrKey] = attr;
     }
+
+    console.log(attrs);
 
     return attrs;
   }
@@ -81,7 +94,6 @@ export class PbtaUtility {
     let actorTypes = game.system.template.Actor.types;
 
     for (let type of actorTypes) {
-      console.log(type);
       if (game.pbta.sheetConfig.actorTypes[type]) {
         let template = {};
         let v = game.pbta.sheetConfig.actorTypes[type];
@@ -95,9 +107,6 @@ export class PbtaUtility {
         templates[type] = mergeObject(orig, template);
       }
     }
-
-    console.log(templates);
-    console.log(game.system.template);
   }
 
   static async getEquipment(update = false) {

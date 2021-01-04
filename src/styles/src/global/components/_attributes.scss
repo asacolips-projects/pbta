@@ -1,11 +1,13 @@
 .sheet-attributes,
 .sheet-resources {
-  display: grid;
-  grid-column: span 16;
-  grid-template-columns: repeat(16, minmax(0, 1fr));
-  gap: 0px 10px;
-  margin: 0 0 10px 0;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  // display: grid;
+  // grid-column: span 16;
+  // grid-template-columns: repeat(16, minmax(0, 1fr));
+  // gap: 0px 10px;
+  // margin: 0 0 10px 0;
+  // padding: 0;
 
   .cell {
     text-align: center;
@@ -178,6 +180,19 @@
 
     input[name="data.attributes.weight.value"] {
       color: $c-red;
+    }
+  }
+
+  .cell--attributes-top {
+    display: grid;
+    grid-column: span 16;
+    grid-template-columns: repeat(16, minmax(0, 1fr));
+    gap: 0px 10px;
+    margin: 0 0 10px 0;
+    padding: 0;
+
+    .cell {
+      grid-column: span 4;
     }
   }
 }

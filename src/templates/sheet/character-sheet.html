@@ -40,6 +40,17 @@
             <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
           </div>
 
+          {{#each data.attrLeft as |attr key|}}
+            <div class="cell cell--{{key}}">
+              <label for="data.attrLeft.{{key}}.value" class="cell__title">{{attr.label}}</label>
+              {{#if (eq attr.type "LongText")}}
+                <textarea class="textarea textarea--title" name="data.attrLeft.{{key}}.value" rows="5">{{attr.value}}</textarea>
+              {{else}}
+                <input type="text" class="input input--title" name="data.attrLeft.{{key}}.value" value="{{attr.value}}"/>
+              {{/if}}
+            </div>
+          {{/each}}
+
           {{!-- <div class="cell cell--look">
             <label class="cell__title">{{localize "PBTA.Look"}}</label>
             <textarea class="alignment" name="data.details.look" rows="5" title="Hey there! Who are you!?"
@@ -69,52 +80,6 @@
         {{!-- Attributes --}}
         <section class="sheet-attributes">
 
-          {{!-- <div class="cell cell--damage">
-            <label class="cell__title damage-rollable rollable" data-roll="{{data.attributes.damage.value}}{{#if data.attributes.damage.misc}}+{{data.attributes.damage.misc}}{{/if}}" data-label="{{localize "PBTA.Damage"}}"><i class="fas fa-dice-d20"></i> {{localize "PBTA.Damage"}}</label>
-            <div class="damage-inputs">
-              <select name="data.attributes.damage.value" data-dtype="String">
-                {{#select data.attributes.damage.value}}
-                <option value="">—</option>
-                <option value="d4">d4</option>
-                <option value="d6">d6</option>
-                <option value="d8">d8</option>
-                <option value="d10">d10</option>
-                <option value="d12">d12</option>
-                {{/select}}
-              </select>
-              <span>+</span>
-              <input type="text" name="data.attributes.damage.misc" value="{{data.attributes.damage.misc}}" placeholder="{{localize "PBTA.Misc"}}" data-dtype="String"/>
-            </div>
-          </div>
-
-          <div class="cell cell--ac">
-            <label class="cell__title">{{localize "PBTA.Armor"}}<i class="fas fa-shield-alt attribute-icon"></i></label>
-            <input type="text" name="data.attributes.ac.value" value="{{data.attributes.ac.value}}" data-dtype="Number"/>
-          </div>
-
-          <div class="cell cell--hp">
-            <label for="data.attributes.hp.value" class="cell__title">{{localize "PBTA.HP"}}<i class="fas fa-heart attribute-icon"></i></label>
-            <div class="cell__counter">
-              <input type="text" name="data.attributes.hp.value" value="{{data.attributes.hp.value}}" data-dtype="Number"/>
-              <span> / </span>
-              <input type="text" name="data.attributes.hp.max" value="{{data.attributes.hp.max}}" data-dtype="Number"/>
-            </div>
-          </div>
-
-          <div class="cell cell--weight">
-            <label for="data.attributes.weight.value" class="cell__title">{{localize "PBTA.Weight"}}<i class="fas fa-weight-hanging attribute-icon"></i></label>
-            <div class="cell__counter">
-              <input class="disabled" type="text" name="data.attributes.weight.value" value="{{data.attributes.weight.value}}" data-dtype="Number" readonly/>
-              <span> / </span>
-              <input type="text" name="data.attributes.weight.max" value="{{data.attributes.weight.max}}" data-dtype="Number"/>
-            </div>
-          </div>
-
-          <div class="cell cell--coin">
-            <label class="cell__title">{{localize "PBTA.Coin"}}<i class="fas fa-coins attribute-icon"></i></label>
-            <input type="text" name="data.attributes.coin.value" value="{{data.attributes.coin.value}}" data-dtype="Number"/>
-          </div> --}}
-
           <div class="cell cell--stats">
             <ol class="stats-list">
             {{#each data.stats as |stat key|}}
@@ -125,6 +90,19 @@
                 </li>
             {{/each}}
             </ol>
+          </div>
+
+          <div class="cell cell--attributes-top">
+          {{#each data.attrTop as |attr key|}}
+            <div class="cell cell--{{key}}">
+              <label for="data.attrTop.{{key}}.value" class="cell__title">{{attr.label}}</label>
+              {{#if (eq attr.type "LongText")}}
+                <textarea class="textarea textarea--title" name="data.attrTop.{{key}}.value" rows="5">{{attr.value}}</textarea>
+              {{else}}
+                <input type="text" class="input input--title" name="data.attrTop.{{key}}.value" value="{{attr.value}}"/>
+              {{/if}}
+            </div>
+          {{/each}}
           </div>
 
         </section>
