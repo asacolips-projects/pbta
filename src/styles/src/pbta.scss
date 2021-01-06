@@ -31,16 +31,16 @@
     .window-content {
       position: relative;
       background: $c-white;
-      background-image:
-        linear-gradient(#d8d8d8 250px, #ffffff 250px, #ffffff);
-      background-repeat: no-repeat;
-      background-size:
-        100% 264px,
-        100%;
-      background-position:
-        0 0,
-        0 262px;
-      background-attachment: local;
+      // background-image:
+      //   linear-gradient(#d8d8d8 250px, #ffffff 250px, #ffffff);
+      // background-repeat: no-repeat;
+      // background-size:
+      //   100% 264px,
+      //   100%;
+      // background-position:
+      //   0 0,
+      //   0 262px;
+      // background-attachment: local;
 
       form {
         position: relative;

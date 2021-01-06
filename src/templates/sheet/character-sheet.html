@@ -33,34 +33,37 @@
         {{/if}}
       </section>
 
-      {{!-- Sidebar --}}
-      <section class="sheet-look">
-        <div class="cell cell--aesthetics">
+      <section class="sheet-top">
+        {{!-- Attributes --}}
+        <section class="sheet-attributes">
+
           <div class="cell cell--image">
             <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
           </div>
 
+          <div class="cell cell--stats">
+            <ol class="stats-list">
+            {{#each data.stats as |stat key|}}
+              <li class="stat flexrow" data-stat="{{key}}">
+                <label for="data.stats.{{key}}.value" class="cell__title stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}">{{ stat.label }}</label>
+                <input class="stat-value" type="text" name="data.stats.{{key}}.value" value="{{stat.value}}" data-dtype="{{stat.dtype}}"/>
+                <label class="stat-toggle checkbox"><input type="checkbox" name="data.stats.{{key}}.toggle" {{checked stat.toggle}}/>Toggle</label>
+              </li>
+            {{/each}}
+            </ol>
+          </div>
+
+        </section>
+
+        <section class="sheet-attributes-top">
+          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrTop group="attrTop" class="attributes-top"}}
+        </section>
+      </section>
+
+      {{!-- Sidebar --}}
+      <section class="sheet-look">
+        <div class="cell cell--aesthetics">
           {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left"}}
-
-          {{!-- <div class="cell cell--look">
-            <label class="cell__title">{{localize "PBTA.Look"}}</label>
-            <textarea class="alignment" name="data.details.look" rows="5" title="Hey there! Who are you!?"
-              data-dtype="String">{{#if data.details.look}}{{data.details.look}}{{/if}}</textarea>
-          </div>
-
-          <div class="cell cell--alignment">
-            <label class="cell__title">{{localize "PBTA.Alignment"}}</label>
-            <input type="text" class="input input--title" name="data.details.alignment.value" value="{{data.details.alignment.value}}" data-dtype="String"/>
-            <textarea class="alignment" name="data.details.alignment.description" rows="5" title="What's your alignment?"
-              data-dtype="String">{{#if data.details.alignment.description}}{{data.details.alignment.description}}{{/if}}</textarea>
-          </div>
-
-          <div class="cell cell--race">
-            <label class="cell__title">{{localize "PBTA.Race"}}</label>
-            <input type="text" class="input input--title" name="data.details.race.value" value="{{data.details.race.value}}" data-dtype="String"/>
-            <textarea class="race" name="data.details.race.description" rows="5" title="What's your race?"
-              data-dtype="String">{{#if data.details.race.description}}{{data.details.race.description}}{{/if}}</textarea>
-          </div>--}}
         </div>
 
         <button class="toggle toggle--look"><i class="fas fa-chevron-left"></i></button>
@@ -68,24 +71,6 @@
 
       {{!-- Main --}}
       <section class="sheet-main">
-        {{!-- Attributes --}}
-        <section class="sheet-attributes">
-
-          <div class="cell cell--stats">
-            <ol class="stats-list">
-            {{#each data.stats as |stat key|}}
-                <li class="stat flexrow" data-stat="{{key}}">
-                    <label for="data.stats.{{key}}.value" class="cell__title stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}">{{ stat.label }}</label>
-                    <input class="stat-value" type="text" name="data.stats.{{key}}.value" value="{{stat.value}}" data-dtype="{{stat.dtype}}"/>
-                    <label class="stat-toggle checkbox"><input type="checkbox" name="data.stats.{{key}}.toggle" {{checked stat.toggle}}/>Toggle</label>
-                </li>
-            {{/each}}
-            </ol>
-          </div>
-
-          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrTop group="attrTop" class="attributes-top"}}
-
-        </section>
 
         {{!-- Sheet Tab Navigation --}}
         <nav class="sheet-tabs tabs" data-group="primary">

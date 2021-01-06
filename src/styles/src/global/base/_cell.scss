@@ -12,16 +12,27 @@
   margin-bottom: 5px;
   font-weight: bold;
   font-family: $font-stack-secondary;
+  border: 0;
 
   a,
   button {
     color: $c-black;
   }
 
+  .item-controls {
+    position: absolute;
+    right: 40px;
+    width: 50px;
+  }
+
   button {
+    background: $c-white;
+    color: $c-black;
+    border: 1px solid $c-black;
+
     &:hover,
     &:focus {
-      background-color: $c-navy-up;
+      background-color: $c-black;
       color: $c-white;
     }
   }
@@ -55,6 +66,31 @@
     &::before {
       content: "\f071";
     }
+  }
+}
+
+.cell__title {
+  display: flex;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: $c-black;
+
+  &::before,
+  &::after {
+    display: block;
+    content: '';
+    background: $c-black;
+    height: 10px;
+  }
+
+  &::before {
+    margin-right: 10px;
+    flex: 0 0 10px;
+  }
+
+  &::after {
+    margin-left: 10px;
+    flex: 2;
   }
 }
 

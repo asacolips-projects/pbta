@@ -30,6 +30,47 @@
     }
   }
 
+  .sheet-top {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sheet-attributes {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .sheet-attributes-top {
+    border: 2px solid $ct-gray;
+    border-left: 0;
+    border-right: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 10px 0;
+
+    .cell--attributes-top {
+      display: grid;
+      grid-column: span 16;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      gap: 0px 10px;
+      margin: 0 0 10px 0;
+      padding: 0;
+
+      .cell {
+        grid-column: span 4;
+      }
+    }
+  }
+
+  .cell--image {
+    flex: 0 0 128px;
+  }
+
+  .cell--stats {
+    flex: 1;
+  }
+
   .sheet-look {
     flex: 33% 1 1;
     order: 1;

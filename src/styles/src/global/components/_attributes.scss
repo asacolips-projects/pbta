@@ -182,17 +182,4 @@
       color: $c-red;
     }
   }
-
-  .cell--attributes-top {
-    display: grid;
-    grid-column: span 16;
-    grid-template-columns: repeat(16, minmax(0, 1fr));
-    gap: 0px 10px;
-    margin: 0 0 10px 0;
-    padding: 0;
-
-    .cell {
-      grid-column: span 4;
-    }
-  }
 }
