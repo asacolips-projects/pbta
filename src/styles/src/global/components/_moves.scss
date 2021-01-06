@@ -10,9 +10,9 @@
   .items-list {
     padding: 0;
 
-    // .item + .item {
-    //   border-top: 1px solid $c-navy-top;
-    // }
+    .item + .item {
+      border-top: 2px solid $ct-gray;
+    }
 
     .item {
       padding: 10px 0;
@@ -22,6 +22,7 @@
   .item-name {
     font-size: 18px;
     font-weight: bold;
+    text-transform: uppercase;
     flex: 2;
     margin: 0;
 

@@ -130,6 +130,10 @@ Hooks.once("ready", async function() {
         sheetConfig.rollFormula = validRoll ? rollFormula.trim() : '';
       }
 
+      if (k == 'statToggle') {
+        sheetConfig.statToggle = v ?? false;
+      }
+
       if (k == "rollResults") {
         // Set result ranges.
       }

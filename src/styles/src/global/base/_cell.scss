@@ -118,3 +118,17 @@
     margin: 0 0 10px 0;
   }
 }
+
+.cell__counter {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cell {
+  input[type="text"] {
+    text-align: center;
+  }
+}

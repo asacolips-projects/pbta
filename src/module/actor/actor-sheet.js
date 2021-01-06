@@ -38,6 +38,8 @@ export class PbtaActorSheet extends ActorSheet {
     if (this.actor.data.type == 'character') {
       data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
 
+      data.data.statToggle = game.pbta.sheetConfig?.statToggle ?? false;
+
       let xpSvg = {
         radius: 16,
         circumference: 100,
