@@ -31,7 +31,6 @@ export class PbtaUtility {
         // Otherwise, conver the value into the type (short syntax).
         let val = attrValue;
         attrValue = { type: val, value: '' };
-        console.log(attrValue);
       }
 
       if (attrValue.type == 'Number') {}
@@ -46,12 +45,24 @@ export class PbtaUtility {
           attr.type = attrValue.type;
           attr.value = 0;
           attr.max = attrValue.max ?? 0;
+          attr.steps = [];
+          if (attr.max) {
+            for (let i = 0; i < attr.max; i++) {
+              attr.steps.push(false);
+            }
+          }
           break;
 
         case 'Xp':
           attr.type = attrValue.type;
           attr.value = 0;
           attr.max = attrValue.max ?? 0;
+          attr.steps = [];
+          if (attr.max) {
+            for (let i = 0; i < attr.max; i++) {
+              attr.steps.push(false);
+            }
+          }
           break;
 
         case 'Resource':
@@ -80,12 +91,8 @@ export class PbtaUtility {
           break;
       }
 
-      if (attrKey == 'hx') console.log(attr);
-
       attrs[attrKey] = attr;
     }
-
-    console.log(attrs);
 
     return attrs;
   }
@@ -99,7 +106,6 @@ export class PbtaUtility {
         let template = {};
         let v = game.pbta.sheetConfig.actorTypes[type];
 
-        console.log(v);
         if (v.stats) template.stats = v.stats;
         if (v.attrTop) template.attrTop = v.attrTop;
         if (v.attrLeft) template.attrLeft = v.attrLeft;

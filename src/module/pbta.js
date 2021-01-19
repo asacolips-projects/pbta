@@ -33,6 +33,7 @@ Hooks.once("init", async function() {
     ItemPbta,
     rollItemMacro,
     PbtaUtility,
+    PbtaActorTemplates,
     MigratePbta,
   };
 
@@ -123,7 +124,6 @@ Hooks.once("ready", async function() {
   const sheetConfig = {};
   if (pbtaSettings.computed) {
     for (let [k,v] of Object.entries(pbtaSettings.computed)) {
-      console.log({k: k, v: v});
       if (k == 'rollFormula') {
         let rollFormula = v;
         let validRoll = new Roll(rollFormula.trim()).evaluate();
@@ -163,6 +163,9 @@ Hooks.once("ready", async function() {
             };
           }
         }
+
+        delete v.attributesTop;
+        delete v.attributesLeft;
 
         if (!sheetConfig.actorTypes) sheetConfig.actorTypes = {};
         sheetConfig.actorTypes[k] = actorType;
@@ -287,7 +290,6 @@ Hooks.on('renderDialog', (dialog, html, options) => {
       });
     })
   }
-  // console.log(html.find('.cell--ability-scores'));
 });
 
 /* -------------------------------------------- */

@@ -1,5 +1,6 @@
 import { PbtaPlaybooks } from "../config.js";
 import { PbtaUtility } from "../utility.js";
+import { PbtaRolls } from "../rolls.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -92,7 +93,7 @@ export class PbtaActorSheet extends ActorSheet {
   /**
    * Organize and classify Items for Character sheets.
    *
-   * @param {Object} actorData The actor to prepare.
+   * @param {Object} sheetData The actor to prepare.
    *
    * @return {undefined}
    */
@@ -158,8 +159,6 @@ export class PbtaActorSheet extends ActorSheet {
       }
     }
 
-    console.log(actorData);
-
     // Assign and return
     // actorData.moves = moves;
     // actorData.basicMoves = basicMoves;
@@ -173,7 +172,7 @@ export class PbtaActorSheet extends ActorSheet {
   /**
    * Prepare tagging.
    *
-   * @param {Object} actorData The actor to prepare.
+   * @param {Object} data The actor to prepare.
    */
   _prepareNpcItems(data) {
     // Handle preprocessing for tagify data.
@@ -197,6 +196,17 @@ export class PbtaActorSheet extends ActorSheet {
     }
   }
 
+  /**
+   * Prepare clock attribute types.
+   *
+   * @param {Object} sheetData The actor to prepare.
+   *
+   * @return {undefined}
+   */
+  _prepareStatClocks(sheetData) {
+    const actorData = sheetData.actor;
+  }
+
   /* -------------------------------------------- */
 
   /** @override */
@@ -216,6 +226,10 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Moves
     html.find('.item-label').click(this._showItemDetails.bind(this));
+
+    // Attributes.
+    html.find('.attr-clock').click(this._onClockClick.bind(this));
+    html.find('.attr-xp').click(this._onClockClick.bind(this));
 
     // Spells.
     // html.find('.prepared').click(this._onPrepareSpell.bind(this));
@@ -306,6 +320,48 @@ export class PbtaActorSheet extends ActorSheet {
   //     }
   //   }
   // }
+
+  async _onClockClick(event) {
+    event.preventDefault();
+    const $self = $(event.currentTarget);
+    // Get the clicked value.
+    let step = Number($self.data('step'));
+    let stepValue = $self.attr('checked') !== undefined;
+
+    // Retrieve the attribute.
+    let prop = $self.data('name');
+    let attr = getProperty(this.actor.data, prop);
+
+    // Step is offset by 1 (0 index). Adjust and fix.
+    step++;
+
+    // Handle clicking the same checkbox to unset its value.
+    if (stepValue) {
+      if (attr.value == step) {
+        step--;
+      }
+    }
+
+    // Update the stored value.
+    attr.value = step;
+
+    // Update the steps.
+    for (let i = 0; i < attr.max; i++) {
+      if ((i) < attr.value) {
+        attr.steps[i] = true;
+      }
+      else {
+        attr.steps[i] = false;
+      }
+    }
+
+    // Update the actor.
+    let update = {};
+    update['_id'] = this.actor._id;
+    update[prop] = attr;
+
+    await this.actor.update(update);
+  }
 
   _showItemDetails(event) {
     event.preventDefault();
@@ -822,6 +878,8 @@ export class PbtaActorSheet extends ActorSheet {
 
     let dice = PbtaUtility.getRollFormula('2d6');
 
+    console.log('test');
+
     // Handle rolls coming directly from the ability score.
     if ($(a).hasClass('stat-rollable') && data.mod) {
       formula = `${dice}+${data.mod}`;
@@ -834,7 +892,8 @@ export class PbtaActorSheet extends ActorSheet {
         title: flavorText
       };
 
-      this.rollMove(formula, actorData, data, templateData);
+      PbtaRolls.rollMove({actor: this.actor, data: data, formula: formula});
+      // this.rollMove(formula, actorData, data, templateData);
     }
     else if ($(a).hasClass('damage-rollable') && data.roll) {
       formula = data.roll;

@@ -47,7 +47,7 @@
               <li class="stat flexrow" data-stat="{{key}}">
                 <span class="stat-icon stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
                 <label for="data.stats.{{key}}.value" class="cell__title stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}">{{ stat.label }}</label>
-                <input class="stat-value" type="text" name="data.stats.{{key}}.value" value="{{stat.value}}" data-dtype="{{stat.dtype}}"/>
+                <input class="stat-value" type="text" name="data.stats.{{key}}.value" value="{{#if stat.value}}{{numberFormat stat.value decimals=0 sign=true}}{{else}}0{{/if}}" data-dtype="Number"/>
                 {{#if ../data.statToggle}}
                   <label class="stat-toggle checkbox"><input type="checkbox" name="data.stats.{{key}}.toggle" {{checked stat.toggle}}/>{{../data.statToggle}}</label>
                 {{/if}}

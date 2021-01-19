@@ -22,17 +22,26 @@
         </div>
       {{!-- TODO: Replace this with stylized checkboxes per xp pip. --}}
       {{else if (eq attr.type "Xp")}}
-        <div class="cell__counter">
+        {{!-- <div class="cell__counter">
           <input type="text" name="data.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
           <span> / </span>
           <input type="text" name="data.{{../group}}.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
+        </div> --}}
+        <div class="cell__clock">
+          {{#if attr.steps}}
+            {{#each attr.steps as |step stepKey|}}
+              <input type="radio" class="attr-xp" data-name="data.{{../../group}}.{{key}}" data-step="{{stepKey}}" {{checked step}}>
+            {{/each}}
+          {{/if}}
         </div>
       {{!-- TODO: Replace this with checkboxes per clock pip. --}}
       {{else if (eq attr.type "Clock")}}
-        <div class="cell__counter">
-          <input type="text" name="data.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
-          <span> / </span>
-          <input type="text" name="data.{{../group}}.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
+        <div class="cell__clock">
+          {{#if attr.steps}}
+            {{#each attr.steps as |step stepKey|}}
+              <input type="checkbox" class="attr-clock" data-name="data.{{../../group}}.{{key}}" data-step="{{stepKey}}" {{checked step}}>
+            {{/each}}
+          {{/if}}
         </div>
       {{!-- Fallback to a text field. --}}
       {{else}}

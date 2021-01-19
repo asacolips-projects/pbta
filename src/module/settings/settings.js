@@ -104,7 +104,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
         formData.computed = computed;
       }
     }
-    console.log(formData);
     await game.settings.set("pbta", "sheetConfig", formData);
   }
 }

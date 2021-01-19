@@ -119,12 +119,17 @@
   }
 }
 
-.cell__counter {
+.cell__counter,
+.cell__clock {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
+}
+
+.cell__clock {
+  flex-wrap: wrap;
 }
 
 .cell {

@@ -6,8 +6,6 @@ export class PbtaActorTemplates {
     delete data.templates;
     delete data._id;
 
-    console.log(data);
-
     await actor.update({
       _id: actor.data._id,
       data: data
