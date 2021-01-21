@@ -4,7 +4,9 @@
     {{#if flavor}}<div class="row"><em>{{flavor}}</em></div>{{/if}}
     {{#if trigger}}<div class="row"><strong>Trigger:</strong> {{trigger}}</div>{{/if}}
     {{#if details}}<div class="row">{{{details}}}</div>{{/if}}
-    {{#if result}}<div class="result {{result}}">{{localize (concat "PBTA." . result)}}</div>{{/if}}
+    {{!-- Result type label. --}}
+    {{#if resultLabel}}<div class="result{{#if result}} {{result}}{{/if}}">{{resultLabel}}</div>{{/if}}
+    {{!-- Roll results, color coded to match the result type label. --}}
     {{#if rollPbta}}<div class="roll{{#if result}} {{result}}{{/if}}">{{{rollPbta}}}</div>{{/if}}
     {{#if tags}}
       <hr>

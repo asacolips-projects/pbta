@@ -14,29 +14,38 @@ export class PbtaRolls {
   static async rollMove(options = {}) {
     let dice = this.getRollFormula('2d6');
 
+    console.log(options);
+
+    // TODO: Create a way to resolve this using the formula only, sans actor.
+    // If there's no actor, we need to exit.
     if (!options.actor) {
       return false;
     }
 
-    if (!options.formula || !options.data) {
+    // If there's no formula or item, we need to exit.
+    if (!options.formula && !options.data) {
       return false;
     }
 
+    // Grab the actor data.
     this.actor = options.actor;
     this.actorData = this.actor ? this.actor.data.data : {};
 
+    // Grab the item data, if any.
     const item = options?.data;
     const itemData = item ? item?.data : null;
 
+    // Grab the formula, if any.
     let formula = options.formula ?? null;
+    let label = options?.data?.label ?? '';
 
-    let templateData = {};
+    // Prepare template data for the roll.
+    let templateData = options.templateData ? duplicate(options.templateData): {};
     let data = {};
-
-    console.log('TEST!');
 
     // Handle item rolls (moves).
     if (item) {
+      // Handle moves.
       if (item.type == 'move') {
         formula = dice;
         templateData = {
@@ -52,7 +61,7 @@ export class PbtaRolls {
           let statButtons = Object.entries(game.pbta.stats).map(stat => {
             return {
               label: stat[1],
-              callback: () => this.executeRoll(stat[0], data, templateData)
+              callback: () => this.rollMoveExecute(stat[0], data, templateData)
             };
           });
           new Dialog({
@@ -78,7 +87,7 @@ export class PbtaRolls {
                 submit: {
                   label: 'Roll',
                   callback: html => {
-                    this.executeRoll('prompt', data, templateData, html[0].querySelector("form"))
+                    this.rollMoveExecute('prompt', data, templateData, html[0].querySelector("form"))
                   }
                 }
               }
@@ -88,9 +97,10 @@ export class PbtaRolls {
         }
         // Otherwise, grab the data from the move and pass it along.
         else {
-          this.executeRoll(data.roll.toLowerCase(), data, templateData);
+          this.rollMoveExecute(data.roll.toLowerCase(), data, templateData);
         }
       }
+      // Handle equipment.
       else if (item.type == 'equipment') {
         templateData = {
           title: item.name,
@@ -99,16 +109,17 @@ export class PbtaRolls {
           tags: item.data.tags
         }
         data.roll = null;
-        this.executeRoll(data.roll, data, templateData);
+        this.rollMoveExecute(data.roll, data, templateData);
       }
     }
     // Handle formula-only rolls.
     else {
-      this.executeRoll(formula, data, templateData);
+      console.log(templateData);
+      this.rollMoveExecute(formula, data, templateData);
     }
   }
 
-  async executeRoll(roll, dataset, templateData, form = null) {
+  static async rollMoveExecute(roll, dataset, templateData, form = null) {
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
     let dice = PbtaUtility.getRollFormula('2d6');
@@ -153,15 +164,40 @@ export class PbtaRolls {
         roll.roll();
         // Add success notification.
         if (formula.includes(dice)) {
-          if (roll.total < 7) {
-            templateData.result = 'failure';
+          // Retrieve the result ranges.
+          let resultRanges = game.pbta.sheetConfig.rollResults;
+          let resultType = null;
+          // Iterate through each result range until we find a match.
+          for (let [resultKey, resultRange] of Object.entries(resultRanges)) {
+            // Grab the start and end.
+            let start = resultRange.start;
+            let end = resultRange.end;
+            // If both are present, roll must be between them.
+            if (start && end) {
+              if (roll.total >= start && roll.total <= end) {
+                resultType = resultKey;
+                break;
+              }
+            }
+            // If start only, treat it as greater than or equal to.
+            else if (start) {
+              if (roll.total >= start) {
+                resultType = resultKey;
+                break;
+              }
+            }
+            // If end only, treat it as less than or equal to.
+            else if (end) {
+              if (roll.total <= end) {
+                resultType = resultKey;
+                break;
+              }
+            }
           }
-          else if (roll.total > 6 && roll.total < 10) {
-            templateData.result = 'partial';
-          }
-          else {
-            templateData.result = 'success';
-          }
+
+          // Update the templateData.
+          templateData.resultLabel = resultRanges[resultType]?.label ?? resultType;
+          templateData.result = resultType;
         }
         // Render it.
         roll.render().then(r => {

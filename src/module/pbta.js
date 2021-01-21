@@ -135,7 +135,62 @@ Hooks.once("ready", async function() {
       }
 
       if (k == "rollResults") {
+        sheetConfig.rollResults = {};
         // Set result ranges.
+        for (let [rollKey, rollSetting] of Object.entries(v)) {
+          if (typeof rollSetting.range == 'string') {
+            // Exit early if the range type isn't specified.
+            if (!rollSetting.range) {
+              continue;
+            }
+
+            // Split the result range into an array.
+            let range = rollSetting.range.split(/[\-\+]/g);
+            let rollResult = {};
+
+            // If the array is invalid, exit early.
+            if (range.length != 2 || range[0] === "") {
+              continue;
+            }
+
+            // Get the start and end numbers. Start should always be numeric,
+            // e.g. 6- rather than -6.
+            let start = Number(range[0]);
+            let end = range[1] !== "" ? Number(range[1]) : null;
+
+            // If there's only one digit, assume it's N+ or N-.
+            if (end === null) {
+              // If it's minus, set the start to null (less than or equal).
+              if (rollSetting.range.includes('-')) {
+                rollResult = {
+                  start: null,
+                  end: start,
+                  label: rollSetting.label
+                };
+              }
+
+              // If it's plus, set the end to null (greater than or equal).
+              if (rollSetting.range.includes('+')) {
+                rollResult = {
+                  start: start,
+                  end: null,
+                  label: rollSetting.label
+                };
+              }
+            }
+            // Otherwise, set the full range.
+            else {
+              rollResult = {
+                start: start,
+                end: end,
+                label: rollSetting.label
+              };
+            }
+
+            // Update teh sheet config with this result range.
+            sheetConfig.rollResults[rollKey] = rollResult;
+          }
+        }
       }
 
       // Actors.

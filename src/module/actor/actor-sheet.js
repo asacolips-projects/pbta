@@ -892,7 +892,7 @@ export class PbtaActorSheet extends ActorSheet {
         title: flavorText
       };
 
-      PbtaRolls.rollMove({actor: this.actor, data: data, formula: formula});
+      PbtaRolls.rollMove({actor: this.actor, data: null, formula: formula, templateData: templateData});
       // this.rollMove(formula, actorData, data, templateData);
     }
     else if ($(a).hasClass('damage-rollable') && data.roll) {
@@ -903,7 +903,7 @@ export class PbtaActorSheet extends ActorSheet {
         title: titleText,
         flavor: flavorText
       };
-
+      console.log('TESTER!');
       this.rollMove(formula, actorData, data, templateData);
     }
     else if (itemId != undefined) {
