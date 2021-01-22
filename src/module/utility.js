@@ -87,6 +87,11 @@ export class PbtaUtility {
           attr.value = false;
           break;
 
+        case 'Roll':
+          attr.type = attrValue.type;
+          attr.value = attrValue.default ?? '';
+          break;
+
         default:
           break;
       }

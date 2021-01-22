@@ -99,8 +99,9 @@ export class PbtaActorSheet extends ActorSheet {
    */
   _prepareCharacterItems(sheetData) {
     const actorData = sheetData.actor;
+    const actorType = actorData.type ?? 'character';
 
-    let moveTypes = game.pbta.sheetConfig?.actorTypes?.character?.moveTypes;
+    let moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes;
     actorData.moveTypes = Object.keys(moveTypes);
     actorData.moves = {};
 
@@ -127,8 +128,8 @@ export class PbtaActorSheet extends ActorSheet {
           actorData.moves[i.data.moveType].push(i);
         }
         else {
-          if (!actorData.moves.pbta_undefined) actorData.moves.pbta_undefined = [];
-          actorData.moves.pbta_undefined.push(i);
+          if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
+          actorData.moves['PBTA_OTHER'].push(i);
         }
 
         // switch (i.data.moveType) {
@@ -212,6 +213,8 @@ export class PbtaActorSheet extends ActorSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+
+    console.log(this.actor.data.type);
 
     // Rollables.
     html.find('.rollable').on('click', this._onRollable.bind(this));
@@ -868,125 +871,35 @@ export class PbtaActorSheet extends ActorSheet {
     event.preventDefault();
     const a = event.currentTarget;
     const data = a.dataset;
-    const actorData = this.actor.data.data;
     const itemId = $(a).parents('.item').attr('data-item-id');
     const item = this.actor.getOwnedItem(itemId);
     let formula = null;
-    let titleText = null;
     let flavorText = null;
     let templateData = {};
 
     let dice = PbtaUtility.getRollFormula('2d6');
 
-    console.log('test');
-
     // Handle rolls coming directly from the ability score.
     if ($(a).hasClass('stat-rollable') && data.mod) {
       formula = `${dice}+${data.mod}`;
       flavorText = data.label;
-      if (data.debility) {
-        flavorText += ` (${data.debility})`;
-      }
 
       templateData = {
         title: flavorText
       };
 
       PbtaRolls.rollMove({actor: this.actor, data: null, formula: formula, templateData: templateData});
-      // this.rollMove(formula, actorData, data, templateData);
     }
-    else if ($(a).hasClass('damage-rollable') && data.roll) {
-      formula = data.roll;
-      titleText = data.label;
-      flavorText = data.flavor;
+    else if ($(a).hasClass('attr-rollable') && data.roll) {
       templateData = {
-        title: titleText,
-        flavor: flavorText
+        title: data.label,
+        rollType: 'flat'
       };
-      console.log('TESTER!');
-      this.rollMove(formula, actorData, data, templateData);
+
+      PbtaRolls.rollMove({actor: this.actor, data: null, formula: data.roll, templateData: templateData});
     }
     else if (itemId != undefined) {
       item.roll();
-    }
-  }
-
-  /**
-   * Roll a move and use the chat card template.
-   * @param {Object} templateData
-   */
-  rollMove(roll, actorData, dataset, templateData, form = null) {
-    // Render the roll.
-    let template = 'systems/pbta/templates/chat/chat-move.html';
-    let dice = PbtaUtility.getRollFormula('2d6');
-    // GM rolls.
-    let chatData = {
-      user: game.user._id,
-      speaker: ChatMessage.getSpeaker({ actor: this.actor })
-    };
-    let rollMode = game.settings.get("core", "rollMode");
-    if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
-    if (rollMode === "selfroll") chatData["whisper"] = [game.user._id];
-    if (rollMode === "blindroll") chatData["blind"] = true;
-    // Handle dice rolls.
-    if (roll) {
-      // Roll can be either a formula like `2d6+3` or a raw stat like `str`.
-      let formula = '';
-      // Handle bond (user input).
-      if (roll == 'BOND') {
-        formula = form.bond.value ? `${dice}+${form.bond.value}` : dice;
-        if (dataset.mod && dataset.mod != 0) {
-          formula += `+${dataset.mod}`;
-        }
-      }
-      // Handle ability scores (no input).
-      else if (roll.match(/(\d*)d\d+/g)) {
-        formula = roll;
-      }
-      // Handle moves.
-      else {
-        formula = `${dice}+${actorData.abilities[roll].mod}`;
-        if (dataset.mod && dataset.mod != 0) {
-          formula += `+${dataset.mod}`;
-        }
-      }
-      if (formula != null) {
-        // Do the roll.
-        let roll = new Roll(`${formula}`);
-        roll.roll();
-        // Add success notification.
-        if (formula.includes(dice)) {
-          if (roll.total < 7) {
-            templateData.result = 'failure';
-          }
-          else if (roll.total > 6 && roll.total < 10) {
-            templateData.result = 'partial';
-          }
-          else {
-            templateData.result = 'success';
-          }
-        }
-        // Render it.
-        roll.render().then(r => {
-          templateData.rollPbta = r;
-          renderTemplate(template, templateData).then(content => {
-            chatData.content = content;
-            if (game.dice3d) {
-              game.dice3d.showForRoll(roll, game.user, true, chatData.whisper, chatData.blind).then(displayed => ChatMessage.create(chatData));
-            }
-            else {
-              chatData.sound = CONFIG.sounds.dice;
-              ChatMessage.create(chatData);
-            }
-          });
-        });
-      }
-    }
-    else {
-      renderTemplate(template, templateData).then(content => {
-        chatData.content = content;
-        ChatMessage.create(chatData);
-      });
     }
   }
 

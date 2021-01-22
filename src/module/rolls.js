@@ -14,8 +14,6 @@ export class PbtaRolls {
   static async rollMove(options = {}) {
     let dice = this.getRollFormula('2d6');
 
-    console.log(options);
-
     // TODO: Create a way to resolve this using the formula only, sans actor.
     // If there's no actor, we need to exit.
     if (!options.actor) {
@@ -30,6 +28,7 @@ export class PbtaRolls {
     // Grab the actor data.
     this.actor = options.actor;
     this.actorData = this.actor ? this.actor.data.data : {};
+    let actorType = this.actor.data.type;
 
     // Grab the item data, if any.
     const item = options?.data;
@@ -51,16 +50,18 @@ export class PbtaRolls {
         templateData = {
           title: item.name,
           trigger: null,
-          details: item.data.description
+          details: item.data.description,
+          moveResults: item.data.moveResults
         };
         data.roll = item.data.rollType.toLowerCase();
         data.mod = item.data.rollMod;
         // If this is an ASK roll, render a prompt first to determine which
         // score to use.
         if (data.roll == 'ask') {
-          let statButtons = Object.entries(game.pbta.stats).map(stat => {
+          let stats = game.pbta.sheetConfig.actorTypes[actorType].stats;
+          let statButtons = Object.entries(stats).map(stat => {
             return {
-              label: stat[1],
+              label: stat[1].label,
               callback: () => this.rollMoveExecute(stat[0], data, templateData)
             };
           });
@@ -114,7 +115,6 @@ export class PbtaRolls {
     }
     // Handle formula-only rolls.
     else {
-      console.log(templateData);
       this.rollMoveExecute(formula, data, templateData);
     }
   }
@@ -135,12 +135,17 @@ export class PbtaRolls {
     // Handle dice rolls.
     if (!PbtaUtility.isEmpty(roll)) {
       // Test if the roll is a formula.
-      let validRoll = new Roll(roll.trim()).evaluate();
+      let validRoll = false;
+      try {
+        validRoll = new Roll(roll.trim()).evaluate();
+      } catch (error) {
+        validRoll = false;
+      }
       // Roll can be either a formula like `2d6+3` or a raw stat like `str`.
       let formula = validRoll ? roll.trim() : '';
       // Handle prompt (user input).
       if (!validRoll) {
-        if (roll == 'PROMPT') {
+        if (roll.toLowerCase() == 'prompt') {
           formula = form.prompt?.value ? `${dice}+${form.prompt.value}` : dice;
           if (dataset.value && dataset.value != 0) {
             formula += `+${dataset.value}`;
@@ -162,8 +167,9 @@ export class PbtaRolls {
         // Do the roll.
         let roll = new Roll(`${formula}`, this.actor.getRollData());
         roll.roll();
+        let rollType = templateData.rollType ?? 'move';
         // Add success notification.
-        if (formula.includes(dice)) {
+        if (formula.includes(dice) && rollType == 'move') {
           // Retrieve the result ranges.
           let resultRanges = game.pbta.sheetConfig.rollResults;
           let resultType = null;
@@ -198,6 +204,7 @@ export class PbtaRolls {
           // Update the templateData.
           templateData.resultLabel = resultRanges[resultType]?.label ?? resultType;
           templateData.result = resultType;
+          templateData.resultDetails = templateData.moveResults[resultType]?.value ?? null;
         }
         // Render it.
         roll.render().then(r => {

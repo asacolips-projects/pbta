@@ -38,6 +38,24 @@
     }
   }
 
+  .sheet-attributes-top {
+    .cell--attributes-top {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0px 10px;
+      margin: 0 0 10px 0;
+
+      .cell {
+        grid-column: span 1;
+      }
+    }
+  }
+
+  .sheet-attributes-left {
+    flex: 0 0 32%;
+    margin-right: 10px;
+  }
+
   .help-text {
     margin-left: 5px;
   }
@@ -48,9 +66,18 @@
     background: $c-white;
   }
 
-  .sheet-main {
+  .sheet-wrapper {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .sheet-main {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 0;
+    height: auto;
 
     .sheet-body {
       flex: 1;

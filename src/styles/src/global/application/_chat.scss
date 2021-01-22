@@ -8,9 +8,25 @@
     }
 
     .result {
+      padding: 0;
+      margin: 15px 0;
+      border: 5px solid;
+      border-left: 0;
+      border-right: 0;
+    }
+
+    .result-label {
       text-align: center;
       font-size: 18px;
       font-weight: bold;
+      border-bottom: 1px solid #ccc;
+      margin: 0;
+      padding: 10px;
+      background: #efefef;
+    }
+
+    .result-details {
+      padding: 10px;
     }
 
     .failure {
@@ -34,6 +50,8 @@
     font-family: $font-stack-secondary;
     font-weight: bold;
     font-size: 16px;
+    border-bottom: 2px solid $c-black;
+    margin-bottom: 15px;
   }
 
   h1,

@@ -17,6 +17,7 @@ PBTA.Settings.sheetConfig.notes: "Enter character sheet data in TOML format. Rea
 PBTA.Prompt: "Prompt"
 PBTA.Dialog.Prompt1: "Choose the modifier for this "
 PBTA.Dialog.Prompt2: " move."
+PBTA_OTHER: "Other"
 #################################
 # NEW STUFF
 #################################

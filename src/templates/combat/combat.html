@@ -2,18 +2,20 @@
   {{#each combatants as |combatantGroup group|}}
     {{!-- Render the group label. --}}
     <li class="directory-item flexrow directory-item--group {{group}}">
-      <div class="ct-label ct-label--name">{{localize (concat "pbta." group "s")}}</div>
+      <div class="ct-label ct-label--name">{{group}}</div>
       {{#ifEquals group "character"}}
       <div class="ct-label ct-label--moves">{{../moveTotal}}</div>
       {{/ifEquals}}
     </li>
     {{!-- Render the column labels. --}}
-    <li class="directory-item grid {{#ifEquals group "character"}}grid-6col{{else}}grid-5col{{/ifEquals}} directory-item--labels {{group}}">
+    <li class="directory-item grid {{#ifEquals group "character"}}grid-3col{{else}}grid-3col{{/ifEquals}} directory-item--labels {{group}}">
       <div class="ct-item ct-item--img"></div>
       <div class="ct-item ct-item--name">{{localize "PBTA.Common.Name"}}</div>
-      <div class="ct-item ct-item--hp">{{localize "PBTA.HP"}}</div>
-      <div class="ct-item ct-item--ac">{{localize "PBTA.Armor"}}</div>
-      <div class="ct-item ct-item--damage">{{localize "PBTA.Dmg"}}</div>
+      {{!-- <div class="ct-item ct-item--hp">{{localize "PBTA.HP"}}</div>
+      <div class="ct-item ct-item--ac">{{localize "PBTA.Armor"}}</div> --}}
+      {{#if c.actor.data.data.attributes.damage.value}}
+        <div class="ct-item ct-item--damage">{{localize "PBTA.Dmg"}}</div>
+      {{/if}}
       {{#ifEquals group "character"}}
       <div class="ct-item ct-item--moves">{{localize "PBTA.Moves"}}</div>
       {{/ifEquals}}
@@ -21,18 +23,18 @@
     {{!-- Render the combatants for this actor type. --}}
     <ol class="directory-list--pbta {{group}}">
       {{#each combatantGroup as |c index|}}
-        <li class="directory-item actor-elem {{#if c.token.hidden}}hidden{{/if}} grid {{#ifEquals group "character"}}grid-6col{{else}}grid-5col{{/ifEquals}}" data-actor-id="{{c.actor.data._id}}" data-token-id="{{c.tokenId}}" data-combatant-id="{{c._id}}" data-actor-type="{{c.actor.data.type}}">
+        <li class="directory-item actor-elem {{#if c.token.hidden}}hidden{{/if}} grid {{#ifEquals group "character"}}grid-3col{{else}}grid-3col{{/ifEquals}}" data-actor-id="{{c.actor.data._id}}" data-token-id="{{c.tokenId}}" data-combatant-id="{{c._id}}" data-actor-type="{{c.actor.data.type}}">
           {{!-- Token image with a progress circle. --}}
           <div class="ct-item ct-item--img">
             <div class="image-wrapper">
               <img src="{{c.img}}" alt="Thumbnail image for {{c.name}}">
-              {{#if c.displayHealth}}{{{progressCircle c.healthSvg}}}{{/if}}
+              {{!-- {{#if c.displayHealth}}{{{progressCircle c.healthSvg}}}{{/if}} --}}
             </div>
           </div>
           {{!-- Name. --}}
           <div class="ct-item ct-item--name"><span>{{c.name}}</span></div>
           {{!-- HP, editable if this is the owner or GM. --}}
-          <div class="ct-item ct-item--hp">
+          {{!-- <div class="ct-item ct-item--hp">
             {{#if c.displayHealth}}
               {{#if c.editable}}
                 <input type="text" name="data.attributes.hp.value" value="{{c.actor.data.data.attributes.hp.value}}" data-dtype="Number">
@@ -40,11 +42,13 @@
                 <span>{{c.actor.data.data.attributes.hp.value}}</span>
               {{/if}}
             {{else}}???{{/if}}
-          </div>
+          </div> --}}
           {{!-- Armor. --}}
-          <div class="ct-item ct-item--ac">{{#if c.displayHealth}}{{c.actor.data.data.attributes.ac.value}}{{else}}???{{/if}}</div>
+          {{!-- <div class="ct-item ct-item--ac">{{#if c.displayHealth}}{{c.actor.data.data.attributes.ac.value}}{{else}}???{{/if}}</div> --}}
           {{!-- Damage, rolable. --}}
-          <div class="ct-item ct-item--damage"><button class="pbta-rollable damage-rollable" data-roll="{{c.actor.data.data.attributes.damage.value}}" data-label="{{localize "PBTA.DamageRoll"}}" title="{{c.actor.data.data.attributes.damage.value}}">{{c.actor.data.data.attributes.damage.value}}</button></div>
+          {{#if c.actor.data.data.attributes.damage.value}}
+            <div class="ct-item ct-item--damage"><button class="pbta-rollable damage-rollable" data-roll="{{c.actor.data.data.attributes.damage.value}}" data-label="{{localize "PBTA.DamageRoll"}}" title="{{c.actor.data.data.attributes.damage.value}}">{{c.actor.data.data.attributes.damage.value}}</button></div>
+          {{/if}}
           {{!-- Move count, if this is a player character. --}}
           {{#ifEquals group "character"}}
           <div class="ct-item ct-item--moves">{{#if c.flags.pbta}}{{c.flags.pbta.moveCount}}{{/if}}</div>

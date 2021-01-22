@@ -76,6 +76,16 @@
           <span class="help-text">{{localize "PBTA.MoveGroupHelp"}}</span>
         </div>
 
+        {{#if data.moveResults}}
+          {{#each data.moveResults as |result key|}}
+            <div class="resource">
+              <label>{{result.label}}</label>
+              <textarea class="textarea textarea--title" name="data.moveResults.{{key}}.value" rows="5">{{result.value}}</textarea>
+              {{!-- {{editor content=result.value target=result.key button=true owner=owner editable=editable}} --}}
+            </div>
+          {{/each}}
+        {{/if}}
+
       </div>
   </section>
 </form>

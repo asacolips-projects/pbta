@@ -25,54 +25,54 @@ export class CombatSidebarPbta {
         }
       });
 
-      // HP change in the combat tracker.
-      $('body').on('change', '.ct-item input', (event) => {
-        event.preventDefault();
+      // // HP change in the combat tracker.
+      // $('body').on('change', '.ct-item input', (event) => {
+      //   event.preventDefault();
 
-        // Get the incput and actor element.
-        const dataset = event.currentTarget.dataset;
-        let $input = $(event.currentTarget);
-        let $actorRow = $input.parents('.directory-item.actor-elem');
+      //   // Get the incput and actor element.
+      //   const dataset = event.currentTarget.dataset;
+      //   let $input = $(event.currentTarget);
+      //   let $actorRow = $input.parents('.directory-item.actor-elem');
 
-        // If there isn't an actor element, don't proceed.
-        if (!$actorRow.length > 0) {
-          return;
-        }
+      //   // If there isn't an actor element, don't proceed.
+      //   if (!$actorRow.length > 0) {
+      //     return;
+      //   }
 
-        // Retrieve the combatant for this actor, or exit if not valid.
-        const combatant = game.combat.combatants.find(c => c._id == $actorRow.data('combatant-id'));
-        if (!combatant) {
-          return;
-        }
+      //   // Retrieve the combatant for this actor, or exit if not valid.
+      //   const combatant = game.combat.combatants.find(c => c._id == $actorRow.data('combatant-id'));
+      //   if (!combatant) {
+      //     return;
+      //   }
 
-        const actor = combatant.actor;
+      //   const actor = combatant.actor;
 
-        // Check for bad numbers, otherwise convert into a Number type.
-        let value = $input.val();
-        if (dataset.dtype == 'Number') {
-          value = Number(value);
-          if (Number.isNaN(value)) {
-            $input.val(actor.data.data.attributes.hp.value);
-            return false;
-          }
-        }
+      //   // Check for bad numbers, otherwise convert into a Number type.
+      //   let value = $input.val();
+      //   if (dataset.dtype == 'Number') {
+      //     value = Number(value);
+      //     if (Number.isNaN(value)) {
+      //       $input.val(actor.data.data.attributes.hp.value);
+      //       return false;
+      //     }
+      //   }
 
-        // Prepare update data for the actor.
-        let updateData = {};
-        // If this started with a "+" or "-", handle it as a relative change.
-        let operation = $input.val().match(/^\+|\-/g);
-        if (operation) {
-          updateData[$input.attr('name')] = Number(actor.data.data.attributes.hp.value) + value;
-        }
-        // Otherwise, set it absolutely.
-        else {
-          updateData[$input.attr('name')] = value;
-        }
+      //   // Prepare update data for the actor.
+      //   let updateData = {};
+      //   // If this started with a "+" or "-", handle it as a relative change.
+      //   let operation = $input.val().match(/^\+|\-/g);
+      //   if (operation) {
+      //     updateData[$input.attr('name')] = Number(actor.data.data.attributes.hp.value) + value;
+      //   }
+      //   // Otherwise, set it absolutely.
+      //   else {
+      //     updateData[$input.attr('name')] = value;
+      //   }
 
-        // Update the actor.
-        actor.update(updateData);
-        return;
-      });
+      //   // Update the actor.
+      //   actor.update(updateData);
+      //   return;
+      // });
 
       // Add drag events.
       if (game.user.isGM) {
@@ -369,18 +369,19 @@ export class CombatSidebarPbta {
         }
 
         // Set a property based on the health mode earlier.
-        combatant.displayHealth = displayHealth;
+        // combatant.displayHealth = displayHealth;
+        combatant.displayHealth = false;
         // Set a property for whether or not this is editable. This controls
         // whether editabel fields like HP will be shown as an input or a div
         // in the combat tracker HTML template.
         combatant.editable = combatant.owner || game.user.isGM;
 
-        // Build the radial progress circle settings for the template.
-        combatant.healthSvg = PbtaUtility.getProgressCircle({
-          current: combatant.actor.data.data.attributes.hp.value,
-          max: combatant.actor.data.data.attributes.hp.max,
-          radius: 16
-        });
+        // // Build the radial progress circle settings for the template.
+        // combatant.healthSvg = PbtaUtility.getProgressCircle({
+        //   current: combatant.actor.data.data.attributes.hp.value,
+        //   max: combatant.actor.data.data.attributes.hp.max,
+        //   radius: 16
+        // });
 
         // If this is the GM or the owner, push to the combatants list.
         // Otherwise, only push if the token isn't hidden in the scene.

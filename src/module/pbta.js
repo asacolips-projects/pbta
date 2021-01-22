@@ -108,17 +108,6 @@ Hooks.once("init", async function() {
 
   PbtaUtility.replaceRollData();
 
-  // Preload template partials.
-  preloadHandlebarsTemplates();
-});
-
-Hooks.once("ready", async function() {
-  // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
-  Hooks.on("hotbarDrop", (bar, data, slot) => createPbtaMacro(data, slot));
-
-  PBTA.playbooks = await PbtaPlaybooks.getPlaybooks();
-  CONFIG.PBTA = PBTA;
-
   // Build out character data structures.
   const pbtaSettings = game.settings.get('pbta', 'sheetConfig');
   const sheetConfig = {};
@@ -231,6 +220,17 @@ Hooks.once("ready", async function() {
   // Update stored config.
   game.pbta.sheetConfig = sheetConfig;
 
+  // Preload template partials.
+  preloadHandlebarsTemplates();
+});
+
+Hooks.once("ready", async function() {
+  // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
+  Hooks.on("hotbarDrop", (bar, data, slot) => createPbtaMacro(data, slot));
+
+  PBTA.playbooks = await PbtaPlaybooks.getPlaybooks();
+  CONFIG.PBTA = PBTA;
+
   // Apply structure to actor types.
   PbtaUtility.applyActorTemplates();
 
@@ -291,8 +291,9 @@ Hooks.once("setup", function() {
 /* -------------------------------------------- */
 /*  Actor Updates                               */
 /* -------------------------------------------- */
-Hooks.on('createActor', async (actor, options, id) => {
-  await PbtaActorTemplates.applyActorTemplate(actor, options, id);
+Hooks.on('preCreateActor', async (actor, options, id) => {
+  let data = PbtaActorTemplates.applyActorTemplate(actor, options, id);
+  actor.data = data;
   // // Allow the character to levelup up when their level changes.
   // if (actor.data.type == 'character') {
   //   actor.setFlag('pbta', 'levelup', true);
@@ -308,6 +309,32 @@ Hooks.on('preUpdateActor', (actor, data, options, id) => {
   //     }
   //   }
   // }
+});
+
+/* -------------------------------------------- */
+/*  Item Updates                                */
+/* -------------------------------------------- */
+Hooks.on('createOwnedItem', async (actor, itemData, options, id) => {
+  if (itemData.type == 'move') {
+    let newItemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, options, id);
+    if (newItemData.data.moveResults) {
+      let update = {
+        _id: itemData._id,
+        "data.moveResults": newItemData.data.moveResults
+      };
+      await actor.updateEmbeddedEntity('OwnedItem', update);
+    }
+  }
+});
+
+Hooks.on('preCreateItem', async (item, options, id) => {
+  if (item.type == 'move') {
+    let itemData = item.data ?? {};
+    let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
+    if (newItemData.data.moveResults) {
+      item.data = newItemData.data;
+    }
+  }
 });
 
 /* -------------------------------------------- */

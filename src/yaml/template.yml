@@ -36,6 +36,7 @@ Item:
     requiresMove: ''
     moveType:
     moveGroup: ''
+    moveResults: {}
   equipment:
     templates:
       - base

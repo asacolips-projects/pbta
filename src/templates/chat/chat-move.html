@@ -5,7 +5,14 @@
     {{#if trigger}}<div class="row"><strong>Trigger:</strong> {{trigger}}</div>{{/if}}
     {{#if details}}<div class="row">{{{details}}}</div>{{/if}}
     {{!-- Result type label. --}}
-    {{#if resultLabel}}<div class="result{{#if result}} {{result}}{{/if}}">{{resultLabel}}</div>{{/if}}
+    {{#if resultLabel}}
+      <div class="row result{{#if result}} {{result}}{{/if}}">
+        <div class="result-label">{{resultLabel}}</div>
+        {{#if resultDetails}}
+          <div class="result-details">{{{resultDetails}}}</div>
+        {{/if}}
+      </div>
+    {{/if}}
     {{!-- Roll results, color coded to match the result type label. --}}
     {{#if rollPbta}}<div class="roll{{#if result}} {{result}}{{/if}}">{{{rollPbta}}}</div>{{/if}}
     {{#if tags}}

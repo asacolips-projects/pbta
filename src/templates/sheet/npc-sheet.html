@@ -13,29 +13,24 @@
     </header>
 
     {{!-- Main --}}
-    <section class="sheet-main">
-      {{!-- Attributes --}}
-      <section class="sheet-attributes sheet-attributes--npc">
+    <section class="sheet-main sheet-main--npc">
 
-        <div class="cell cell--damage">
-          <label class="cell__title damage-rollable rollable" data-roll="{{data.attributes.damage.value}}" data-label="{{localize "PBTA.Damage"}}" data-flavor="{{data.attributes.damage.piercing}}"><i class="fas fa-dice-d20"></i> {{localize "PBTA.Damage"}}</label>
-          <input type="text" name="data.attributes.damage.value" value="{{data.attributes.damage.value}}" placeholder="e.g. 2d12+7" data-dtype="String"/>
-          <input type="text" name="data.attributes.damage.piercing" value="{{data.attributes.damage.piercing}}" placeholder="e.g. 4 piercing" data-dtype="String"/>
-        </div>
+      {{#if data.attrTop}}
+        <section class="sheet-attributes-top">
+          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrTop group="attrTop" class="attributes-top"}}
+        </section>
+      {{/if}}
 
-        <div class="cell cell--ac">
-          <label class="cell__title">{{localize "PBTA.Armor"}}</label>
-          <input type="text" name="data.attributes.ac.value" value="{{data.attributes.ac.value}}" data-dtype="Number"/>
-        </div>
-
-        <div class="cell cell--hp">
-          <label for="data.attributes.hp.value" class="cell__title">{{localize "PBTA.HP"}}</label>
-          <div class="cell__counter">
-            <input type="text" name="data.attributes.hp.value" value="{{data.attributes.hp.value}}" data-dtype="Number"/>
-            <span> / </span>
-            <input type="text" name="data.attributes.hp.max" value="{{data.attributes.hp.max}}" data-dtype="Number"/>
+      {{#if data.attrLeft}}
+        <section class="sheet-attributes-left">
+          <div class="cell cell--aesthetics">
+            {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left"}}
           </div>
-        </div>
+        </section>
+      {{/if}}
+
+      {{!-- Sheet Body --}}
+      <section class="sheet-body">
 
         <div class="cell cell--tags">
           <label for="tag" class="control-label">{{localize "PBTA.Tags"}}</label>
@@ -44,22 +39,43 @@
           <input name='data.tags' class='some_class_name' placeholder='write some tags' value='{{ data.tags }}'/>
         </div>
 
-      </section>
-
-      {{!-- Sheet Body --}}
-      <section class="sheet-body">
-
-        <div class="cell cell--special-qualities">
-          <label class="cell__title">{{localize "PBTA.SpecialQualities"}}</label>
-          <input type="text" name="data.attributes.specialQualities.value" value="{{data.attributes.specialQualities.value}}" data-dtype="String"/>
+        <div class="sheet-moves moves">
+          {{#each actor.moves as |moveGroup moveKey|}}
+            <div class="cell cell--moves cell--{{moveKey}}">
+              <h2 class="cell__title">
+                <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{moveKey}}{{/if}}</label>
+                <div class="item-controls">
+                  <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </h2>
+              <ol class="items-list">
+              {{#each moveGroup as |item id|}}
+                <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
+                  <h4 class="item-name">
+                    <span class="rollable move-rollable" data-roll="{{item.data.rollType}}" data-mod="{{item.data.rollMod}}">
+                      {{#if item.data.rollType}}
+                        <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
+                      {{else}}
+                        <i class="fas fa-book"></i>
+                      {{/if}}
+                    </span>
+                    {{#if ../../data.itemIcons}}<img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>{{/if}}
+                    <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
+                  </h4>
+                  <div class="item-controls">
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                  </div>
+                  <div class="item-description">{{{item.data.description}}}</div>
+                </li>
+              {{/each}}
+              </ol>
+            </div>
+          {{/each}}
         </div>
 
-        {{!-- Main Tab --}}
-        <label class="cell__title">{{localize "PBTA.Description"}}</label>
-        {{!-- We're avoiding WYSIWYGs... for now... --}}
-        {{editor content=data.details.biography target="data.details.biography" button=true owner=owner editable=editable}}
-        {{!-- <textarea class="biography" name="data.details.biography" rows="5" title="Hey there! Who are you!?"
-                data-dtype="String">{{#if data.details.biography}}{{data.details.biography}}{{/if}}</textarea> --}}
       </section>
 
     </section>

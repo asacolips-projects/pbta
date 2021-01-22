@@ -155,7 +155,7 @@
                 {{#each actor.moves as |moveGroup moveKey|}}
                   <div class="cell cell--moves cell--{{moveKey}}">
                     <h2 class="cell__title">
-                      <label>{{moveKey}}</label>
+                      <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{moveKey}}{{/if}}</label>
                       <div class="item-controls">
                         <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
                           <i class="fas fa-plus"></i>

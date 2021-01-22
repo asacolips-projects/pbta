@@ -66,6 +66,11 @@
         opacity: 0.5;
       }
 
+      &.grid-3col {
+        grid-template-columns: 14% 68% 18%;
+        gap: 0%;
+      }
+
       &.grid-6col {
         // grid-template-columns: 32px 76px 22px 45px 70px 41px;
         grid-template-columns: 11% 32% 14% 12% 17% 14%;

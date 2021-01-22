@@ -132,6 +132,21 @@
   flex-wrap: wrap;
 }
 
+.cell__roll {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .attr-rollable {
+    flex: 0 0 32px;
+    cursor: pointer;
+  }
+
+  .input--roll {
+    flex: 1;
+  }
+}
+
 .cell {
   input[type="text"] {
     text-align: center;
