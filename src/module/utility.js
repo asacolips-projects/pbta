@@ -1,3 +1,4 @@
+import { PBTA } from "./config.js";
 export class PbtaUtility {
   static cleanClass(string, hyphenate = true) {
     let replace = hyphenate ? '-' : '';
@@ -14,6 +15,117 @@ export class PbtaUtility {
 
   static isEmpty(arg) {
     return [null, false, undefined, 0, ''].includes(arg);
+  }
+
+  static convertSheetConfig(sheetConfig) {
+    const newConfig = {};
+
+    for (let [k,v] of Object.entries(sheetConfig)) {
+      if (k == 'rollFormula') {
+        let rollFormula = v;
+        let validRoll = new Roll(rollFormula.trim()).evaluate();
+        newConfig.rollFormula = validRoll ? rollFormula.trim() : '';
+      }
+
+      if (k == 'statToggle') {
+        newConfig.statToggle = v ?? false;
+      }
+
+      if (k == "rollResults") {
+        newConfig.rollResults = {};
+        // Set result ranges.
+        for (let [rollKey, rollSetting] of Object.entries(v)) {
+          if (typeof rollSetting.range == 'string') {
+            // Exit early if the range type isn't specified.
+            if (!rollSetting.range) {
+              continue;
+            }
+
+            // Split the result range into an array.
+            let range = rollSetting.range.split(/[\-\+]/g);
+            let rollResult = {};
+
+            // If the array is invalid, exit early.
+            if (range.length != 2 || range[0] === "") {
+              continue;
+            }
+
+            // Get the start and end numbers. Start should always be numeric,
+            // e.g. 6- rather than -6.
+            let start = Number(range[0]);
+            let end = range[1] !== "" ? Number(range[1]) : null;
+
+            // If there's only one digit, assume it's N+ or N-.
+            if (end === null) {
+              // If it's minus, set the start to null (less than or equal).
+              if (rollSetting.range.includes('-')) {
+                rollResult = {
+                  start: null,
+                  end: start,
+                  label: rollSetting.label
+                };
+              }
+
+              // If it's plus, set the end to null (greater than or equal).
+              if (rollSetting.range.includes('+')) {
+                rollResult = {
+                  start: start,
+                  end: null,
+                  label: rollSetting.label
+                };
+              }
+            }
+            // Otherwise, set the full range.
+            else {
+              rollResult = {
+                start: start,
+                end: end,
+                label: rollSetting.label
+              };
+            }
+
+            // Update teh sheet config with this result range.
+            newConfig.rollResults[rollKey] = rollResult;
+          }
+        }
+      }
+
+      // Actors.
+      if (v.stats || v.attributesTop || v.attributesLeft || v.moveTypes) {
+        let actorType = {};
+        if (v.stats) {
+          actorType.stats = {};
+          for (let [statKey, statLabel] of Object.entries(v.stats)) {
+            actorType.stats[PbtaUtility.cleanClass(statKey, false)] = {
+              label: statLabel,
+              value: 0
+            };
+          }
+        }
+
+        if (v.attributesTop) actorType.attrTop = PbtaUtility.convertAttr(v.attributesTop);
+        if (v.attributesLeft) actorType.attrLeft = PbtaUtility.convertAttr(v.attributesLeft);
+
+        if (v.moveTypes) {
+          actorType.moveTypes = {};
+          for (let [mtKey, mtLabel] of Object.entries(v.moveTypes)) {
+            actorType.moveTypes[PbtaUtility.cleanClass(mtKey, false)] = {
+              label: mtLabel,
+              moves: []
+            };
+          }
+        }
+
+        delete v.attributesTop;
+        delete v.attributesLeft;
+
+        if (!newConfig.actorTypes) newConfig.actorTypes = {};
+        newConfig.actorTypes[k] = actorType;
+      }
+    }
+
+    // Update stored config.
+    return newConfig;
   }
 
   static convertAttr(attrGroup) {
@@ -33,7 +145,9 @@ export class PbtaUtility {
         attrValue = { type: val, value: '' };
       }
 
-      if (attrValue.type == 'Number') {}
+      if (!PBTA.attrTypes.includes(attrValue.type)) {
+        continue;
+      }
 
       switch (attrValue.type) {
         case "Number":

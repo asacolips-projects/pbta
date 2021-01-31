@@ -1,4 +1,5 @@
 rollFormula = "2d6"
+statToggle = "Highlight"
 
 # Define roll result ranges.
 [rollResults]
@@ -9,10 +10,10 @@ rollFormula = "2d6"
     range = "7-9"
     label = "Partial success"
   [rollResults.success]
-    range = "10+"
+    range = "10-12"
     label = "Success!"
   [rollResults.critical]
-    range = false
+    range = "13+"
     label = "Critical Success!"
 
 ########################################
@@ -34,7 +35,7 @@ rollFormula = "2d6"
       type = "Number"
     [character.attributesTop.harm]
       type = "Clock"
-      max = 6
+      max = 32
     [character.attributesTop.improvement]
       type = "Xp"
       max = 5
@@ -46,6 +47,12 @@ rollFormula = "2d6"
   [character.attributesLeft]
     look = "LongText"
     hx = "LongText"
+    number = "Number"
+    text = "Text"
+    [character.attributesLeft.toggle]
+	    type = "Checkbox"
+      label = "Toggle"
+      checkboxLabel = "Test Label"
 
   # Define logical groups for moves.
   [character.moveTypes]
@@ -58,7 +65,6 @@ rollFormula = "2d6"
 # Define stats.
 [npc]
   stats = false
-  attributesLeft = false
 
   # Define attributes.
   [npc.attributesTop]
@@ -70,6 +76,10 @@ rollFormula = "2d6"
     [npc.attributesTop.damage]
       type = "Roll"
       default = "d10"
+
+  [npc.attributesLeft]
+    [npc.attributesLeft.bio]
+      type = "LongText"
 
   # Define logical groups for moves.
   [npc.moveTypes]

@@ -18,6 +18,17 @@ PBTA.debilities = {
   "cha": "PBTA.DebilityCha"
 };
 
+PBTA.attrTypes = [
+  "Number",
+  "Clock",
+  "Xp",
+  "Resource",
+  "Text",
+  "LongText",
+  "Checkbox",
+  "Roll"
+];
+
 export class PbtaPlaybooks {
   static async getPlaybooks(labels_only = true) {
     // First, retrieve any custom or overridden playbooks so that we can

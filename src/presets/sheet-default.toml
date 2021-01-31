@@ -1,0 +1,86 @@
+rollFormula = "2d6"
+statToggle = false
+
+# Define roll result ranges.
+[rollResults]
+  [rollResults.failure]
+    range = "6-"
+    label = "Complications..."
+  [rollResults.partial]
+    range = "7-9"
+    label = "Partial success"
+  [rollResults.success]
+    range = "10" # or "10-12" if using crits
+    label = "Success!"
+  [rollResults.critical]
+    range = false # or "13+" to enable
+    label = "Critical Success!"
+
+########################################
+## CHARACTERS ##########################
+########################################
+[character]
+
+  # Define stats.
+  [character.stats]
+    cool = "Cool"
+    hard = "Hard"
+    hot = "Hot"
+    sharp = "Sharp"
+    weird = "Weird"
+
+  # Define attributes.
+  [character.attributesTop]
+    [character.attributesTop.armor]
+      type = "Number"
+    [character.attributesTop.harm]
+      type = "Clock"
+      max = 32
+    [character.attributesTop.improvement]
+      type = "Xp"
+      max = 5
+    [character.attributesTop.customResource]
+      type = "Resource"
+      label = "Custom Resource"
+
+  # Define sidebar details.
+  [character.attributesLeft]
+    look = "LongText"
+    hx = "LongText"
+    number = "Number"
+    text = "Text"
+    [character.attributesLeft.toggle]
+	    type = "Checkbox"
+      label = "Toggle"
+      checkboxLabel = "Test Label"
+
+  # Define logical groups for moves.
+  [character.moveTypes]
+    basic = "Basic"
+    advanced = "Advanced"
+
+########################################
+## NPCS ################################
+########################################
+# Define stats.
+[npc]
+  stats = false
+
+  # Define attributes.
+  [npc.attributesTop]
+    [npc.attributesTop.armor]
+      type = "Number"
+    [npc.attributesTop.harm]
+      type = "Clock"
+      max = 6
+    [npc.attributesTop.damage]
+      type = "Roll"
+      default = "d10"
+
+  [npc.attributesLeft]
+    [npc.attributesLeft.bio]
+      type = "LongText"
+
+  # Define logical groups for moves.
+  [npc.moveTypes]
+    basic = "Basic"
