@@ -315,7 +315,7 @@ Hooks.on('preUpdateActor', (actor, data, options, id) => {
 /*  Item Updates                                */
 /* -------------------------------------------- */
 Hooks.on('createOwnedItem', async (actor, itemData, options, id) => {
-  if (itemData.type == 'move') {
+  if (itemData.type == 'move' || itemData.type == 'npcMove') {
     let newItemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, options, id);
     if (newItemData.data.moveResults) {
       let update = {
@@ -328,7 +328,7 @@ Hooks.on('createOwnedItem', async (actor, itemData, options, id) => {
 });
 
 Hooks.on('preCreateItem', async (item, options, id) => {
-  if (item.type == 'move') {
+  if (item.type == 'move' || item.type == 'npcMove') {
     let itemData = item.data ?? {};
     let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
     if (newItemData.data.moveResults) {

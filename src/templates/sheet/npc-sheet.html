@@ -45,7 +45,7 @@
               <h2 class="cell__title">
                 <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{moveKey}}{{/if}}</label>
                 <div class="item-controls">
-                  <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
+                  <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="npcMove" data-moveType="{{moveKey}}">
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
@@ -54,8 +54,8 @@
               {{#each moveGroup as |item id|}}
                 <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
                   <h4 class="item-name">
-                    <span class="rollable move-rollable" data-roll="{{item.data.rollType}}" data-mod="{{item.data.rollMod}}">
-                      {{#if item.data.rollType}}
+                    <span class="rollable move-rollable" data-roll="{{item.data.rollFormula}}">
+                      {{#if item.data.rollFormula}}
                         <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
                       {{else}}
                         <i class="fas fa-book"></i>

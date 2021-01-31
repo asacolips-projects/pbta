@@ -45,7 +45,7 @@ export class PbtaRolls {
     // Handle item rolls (moves).
     if (item) {
       // Handle moves.
-      if (item.type == 'move') {
+      if (item.type == 'move' || item.type == 'npcMove') {
         formula = dice;
         templateData = {
           title: item.name,
@@ -53,8 +53,8 @@ export class PbtaRolls {
           details: item.data.description,
           moveResults: item.data.moveResults
         };
-        data.roll = item.data.rollType.toLowerCase();
-        data.mod = item.data.rollMod;
+        data.roll = item.type == 'move' ? item.data.rollType.toLowerCase() : item.data.rollFormula;
+        data.mod = item.type == 'move' ? item.data.rollMod : 0;
         // If this is an ASK roll, render a prompt first to determine which
         // score to use.
         if (data.roll == 'ask') {
@@ -98,7 +98,7 @@ export class PbtaRolls {
         }
         // Otherwise, grab the data from the move and pass it along.
         else {
-          this.rollMoveExecute(data.roll.toLowerCase(), data, templateData);
+          this.rollMoveExecute(data.roll, data, templateData);
         }
       }
       // Handle equipment.
@@ -204,7 +204,10 @@ export class PbtaRolls {
           // Update the templateData.
           templateData.resultLabel = resultRanges[resultType]?.label ?? resultType;
           templateData.result = resultType;
-          templateData.resultDetails = templateData.moveResults[resultType]?.value ?? null;
+          templateData.resultDetails = null;
+          if (templateData?.moveResults && templateData.moveResults[resultType]?.value) {
+            templateData.resultDetails = templateData.moveResults[resultType].value;
+          }
         }
         // Render it.
         roll.render().then(r => {

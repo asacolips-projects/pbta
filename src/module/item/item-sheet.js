@@ -40,7 +40,17 @@ export class PbtaItemSheet extends ItemSheet {
     data.data.stats['ASK'] = {label: 'Ask'};
 
     // Add move types.
-    data.data.moveTypes = game.pbta.sheetConfig?.actorTypes?.character?.moveTypes ?? {};
+    let actorType = null;
+
+    if (data.entity.type == 'move') actorType = 'character';
+    else if (data.entity.type == 'npcMove') actorType = 'npc';
+
+    data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes ?? {};
+
+    // Add roll example.
+    if (data.entity.type == 'npcMove') {
+      data.data.rollExample = game.pbta.sheetConfig?.rollFormula ?? '2d6';
+    }
 
     // Handle preprocessing for tagify data.
     if (data.entity.type == 'equipment') {

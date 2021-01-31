@@ -100,6 +100,7 @@ export class PbtaActorSheet extends ActorSheet {
   _prepareCharacterItems(sheetData) {
     const actorData = sheetData.actor;
     const actorType = actorData.type ?? 'character';
+    const moveType = actorType == 'character' ? 'move' : 'npcMove';
 
     let moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes;
     actorData.moveTypes = Object.keys(moveTypes);
@@ -123,7 +124,7 @@ export class PbtaActorSheet extends ActorSheet {
       let item = i.data;
       i.img = i.img || DEFAULT_TOKEN;
       // If this is a move, sort into various arrays.
-      if (i.type === 'move') {
+      if (i.type === moveType) {
         if (actorData.moves[i.data.moveType]) {
           actorData.moves[i.data.moveType].push(i);
         }

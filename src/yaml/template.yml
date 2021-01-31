@@ -20,6 +20,7 @@ Actor:
 Item:
   types:
     - move
+    - npcMove
     - equipment
     - playbook
     - tag
@@ -27,16 +28,23 @@ Item:
     base:
       name: ''
       description: ''
+    move:
+      requiresMove: ''
+      moveType:
+      moveGroup: ''
+      moveResults: {}
   move:
     templates:
       - base
+      - move
     playbook: ''
     rollType: ''
     rollMod: 0
-    requiresMove: ''
-    moveType:
-    moveGroup: ''
-    moveResults: {}
+  npcMove:
+    templates:
+      - base
+      - move
+    rollFormula: ''
   equipment:
     templates:
       - base

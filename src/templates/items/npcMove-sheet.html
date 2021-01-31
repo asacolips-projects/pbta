@@ -1,0 +1,65 @@
+<form class="{{cssClass}} item-form flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+      <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+      <div class="header-fields">
+        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize "PBTA.Common.Name"}}"/></h1>
+      </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-navigation sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize "PBTA.Common.Description" }}</a>
+    <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+      {{!-- Description Tab --}}
+      <div class="tab" data-group="primary" data-tab="description">
+          {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+      </div>
+
+      {{!-- Details Tab --}}
+      <div class="tab" data-group="primary" data-tab="details">
+        <div class="resource">
+          <label>{{localize "PBTA.RollFormula"}}</label>
+          <input type="text" name="data.rollFormula" value="{{data.rollFormula}}" placeholder="ex: {{data.rollExample}}" data-dtype="String"/>
+        </div>
+
+        <div class="resource">
+          <label>{{localize "PBTA.MoveType"}}</label>
+          <select name="data.moveType" data-dtype="String">
+            {{#select data.moveType}}
+            <option value="">—</option>
+            {{#each data.moveTypes as |move key|}}
+            <option value="{{key}}">{{move.label}}</option>
+            {{/each}}
+            {{/select}}
+          </select>
+        </div>
+
+        <div class="resource">
+          <label>{{localize "PBTA.RequiresMove"}}</label>
+          <input type="text" name="data.requiresMove" value="{{data.requiresMove}}" data-dtype="String"/>
+        </div>
+
+        <div class="resource">
+          <label>{{localize "PBTA.MoveGroup"}}</label>
+          <input type="text" name="data.moveGroup" value="{{data.moveGroup}}" placeholder="ex: barbarian-armor" data-dtype="String"/>
+          {{!-- <span class="help-text">{{localize "PBTA.MoveGroupHelp"}}</span> --}}
+        </div>
+
+        {{#if data.moveResults}}
+          {{#each data.moveResults as |result key|}}
+            <div class="resource">
+              <label>{{result.label}}</label>
+              <textarea class="textarea textarea--title" name="data.moveResults.{{key}}.value" rows="5">{{result.value}}</textarea>
+              {{!-- {{editor content=result.value target=result.key button=true owner=owner editable=editable}} --}}
+            </div>
+          {{/each}}
+        {{/if}}
+
+      </div>
+  </section>
+</form>
