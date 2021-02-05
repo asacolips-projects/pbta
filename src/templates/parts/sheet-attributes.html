@@ -22,11 +22,6 @@
         </div>
       {{!-- TODO: Replace this with stylized checkboxes per xp pip. --}}
       {{else if (eq attr.type "Xp")}}
-        {{!-- <div class="cell__counter">
-          <input type="text" name="data.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
-          <span> / </span>
-          <input type="text" name="data.{{../group}}.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
-        </div> --}}
         <div class="cell__clock">
           {{#if attr.steps}}
             {{#each attr.steps as |step stepKey|}}
@@ -43,6 +38,24 @@
             {{/each}}
           {{/if}}
         </div>
+      {{else if (eq attr.type "ListMany") }}
+        <ul class="cell__checkboxes">
+          {{#each attr.options as |option optionKey|}}
+            <label>
+              <input type="checkbox" class="attr-list" data-name="data.{{../../group}}.{{key}}.options.{{optionKey}}.value" {{checked option.value}}>
+              {{option.label}}
+            </label>
+          {{/each}}
+        </ul>
+      {{else if (eq attr.type "ListOne") }}
+        <ul class="cell__checkboxes">
+          {{#each attr.options as |option optionKey|}}
+            <label>
+              <input type="radio" class="attr-list" data-name="data.{{../../group}}.{{key}}.value" {{checked ../attr.value}}>
+              {{option}}
+            </label>
+          {{/each}}
+        </ul>
       {{else if (eq attr.type "Roll")}}
         <div class="cell__roll">
           <span class="attr-icon attr-rollable rollable" data-roll="{{attr.value}}" data-label="{{attr.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>

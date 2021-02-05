@@ -201,6 +201,28 @@ export class PbtaUtility {
           attr.value = false;
           break;
 
+        case 'ListMany':
+          attr.type = attrValue.type;
+
+          let options = {};
+          if (attrValue.options && typeof attrValue.options == 'object') {
+            for (let [optK, optV] of Object.entries(attrValue.options)) {
+              options[optK] = {
+                label: optV,
+                value: false
+              };
+            }
+          }
+
+          attr.options = options;
+          break;
+
+        case 'ListOne':
+          attr.type = attrValue.type;
+          attr.options = attrValue.options && typeof attrValue.options == 'object' ? attrValue.options : {};
+          attr.value = null;
+          break;
+
         case 'Roll':
           attr.type = attrValue.type;
           attr.value = attrValue.default ?? '';
