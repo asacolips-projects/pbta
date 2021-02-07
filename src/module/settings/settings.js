@@ -211,6 +211,16 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                   errors.push(`Attribute '${actorType}.${attrGroup}.${attr}' must include a 'max' property.`);
                 }
               }
+
+              // Handle list types.
+              if (attrType == 'ListMany') {
+                if (!attrValue.options) {
+                  errors.push(`Attribute '${actorType}.${attrGroup}.${attr}' must include an 'options' group.`);
+                }
+                else if (typeof attrValue.options != 'object' || Object.keys(attrValue.options).length < 1) {
+                  errors.push(`Attribute '${actorType}.${attrGroup}.${attr}' must include at least one option in the 'options' group.`);
+                }
+              }
             }
           }
         }

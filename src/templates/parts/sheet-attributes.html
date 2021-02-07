@@ -2,6 +2,7 @@
   {{#each attrs as |attr key|}}
     <div class="cell cell--{{key}}">
       <label for="data.{{../group}}.{{key}}.value" class="cell__title">{{attr.label}}</label>
+      {{#if attr.description}}<p class="cell__description">{{attr.description}}</p>{{/if}}
       {{!-- Text area --}}
       {{#if (eq attr.type "LongText")}}
         <textarea class="textarea textarea--title" name="data.{{../group}}.{{key}}.value" rows="5">{{attr.value}}</textarea>
@@ -39,23 +40,26 @@
           {{/if}}
         </div>
       {{else if (eq attr.type "ListMany") }}
-        <ul class="cell__checkboxes">
+        <ul class="cell__checkboxes flexcol">
+          {{log attr.options}}
           {{#each attr.options as |option optionKey|}}
+          {{log option}}
             <label>
-              <input type="checkbox" class="attr-list" data-name="data.{{../../group}}.{{key}}.options.{{optionKey}}.value" {{checked option.value}}>
+              <input type="checkbox" class="attr-list" name="data.{{../../group}}.{{key}}.options.{{optionKey}}.value" {{checked option.value}}/>
               {{option.label}}
             </label>
           {{/each}}
         </ul>
-      {{else if (eq attr.type "ListOne") }}
-        <ul class="cell__checkboxes">
+      {{!-- TODO: Add ListOne type. --}}
+      {{!-- {{else if (eq attr.type "ListOne") }}
+        <ul class="cell__checkboxes flexcol">
           {{#each attr.options as |option optionKey|}}
             <label>
-              <input type="radio" class="attr-list" data-name="data.{{../../group}}.{{key}}.value" {{checked ../attr.value}}>
+              <input type="radio" class="attr-list" data-name="data.{{../../group}}.{{key}}.value" value="{{optionKey}}" {{checked ../attr.value}}>
               {{option}}
             </label>
           {{/each}}
-        </ul>
+        </ul> --}}
       {{else if (eq attr.type "Roll")}}
         <div class="cell__roll">
           <span class="attr-icon attr-rollable rollable" data-roll="{{attr.value}}" data-label="{{attr.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>

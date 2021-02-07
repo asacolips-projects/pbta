@@ -134,6 +134,7 @@ export class PbtaUtility {
       let attr = {};
 
       attr.label = attrValue.label ?? attrKey;
+      attr.description = attrValue.description ?? null;
 
       if (!attrValue.type) {
         // If an object structure was used and no type was specified, it's invalid.
@@ -205,23 +206,36 @@ export class PbtaUtility {
           attr.type = attrValue.type;
 
           let options = {};
-          if (attrValue.options && typeof attrValue.options == 'object') {
-            for (let [optK, optV] of Object.entries(attrValue.options)) {
-              options[optK] = {
-                label: optV,
-                value: false
-              };
+          if (attrValue.options) {
+            // Handle options if provided as an array.
+            if (Array.isArray(attrValue.options)) {
+              for (let optV of attrValue.options) {
+                options.push({
+                  label: optV,
+                  value: false
+                });
+              }
+            }
+            // Handle options if provided as an object (keyed array).
+            else if (typeof attrValue.options == 'object') {
+              for (let [optK, optV] of Object.entries(attrValue.options)) {
+                options[optK] = {
+                  label: optV,
+                  value: false
+                };
+              }
             }
           }
 
           attr.options = options;
           break;
 
-        case 'ListOne':
-          attr.type = attrValue.type;
-          attr.options = attrValue.options && typeof attrValue.options == 'object' ? attrValue.options : {};
-          attr.value = null;
-          break;
+        // TODO: Add ListOne type.
+        // case 'ListOne':
+        //   attr.type = attrValue.type;
+        //   attr.options = attrValue.options && typeof attrValue.options == 'object' ? attrValue.options : {};
+        //   attr.value = null;
+        //   break;
 
         case 'Roll':
           attr.type = attrValue.type;

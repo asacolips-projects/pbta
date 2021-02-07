@@ -359,12 +359,12 @@ export class PbtaActorSheet extends ActorSheet {
       }
     }
 
-    // Update the actor.
+    // Prepare updates.
     let update = {};
-    update['_id'] = this.actor._id;
     update[prop] = attr;
 
-    await this.actor.update(update);
+    // Update the actor/token.
+    this._updateActorOrToken(update);
   }
 
   _showItemDetails(event) {
@@ -965,6 +965,20 @@ export class PbtaActorSheet extends ActorSheet {
     event.preventDefault();
     const li = event.currentTarget.closest(".item");
     this.actor.deleteOwnedItem(li.dataset.itemId);
+  }
+
+  /**
+   * Equivalent to this.actor.update(), but handle tokens automatically.
+   * @param {object} updateData Updates to apply.
+   * @param {object} options Options for the update.
+   */
+  async _updateActorOrToken(updateData, options = {}) {
+    if (this.token && !this.token.data.actorLink) {
+      this.actor.update(updateData, mergeObject(options, { diff: false }));
+    }
+    else {
+      this.actor.update(updateData, options);
+    }
   }
 
   /* -------------------------------------------- */
