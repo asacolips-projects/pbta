@@ -17,8 +17,37 @@ export class PbtaActorTemplates {
     // });
   }
 
-  static async migrateActorTemplate(actor, newData) {
-    // TODO: Write a method to replace actor data with a new data structure.
+  static async updateActors(newConfig, options={}) {
+    console.log(newConfig);
+
+    // Get all active actors.
+    let entities = {
+      'character': Object.keys(newConfig.character).length > 0 ? game.actors.filter(a => a.data.type == 'character') : [],
+      'npc': Object.keys(newConfig.npc).length > 0 ? game.actors.filter(a => a.data.type == 'npc') : []
+    };
+
+    let updates = [];
+
+    for (let [actorType, actors] of Object.entries(entities)) {
+      for (let actor of actors) {
+        let update = duplicate(newConfig[actorType]);
+        update['_id'] = actor.id;
+        updates.push(update);
+      }
+    }
+
+    if (updates.length > 0) {
+      try {
+        await Actor.update(updates, options);
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
+    }
+    else {
+      return true;
+    }
   }
 
   static applyItemTemplate(actor, itemData, options, id) {

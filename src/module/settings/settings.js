@@ -1,4 +1,5 @@
 import { PBTA } from "../config.js";
+import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
 import { PbtaUtility } from "../utility.js";
 import { codeMirrorAddToml } from './codemirror.toml.js';
 
@@ -247,31 +248,59 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
     let configDiff = {
       'add': [],
+      'max': [],
       'del': []
     };
+    let updatesDiff = {
+      'character': {},
+      'npc': {}
+    };
     let actorTypes = ['character', 'npc'];
-    let attrGroups = ['attrLeft', 'attrTop'];
+    let attrGroups = ['stats', 'attrLeft', 'attrTop', 'moveTypes'];
 
     for (let actorType of actorTypes) {
       for (let attrGroup of attrGroups) {
         if (!currentConfig.actorTypes[actorType][attrGroup]) {
-          configDiff.add.push(`${actorType}.${attrGroup}`);
+          // configDiff.add.push(`${actorType}.${attrGroup}`);
           continue;
         }
 
         if (!newConfig.actorTypes[actorType][attrGroup]) {
-          configDiff.add.push(`${actorType}.${attrGroup}`);
+          // configDiff.add.push(`${actorType}.${attrGroup}`);
           continue;
         }
 
-        for (let attr of Object.keys(newConfig.actorTypes[actorType][attrGroup])) {
-          if (!currentConfig.actorTypes[actorType][attrGroup][attr]) {
+        let newGroup = newConfig.actorTypes[actorType][attrGroup];
+        let oldGroup = currentConfig.actorTypes[actorType][attrGroup];
+
+        for (let attr of Object.keys(newGroup)) {
+          if (!oldGroup[attr]) {
             configDiff.add.push(`${actorType}.${attrGroup}.${attr}`);
+            updatesDiff[actorType][`data.${attrGroup}.${attr}`] = newGroup[attr];
           }
         }
-        for (let attr of Object.keys(currentConfig.actorTypes[actorType][attrGroup])) {
-          if (!newConfig.actorTypes[actorType][attrGroup][attr]) {
+        for (let attr of Object.keys(oldGroup)) {
+          if (!newGroup[attr]) {
             configDiff.del.push(`${actorType}.${attrGroup}.${attr}`);
+            updatesDiff[actorType][`data.${attrGroup}.-=${attr}`] = null;
+          }
+          else {
+            if (newGroup[attr].max) {
+              if (newGroup[attr].max != oldGroup[attr].max) {
+                // Handle updating max values.
+                configDiff.max.push(`${actorType}.${attrGroup}.${attr}`);
+                updatesDiff[actorType][`data.${attrGroup}.${attr}.max`] = newGroup[attr].max;
+                updatesDiff[actorType][`data.${attrGroup}.${attr}.value`] = newGroup[attr].default ?? 0;
+
+                // Handle types that have steps.
+                if (newGroup[attr].steps) {
+                  updatesDiff[actorType][`data.${attrGroup}.${attr}.steps`] = newGroup[attr].steps;
+                }
+                else {
+                  updatesDiff[actorType][`data.${attrGroup}.${attr}.-=steps`] = null;
+                }
+              }
+            }
           }
         }
 
@@ -279,29 +308,92 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     }
 
     let hasAdditions = configDiff.add.length > 0;
+    let hasMax = configDiff.max.length > 0;
     let hasDeletions = configDiff.del.length > 0;
 
-    if (hasAdditions || hasDeletions) {
-      let content = '';
+    if (hasAdditions || hasDeletions || hasMax) {
+      let content = '<p>Changes have been detected in one or more of your actor types. Review the changes below, and then choose one of the following:</p><ul><li>Confirm without updating existing actors</li><li>Confirm and update existing actors<strong> (NOTE: Existing data in deleted attributes will be deleted permanently)</strong></li><li>Cancel and prevent the changes from saving</li></ul>';
 
       if (hasAdditions) {
-        content = content + `<h2>Additions:</h2><ul><li>${configDiff.add.join('</li><li>')}</li></ul>`;
+        content = content + `<h2>Additions:</h2><ul class="pbta-changes"><li><strong> + </strong>${configDiff.add.join('</li><li><strong> + </strong>')}</li></ul>`;
       }
 
       if (hasDeletions) {
-        content = content + `<h2>Deletions:</h2><ul><li>${configDiff.del.join('</li><li>')}</li></ul>`;
+        content = content + `<h2>Deletions:</h2><ul class="pbta-changes"><li><strong> - </strong>${configDiff.del.join('</li><li><strong> - </strong>')}</li></ul>`;
       }
 
-      return Dialog.confirm({
+      if (hasMax) {
+        content = content + `<h2>Max value changed:</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.max.join('</li><li><strong> * </strong>')}</li></ul>`;
+      }
+
+      return this._confirm({
         title: 'Confirm Changes',
         content: content,
-        yes: () => { return true; },
-        no: () => { return false; },
-        defaultYes: false
+        options: {width: 500},
+        buttons: {
+          yes: {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize('Confirm'),
+            callback: async () => { return true; },
+          },
+          update: {
+            icon: '<i class="fas fa-user-check"></i>',
+            label: game.i18n.localize('Confirm + Update'),
+            callback: async () => {
+              let result = await PbtaActorTemplates.updateActors(updatesDiff);
+              console.log(result);
+              return result;
+            },
+          },
+          no: {
+            icon: '<i class="fas fa-times"></i>',
+            label: game.i18n.localize('Cancel'),
+            callback: async () => { return false; },
+          },
+        },
+        defaultButton: 'no'
       });
+
+      // return Dialog.confirm({
+      //   title: 'Confirm Changes',
+      //   content: content,
+      //   yes: () => { return true; },
+      //   no: () => { return false; },
+      //   defaultYes: false
+      // });
     }
     else {
       return true;
     }
+  }
+
+  async _confirm({title, content, buttons, defaultButton, options = {}, rejectClose = false, render}={}) {
+    return new Promise((resolve, reject) => {
+      let resolveButtons = {};
+
+      for (let [k, v] of Object.entries(buttons)) {
+        resolveButtons[k] = {
+          icon: v.icon ?? null,
+          label: v.label ?? null,
+          callback: html => {
+            const result = v.callback ? v.callback(html) : true;
+            resolve(result);
+          }
+        };
+      }
+
+      const dialog = new Dialog({
+        title: title,
+        content: content,
+        buttons: resolveButtons,
+        default: defaultButton ?? Object.keys(resolveButtons)[0],
+        render: render,
+        close: () => {
+          if ( rejectClose ) reject("The confirmation Dialog was closed without a choice being made");
+          else resolve(null);
+        },
+      }, options);
+      dialog.render(true);
+    });
   }
 }

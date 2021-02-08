@@ -153,53 +153,53 @@ export class PbtaUtility {
       switch (attrValue.type) {
         case "Number":
           attr.type = attrValue.type;
-          attr.value = 0;
+          attr.value = attrValue.default ?? 0;
           break;
 
         case "Clock":
           attr.type = attrValue.type;
-          attr.value = 0;
+          attr.value = attrValue.default ?? 0;
           attr.max = attrValue.max ?? 0;
           attr.steps = [];
           if (attr.max) {
             for (let i = 0; i < attr.max; i++) {
-              attr.steps.push(false);
+              attr.steps.push(i < attr.value);
             }
           }
           break;
 
         case 'Xp':
           attr.type = attrValue.type;
-          attr.value = 0;
+          attr.value = attrValue.default ?? 0;
           attr.max = attrValue.max ?? 0;
           attr.steps = [];
           if (attr.max) {
             for (let i = 0; i < attr.max; i++) {
-              attr.steps.push(false);
+              attr.steps.push(i < attr.value);
             }
           }
           break;
 
         case 'Resource':
           attr.type = attrValue.type;
-          attr.value = 0;
+          attr.value = attrValue.default ?? 0;
           attr.max = attrValue.max ?? 0;
           break;
 
         case 'Text':
           attr.type = attrValue.type;
-          attr.value = '';
+          attr.value = attrValue.default ?? '';
           break;
 
         case 'LongText':
           attr.type = attrValue.type;
-          attr.value = '';
+          attr.value = attrValue.default ?? '';
           break;
 
         case 'Checkbox':
           attr.type = attrValue.type;
           attr.checkboxLabel = attrValue.checkboxLabel ?? false;
-          attr.value = false;
+          attr.value = attrValue.default ?? false;
           break;
 
         case 'ListMany':
@@ -209,11 +209,13 @@ export class PbtaUtility {
           if (attrValue.options) {
             // Handle options if provided as an array.
             if (Array.isArray(attrValue.options)) {
+              let i = 0;
               for (let optV of attrValue.options) {
-                options.push({
+                options[i] = {
                   label: optV,
                   value: false
-                });
+                };
+                i++;
               }
             }
             // Handle options if provided as an object (keyed array).
