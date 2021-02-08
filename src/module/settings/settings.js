@@ -248,8 +248,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
     let configDiff = {
       'add': [],
+      'del': [],
       'max': [],
-      'del': []
+      'softType': [],
+      'hardType': []
     };
     let updatesDiff = {
       'character': {},
@@ -285,9 +287,9 @@ export class PbtaSettingsConfigDialog extends FormApplication {
             updatesDiff[actorType][`data.${attrGroup}.-=${attr}`] = null;
           }
           else {
-            if (newGroup[attr].max) {
+            // Handle updating max values.
+            if (newGroup[attr].max && oldGroup[attr].max) {
               if (newGroup[attr].max != oldGroup[attr].max) {
-                // Handle updating max values.
                 configDiff.max.push(`${actorType}.${attrGroup}.${attr}`);
                 updatesDiff[actorType][`data.${attrGroup}.${attr}.max`] = newGroup[attr].max;
                 updatesDiff[actorType][`data.${attrGroup}.${attr}.value`] = newGroup[attr].default ?? 0;
@@ -301,6 +303,34 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                 }
               }
             }
+            // Handle type changes.
+            if (newGroup[attr].type && oldGroup[attr].type) {
+              let newType = newGroup[attr].type;
+              let oldType = oldGroup[attr].type;
+              if (newType != oldType) {
+                let resourceTypes = [
+                  'Resource',
+                  'Clock',
+                  'Xp'
+                ];
+
+                let singleTypes = [
+                  'Text',
+                  'LongText',
+                  'Number'
+                ];
+
+                if ((resourceTypes.includes(newType) && resourceTypes.includes(oldType) && oldType != 'Resource')
+                || (singleTypes.includes(newType) && singleTypes.includes(oldType)) && newType != 'Number') {
+                  configDiff.softType.push(`${actorType}.${attrGroup}.${attr}`);
+                  updatesDiff[actorType][`data.${attrGroup}.${attr}.type`] = newGroup[attr].type;
+                }
+                else {
+                  configDiff.hardType.push(`${actorType}.${attrGroup}.${attr}`);
+                  updatesDiff[actorType][`data.${attrGroup}.${attr}`] = newGroup[attr];
+                }
+              }
+            }
           }
         }
 
@@ -308,10 +338,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     }
 
     let hasAdditions = configDiff.add.length > 0;
-    let hasMax = configDiff.max.length > 0;
     let hasDeletions = configDiff.del.length > 0;
+    let hasMax = configDiff.max.length > 0;
+    let hasSoftType = configDiff.softType.length > 0;
+    let hasHardType = configDiff.hardType.length > 0;
 
-    if (hasAdditions || hasDeletions || hasMax) {
+    if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType) {
       let content = '<p>Changes have been detected in one or more of your actor types. Review the changes below, and then choose one of the following:</p><ul><li>Confirm without updating existing actors</li><li>Confirm and update existing actors<strong> (NOTE: Existing data in deleted attributes will be deleted permanently)</strong></li><li>Cancel and prevent the changes from saving</li></ul>';
 
       if (hasAdditions) {
@@ -324,6 +356,14 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
       if (hasMax) {
         content = content + `<h2>Max value changed:</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.max.join('</li><li><strong> * </strong>')}</li></ul>`;
+      }
+
+      if (hasSoftType) {
+        content = content + `<h2>Type changed:</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.softType.join('</li><li><strong> * </strong>')}</li></ul>`;
+      }
+
+      if (hasHardType) {
+        content = content + `<h2>Type changed (attribute will be reset):</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.hardType.join('</li><li><strong> * </strong>')}</li></ul>`;
       }
 
       return this._confirm({
