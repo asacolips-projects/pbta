@@ -1,12 +1,12 @@
 .sheet-header {
-  background: $c-navy;
-  color: $c-white;
+  // background: $c-navy;
+  // color: $c-white;
 
   h1,
   input {
-    color: $c-white;
+    // color: $c-white;
     flex: 1;
-    border: 0;
+    // border: 0;
   }
 
   h1 {
@@ -14,19 +14,19 @@
   }
 
   input {
-    color: $c-white;
-    border-bottom: 2px solid $c-navy-up;
-    margin: 0 10px;
+    // color: $c-white;
+    // border-bottom: 2px solid $c-navy-up;
+    margin: 0;
     font-size: 18px;
     height: 32px;
     line-height: 32px;
     flex: 100px 2;
 
-    &:hover,
-    &:focus {
-      background: $c-navy-up;
-      box-shadow: 0 0 8px $c-navy-up;
-    }
+    // &:hover,
+    // &:focus {
+    //   // background: $c-navy-up;
+    //   box-shadow: 0 0 8px $c-navy-up;
+    // }
   }
 
   .charclass {
@@ -49,8 +49,8 @@
     }
 
     input {
-      color: $c-navy;
-      background: $c-white;
+      // color: $c-navy;
+      // background: $c-white;
       border: 0;
       position: absolute;
       width: 36px;
@@ -64,11 +64,11 @@
       font-size: 18px;
       line-height: 18px;
 
-      &:hover,
-      &:focus {
-        box-shadow: 0 0 12px $c-navy-up;
-        border: 2px solid $c-navy-up;
-      }
+      // &:hover,
+      // &:focus {
+      //   box-shadow: 0 0 12px $c-navy-up;
+      //   border: 2px solid $c-navy-up;
+      // }
     }
 
     &.flex-item--xp {
@@ -121,8 +121,10 @@
 }
 
 .sheet-header__fields {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
+  display: grid;
+  grid-column: span 2 / span 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 10px 0;
+  padding: 0;
 }

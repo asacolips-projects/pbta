@@ -63,180 +63,184 @@
         </section>
       </section>
 
-      {{!-- Sidebar --}}
-      <section class="sheet-look">
-        <div class="cell cell--aesthetics">
-          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left"}}
-        </div>
+      <section class="sheet-bottom">
+        {{!-- Sidebar --}}
+        <section class="sheet-look">
+          <div class="cell cell--aesthetics">
+            {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left"}}
+          </div>
 
-        <button class="toggle toggle--look"><i class="fas fa-chevron-left"></i></button>
-      </section>
+          {{!-- TODO: Re-enable the look toggle later --}}
+          {{!-- <button class="toggle toggle--look"><i class="fas fa-chevron-left"></i></button> --}}
+        </section>
 
-      {{!-- Main --}}
-      <section class="sheet-main">
+        {{!-- Main --}}
+        <section class="sheet-main">
 
-        {{!-- Sheet Tab Navigation --}}
-        <nav class="sheet-tabs tabs" data-group="primary">
-            <a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
-            <a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
-            <a class="item" data-tab="equipment">{{localize "PBTA.Equipment"}}</a>
-        </nav>
+          {{!-- Sheet Tab Navigation --}}
+          <nav class="sheet-tabs tabs" data-group="primary">
+              <a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
+              <a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
+              <a class="item" data-tab="equipment">{{localize "PBTA.Equipment"}}</a>
+          </nav>
 
-        {{!-- Sheet Body --}}
-        <section class="sheet-body">
+          {{!-- Sheet Body --}}
+          <section class="sheet-body">
 
-            {{!-- Main Tab --}}
-            <div class="tab description" data-group="primary" data-tab="description">
-              <div class="sheet-tab">
-                <div class="cell cell--bio">
-                  <label class="cell__title">{{localize "PBTA.Biography"}}</label>
-                  {{!-- We're avoiding WYSIWYGs... for now... --}}
-                  {{editor content=data.details.biography target="data.details.biography" button=true owner=owner editable=editable}}
+              {{!-- Main Tab --}}
+              <div class="tab description" data-group="primary" data-tab="description">
+                <div class="sheet-tab">
+                  <div class="cell cell--bio">
+                    <label class="cell__title">{{localize "PBTA.Biography"}}</label>
+                    {{!-- We're avoiding WYSIWYGs... for now... --}}
+                    {{editor content=data.details.biography target="data.details.biography" button=true owner=owner editable=editable}}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {{!-- Moves Tab --}}
-            <div class="tab moves active" data-group="primary" data-tab="moves">
-              <section class="sheet-tab">
+              {{!-- Moves Tab --}}
+              <div class="tab moves active" data-group="primary" data-tab="moves">
+                <section class="sheet-tab">
 
-                <section class="sheet-notifications">
-                  {{#if data.isToken}}
-                  <div class="cell__title warning small-text">Moves cannot be rearranged while this token is not linked to an actor.</div>
-                  {{/if}}
-                </section>
+                  <section class="sheet-notifications">
+                    {{#if data.isToken}}
+                    <div class="cell__title warning small-text">Moves cannot be rearranged while this token is not linked to an actor.</div>
+                    {{/if}}
+                  </section>
 
-                <section class="sheet-resources">
-                  {{!-- <div class="cell cell--forward">
-                    <label class="cell__title">{{localize "PBTA.Forward"}}</label>
-                    <div class="cell__wrapper">
-                      <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.forward.value">-</button>
-                      <input type="number" name="data.attributes.forward.value" value="{{data.attributes.forward.value}}" data-dtype="Number"/>
-                      <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.forward.value">+</button>
-                    </div>
-                  </div>
-
-                  <div class="cell cell--ongoing">
-                    <label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
-                    <div class="cell__wrapper">
-                      <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.ongoing.value">-</button>
-                      <input type="number" name="data.attributes.ongoing.value" value="{{data.attributes.ongoing.value}}" data-dtype="Number"/>
-                      <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.ongoing.value">+</button>
-                    </div>
-                  </div>
-
-                  <div class="cell cell--hold">
-                    <label class="cell__title">{{localize "PBTA.Hold"}}</label>
-                    <div class="cell__wrapper">
-                      <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.hold.value">-</button>
-                      <input type="number" name="data.attributes.hold.value" value="{{data.attributes.hold.value}}" data-dtype="Number"/>
-                      <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.hold.value">+</button>
-                    </div>
-                  </div>
-
-                  <div class="cell cell--resource1">
-                    <label class="cell__title"><input type="text" name="data.attributes.resource1.label" value="{{data.attributes.resource1.label}}" data-dtype="String"/></label>
-                    <div class="cell__counter">
+                  <section class="sheet-resources">
+                    {{!-- <div class="cell cell--forward">
+                      <label class="cell__title">{{localize "PBTA.Forward"}}</label>
                       <div class="cell__wrapper">
-                        <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.resource1.value">-</button>
-                        <input type="number" name="data.attributes.resource1.value" value="{{data.attributes.resource1.value}}" data-dtype="Number"/>
-                        <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.resource1.value">+</button>
-                      </div>
-                      <span> / </span>
-                      <div class="cell__wrapper">
-                        <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.resource1.max">-</button>
-                        <input type="number" name="data.attributes.resource1.max" value="{{data.attributes.resource1.max}}" data-dtype="Number"/>
-                        <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.resource1.max">+</button>
+                        <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.forward.value">-</button>
+                        <input type="number" name="data.attributes.forward.value" value="{{data.attributes.forward.value}}" data-dtype="Number"/>
+                        <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.forward.value">+</button>
                       </div>
                     </div>
-                  </div> --}}
-                </section>
 
-                {{#each actor.moves as |moveGroup moveKey|}}
-                  <div class="cell cell--moves cell--{{moveKey}}">
+                    <div class="cell cell--ongoing">
+                      <label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
+                      <div class="cell__wrapper">
+                        <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.ongoing.value">-</button>
+                        <input type="number" name="data.attributes.ongoing.value" value="{{data.attributes.ongoing.value}}" data-dtype="Number"/>
+                        <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.ongoing.value">+</button>
+                      </div>
+                    </div>
+
+                    <div class="cell cell--hold">
+                      <label class="cell__title">{{localize "PBTA.Hold"}}</label>
+                      <div class="cell__wrapper">
+                        <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.hold.value">-</button>
+                        <input type="number" name="data.attributes.hold.value" value="{{data.attributes.hold.value}}" data-dtype="Number"/>
+                        <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.hold.value">+</button>
+                      </div>
+                    </div>
+
+                    <div class="cell cell--resource1">
+                      <label class="cell__title"><input type="text" name="data.attributes.resource1.label" value="{{data.attributes.resource1.label}}" data-dtype="String"/></label>
+                      <div class="cell__counter">
+                        <div class="cell__wrapper">
+                          <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.resource1.value">-</button>
+                          <input type="number" name="data.attributes.resource1.value" value="{{data.attributes.resource1.value}}" data-dtype="Number"/>
+                          <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.resource1.value">+</button>
+                        </div>
+                        <span> / </span>
+                        <div class="cell__wrapper">
+                          <button class="resource-control resource-decrease" data-action="decrease" data-attr="attributes.resource1.max">-</button>
+                          <input type="number" name="data.attributes.resource1.max" value="{{data.attributes.resource1.max}}" data-dtype="Number"/>
+                          <button class="resource-control resource-increase" data-action="increase" data-attr="attributes.resource1.max">+</button>
+                        </div>
+                      </div>
+                    </div> --}}
+                  </section>
+
+                  {{#each actor.moves as |moveGroup moveKey|}}
+                    <div class="cell cell--moves cell--{{moveKey}}">
+                      <h2 class="cell__title">
+                        <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{moveKey}}{{/if}}</label>
+                        <div class="item-controls">
+                          <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </h2>
+                      <ol class="items-list">
+                      {{#each moveGroup as |item id|}}
+                        <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
+                          <h4 class="item-name">
+                            <span class="rollable move-rollable" data-roll="{{item.data.rollType}}" data-mod="{{item.data.rollMod}}">
+                              {{#if item.data.rollType}}
+                                <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
+                              {{else}}
+                                <i class="fas fa-book"></i>
+                              {{/if}}
+                            </span>
+                            {{#if ../../data.itemIcons}}<img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>{{/if}}
+                            <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
+                          </h4>
+                          <div class="item-controls">
+                            <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                          </div>
+                          <div class="item-description">{{{item.data.description}}}</div>
+                        </li>
+                      {{/each}}
+                      </ol>
+                    </div>
+                  {{/each}}
+
+                </section>
+              </div>
+
+              {{!-- Owned Equipment Tab --}}
+              <div class="tab equipment" data-group="primary" data-tab="equipment">
+                  <div class="cell cell--equipment">
+                    <section class="sheet-notifications" style="margin-top:10px;">
+                      {{#if data.isToken}}
+                      <div class="cell__title warning small-text">Equipment cannot be rearranged while this token is not linked to an actor.</div>
+                      {{/if}}
+                    </section>
+
                     <h2 class="cell__title">
-                      <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{moveKey}}{{/if}}</label>
+                      <label>{{localize "PBTA.Equipment"}}</label>
                       <div class="item-controls">
-                        <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
+                        <button class="item-control item-create" title='{{localize "PBTA.Equipment"}}' data-type="equipment">
                           <i class="fas fa-plus"></i>
                         </button>
                       </div>
                     </h2>
                     <ol class="items-list">
-                    {{#each moveGroup as |item id|}}
-                      <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
-                        <h4 class="item-name">
-                          <span class="rollable move-rollable" data-roll="{{item.data.rollType}}" data-mod="{{item.data.rollMod}}">
-                            {{#if item.data.rollType}}
-                              <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
-                            {{else}}
-                              <i class="fas fa-book"></i>
-                            {{/if}}
-                          </span>
-                          {{#if ../../data.itemIcons}}<img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>{{/if}}
-                          <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
-                        </h4>
-                        <div class="item-controls">
-                          <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                          <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                        </div>
-                        <div class="item-description">{{{item.data.description}}}</div>
-                      </li>
+                    {{#each actor.equipment as |item id|}}
+                        <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
+                            <h4 class="item-name">
+                              <span class="rollable item-rollable" data-roll=""><i class="fas fa-book"></i></span>
+                              {{#if ../data.itemIcons}}<img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>{{/if}}
+                              <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
+                            </h4>
+
+                            <div class="item-meta tags">
+                              {{#if item.data.uses }}<span class="tag">{{localize "PBTA.Uses"}}: {{item.data.uses}}</span>{{/if}}
+                              {{#if item.data.quantity }}<span class="tag">{{localize "PBTA.Qty"}}: {{item.data.quantity}}</span>{{/if}}
+                              {{#if item.data.weight }}<span class="tag">{{localize "PBTA.Wt"}}: {{item.data.weight}}</span>{{/if}}
+                            </div>
+                            <div class="item-controls">
+                                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                            </div>
+                            <div class="item-description">
+                              {{#if item.data.tags}}{{{pbtaTags item.data.tags}}}{{/if}}
+                              <div class="description">{{{item.data.description}}}</div>
+                            </div>
+                        </li>
                     {{/each}}
                     </ol>
                   </div>
-                {{/each}}
+              </div>
 
-              </section>
-            </div>
-
-            {{!-- Owned Equipment Tab --}}
-            <div class="tab equipment" data-group="primary" data-tab="equipment">
-                <div class="cell cell--equipment">
-                  <section class="sheet-notifications" style="margin-top:10px;">
-                    {{#if data.isToken}}
-                    <div class="cell__title warning small-text">Equipment cannot be rearranged while this token is not linked to an actor.</div>
-                    {{/if}}
-                  </section>
-
-                  <h2 class="cell__title">
-                    <label>{{localize "PBTA.Equipment"}}</label>
-                    <div class="item-controls">
-                      <button class="item-control item-create" title='{{localize "PBTA.Equipment"}}' data-type="equipment">
-                        <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </h2>
-                  <ol class="items-list">
-                  {{#each actor.equipment as |item id|}}
-                      <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
-                          <h4 class="item-name">
-                            <span class="rollable item-rollable" data-roll=""><i class="fas fa-book"></i></span>
-                            {{#if ../data.itemIcons}}<img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>{{/if}}
-                            <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
-                          </h4>
-
-                          <div class="item-meta tags">
-                            {{#if item.data.uses }}<span class="tag">{{localize "PBTA.Uses"}}: {{item.data.uses}}</span>{{/if}}
-                            {{#if item.data.quantity }}<span class="tag">{{localize "PBTA.Qty"}}: {{item.data.quantity}}</span>{{/if}}
-                            {{#if item.data.weight }}<span class="tag">{{localize "PBTA.Wt"}}: {{item.data.weight}}</span>{{/if}}
-                          </div>
-                          <div class="item-controls">
-                              <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                          </div>
-                          <div class="item-description">
-                            {{#if item.data.tags}}{{{pbtaTags item.data.tags}}}{{/if}}
-                            <div class="description">{{{item.data.description}}}</div>
-                          </div>
-                      </li>
-                  {{/each}}
-                  </ol>
-                </div>
-            </div>
-
+          </section>
         </section>
       </section>
+
 
   </div>
 </form>

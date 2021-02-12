@@ -24,13 +24,13 @@
   }
 
   .window-content {
-    background: $c-white;
+    // background: $c-white;
   }
 
   &.actor {
     .window-content {
       position: relative;
-      background: $c-white;
+      // background: $c-white;
       // background-image:
       //   linear-gradient(#d8d8d8 250px, #ffffff 250px, #ffffff);
       // background-repeat: no-repeat;
@@ -68,6 +68,7 @@
     @import 'global/base/cell';
     @import 'global/components/tabs';
     // Specific.
+    @import 'global/components/sheet';
     @import 'global/components/item-form';
     // @import 'global/components/tags';
     @import 'global/components/header';

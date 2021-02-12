@@ -53,8 +53,8 @@
       display: grid;
       grid-column: span 16;
       grid-template-columns: repeat(16, minmax(0, 1fr));
-      gap: 0px 10px;
-      margin: 0 0 10px 0;
+      gap: 0px 16px;
+      margin: 0 0 16px 0;
       padding: 0;
 
       .cell {
@@ -64,79 +64,104 @@
   }
 
   .cell--image {
-    flex: 0 0 128px;
+    flex: 0 0 158px;
   }
 
   .cell--stats {
     flex: 1;
   }
 
-  .sheet-look {
-    flex: 33% 1 1;
-    order: 1;
-    max-width: 33%;
-    transition: max-width ease-in-out 0.25s;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    height: calc(100% - 80px);
+  .sheet-bottom {
+    display: grid;
+    grid-column: span 4 / span 4;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0px 16px;
+    margin: 0 0 16px 0;
+    padding: 0;
+    width: 100%;
+    // height: calc(100% - 80px);
 
-    .cell--aesthetics {
-      transition: max-width ease-in-out 0.25s;
+    .sheet-look {
+      width: auto;
       max-width: 100%;
+      grid-column: 1 / span 1;
+      height: 100%;
     }
 
-    &.closed {
-      max-width: 40px;
-      overflow: hidden;
-      padding: 0;
-
-      .cell--aesthetics {
-        max-width: 0%;
-        overflow: hidden;
-      }
-    }
-
-    .toggle--look {
-      flex: 20px 1 1;
-      margin: 0 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      transition: all ease-in-out 0.25s;
-      height: 225px;
-
-      &:hover {
-        background: #bbb;
-      }
-
-      &:focus {
-        box-shadow: none;
-      }
-
-      &.closed {
-        margin-left: 0;
-      }
-
-      .fas {
-        transition: all ease-in-out 0.25s;
-      }
-
-      &.closed {
-        .fas {
-          transform: rotate(180deg);
-        }
-      }
+    .sheet-main {
+      width: auto;
+      max-width: 100%;
+      grid-column: 2 / span 3;
+      height: 100%;
     }
   }
 
-  .sheet-main {
-    flex: 66% 1 1;
-    order: 2;
-    height: calc(100% - 80px);
-  }
+  // .sheet-look {
+  //   flex: 33% 1 1;
+  //   order: 1;
+  //   max-width: 33%;
+  //   transition: max-width ease-in-out 0.25s;
+  //   display: flex;
+  //   flex-direction: row;
+  //   flex-wrap: nowrap;
+  //   align-items: stretch;
+  //   height: calc(100% - 80px);
+
+  //   .cell--aesthetics {
+  //     transition: max-width ease-in-out 0.25s;
+  //     max-width: 100%;
+  //   }
+
+  //   &.closed {
+  //     max-width: 40px;
+  //     overflow: hidden;
+  //     padding: 0;
+
+  //     .cell--aesthetics {
+  //       max-width: 0%;
+  //       overflow: hidden;
+  //     }
+  //   }
+
+  //   .toggle--look {
+  //     flex: 20px 1 1;
+  //     margin: 0 10px;
+  //     display: flex;
+  //     align-items: center;
+  //     justify-content: center;
+  //     background: transparent;
+  //     transition: all ease-in-out 0.25s;
+  //     height: 225px;
+
+  //     &:hover {
+  //       background: #bbb;
+  //     }
+
+  //     &:focus {
+  //       box-shadow: none;
+  //     }
+
+  //     &.closed {
+  //       margin-left: 0;
+  //     }
+
+  //     .fas {
+  //       transition: all ease-in-out 0.25s;
+  //     }
+
+  //     &.closed {
+  //       .fas {
+  //         transform: rotate(180deg);
+  //       }
+  //     }
+  //   }
+  // }
+
+  // .sheet-main {
+  //   flex: 66% 1 1;
+  //   order: 2;
+  //   height: calc(100% - 80px);
+  // }
 
   .sheet-body {
 

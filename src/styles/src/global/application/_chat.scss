@@ -1,6 +1,6 @@
 #chat-log {
   .message {
-    background: $c-white;
+    background: $c-white url('#{$asset-path}/concrete-seamless.webp');
     font-family: $font-stack-base;
 
     &.whisper {

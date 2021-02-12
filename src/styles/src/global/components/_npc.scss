@@ -16,8 +16,8 @@
     display: grid;
     grid-column: span 4;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0px 10px;
-    margin: 0 0 10px 0;
+    gap: 0px 16px;
+    margin: 0 0 16px 0;
     padding: 0;
 
     .cell--ac,
@@ -38,12 +38,23 @@
     }
   }
 
+  .sheet-wrapper {
+    .sheet-header {
+      background: rgba(0,0,0,0.5);
+    }
+  }
+
+  .sheet-header__fields {
+    display: flex;
+    padding: 0 16px;
+  }
+
   .sheet-attributes-top {
     .cell--attributes-top {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0px 10px;
-      margin: 0 0 10px 0;
+      gap: 0px 16px;
+      margin: 0 0 16px 0;
 
       .cell {
         grid-column: span 1;
@@ -53,7 +64,7 @@
 
   .sheet-attributes-left {
     flex: 0 0 32%;
-    margin-right: 10px;
+    margin-right: 16px;
   }
 
   .help-text {

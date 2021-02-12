@@ -2,6 +2,8 @@ $padding-sm: 5px;
 $padding-md: 10px;
 $padding-lg: 20px;
 
+$asset-path: '../../assets';
+
 @mixin grid {
   display: grid;
   grid-column: span 3 / span 3;

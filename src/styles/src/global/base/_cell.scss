@@ -73,7 +73,11 @@
   display: flex;
   text-transform: uppercase;
   font-weight: bold;
+  font-size: 18px;
   color: $c-black;
+  overflow: hidden;
+  line-height: 1;
+  min-height: 46px;
 
   &::before,
   &::after {
@@ -84,13 +88,16 @@
   }
 
   &::before {
-    margin-right: 10px;
-    flex: 0 0 10px;
+    margin-right: 4px;
+    flex: 0 0 15px;
+    // TODO: Maybe get rid of the before.
+    display: none;
   }
 
   &::after {
-    margin-left: 10px;
-    flex: 2;
+    margin-left: 4px;
+    flex: 2 0 auto;
+    min-width: 100%;
   }
 }
 

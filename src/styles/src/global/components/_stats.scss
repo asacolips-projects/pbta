@@ -35,6 +35,11 @@
     .stat-icon {
       flex: 0 0 32px;
       color: $c-white;
+      cursor: pointer;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
 
     .cell__title {
@@ -42,6 +47,16 @@
       color: $c-white;
       text-align: center;
       display: block;
+      font-size: 22px;
+      margin: 0;
+      line-height: 1;
+      min-height: auto;
+      height: 28px;
+      cursor: pointer;
+
+      &:hover {
+        cursor: pointer;
+      }
 
       &::before,
       &::after {
@@ -55,6 +70,11 @@
       color: $c-white;
       text-align: center;
       background: $ct-gray-25;
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1;
+      height: 28px;
     }
 
     .stat-toggle {
