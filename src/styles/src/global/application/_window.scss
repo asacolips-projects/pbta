@@ -66,10 +66,14 @@
     }
   }
 
-  button {
+  button,
+  .button {
     font-family: $font-stack-base;
-    border: 0;
-    background: $c-light;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid #999;
+    border-radius: 3px;
+    box-shadow: 0 0 2px #fff inset;
+    cursor: pointer;
 
     &:hover,
     &:focus {
@@ -84,6 +88,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-size: 18px;
+      text-transform: uppercase;
     }
   }
 

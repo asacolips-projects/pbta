@@ -3,7 +3,7 @@
     flex: 0 0 80px;
     width: auto;
     height: auto;
-    background: rgba(255, 255, 255, 0.25);
+    // background: rgba(255, 255, 255, 0.75);
 
     img {
       width: auto;
@@ -35,12 +35,6 @@
       input + input {
         margin-left: 5px;
       }
-    }
-  }
-
-  .sheet-wrapper {
-    .sheet-header {
-      background: rgba(0,0,0,0.5);
     }
   }
 

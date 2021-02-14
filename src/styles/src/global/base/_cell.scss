@@ -21,7 +21,8 @@
 
   .item-controls {
     position: absolute;
-    right: 40px;
+    right: 0;
+    bottom: 4px;
     width: 50px;
   }
 
@@ -29,6 +30,8 @@
     background: $c-white;
     color: $c-black;
     border: 1px solid $c-black;
+    height: 24px;
+    line-height: 1;
 
     &:hover,
     &:focus {
@@ -71,34 +74,40 @@
 
 .cell__title {
   display: flex;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 20px;
+  letter-spacing: 0.5px;
   color: $c-black;
-  overflow: hidden;
-  line-height: 1;
-  min-height: 46px;
+  // overflow: hidden;
+  margin: 10px 0 10px;
+  padding: 5px 5px 5px 0;
+  line-height: 0.9;
+  height: 38px;
+  font-family: $font-stack-secondary;
+  position: relative;
+  border-bottom: 2px solid $c-black;
 
-  &::before,
-  &::after {
-    display: block;
-    content: '';
-    background: $c-black;
-    height: 10px;
-  }
+  // &::before,
+  // &::after {
+  //   display: block;
+  //   content: '';
+  //   background: $ct-gray-25;
+  //   height: 4px;
+  // }
 
-  &::before {
-    margin-right: 4px;
-    flex: 0 0 15px;
-    // TODO: Maybe get rid of the before.
-    display: none;
-  }
+  // &::before {
+  //   margin-right: 4px;
+  //   flex: 0 0 15px;
+  //   // TODO: Maybe get rid of the before.
+  //   display: none;
+  // }
 
-  &::after {
-    margin-left: 4px;
-    flex: 2 0 auto;
-    min-width: 100%;
-  }
+  // &::after {
+  //   margin-left: 4px;
+  //   flex: 2 0 auto;
+  //   min-width: 100%;
+  // }
 }
 
 .resource {
@@ -118,11 +127,13 @@
 }
 
 .cell--image {
+  background: rgba(0, 0, 0, 0.5);
+
   img {
     display: block;
     width: 100%;
     height: auto;
-    margin: 0 0 10px 0;
+    margin: 0;
   }
 }
 
@@ -133,6 +144,14 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
+}
+
+.cell__counter {
+  > span {
+    font-size: 30px;
+    font-weight: bold;
+    padding: 0 14px;
+  }
 }
 
 .cell__clock {
@@ -152,6 +171,11 @@
   .input--roll {
     flex: 1;
   }
+}
+
+.cell__description--attr {
+  font-size: 12px;
+  margin-top: -4px;
 }
 
 .cell {

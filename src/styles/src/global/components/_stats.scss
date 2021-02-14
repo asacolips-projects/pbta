@@ -4,6 +4,9 @@
   // padding: 0 10px;
   padding: 0;
   margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   .stats-list {
     // display: grid;
@@ -16,8 +19,9 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
+    padding-left: 0;
   }
 
   .stat {
@@ -26,33 +30,37 @@
     background: $c-blue;
     color: $c-white;
     border-radius: 4px;
-    padding: 2px 10px;
+    padding: 4px;
     justify-content: center;
     align-items: center;
+    text-transform: uppercase;
     flex: 0 0 30%;
     margin: 0 5px 10px;
+    transition: all ease-in-out 0.25s;
 
-    .stat-icon {
-      flex: 0 0 32px;
-      color: $c-white;
-      cursor: pointer;
-
-      &:hover {
-        cursor: pointer;
-      }
+    &.hover {
+      background: #6599ce;
     }
 
     .cell__title {
+      order: 0;
+      width: 100%;
+      min-width: 100%;
       flex: 1;
       color: $c-white;
       text-align: center;
-      display: block;
+      display: flex;
       font-size: 22px;
-      margin: 0;
-      line-height: 1;
+      margin: 0 0 4px;;
+      line-height: 0.9;
       min-height: auto;
-      height: 28px;
+      height: auto;
       cursor: pointer;
+      border: 0;
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid $ct-white;
 
       &:hover {
         cursor: pointer;
@@ -64,7 +72,26 @@
       }
     }
 
+    .stat-icon {
+      order: 1;
+      flex: 0 0 32px;
+      color: $c-white;
+      margin-left: 4px;
+      cursor: pointer;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .stat-toggle {
+      order: 2;
+      flex: 1;
+      text-align: center;
+    }
+
     .stat-value {
+      order: 3;
       flex: 0 0 48px;
       padding: 2px 4px;
       color: $c-white;
@@ -75,12 +102,6 @@
       margin: 0;
       line-height: 1;
       height: 28px;
-    }
-
-    .stat-toggle {
-      width: 100%;
-      border-top: 1px solid $ct-white;
-      text-align: center;
     }
   }
 

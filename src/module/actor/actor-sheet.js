@@ -38,7 +38,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Add playbooks.
     if (this.actor.data.type == 'character') {
       data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
-
+      data.data.statSettings = game.pbta.sheetConfig.actorTypes[this.actor.data.type].stats ?? {};
       data.data.statToggle = game.pbta.sheetConfig?.statToggle ?? false;
 
       let xpSvg = {
@@ -83,9 +83,6 @@ export class PbtaActorSheet extends ActorSheet {
       // data.data.xpSvg = xpSvg;
     }
 
-    // Add item icon setting.
-    data.data.itemIcons = game.settings.get('pbta', 'itemIcons');
-
     // Return data to the sheet
     return data;
   }
@@ -103,12 +100,28 @@ export class PbtaActorSheet extends ActorSheet {
     const moveType = actorType == 'character' ? 'move' : 'npcMove';
 
     let moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes;
-    actorData.moveTypes = Object.keys(moveTypes);
+    actorData.moveTypes = {};
     actorData.moves = {};
 
-    for (let [k,v] of Object.entries(moveTypes)) {
-      actorData.moves[k] = [];
+    if (moveTypes) {
+      for (let [k,v] of Object.entries(moveTypes)) {
+        actorData.moveTypes[k] = v.label;
+        actorData.moves[k] = [];
+      }
     }
+
+    let equipmentTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.equipmentTypes;
+    actorData.equipmentTypes = {};
+    actorData.equipment = {};
+
+    if (equipmentTypes) {
+      for (let [k,v] of Object.entries(equipmentTypes)) {
+        actorData.equipmentTypes[k] = v.label;
+        actorData.equipment[k] = [];
+      }
+    }
+
+    if (!actorData.equipment['PBTA_OTHER']) actorData.equipment['PBTA_OTHER'] = [];
 
     // Initialize containers.
     // const moves = [];
@@ -116,7 +129,9 @@ export class PbtaActorSheet extends ActorSheet {
     // const startingMoves = [];
     // const advancedMoves = [];
     // const specialMoves = [];
-    const equipment = [];
+    // const equipment = [];
+
+    if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
 
     // Iterate through items, allocating to containers
     // let totalWeight = 0;
@@ -129,7 +144,7 @@ export class PbtaActorSheet extends ActorSheet {
           actorData.moves[i.data.moveType].push(i);
         }
         else {
-          if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
+          // if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
           actorData.moves['PBTA_OTHER'].push(i);
         }
 
@@ -157,8 +172,16 @@ export class PbtaActorSheet extends ActorSheet {
       }
       // If this is equipment, we currently lump it together.
       else if (i.type === 'equipment') {
-        equipment.push(i);
+        if (actorData.equipment[i.data.equipmentType]) {
+          actorData.equipment[i.data.equipmentType].push(i);
+        }
+        else {
+          // if (!actorData.equipment['PBTA_OTHER']) actorData.equipment['PBTA_OTHER'] = [];
+          actorData.equipment['PBTA_OTHER'].push(i);
+        }
+        // equipment.push(i);
       }
+
     }
 
     // Assign and return
@@ -168,7 +191,7 @@ export class PbtaActorSheet extends ActorSheet {
     // actorData.advancedMoves = advancedMoves;
     // actorData.specialMoves = specialMoves;
     // Equipment
-    actorData.equipment = equipment;
+    // actorData.equipment = equipment;
   }
 
   /**
@@ -215,8 +238,6 @@ export class PbtaActorSheet extends ActorSheet {
   activateListeners(html) {
     super.activateListeners(html);
 
-    console.log(this.actor.data.type);
-
     // Rollables.
     html.find('.rollable').on('click', this._onRollable.bind(this));
 
@@ -234,6 +255,10 @@ export class PbtaActorSheet extends ActorSheet {
     // Attributes.
     html.find('.attr-clock').click(this._onClockClick.bind(this));
     html.find('.attr-xp').click(this._onClockClick.bind(this));
+
+    // Stats.
+    html.find('.stat-rollable').on('mouseover', this._onStatHoverOn.bind(this));
+    html.find('.stat-rollable').on('mouseout', this._onStatHoverOff.bind(this));
 
     // Spells.
     // html.find('.prepared').click(this._onPrepareSpell.bind(this));
@@ -376,6 +401,18 @@ export class PbtaActorSheet extends ActorSheet {
 
     toggler.toggleClass('open');
     description.slideToggle();
+  }
+
+  _onStatHoverOn(event) {
+    const rollable = $(event.currentTarget);
+    const parent = rollable.parents('.stat');
+    parent.addClass('hover');
+  }
+
+  _onStatHoverOff(event) {
+    const rollable = $(event.currentTarget);
+    const parent = rollable.parents('.stat');
+    parent.removeClass('hover');
   }
 
   // async _onLevelUp(event) {
@@ -882,7 +919,16 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Handle rolls coming directly from the ability score.
     if ($(a).hasClass('stat-rollable') && data.mod) {
-      formula = `${dice}+${data.mod}`;
+      // Determine if the stat toggle is in effect.
+      let hasToggle = game.pbta.sheetConfig.statToggle;
+      let toggleModifier = 0;
+      if (hasToggle) {
+        const stat = $(a).parents('.stat').data('stat');
+        const statToggle = this.actor.data.data.stats[stat].toggle;
+        toggleModifier = statToggle ? game.pbta.sheetConfig.statToggle.modifier : 0;
+      }
+
+      formula = `${dice}+${data.mod}${toggleModifier ? '+' + toggleModifier : ''}`;
       flavorText = data.label;
 
       templateData = {
@@ -928,8 +974,18 @@ export class PbtaActorSheet extends ActorSheet {
     const header = event.currentTarget;
     const type = header.dataset.type;
     const data = duplicate(header.dataset);
-    data.moveType = data.movetype;
-    data.spellLevel = data.level;
+    if (data.movetype) {
+      data.moveType = data.movetype;
+      delete data.movetype;
+    }
+    if (data.equipmenttype) {
+      data.equipmentType = data.equipmenttype;
+      delete data.equipmenttype;
+    }
+    if (data.level) {
+      data.spellLevel = data.level;
+      delete data.level;
+    }
     const name = type == 'bond' ? game.i18n.localize("PBTA.BondDefault") : `New ${type.capitalize()}`;
     const itemData = {
       name: name,

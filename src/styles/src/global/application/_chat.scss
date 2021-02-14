@@ -3,14 +3,41 @@
     background: $c-white url('#{$asset-path}/concrete-seamless.webp');
     font-family: $font-stack-base;
 
+    .message-sender {
+      font-family: $font-stack-base;
+    }
+
+    .chat-title {
+      align-items: center;
+      border: 1px solid $ct-gray;
+      border-left: 0;
+      border-right: 0;
+      padding: 4px 0;
+    }
+
+    .item-icon {
+      flex: 0 0 40px;
+      width: 40px;
+      height: 40px;
+      margin-right: 8px;
+    }
+
+    .cell__title {
+      font-size: 20px;
+      text-transform: uppercase;
+      line-height: 1;
+      margin: 0;
+      border: 0;
+    }
+
     &.whisper {
       background: #e0ecff;
     }
 
     .result {
       padding: 0;
-      margin: 15px 0;
-      border: 5px solid;
+      margin: 25px 0;
+      border: 2px solid;
       border-left: 0;
       border-right: 0;
     }

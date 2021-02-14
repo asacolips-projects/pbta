@@ -28,6 +28,8 @@
   }
 
   &.actor {
+    min-width: 720px;
+
     .window-content {
       position: relative;
       // background: $c-white;
@@ -49,6 +51,8 @@
     }
 
     &.npc {
+      min-width: 420px;
+
       .window-content {
         background-size:
           100% 230px,

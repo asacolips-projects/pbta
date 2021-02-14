@@ -7,6 +7,8 @@ Actor:
       stats: {}
       attributesTop: {}
       attributesLeft: {}
+      attrTop: {}
+      attrLeft: {}
   character:
     templates:
       - base
@@ -30,7 +32,7 @@ Item:
       description: ''
     move:
       requiresMove: ''
-      moveType:
+      moveType: null
       moveGroup: ''
       moveResults: {}
   move:
@@ -48,14 +50,14 @@ Item:
   equipment:
     templates:
       - base
-    class: ''
+    playbook: ''
     quantity: 1
     weight: 0
     uses: 0
     tags: []
     tagsString: ''
     itemType:
-    attributes: {}
+    equipmentType: null
   tag:
     templates:
       - base

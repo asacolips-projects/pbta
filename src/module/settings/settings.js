@@ -93,7 +93,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
   /** @override */
   async _onSubmit(event, options) {
-    console.log("TEST");
     // event.target.querySelectorAll("input[disabled]").forEach(i => i.disabled = false);
     return super._onSubmit(event, options);
   }
@@ -113,8 +112,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       errors = ["No sheet config has been entered."];
     }
 
-    console.log(computed);
-
     if (errors.length > 0) {
       for (let error of errors) {
         ui.notifications.error(error, {permanent: true});
@@ -123,12 +120,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     }
     else {
       let confirm = await this.diffSheetConfig(computed);
-      console.log(confirm);
       if (!confirm) {
         throw new Error('Cancelled');
       }
       if (computed) {
         formData.computed = computed;
+        // throw new Error('Test Error');
       }
       await game.settings.set("pbta", "sheetConfig", formData);
     }
@@ -231,6 +228,13 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       if (!actorConfig.moveTypes || typeof actorConfig.moveTypes != 'object' || Object.keys(actorConfig.moveTypes).length < 1) {
         errors.push(`'${actorType}.moveTypes' is required and must have at least one move type.`);
       }
+
+      // Validate that the movetypes are included as an array.
+      if (actorConfig.equipmentTypes) {
+        if (typeof actorConfig.equipmentTypes != 'object' || Object.keys(actorConfig.equipmentTypes).length < 1) {
+          errors.push(`'${actorType}.equipmentTypes' is required and must have at least one equipment type.`);
+        }
+      }
     }
 
     // Return the array of errors for output.
@@ -241,24 +245,21 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     let currentConfig = game.pbta.sheetConfig;
     let duplicateConfig = duplicate(sheetConfig);
     let newConfig = PbtaUtility.convertSheetConfig(duplicateConfig);
-    console.log({
-      c: currentConfig,
-      n: newConfig
-    });
 
     let configDiff = {
       'add': [],
       'del': [],
       'max': [],
       'softType': [],
-      'hardType': []
+      'hardType': [],
+      'safe': []
     };
     let updatesDiff = {
       'character': {},
       'npc': {}
     };
     let actorTypes = ['character', 'npc'];
-    let attrGroups = ['stats', 'attrLeft', 'attrTop', 'moveTypes'];
+    let attrGroups = ['stats', 'attrLeft', 'attrTop', 'moveTypes', 'equipmentTypes'];
 
     for (let actorType of actorTypes) {
       for (let attrGroup of attrGroups) {
@@ -279,6 +280,18 @@ export class PbtaSettingsConfigDialog extends FormApplication {
           if (!oldGroup[attr]) {
             configDiff.add.push(`${actorType}.${attrGroup}.${attr}`);
             updatesDiff[actorType][`data.${attrGroup}.${attr}`] = newGroup[attr];
+          }
+          else {
+            // Handle updating label values.
+            if (newGroup[attr].label && newGroup[attr].label != oldGroup[attr].label) {
+              configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.label`);
+              updatesDiff[actorType][`data.${attrGroup}.${attr}.label`] = newGroup[attr].label;
+            }
+            // Handle updating description values.
+            if (newGroup[attr].description && newGroup[attr].description != oldGroup[attr].description) {
+              configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.description`);
+              updatesDiff[actorType][`data.${attrGroup}.${attr}.description`] = newGroup[attr].description;
+            }
           }
         }
         for (let attr of Object.keys(oldGroup)) {
@@ -342,8 +355,9 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     let hasMax = configDiff.max.length > 0;
     let hasSoftType = configDiff.softType.length > 0;
     let hasHardType = configDiff.hardType.length > 0;
+    let hasSafe = configDiff.safe.length > 0;
 
-    if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType) {
+    if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType || hasSafe) {
       let content = '<p>Changes have been detected in one or more of your actor types. Review the changes below, and then choose one of the following:</p><ul><li>Confirm without updating existing actors</li><li>Confirm and update existing actors<strong> (NOTE: Existing data in deleted attributes will be deleted permanently)</strong></li><li>Cancel and prevent the changes from saving</li></ul>';
 
       if (hasAdditions) {
@@ -366,10 +380,14 @@ export class PbtaSettingsConfigDialog extends FormApplication {
         content = content + `<h2>Type changed (attribute will be reset):</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.hardType.join('</li><li><strong> * </strong>')}</li></ul>`;
       }
 
+      if (hasSafe) {
+        content = content + `<h2>Cosmetic changes (label or description):</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.safe.join('</li><li><strong> * </strong>')}</li></ul>`;
+      }
+
       return this._confirm({
         title: 'Confirm Changes',
         content: content,
-        options: {width: 500},
+        options: {width: 500, classes: ["pbta", "pbta-sheet-confirm"]},
         buttons: {
           yes: {
             icon: '<i class="fas fa-check"></i>',
@@ -381,7 +399,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
             label: game.i18n.localize('Confirm + Update'),
             callback: async () => {
               let result = await PbtaActorTemplates.updateActors(updatesDiff);
-              console.log(result);
               return result;
             },
           },

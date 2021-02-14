@@ -18,7 +18,6 @@ export class PbtaActorTemplates {
   }
 
   static async updateActors(newConfig, options={}) {
-    console.log(newConfig);
     let success = true;
     let newTokenConfig = {
       'character': {},

@@ -13,6 +13,15 @@ export class PbtaUtility {
     return string;
   };
 
+  static toTitleCase(str) {
+    return str.replace(
+      /\w*/g,
+      function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+    );
+  }
+
   static isEmpty(arg) {
     return [null, false, undefined, 0, ''].includes(arg);
   }
@@ -28,7 +37,23 @@ export class PbtaUtility {
       }
 
       if (k == 'statToggle') {
-        newConfig.statToggle = v ?? false;
+        if (!v) {
+          newConfig.statToggle = false;
+        }
+        else {
+          if (typeof v == 'object' && v.label) {
+            newConfig.statToggle = {
+              label: v.label,
+              modifier: v.modifier ? v.modifier : 0
+            }
+          }
+          else {
+            newConfig.statToggle = {
+              label: v,
+              modifier: 0
+            };
+          }
+        }
       }
 
       if (k == "rollResults") {
@@ -91,7 +116,7 @@ export class PbtaUtility {
       }
 
       // Actors.
-      if (v.stats || v.attributesTop || v.attributesLeft || v.moveTypes) {
+      if (v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
         let actorType = {};
         if (v.stats) {
           actorType.stats = {};
@@ -116,6 +141,16 @@ export class PbtaUtility {
           }
         }
 
+        if (v.equipmentTypes) {
+          actorType.equipmentTypes = {};
+          for (let [etKey, etLabel] of Object.entries(v.equipmentTypes)) {
+            actorType.equipmentTypes[PbtaUtility.cleanClass(etKey, false)] = {
+              label: etLabel,
+              moves: []
+            };
+          }
+        }
+
         delete v.attributesTop;
         delete v.attributesLeft;
 
@@ -133,7 +168,7 @@ export class PbtaUtility {
     for (let [attrKey, attrValue] of Object.entries(attrGroup)) {
       let attr = {};
 
-      attr.label = attrValue.label ?? attrKey;
+      attr.label = attrValue.label ?? this.toTitleCase(attrKey);
       attr.description = attrValue.description ?? null;
 
       if (!attrValue.type) {

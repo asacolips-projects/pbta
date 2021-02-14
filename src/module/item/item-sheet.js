@@ -44,8 +44,10 @@ export class PbtaItemSheet extends ItemSheet {
 
     if (data.entity.type == 'move') actorType = 'character';
     else if (data.entity.type == 'npcMove') actorType = 'npc';
+    else actorType = 'character';
 
     data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes ?? {};
+    data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.equipmentTypes ?? null;
 
     // Add roll example.
     if (data.entity.type == 'npcMove') {

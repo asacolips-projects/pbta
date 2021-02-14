@@ -18,6 +18,8 @@ PBTA.Prompt: "Prompt"
 PBTA.Dialog.Prompt1: "Choose the modifier for this "
 PBTA.Dialog.Prompt2: " move."
 PBTA_OTHER: "Other"
+PBTA.MoveType: "Move Type"
+PBTA.EquipmentType: "Move Type"
 #################################
 # NEW STUFF
 #################################
@@ -109,7 +111,6 @@ PBTA.Modifier: "Modifier"
 PBTA.RollFormula: "Roll Formula"
 PBTA.RequiresLevel: "Requires Level"
 PBTA.RequiresMove: "Requires Move"
-PBTA.MoveType: "Move Type"
 PBTA.Quantity: "Quantity"
 PBTA.Qty: "Qty"
 PBTA.Weight: "Weight"

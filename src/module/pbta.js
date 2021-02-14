@@ -78,16 +78,6 @@ Hooks.once("init", async function() {
     default: 0
   });
 
-  // Configurable system settings.
-  game.settings.register("pbta", "itemIcons", {
-    name: game.i18n.localize("PBTA.Settings.itemIcons.name"),
-    hint: game.i18n.localize("PBTA.Settings.itemIcons.hint"),
-    scope: 'client',
-    config: true,
-    type: Boolean,
-    default: true
-  });
-
   game.settings.registerMenu("pbta", "sheetConfigMenu", {
     name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
     label: game.i18n.localize("PBTA.Settings.sheetConfig.label"),

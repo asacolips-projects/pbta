@@ -43,7 +43,7 @@
           {{#each actor.moves as |moveGroup moveKey|}}
             <div class="cell cell--moves cell--{{moveKey}}">
               <h2 class="cell__title">
-                <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{moveKey}}{{/if}}</label>
+                <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../actor.moveTypes moveKey}}{{/if}}</label>
                 <div class="item-controls">
                   <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="npcMove" data-moveType="{{moveKey}}">
                     <i class="fas fa-plus"></i>
@@ -54,14 +54,16 @@
               {{#each moveGroup as |item id|}}
                 <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
                   <h4 class="item-name">
-                    <span class="rollable move-rollable" data-roll="{{item.data.rollFormula}}">
-                      {{#if item.data.rollFormula}}
-                        <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
-                      {{else}}
-                        <i class="fas fa-book"></i>
-                      {{/if}}
-                    </span>
-                    {{#if ../../data.itemIcons}}<img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>{{/if}}
+                    <div class="item-avatar">
+                      <span class="rollable move-rollable" data-roll="{{item.data.rollFormula}}">
+                        {{#if item.data.rollFormula}}
+                          <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
+                        {{else}}
+                          <i class="fas fa-book"></i>
+                        {{/if}}
+                      </span>
+                      <img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>
+                    </div>
                     <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
                   </h4>
                   <div class="item-controls">

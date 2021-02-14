@@ -1,6 +1,8 @@
 <form class="{{cssClass}} class item-form flexcol" autocomplete="off">
   <header class="sheet-header flexrow">
+    <div class="cell--image">
       <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    </div>
     <div class="header-fields">
       <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize "PBTA.Common.Name"}}"/></h1>
     </div>
@@ -9,8 +11,8 @@
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-navigation sheet-tabs tabs" data-group="primary">
     <a class="item" data-tab="description">{{localize "PBTA.Common.Description" }}</a>
-    <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
-    <a class="item" data-tab="equipment">{{localize "PBTA.Equipment"}}</a>
+    {{!-- <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
+    <a class="item" data-tab="equipment">{{localize "PBTA.Equipment"}}</a> --}}
   </nav>
 
   {{!-- Sheet Body --}}
@@ -20,7 +22,7 @@
     <div class="tab" data-group="primary" data-tab="description">
       {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
     </div>
-
+{{!--
     {{!-- Details Tab --}}
     <div class="tab" data-group="primary" data-tab="details">
       <div class="class-fields grid grid-3col">
@@ -140,6 +142,6 @@
 
         </div>
       </div>
-    </div>
+    </div> --}}
   </section>
 </form>

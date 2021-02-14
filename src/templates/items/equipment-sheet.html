@@ -1,6 +1,8 @@
 <form class="{{cssClass}} item-form flexcol" autocomplete="off">
     <header class="sheet-header flexrow">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="cell--image">
+          <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        </div>
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize "PBTA.Common.Name"}}"/></h1>
         </div>
@@ -29,6 +31,17 @@
             <input name='data.tags' class='some_class_name' placeholder='write some tags' value='{{ data.tags }}'/>
           </div>
           <div class="resource">
+            <label>{{localize "PBTA.Playbook"}}</label>
+            <select name="data.playbook">
+              {{#select data.playbook}}
+                <option value="">—</option>
+                {{#each data.playbooks as |playbook id|}}
+                <option value="{{playbook}}">{{playbook}}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+          <div class="resource">
             <label>{{localize "PBTA.Quantity"}}</label>
             <input type="text" name="data.quantity" value="{{data.quantity}}" data-dtype="Number"/>
           </div>
@@ -40,29 +53,19 @@
             <label>{{localize "PBTA.Weight"}}</label>
             <input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number"/>
           </div>
-          <div class="resource">
-            <label>{{localize "PBTA.MagicItem"}}</label>
-            <input type="checkbox" name="data.magic" {{checked data.magic}}/>
-          </div>
-          <div class="resource">
-            <label>{{localize "PBTA.ItemType"}}</label>
-            <select name="data.itemType" data-dtype="String">
-              {{#select data.itemType}}
-              <option value="">—</option>
-              <option value="weapon">{{localize "PBTA.Weapon"}}</option>
-              <option value="armor">{{localize "PBTA.Armor"}}</option>
-              <option value="dungeongear">{{localize "PBTA.DungeonGear"}}</option>
-              <option value="poison">{{localize "PBTA.Poison"}}</option>
-              <option value="service">{{localize "PBTA.Service"}}</option>
-              <option value="meal">{{localize "PBTA.Meal"}}</option>
-              <option value="transport">{{localize "PBTA.Transport"}}</option>
-              <option value="landbuilding">{{localize "PBTA.LandBuildings"}}</option>
-              <option value="bribe">{{localize "PBTA.Bribe"}}</option>
-              <option value="giftsfinery">{{localize "PBTA.GiftsFinery"}}</option>
-              <option value="hoard">{{localize "PBTA.Hoard"}}</option>
-              {{/select}}
-            </select>
-          </div>
+          {{#if data.equipmentTypes}}
+            <div class="resource">
+              <label>{{localize "PBTA.EquipmentType"}}</label>
+              <select name="data.equipmentType" data-dtype="String">
+                {{#select data.equipmentType}}
+                <option value="">—</option>
+                {{#each data.equipmentTypes as |equipment key|}}
+                <option value="{{key}}">{{equipment.label}}</option>
+                {{/each}}
+                {{/select}}
+              </select>
+            </div>
+          {{/if}}
         </div>
     </section>
 </form>

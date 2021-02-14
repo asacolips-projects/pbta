@@ -48,6 +48,7 @@ export class PbtaRolls {
       if (item.type == 'move' || item.type == 'npcMove') {
         formula = dice;
         templateData = {
+          image: item.img,
           title: item.name,
           trigger: null,
           details: item.data.description,
@@ -104,6 +105,7 @@ export class PbtaRolls {
       // Handle equipment.
       else if (item.type == 'equipment') {
         templateData = {
+          image: item.img,
           title: item.name,
           trigger: null,
           details: item.data.description,
@@ -157,7 +159,14 @@ export class PbtaRolls {
         }
         // Handle moves.
         else {
-          formula = `${dice}+${this.actorData.stats[roll].value}`;
+          // Determine if the stat toggle is in effect.
+          let hasToggle = game.pbta.sheetConfig.statToggle;
+          let toggleModifier = 0;
+          if (hasToggle) {
+            const statToggle = this.actor.data.data.stats[roll].toggle;
+            toggleModifier = statToggle ? game.pbta.sheetConfig.statToggle.modifier : 0;
+          }
+          formula = `${dice}+${this.actorData.stats[roll].value}${toggleModifier ? '+' + toggleModifier : ''}`;
           if (dataset.value && dataset.value != 0) {
             formula += `+${dataset.value}`;
           }
