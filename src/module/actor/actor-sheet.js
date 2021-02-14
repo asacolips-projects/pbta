@@ -38,8 +38,13 @@ export class PbtaActorSheet extends ActorSheet {
     // Add playbooks.
     if (this.actor.data.type == 'character') {
       data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
-      data.data.statSettings = game.pbta.sheetConfig.actorTypes[this.actor.data.type].stats ?? {};
       data.data.statToggle = game.pbta.sheetConfig?.statToggle ?? false;
+      data.data.statSettings = game.pbta.sheetConfig.actorTypes[this.actor.data.type].stats ?? {};
+
+      if (data.data.statSettings) {
+        data.data.statSettings['ask'] = {label: game.i18n.localize('PBTA.Ask'), value: 0};
+        data.data.statSettings['prompt'] = {label: game.i18n.localize('PBTA.Prompt'), value: 0};
+      }
 
       let xpSvg = {
         radius: 16,

@@ -120,6 +120,23 @@
       max-width: 100%;
       grid-column: 2 / span 3;
       height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .sheet-body {
+      flex: 1;
+    }
+
+    .cell--bio {
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+
+      .editor {
+        min-height: calc(100% - 30px);
+      }
     }
   }
 

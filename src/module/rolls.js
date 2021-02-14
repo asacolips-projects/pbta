@@ -67,8 +67,8 @@ export class PbtaRolls {
             };
           });
           new Dialog({
-            title: `Choose a stat`,
-            content: `<p>Choose a stat for this <strong>${item.name}</strong> move.</p>`,
+            title: game.i18n.localize('PBTA.AskTitle'),
+            content: `<p>${game.i18n.localize('PBTA.Dialog.Ask1')} <strong>${item.name}</strong> ${game.i18n.localize('PBTA.Dialog.Ask2')}.</p>`,
             buttons: statButtons
           }).render(true);
         }
@@ -83,7 +83,7 @@ export class PbtaRolls {
           const html = await renderTemplate(template, dialogData);
           return new Promise(resolve => {
             new Dialog({
-              title: `Enter your modifier`,
+              title: game.i18n.localize('PBTA.PromptTitle'),
               content: html,
               buttons: {
                 submit: {

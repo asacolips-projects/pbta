@@ -181,6 +181,7 @@
                             <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
                           </h4>
                           {{#if item.data.rollType}}
+                            {{log item.data.rollType}}
                             <div class="item-meta tags">
                               <span class="tag">{{getLabel ../../data.statSettings item.data.rollType}}</span>
                             </div>

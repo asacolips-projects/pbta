@@ -9,6 +9,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     return mergeObject(super.defaultOptions, {
       title: game.i18n.localize("PBTA.Settings.sheetConfig.title"),
       id: "pbta-sheet-config",
+      classes: ["pbta", "pbta-sheet-config"],
       template: "systems/pbta/templates/dialog/sheet-config.html",
       width: 660,
       height: 500,
@@ -80,7 +81,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
   async _onResetDefaults(event) {
     event.preventDefault();
     await game.settings.set("pbta", "sheetConfig", {});
-    ui.notifications.info(`Reset sheet config.`);
+    ui.notifications.info(game.i18n.localize('PBTA.Messages.sheetConfig.reset'));
     return this.render();
   }
 
@@ -109,7 +110,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       errors = this.validateSheetConfig(computed);
     }
     else {
-      errors = ["No sheet config has been entered."];
+      errors = [game.i18n.localize('PBTA.Messages.sheetConfig.noConfig')];
     }
 
     if (errors.length > 0) {
@@ -138,18 +139,37 @@ export class PbtaSettingsConfigDialog extends FormApplication {
    */
   validateSheetConfig(sheetConfig) {
     let errors = [];
+    const t = {
+      'rollFormulaRequired': game.i18n.localize('PBTA.Messages.sheetConfig.rollFormulaRequired'),
+      'rollResultsRequired': game.i18n.localize('PBTA.Messages.sheetConfig.rollResultsRequired'),
+      'rollResultsIncorrect': game.i18n.localize('PBTA.Messages.sheetConfig.rollResultsIncorrect'),
+      'actorTypeRequired': game.i18n.localize('PBTA.Messages.sheetConfig.actorTypeRequired'),
+      'statString1': game.i18n.localize('PBTA.Messages.sheetConfig.statString1'),
+      'statString2': game.i18n.localize('PBTA.Messages.sheetConfig.statString2'),
+      'statsRequired1': game.i18n.localize('PBTA.Messages.sheetConfig.statsRequired1'),
+      'statsRequired2': game.i18n.localize('PBTA.Messages.sheetConfig.statsRequired2'),
+      'groupAttributes': game.i18n.localize('PBTA.Messages.sheetConfig.groupAttributes'),
+      'attribute': game.i18n.localize('PBTA.Messages.sheetConfig.attribute'),
+      'attributeType': game.i18n.localize('PBTA.Messages.sheetConfig.attributeType'),
+      'attributeTypeNull': game.i18n.localize('PBTA.Messages.sheetConfig.attributeTypeNull'),
+      'attributeMax': game.i18n.localize('PBTA.Messages.sheetConfig.attributeMax'),
+      'attributeOptions': game.i18n.localize('PBTA.Messages.sheetConfig.attributeOptions'),
+      'attributeOptionsEmpty': game.i18n.localize('PBTA.Messages.sheetConfig.attributeOptionsEmpty'),
+      'moveTypes': game.i18n.localize('PBTA.Messages.sheetConfig.moveTypes'),
+      'equipmentTypes': game.i18n.localize('PBTA.Messages.sheetConfig.equipmentTypes'),
+    };
 
     // Handle rollFormula.
     if (!sheetConfig.rollFormula) {
-      errors.push("'rollFormula' is required.");
+      errors.push(`${t.rollFormulaRequired}`);
     }
 
     //  Handle rollResults.
     if (!sheetConfig.rollResults) {
-      errors.push("'rollResults' is required.");
+      errors.push(`${t.rollResultsRequired}`);
     }
     if (typeof sheetConfig.rollResults != 'object' || Object.keys(sheetConfig.rollResults).length < 1) {
-      errors.push("'rollResults' were entered incorrectly.");
+      errors.push(`${t.rollResultsIncorrect}`);
     }
 
     // Handle actor config.
@@ -159,7 +179,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     for (let actorType of actorTypes) {
       // Error for missing actor type.
       if (!sheetConfig[actorType]) {
-        errors.push(`'${actorType}' actor type is required.`);
+        errors.push(`'${actorType}' ${t.actorTypeRequired}`);
         continue;
       }
 
@@ -171,7 +191,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
         if (actorConfig.stats.length > 0) {
           for (let [k,v] of actorConfig.stats) {
             if (typeof v != 'string') {
-              errors.push(`stat "${k}" must be a string, such as "Cool"`);
+              errors.push(`${t.statString1} "${k}" ${t.statString2}`);
             }
           }
         }
@@ -179,7 +199,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       // Stats are required for characters (but not for NPCs).
       else {
         if (actorType == 'character') {
-          errors.push(`'stats' are required for '${actorType}' group.`);
+          errors.push(`${t.statsRequired1} '${actorType}' ${t.statsRequired2}.`);
         }
       }
 
@@ -190,7 +210,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
         if (actorConfig[attrGroup]) {
           // Groups must be objects.
           if (typeof actorConfig[attrGroup] != 'object') {
-            errors.push(`'${actorType}.${attrGroup}' must be a group of attributes.`);
+            errors.push(`'${actorType}.${attrGroup}' ${t.groupAttributes}`);
           }
           else {
             // Iterate through each attribute.
@@ -198,7 +218,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
               // Confirm the attribute type is valid.
               let attrType = typeof attrValue == 'object' && attrValue.type ? attrValue.type : attrValue;
               if (!PBTA.attrTypes.includes(attrType)) {
-                errors.push(`Attribute '${actorType}.${attrGroup}.${attr}' must be one of the following types: ${PBTA.attrTypes.join(', ')}.`);
+                errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeType} ${PBTA.attrTypes.join(', ')}.`);
+              }
+
+              if (typeof attrType == 'object') {
+                errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeTypeNull}`);
+                continue;
               }
 
               // If this is a clock or XP, require a max value. Resources also
@@ -206,17 +231,17 @@ export class PbtaSettingsConfigDialog extends FormApplication {
               // are therefore not required.
               if (attrType == 'Clock' || attrType == 'Xp') {
                 if (!attrValue.max) {
-                  errors.push(`Attribute '${actorType}.${attrGroup}.${attr}' must include a 'max' property.`);
+                  errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeMax}`);
                 }
               }
 
               // Handle list types.
               if (attrType == 'ListMany') {
                 if (!attrValue.options) {
-                  errors.push(`Attribute '${actorType}.${attrGroup}.${attr}' must include an 'options' group.`);
+                  errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeOptions}`);
                 }
                 else if (typeof attrValue.options != 'object' || Object.keys(attrValue.options).length < 1) {
-                  errors.push(`Attribute '${actorType}.${attrGroup}.${attr}' must include at least one option in the 'options' group.`);
+                  errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeOptionsEmpty}`);
                 }
               }
             }
@@ -226,13 +251,13 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
       // Validate that the movetypes are included as an array.
       if (!actorConfig.moveTypes || typeof actorConfig.moveTypes != 'object' || Object.keys(actorConfig.moveTypes).length < 1) {
-        errors.push(`'${actorType}.moveTypes' is required and must have at least one move type.`);
+        errors.push(`'${actorType}.moveTypes' ${t.moveTypes}`);
       }
 
       // Validate that the movetypes are included as an array.
       if (actorConfig.equipmentTypes) {
         if (typeof actorConfig.equipmentTypes != 'object' || Object.keys(actorConfig.equipmentTypes).length < 1) {
-          errors.push(`'${actorType}.equipmentTypes' is required and must have at least one equipment type.`);
+          errors.push(`'${actorType}.equipmentTypes' ${t.equipmentTypes}`);
         }
       }
     }
@@ -357,46 +382,64 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     let hasHardType = configDiff.hardType.length > 0;
     let hasSafe = configDiff.safe.length > 0;
 
+    const t = {
+      'confirmChanges': game.i18n.localize('PBTA.Settings.sheetConfig.confirmChanges'),
+      'confirm': game.i18n.localize('PBTA.Settings.sheetConfig.confirm'),
+      'confirmUpdate': game.i18n.localize('PBTA.Settings.sheetConfig.confirmUpdate'),
+      'cancel': game.i18n.localize('PBTA.Settings.sheetConfig.cancel'),
+      'additions': game.i18n.localize('PBTA.Settings.sheetConfig.additions'),
+      'deletions': game.i18n.localize('PBTA.Settings.sheetConfig.deletions'),
+      'maxValue': game.i18n.localize('PBTA.Settings.sheetConfig.maxValue'),
+      'type': game.i18n.localize('PBTA.Settings.sheetConfig.type'),
+      'typeReset': game.i18n.localize('PBTA.Settings.sheetConfig.typeReset'),
+      'cosmetic': game.i18n.localize('PBTA.Settings.sheetConfig.cosmetic'),
+      'noteChangesDetected': game.i18n.localize('PBTA.Settings.sheetConfig.noteChangesDetected'),
+      'noteConfirm': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirm'),
+      'noteConfirmUpdate': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirmUpdate'),
+      'noteConfirmUpdateBold': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirmUpdateBold'),
+      'noteCancel': game.i18n.localize('PBTA.Settings.sheetConfig.noteCancel'),
+    };
+
     if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType || hasSafe) {
-      let content = '<p>Changes have been detected in one or more of your actor types. Review the changes below, and then choose one of the following:</p><ul><li>Confirm without updating existing actors</li><li>Confirm and update existing actors<strong> (NOTE: Existing data in deleted attributes will be deleted permanently)</strong></li><li>Cancel and prevent the changes from saving</li></ul>';
+      let content = `<p>${t.noteChangesDetected}</p><ul><li>${t.noteConfirm}</li><li>${t.noteConfirmUpdate}<strong> (${t.noteConfirmUpdateBold})</strong></li><li>${t.noteCancel}</li></ul>`;
 
       if (hasAdditions) {
-        content = content + `<h2>Additions:</h2><ul class="pbta-changes"><li><strong> + </strong>${configDiff.add.join('</li><li><strong> + </strong>')}</li></ul>`;
+        content = content + `<h2>${t.additions}</h2><ul class="pbta-changes"><li><strong> + </strong>${configDiff.add.join('</li><li><strong> + </strong>')}</li></ul>`;
       }
 
       if (hasDeletions) {
-        content = content + `<h2>Deletions:</h2><ul class="pbta-changes"><li><strong> - </strong>${configDiff.del.join('</li><li><strong> - </strong>')}</li></ul>`;
+        content = content + `<h2>${t.deletions}</h2><ul class="pbta-changes"><li><strong> - </strong>${configDiff.del.join('</li><li><strong> - </strong>')}</li></ul>`;
       }
 
       if (hasMax) {
-        content = content + `<h2>Max value changed:</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.max.join('</li><li><strong> * </strong>')}</li></ul>`;
+        content = content + `<h2>${t.maxValue}</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.max.join('</li><li><strong> * </strong>')}</li></ul>`;
       }
 
       if (hasSoftType) {
-        content = content + `<h2>Type changed:</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.softType.join('</li><li><strong> * </strong>')}</li></ul>`;
+        content = content + `<h2>${t.type}</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.softType.join('</li><li><strong> * </strong>')}</li></ul>`;
       }
 
       if (hasHardType) {
-        content = content + `<h2>Type changed (attribute will be reset):</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.hardType.join('</li><li><strong> * </strong>')}</li></ul>`;
+        content = content + `<h2>${t.typeReset}</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.hardType.join('</li><li><strong> * </strong>')}</li></ul>`;
       }
 
       if (hasSafe) {
-        content = content + `<h2>Cosmetic changes (label or description):</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.safe.join('</li><li><strong> * </strong>')}</li></ul>`;
+        content = content + `<h2>${t.cosmetic}</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.safe.join('</li><li><strong> * </strong>')}</li></ul>`;
       }
 
       return this._confirm({
-        title: 'Confirm Changes',
+        title: game.i18n.localize('PBTA.Settings.sheetConfig.confirmChanges'),
         content: content,
         options: {width: 500, classes: ["pbta", "pbta-sheet-confirm"]},
         buttons: {
           yes: {
             icon: '<i class="fas fa-check"></i>',
-            label: game.i18n.localize('Confirm'),
+            label: game.i18n.localize('PBTA.Settings.sheetConfig.confirm'),
             callback: async () => { return true; },
           },
           update: {
             icon: '<i class="fas fa-user-check"></i>',
-            label: game.i18n.localize('Confirm + Update'),
+            label: game.i18n.localize('PBTA.Settings.sheetConfig.confirmUpdate'),
             callback: async () => {
               let result = await PbtaActorTemplates.updateActors(updatesDiff);
               return result;

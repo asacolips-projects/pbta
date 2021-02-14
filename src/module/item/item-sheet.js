@@ -36,8 +36,8 @@ export class PbtaItemSheet extends ItemSheet {
 
     // Add stats.
     data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes?.character?.stats);
-    data.data.stats['PROMPT'] = {label: 'Prompt'};
-    data.data.stats['ASK'] = {label: 'Ask'};
+    data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
+    data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
 
     // Add move types.
     let actorType = null;
