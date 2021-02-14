@@ -1,5 +1,10 @@
+# Configure Rolls
 rollFormula = "2d6"
-statToggle = "Highlight"
+
+# Configure stat toggle label and formula modifier.
+[statToggle]
+  label = "Highlight"
+  modifier = "-1"
 
 # Define roll result ranges.
 [rollResults]
@@ -13,12 +18,13 @@ statToggle = "Highlight"
     range = "10-12"
     label = "Success!"
   [rollResults.critical]
-    range = "13+"
+    range = false
     label = "Critical Success!"
 
 ########################################
 ## CHARACTERS ##########################
 ########################################
+# Define the character group.
 [character]
 
   # Define stats.
@@ -32,55 +38,98 @@ statToggle = "Highlight"
   # Define attributes.
   [character.attributesTop]
     [character.attributesTop.armor]
+      label = "Armor"
       type = "Number"
     [character.attributesTop.harm]
+    	label = "Harm"
       type = "Clock"
-      max = 32
+      max = 6
+      default = 0
     [character.attributesTop.improvement]
+      label = "Improvement"
       type = "Xp"
-      max = 5
+      max = 7
     [character.attributesTop.customResource]
+      label = "Custom Resource That Wraps Lines"
       type = "Resource"
-      label = "Custom Resource"
+      max = 4
+      default = 2
 
   # Define sidebar details.
   [character.attributesLeft]
+    # Example of short-syntax fields.
     look = "LongText"
     hx = "LongText"
     number = "Number"
-    text = "Text"
-    [character.attributesLeft.toggle]
-	    type = "Checkbox"
-      label = "Toggle"
-      checkboxLabel = "Test Label"
+    #  Define a conditions field with several options.
+		[character.attributesLeft.conditions]
+      label = "Conditions"
+    	type = "ListMany"
+      description = "Choose all that apply:"
+      # Define options for the conditions field.
+      [character.attributesLeft.conditions.options]
+      	afraid = "Afraid"
+        angry = "Angry"
+        guilty = "Guilty"
+        hopeless = "Hopeless"
+        insecure = "Insecure"
 
-  # Define logical groups for moves.
+  # Define groups for moves.
   [character.moveTypes]
     basic = "Basic"
     advanced = "Advanced"
+
+  # Define groups for equipment.
+  [character.equipmentTypes]
+    gear = "Gear"
+    loot = "Loot"
 
 ########################################
 ## NPCS ################################
 ########################################
 # Define stats.
 [npc]
+  # NPCs don't support stats at this time.
   stats = false
 
   # Define attributes.
   [npc.attributesTop]
     [npc.attributesTop.armor]
+      label = "Armor"
       type = "Number"
     [npc.attributesTop.harm]
+      label = "Harm"
       type = "Clock"
       max = 6
     [npc.attributesTop.damage]
+      label = "Damage"
       type = "Roll"
       default = "d10"
 
   [npc.attributesLeft]
     [npc.attributesLeft.bio]
+      label = "Bio"
       type = "LongText"
+    [npc.attributesLeft.choices]
+    	type = "ListMany"
+      label = "Several Choices That Wrap"
+      description = "Choose all that apply:"
+      [npc.attributesLeft.choices.options]
+      	afraid = "Afraid"
+        angry = "Angry"
+        guilty = "Guilty"
+        hopeless = "Hopeless"
+        insecure = "Insecure"
+    [npc.attributesLeft.choice]
+    	type = "ListMany"
+      label = "Single Choice"
+      description = "Choose one:"
+			options = [
+				"one",
+        "two",
+        "three"
+      ]
 
   # Define logical groups for moves.
   [npc.moveTypes]
-    basic = "Basic"
+    actions = "Actions"

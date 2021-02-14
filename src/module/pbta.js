@@ -35,6 +35,7 @@ Hooks.once("init", async function() {
     PbtaUtility,
     PbtaActorTemplates,
     MigratePbta,
+    PbtaSettingsConfigDialog
   };
 
   // TODO: Extend the combat class.
@@ -170,6 +171,30 @@ Hooks.once("setup", function() {
       return obj;
     }, {});
   }
+});
+
+/* -------------------------------------------- */
+/*  Help Button                                 */
+/* -------------------------------------------- */
+
+Hooks.on("renderSettings", (app, html) => {
+  let settingsButton = $(`<button id="pbta-settings-btn" data-action="pbta-settings"><i class="fas fa-file-alt"></i> ${game.i18n.localize("PBTA.Settings.sheetConfig.label")}</button>`);
+  html.find('button[data-action="configure"]').before(settingsButton);
+
+  let helpButton = $(`<button id="pbta-help-btn" data-action="pbta-help"><i class="fas fa-question-circle"></i> ${game.i18n.localize("PBTA.Settings.button.help")}</button>`);
+  html.find('button[data-action="controls"]').after(helpButton);
+
+  settingsButton.on('click', ev => {
+    ev.preventDefault();
+    let menu = game.settings.menus.get('pbta.sheetConfigMenu');
+    let app = new menu.type();
+    app.render(true);
+  });
+
+  helpButton.on('click', ev => {
+    ev.preventDefault();
+    window.open('https://asacolips.gitbook.io/pbta-system/', 'pbtaHelp', 'width=1032,height=720');
+  });
 });
 
 /* -------------------------------------------- */
