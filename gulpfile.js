@@ -46,6 +46,7 @@ function compileYaml() {
   return gulp.src(SYSTEM_YAML)
     .pipe(yaml({ space: 2 }))
     .pipe(gulp.dest('./dist'))
+    .pipe(gulp.dest('./src'))
 }
 const yamlTask = gulp.series(compileYaml);
 
