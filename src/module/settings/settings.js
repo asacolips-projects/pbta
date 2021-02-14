@@ -120,7 +120,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       throw new Error(errors.join('\r\n'));
     }
     else {
-      let confirm = await this.diffSheetConfig(computed);
+      let confirm = true;
+      if (game.pbta.settings?.actorTypes?.character && game.pbta.settings?.actorTypes?.npc) {
+        confirm = await this.diffSheetConfig(computed);
+      }
       if (!confirm) {
         throw new Error('Cancelled');
       }
