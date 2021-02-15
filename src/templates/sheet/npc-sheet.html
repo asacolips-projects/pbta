@@ -32,13 +32,6 @@
       {{!-- Sheet Body --}}
       <section class="sheet-body">
 
-        <div class="cell cell--tags">
-          <label for="tag" class="control-label">{{localize "PBTA.Tags"}}</label>
-          <div class="help-text"><p>{{localize "PBTA.TagsHelp" }}</p></div>
-          <input type="hidden" name="data.tagsString" value="{{ data.tagsString }}" />
-          <input name='data.tags' class='some_class_name' placeholder='write some tags' value='{{ data.tags }}'/>
-        </div>
-
         <div class="sheet-moves moves">
           {{#each actor.moves as |moveGroup moveKey|}}
             <div class="cell cell--moves cell--{{moveKey}}">

@@ -11,8 +11,8 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       id: "pbta-sheet-config",
       classes: ["pbta", "pbta-sheet-config"],
       template: "systems/pbta/templates/dialog/sheet-config.html",
-      width: 660,
-      height: 500,
+      width: 720,
+      height: 800,
       resizable: true,
       closeOnSubmit: true
     })
@@ -121,7 +121,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     }
     else {
       let confirm = true;
-      if (game.pbta.settings?.actorTypes?.character && game.pbta.settings?.actorTypes?.npc) {
+      if (game.pbta.sheetConfig?.actorTypes?.character && game.pbta.sheetConfig?.actorTypes?.npc) {
         confirm = await this.diffSheetConfig(computed);
       }
       if (!confirm) {

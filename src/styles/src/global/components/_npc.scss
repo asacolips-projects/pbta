@@ -44,14 +44,18 @@
   }
 
   .sheet-attributes-top {
+    width: 100%;
+
     .cell--attributes-top {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0px 16px;
-      margin: 0 0 16px 0;
+      // display: grid;
+      // grid-template-columns: repeat(3, minmax(0, 1fr));
+      // gap: 0px 16px;
+      // margin: 0 0 16px 0;
+      display: flex;
 
       .cell {
         grid-column: span 1;
+        flex: 1;
       }
     }
   }

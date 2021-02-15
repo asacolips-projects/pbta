@@ -51,16 +51,19 @@
     margin: 10px 0;
 
     .cell--attributes-top {
-      display: grid;
-      grid-column: span 16;
-      grid-template-columns: repeat(16, minmax(0, 1fr));
-      gap: 0px 16px;
+      display: flex;
+      // display: grid;
+      // grid-column: span 16;
+      // grid-template-columns: repeat(16, minmax(0, 1fr));
+      // gap: 0px 16px;
       margin: 0;
       padding: 0;
 
       .cell {
         position: relative;
         grid-column: span 4;
+        flex: 1;
+        padding: 0 16px 0 0;
       }
 
       > .cell + .cell {
@@ -73,6 +76,7 @@
           bottom: 0;
           width: 2px;
           background: $ct-gray;
+          padding-right: 0;
         }
       }
     }
