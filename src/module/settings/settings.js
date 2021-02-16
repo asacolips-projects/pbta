@@ -323,6 +323,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
           }
         }
         for (let attr of Object.keys(oldGroup)) {
+          if (attr == 'ask' || attr == 'prompt') {
+            continue;
+          }
+
           if (!newGroup[attr]) {
             configDiff.del.push(`${actorType}.${attrGroup}.${attr}`);
             updatesDiff[actorType][`data.${attrGroup}.-=${attr}`] = null;

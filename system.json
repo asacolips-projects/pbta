@@ -37,7 +37,7 @@
   "secondaryTokenAttribute": null,
   "initiative": "1d20",
   "socket": true,
-  "url": "https://gitlab.com/asacolips-projects/foundry-mods/pbta",
+  "url": "https://asacolips.gitbook.io/pbta-system/",
   "manifest": "https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/jobs/artifacts/beta/system.json?job=build-beta",
   "download": "https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/jobs/artifacts/beta/pbta.json?job=build-beta"
 }

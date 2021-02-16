@@ -60,7 +60,7 @@ export class PbtaRolls {
         // score to use.
         if (data.roll == 'ask') {
           let stats = game.pbta.sheetConfig.actorTypes[actorType].stats;
-          let statButtons = Object.entries(stats).map(stat => {
+          let statButtons = Object.entries(stats).filter(stat => stat[0] != 'ask' && stat[0] != 'prompt').map(stat => {
             return {
               label: stat[1].label,
               callback: () => this.rollMoveExecute(stat[0], data, templateData)
