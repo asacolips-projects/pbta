@@ -59,7 +59,7 @@
         </section>
 
         <section class="sheet-attributes-top">
-          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrTop group="attrTop" class="attributes-top"}}
+          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrTop group="attrTop" class="attributes-top" owner=owner editable=editable}}
         </section>
       </section>
 
@@ -67,7 +67,7 @@
         {{!-- Sidebar --}}
         <section class="sheet-look">
           <div class="cell cell--aesthetics">
-            {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left"}}
+            {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left" owner=owner editable=editable}}
           </div>
 
           {{!-- TODO: Re-enable the look toggle later --}}

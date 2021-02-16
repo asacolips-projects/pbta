@@ -1,12 +1,14 @@
 <div class="cell cell--{{class}}">
   {{#each attrs as |attr key|}}
-    <div class="cell cell--{{key}}">
+    <div class="cell cell--{{key}} cell--{{attr.type}}">
       <label for="data.{{../group}}.{{key}}.value" class="cell__title">{{attr.label}}</label>
       {{#if attr.description}}<p class="cell__description cell__description--attr">{{attr.description}}</p>{{/if}}
       {{!-- Text area --}}
       {{#if (eq attr.type "LongText")}}
         {{!-- <textarea class="textarea textarea--title" name="data.{{../group}}.{{key}}.value" rows="5">{{attr.value}}</textarea> --}}
-        {{editor content=attr.value target=attr.attrName button=true owner=owner editable=editable}}
+        {{!-- <div style="display: block; height: 100%; min-height: 100px;"> --}}
+          {{editor content=attr.value target=attr.attrName button=true owner=../owner editable=../editable}}
+        {{!-- </div> --}}
       {{!-- Checkbox --}}
       {{else if (eq attr.type "Checkbox")}}
         {{#if attr.checkboxLabel}}<label>{{/if}}
