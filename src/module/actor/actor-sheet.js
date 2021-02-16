@@ -244,22 +244,22 @@ export class PbtaActorSheet extends ActorSheet {
     super.activateListeners(html);
 
     // Rollables.
-    html.find('.rollable').on('click', this._onRollable.bind(this));
+    // html.find('.rollable').on('click', this._onRollable.bind(this));
 
-    // Toggle look.
+    // // Toggle look.
     html.find('.toggle--look').on('click', this._toggleLook.bind(this, html));
 
-    // Owned Item management
-    html.find('.item-create').click(this._onItemCreate.bind(this));
-    html.find('.item-edit').click(this._onItemEdit.bind(this));
-    html.find('.item-delete').click(this._onItemDelete.bind(this));
+    // // Owned Item management
+    html.find('.item-create').on('click', this._onItemCreate.bind(this));
+    html.find('.item-edit').on('click', this._onItemEdit.bind(this));
+    html.find('.item-delete').on('click', this._onItemDelete.bind(this));
 
     // Moves
-    html.find('.item-label').click(this._showItemDetails.bind(this));
+    html.find('.item-label').on('click', this._showItemDetails.bind(this));
 
     // Attributes.
-    html.find('.attr-clock').click(this._onClockClick.bind(this));
-    html.find('.attr-xp').click(this._onClockClick.bind(this));
+    html.find('.attr-clock').on('click', this._onClockClick.bind(this));
+    html.find('.attr-xp').on('click', this._onClockClick.bind(this));
 
     // Stats.
     html.find('.stat-rollable').on('mouseover', this._onStatHoverOn.bind(this));
@@ -975,6 +975,7 @@ export class PbtaActorSheet extends ActorSheet {
    * @private
    */
   _onItemCreate(event) {
+    console.log(event);
     event.preventDefault();
     const header = event.currentTarget;
     const type = header.dataset.type;

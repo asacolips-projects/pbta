@@ -159,7 +159,7 @@
                       <h2 class="cell__title">
                         <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../actor.moveTypes moveKey}}{{/if}}</label>
                         <div class="item-controls">
-                          <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
+                          <button type="button" class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
                             <i class="fas fa-plus"></i>
                           </button>
                         </div>
@@ -222,7 +222,7 @@
                       <h2 class="cell__title">
                         <label>{{#if (eq equipmentKey "PBTA_OTHER")}}{{localize equipmentKey}}{{else}}{{getLabel ../actor.equipmentTypes equipmentKey}}{{/if}}</label>
                         <div class="item-controls">
-                          <button class="item-control item-create" title='{{localize "PBTA.EquipmentCreate"}}' data-type="equipment" data-equipmentType="{{equipmentKey}}">
+                          <button type="button" class="item-control item-create" title='{{localize "PBTA.EquipmentCreate"}}' data-type="equipment" data-equipmentType="{{equipmentKey}}">
                             <i class="fas fa-plus"></i>
                           </button>
                         </div>
