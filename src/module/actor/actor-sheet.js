@@ -34,6 +34,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Prepare items.
     this._prepareCharacterItems(data);
     this._prepareNpcItems(data);
+    this._prepareAttrs(data);
 
     // Add playbooks.
     if (this.actor.data.type == 'character') {
@@ -90,6 +91,21 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Return data to the sheet
     return data;
+  }
+
+  _prepareAttrs(sheetData) {
+    const actorData = sheetData.actor;
+    let groups = [
+      'attrTop',
+      'attrLeft'
+    ];
+    for (let group of groups) {
+      for (let [attrKey, attrValue] of Object.entries(actorData.data[group])) {
+        if (attrValue.type == 'LongText') {
+          actorData.data[group][attrKey].attrName = `data.${group}.${attrKey}.value`;
+        }
+      }
+    }
   }
 
   /**
