@@ -54,6 +54,12 @@ export class PbtaItemSheet extends ItemSheet {
       data.data.rollExample = game.pbta.sheetConfig?.rollFormula ?? '2d6';
     }
 
+    if (data.entity.type == 'move' || data.entity.type == 'npcMove') {
+      for (let [key, value] of Object.entries(data.data.moveResults)) {
+        data.data.moveResults[key].rangeName = `data.moveResults.${key}.value`;
+      }
+    }
+
     // Handle preprocessing for tagify data.
     if (data.entity.type == 'equipment') {
       // If there are tags, convert it into a string.

@@ -186,7 +186,6 @@
         }
 
         button[title="Formats"],
-        button[title="Insert/edit image"],
         button[title="Table"],
         button[title="Horizontal line"],
         button[title="Insert/edit link"] {
@@ -262,6 +261,15 @@
   //   order: 2;
   //   height: calc(100% - 80px);
   // }
+
+  .editor-content {
+    height: 100%;
+    overflow-y: auto;
+    word-break: break-word;
+    background: rgba(0, 0, 0, 0.075);
+    padding: 0 4px;
+    border-radius: 4px;
+  }
 
   .sheet-body {
 

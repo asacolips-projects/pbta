@@ -27,5 +27,38 @@
   .resource {
     padding: 10px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+    .editor {
+      min-height: 60px;
+      height: 100% !important;
+    }
+
+    .tox-tinymce,
+    .tox-editor-container,
+    .tox-sidebar-wrap,
+    .tox-edit-area {
+      min-height: 170px;
+      height: 100% !important;
+    }
+
+    .tox-tinymce {
+      height: 100% !important;
+
+      .tox-toolbar-overlord,
+      .tox-toolbar__primary {
+        background: transparent;
+        border-bottom: 1px solid $c-black;
+      }
+
+      button {
+        font-size: 12px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        margin: 0;
+        width: auto;
+        height: auto;
+      }
+    }
   }
 }

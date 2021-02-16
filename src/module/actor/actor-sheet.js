@@ -260,7 +260,7 @@ export class PbtaActorSheet extends ActorSheet {
     super.activateListeners(html);
 
     // Rollables.
-    // html.find('.rollable').on('click', this._onRollable.bind(this));
+    html.find('.rollable').on('click', this._onRollable.bind(this));
 
     // // Toggle look.
     html.find('.toggle--look').on('click', this._toggleLook.bind(this, html));

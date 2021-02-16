@@ -128,6 +128,26 @@
 
 .window-content {
   background: $c-white url('#{$asset-path}/concrete-seamless.webp');
+
+  .tox-tinymce {
+    height: 100% !important;
+
+    .tox-toolbar-overlord,
+    .tox-toolbar__primary {
+      background: transparent;
+      border-bottom: 1px solid $c-black;
+    }
+
+    button {
+      font-size: 12px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      margin: 0;
+      width: auto;
+      height: auto;
+    }
+  }
 }
 
 // TODO: Tagify
