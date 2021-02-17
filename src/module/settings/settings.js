@@ -315,6 +315,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
               configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.label`);
               updatesDiff[actorType][`data.${attrGroup}.${attr}.label`] = newGroup[attr].label;
             }
+            if (newGroup[attr].customLabel && newGroup[attr].customLabel != oldGroup[attr].customLabel) {
+              configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.customLabel`);
+              updatesDiff[actorType][`data.${attrGroup}.${attr}.customLabel`] = newGroup[attr].customLabel;
+            }
             // Handle updating description values.
             if (newGroup[attr].description && newGroup[attr].description != oldGroup[attr].description) {
               configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.description`);

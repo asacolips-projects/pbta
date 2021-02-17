@@ -1,7 +1,11 @@
 <div class="cell cell--{{class}}">
   {{#each attrs as |attr key|}}
     <div class="cell cell--{{key}} cell--{{attr.type}}">
-      <label for="data.{{../group}}.{{key}}.value" class="cell__title">{{attr.label}}</label>
+      {{#if attr.customLabel}}
+        <input type="text" class="input--cell-title" name="data.{{../group}}.{{key}}.userLabel" value="{{#if attr.userLabel}}{{attr.userLabel}}{{else}}{{attr.label}}{{/if}}">
+      {{else}}
+        <label for="data.{{../group}}.{{key}}.value" class="cell__title">{{attr.label}}</label>
+      {{/if}}
       {{#if attr.description}}<p class="cell__description cell__description--attr">{{attr.description}}</p>{{/if}}
       {{!-- Text area --}}
       {{#if (eq attr.type "LongText")}}

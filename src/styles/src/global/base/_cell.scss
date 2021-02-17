@@ -110,6 +110,22 @@
   // }
 }
 
+.cell {
+  input.input--cell-title[type="text"] {
+    text-align: left;
+    font-family: $font-stack-secondary;
+    font-weight: bold;
+    font-size: 20px;
+    height: auto;
+    border: 0;
+    border-bottom: 2px solid;
+    border-radius: 0;
+    background: transparent;
+    margin-top: 15px;
+    padding-bottom: 6px;
+  }
+}
+
 .resource {
   .cell__title {
     background: $c-navy;

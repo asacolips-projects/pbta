@@ -170,6 +170,8 @@ export class PbtaUtility {
 
       attr.label = attrValue.label ?? this.toTitleCase(attrKey);
       attr.description = attrValue.description ?? null;
+      attr.customLabel = attrValue.customLabel ?? false;
+      attr.userLabel = attr.customLabel ? attr.label : false;
 
       if (!attrValue.type) {
         // If an object structure was used and no type was specified, it's invalid.

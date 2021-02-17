@@ -89,10 +89,21 @@ export class PbtaActorSheet extends ActorSheet {
       // data.data.xpSvg = xpSvg;
     }
 
+    this._sortAttrs(data);
+
     // Return data to the sheet
     return data;
   }
 
+  /**
+   * Prepare attributes for templates.
+   *
+   * The editor helper for TinyMCE editors is unable to handle dynamic props,
+   * so this helper adds a string that we'll use later for the name attribute
+   * on the HTML element.
+   *
+   * @param {object} sheetData Data prop on actor.
+   */
   _prepareAttrs(sheetData) {
     const actorData = sheetData.actor;
     let groups = [
@@ -105,6 +116,54 @@ export class PbtaActorSheet extends ActorSheet {
           actorData.data[group][attrKey].attrName = `data.${group}.${attrKey}.value`;
         }
       }
+    }
+  }
+
+  /**
+   * Resort attributes based on config.
+   *
+   * Currently, the way that stats and attributes are applied as updates to
+   * actors can cause their keys to become improperly ordered. In a future
+   * version we'll need to TODO and fix the order at write time, but currently,
+   * this solves the immediate problem and reorders them at render time for the
+   * sheet.
+   *
+   * @param {object} sheetData Data prop on actor.
+   */
+  _sortAttrs(sheetData) {
+    const actorData = sheetData.actor;
+    let groups = [
+      'stats',
+      'attrTop',
+      'attrLeft'
+    ];
+    // Iterate through the groups that need to be sorted.
+    for (let group of groups) {
+      // Confirm the keys exist, and assign them to a sorting array if so.
+      let sortKeys = game.pbta.sheetConfig.actorTypes[actorData.type][group];
+      let sortingArray = [];
+      if (sortKeys) {
+        sortingArray = Object.keys(sortKeys);
+      }
+      else {
+        continue;
+      }
+      // Grab the keys of the group on the actor.
+      let newData = Object.keys(actorData.data[group])
+      // Sort them based on the sorting array.
+      .sort((a,b) => {
+        return sortingArray.indexOf(a) - sortingArray.indexOf(b);
+      })
+      // Build a new object from the sorted keys.
+      .reduce(
+        (obj, key) => {
+          obj[key] = actorData.data[group][key];
+          return obj;
+        }, {}
+      );
+
+      // Replace the data object handed over to the sheet.
+      actorData.data[group] = newData;
     }
   }
 
