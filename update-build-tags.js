@@ -47,7 +47,7 @@ let artifactVersion = argv.tag ? argv.tag : argv.branch;
 
 // Update URLs.
 system.url = `https://gitlab.com/${argv.gitlabpath}`;
-system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/raw/${artifactBranch}/system.json?job=${argv.jobname}`;
+system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/system.json?job=${argv.jobname}`;
 system.download = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/pbta.zip?job=${argv.jobname}`;
 
 fs.writeFileSync('./dist/system.json', JSON.stringify(system, null, 2));
