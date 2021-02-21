@@ -1,5 +1,7 @@
 Compatible with FoundryVTT 0.7.x.
 
+![Screenshot of the PbtA system](https://mattsmithin-files.s3.amazonaws.com/pbta-system.png)
+
 # Description
 
 Build campaigns compatible with (most) Powered by the Apocalypse RPGs using Foundry VTT! This system is in active development, and you can install the free beta version using this manifest URL in Foundry's system installer: [https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/raw/beta/system.json?job=build-beta](https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/raw/beta/system.json?job=build-beta)
