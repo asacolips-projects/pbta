@@ -223,18 +223,18 @@ Hooks.on('preUpdateActor', (actor, data, options, id) => {
 /* -------------------------------------------- */
 /*  Item Updates                                */
 /* -------------------------------------------- */
-Hooks.on('createOwnedItem', async (actor, itemData, options, id) => {
-  if (itemData.type == 'move' || itemData.type == 'npcMove') {
-    let newItemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, options, id);
-    if (newItemData.data.moveResults) {
-      let update = {
-        _id: itemData._id,
-        "data.moveResults": newItemData.data.moveResults
-      };
-      await actor.updateEmbeddedEntity('OwnedItem', update);
-    }
-  }
-});
+// Hooks.on('createOwnedItem', async (actor, itemData, options, id) => {
+//   if (itemData.type == 'move' || itemData.type == 'npcMove') {
+//     let newItemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, options, id);
+//     if (newItemData.data.moveResults) {
+//       let update = {
+//         _id: itemData._id,
+//         "data.moveResults": newItemData.data.moveResults
+//       };
+//       await actor.updateEmbeddedEntity('OwnedItem', update);
+//     }
+//   }
+// });
 
 Hooks.on('preCreateItem', async (item, options, id) => {
   if (item.type == 'move' || item.type == 'npcMove') {

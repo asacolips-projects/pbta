@@ -16,11 +16,11 @@ build-beta:
     - npm run build
     - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME --versionpre=$CI_PIPELINE_IID
     - cp ./dist/system.json ./system.json
-    - mv dist dungeonworld
-    - zip -q dungeonworld.zip -r dungeonworld
+    - mv dist pbta
+    - zip -q pbta.zip -r pbta
   artifacts:
     paths:
-      - dungeonworld.zip
+      - pbta.zip
       - system.json
   only:
     - beta
@@ -33,11 +33,11 @@ build-prod:
     - npm run build
     - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG
     - cp ./dist/system.json ./system.json
-    - mv dist dungeonworld
-    - zip -q dungeonworld.zip -r dungeonworld
+    - mv dist pbta
+    - zip -q pbta.zip -r pbta
   artifacts:
     paths:
-      - dungeonworld.zip
+      - pbta.zip
       - system.json
   only:
     - tags

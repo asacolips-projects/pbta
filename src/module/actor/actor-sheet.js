@@ -1,6 +1,7 @@
 import { PbtaPlaybooks } from "../config.js";
 import { PbtaUtility } from "../utility.js";
 import { PbtaRolls } from "../rolls.js";
+import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -1055,6 +1056,7 @@ export class PbtaActorSheet extends ActorSheet {
     const header = event.currentTarget;
     const type = header.dataset.type;
     const data = duplicate(header.dataset);
+    const actor = this.actor;
     if (data.movetype) {
       data.moveType = data.movetype;
       delete data.movetype;
@@ -1068,11 +1070,14 @@ export class PbtaActorSheet extends ActorSheet {
       delete data.level;
     }
     const name = type == 'bond' ? game.i18n.localize("PBTA.BondDefault") : `New ${type.capitalize()}`;
-    const itemData = {
+    let itemData = {
       name: name,
       type: type,
       data: data
     };
+    if (type == 'move' || type == 'npcMove') {
+      itemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, {}, null);
+    }
     delete itemData.data["type"];
     return this.actor.createOwnedItem(itemData);
   }

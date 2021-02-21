@@ -57,7 +57,7 @@
             <div class="resource">
               <label>{{result.label}}</label>
               {{!-- <textarea class="textarea textarea--title" name="data.moveResults.{{key}}.value" rows="5">{{result.value}}</textarea> --}}
-              {{editor content=result.value target=result.rangeName button=true owner=owner editable=editable}}
+              {{editor content=result.value target=result.rangeName button=true owner=../owner editable=../editable}}
               {{!-- {{editor content=result.value target=result.key button=true owner=owner editable=editable}} --}}
             </div>
           {{/each}}
