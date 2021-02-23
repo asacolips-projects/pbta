@@ -28,6 +28,10 @@ Release cycles for the project follow this pattern:
 2. One week later, the patreon beta version releases with those same features (along with bug fixes).
 3. Two weeks later (three weeks since alpha), the new features will be released in a new public beta version.
 
+# Contributing
+
+This project is accepting issue reports and code merge requests! See the [CONTRIBUTING.MD](https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/blob/beta/CONTRIBUTING.md) page for details. Community code contributes will bypass the Patreon release structure and go directly to the public beta version once they're approved and merged.
+
 # Licensing
 
 All HTML, CSS, and JS is licensed under the [MIT license](https://gitlab.com/asacolips-projects/foundry-mods/dungeonworld/-/raw/master/LICENSE.txt).
