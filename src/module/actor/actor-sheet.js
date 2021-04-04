@@ -1053,7 +1053,6 @@ export class PbtaActorSheet extends ActorSheet {
    * @private
    */
   _onItemCreate(event) {
-    console.log(event);
     event.preventDefault();
     const header = event.currentTarget;
     const type = header.dataset.type;
