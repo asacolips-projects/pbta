@@ -9,6 +9,7 @@ export const preloadHandlebarsTemplates = async function() {
   const templatePaths = [
     // Attribute list partial.
     "systems/pbta/templates/parts/sheet-attributes.html",
+    "systems/pbta/templates/parts/sheet-moves.html",
   ];
 
   // Load the template parts

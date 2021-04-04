@@ -13,7 +13,7 @@ export class PbtaItemSheet extends ItemSheet {
       width: 520,
       height: 480,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details" }],
-      submitOnChange: false,
+      submitOnChange: true,
     });
   }
 
@@ -38,6 +38,7 @@ export class PbtaItemSheet extends ItemSheet {
     data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes?.character?.stats);
     data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
     data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
+    data.data.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
 
     // Add move types.
     let actorType = null;
