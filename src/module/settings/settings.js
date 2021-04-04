@@ -327,7 +327,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
           }
         }
         for (let attr of Object.keys(oldGroup)) {
-          if (attr == 'ask' || attr == 'prompt') {
+          if (attr == 'ask' || attr == 'prompt' || attr == 'formula') {
             continue;
           }
 

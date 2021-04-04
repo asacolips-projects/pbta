@@ -46,6 +46,7 @@ export class PbtaActorSheet extends ActorSheet {
       if (data.data.statSettings) {
         data.data.statSettings['ask'] = {label: game.i18n.localize('PBTA.Ask'), value: 0};
         data.data.statSettings['prompt'] = {label: game.i18n.localize('PBTA.Prompt'), value: 0};
+        data.data.statSettings['formula'] = {label: game.i18n.localize('PBTA.Formula'), value: 0};
       }
 
       let xpSvg = {
@@ -345,7 +346,7 @@ export class PbtaActorSheet extends ActorSheet {
     // html.find('.prepared').click(this._onPrepareSpell.bind(this));
 
     // Resources.
-    // html.find('.resource-control').click(this._onResouceControl.bind(this));
+    html.find('.resource-control').click(this._onResouceControl.bind(this));
 
     // Adjust weight.
     // this._adjustWeight(html);
@@ -402,34 +403,34 @@ export class PbtaActorSheet extends ActorSheet {
   //   }
   // }
 
-  // _onResouceControl(event) {
-  //   event.preventDefault();
-  //   const control = $(event.currentTarget);
-  //   const action = control.data('action');
-  //   const attr = control.data('attr');
-  //   // If there's an action and target attribute, update it.
-  //   if (action && attr) {
-  //     // Initialize data structure.
-  //     let data = {};
-  //     let changed = false;
-  //     // Retrieve the existin value.
-  //     data[attr] = Number(getProperty(this.actor.data.data, attr));
-  //     // Decrease the value.
-  //     if (action == 'decrease') {
-  //       data[attr] -= 1;
-  //       changed = true;
-  //     }
-  //     // Increase the value.
-  //     else if (action == 'increase') {
-  //       data[attr] += 1;
-  //       changed = true;
-  //     }
-  //     // If there are changes, apply to the actor.
-  //     if (changed) {
-  //       this.actor.update({ data: data });
-  //     }
-  //   }
-  // }
+  _onResouceControl(event) {
+    event.preventDefault();
+    const control = $(event.currentTarget);
+    const action = control.data('action');
+    const attr = control.data('attr');
+    // If there's an action and target attribute, update it.
+    if (action && attr) {
+      // Initialize data structure.
+      let data = {};
+      let changed = false;
+      // Retrieve the existin value.
+      data[attr] = Number(getProperty(this.actor.data.data, attr));
+      // Decrease the value.
+      if (action == 'decrease') {
+        data[attr] -= 1;
+        changed = true;
+      }
+      // Increase the value.
+      else if (action == 'increase') {
+        data[attr] += 1;
+        changed = true;
+      }
+      // If there are changes, apply to the actor.
+      if (changed) {
+        this.actor.update({ data: data });
+      }
+    }
+  }
 
   async _onClockClick(event) {
     event.preventDefault();
@@ -1013,7 +1014,8 @@ export class PbtaActorSheet extends ActorSheet {
       flavorText = data.label;
 
       templateData = {
-        title: flavorText
+        title: flavorText,
+        resultRangeNeeded: true
       };
 
       PbtaRolls.rollMove({actor: this.actor, data: null, formula: formula, templateData: templateData});
