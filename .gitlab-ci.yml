@@ -17,6 +17,7 @@ stages:
 
 init-beta:
   stage: init
+  image: docker:latest
   variables:
     VAR_NAME: BETA_BUILD_NUMBER
     TOKEN: ${CI_PIPELINE_IID_TOKEN}
