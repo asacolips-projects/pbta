@@ -28,6 +28,11 @@
     display: none;
     flex: none;
     width: 100%;
+
+    .result {
+      border-top: 1px solid $ct-gray;
+      padding-top: 6px;
+    }
   }
 
   .item-avatar {

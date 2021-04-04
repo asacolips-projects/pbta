@@ -11,6 +11,20 @@
         "attributesLeft": {},
         "attrTop": {},
         "attrLeft": {}
+      },
+      "resources": {
+        "resources": {
+          "forward": {
+            "value": 0
+          },
+          "ongoing": {
+            "value": 0
+          },
+          "rollFormula": {
+            "value": "",
+            "stat": ""
+          }
+        }
       }
     },
     "character": {
@@ -45,6 +59,7 @@
       "move": {
         "requiresMove": "",
         "moveType": null,
+        "rollFormula": "",
         "moveGroup": "",
         "moveResults": {}
       }
@@ -56,14 +71,14 @@
       ],
       "playbook": "",
       "rollType": "",
-      "rollMod": 0
+      "rollMod": 0,
+      "choices": ""
     },
     "npcMove": {
       "templates": [
         "base",
         "move"
-      ],
-      "rollFormula": ""
+      ]
     },
     "equipment": {
       "templates": [

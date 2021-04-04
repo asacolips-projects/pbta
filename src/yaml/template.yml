@@ -9,6 +9,15 @@ Actor:
       attributesLeft: {}
       attrTop: {}
       attrLeft: {}
+    resources:
+      resources:
+        forward:
+          value: 0
+        ongoing:
+          value: 0
+        rollFormula:
+          value: ''
+          stat: ''
   character:
     templates:
       - base
@@ -33,6 +42,7 @@ Item:
     move:
       requiresMove: ''
       moveType: null
+      rollFormula: ''
       moveGroup: ''
       moveResults: {}
   move:
@@ -42,11 +52,11 @@ Item:
     playbook: ''
     rollType: ''
     rollMod: 0
+    choices: ''
   npcMove:
     templates:
       - base
       - move
-    rollFormula: ''
   equipment:
     templates:
       - base

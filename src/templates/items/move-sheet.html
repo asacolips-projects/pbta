@@ -19,7 +19,21 @@
 
       {{!-- Description Tab --}}
       <div class="tab" data-group="primary" data-tab="description">
-          {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+
+        {{#if data.moveResults}}
+          {{#each data.moveResults as |result key|}}
+            <div class="resource">
+              <label>{{result.label}}</label>
+              {{editor content=result.value target=result.rangeName button=true owner=../owner editable=../editable}}
+            </div>
+          {{/each}}
+        {{/if}}
+
+        <div class="resource">
+          <label>{{localize "PBTA.Choices"}}</label>
+          {{editor content=data.choices target="data.choices" button=true owner=owner editable=editable}}
+        </div>
       </div>
 
       {{!-- Details Tab --}}
@@ -37,6 +51,13 @@
             {{/select}}
           </select>
         </div>
+
+        {{#if (eq data.rollType 'formula')}}
+          <div class="resource">
+            <label>{{localize "PBTA.RollFormula"}}</label>
+            <input type="text" name="data.rollFormula" value="{{data.rollFormula}}" placeholder="ex: d6 + d8 + @stats.cool.value" data-dtype="String"/>
+          </div>
+        {{/if}}
 
         <div class="resource">
           <label>{{localize "PBTA.Modifier"}}</label>
@@ -78,16 +99,9 @@
           <span class="help-text">{{localize "PBTA.MoveGroupHelp"}}</span>
         </div>
 
-        {{#if data.moveResults}}
-          {{#each data.moveResults as |result key|}}
-            <div class="resource">
-              <label>{{result.label}}</label>
-              {{!-- <textarea class="textarea textarea--title" name="data.moveResults.{{key}}.value" rows="5">{{result.value}}</textarea> --}}
-              {{editor content=result.value target=result.rangeName button=true owner=../owner editable=../editable}}
-              {{!-- {{editor content=result.value target=result.key button=true owner=owner editable=editable}} --}}
-            </div>
-          {{/each}}
-        {{/if}}
+        <div class="resource">
+          <h2>Move Results have moved to the <em>Description</em> tab.</h2>
+        </div>
 
       </div>
   </section>

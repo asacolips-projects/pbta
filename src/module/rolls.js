@@ -7,13 +7,28 @@ export class PbtaRolls {
     this.actorData = null;
   }
 
-  static getRollFormula(defaultFormula = '2d6') {
-    return game.pbta.sheetConfig.rollFormula ?? defaultFormula;
+  static getRollFormula(defaultFormula = '2d6', actor = null) {
+    // Get the default formula.
+    let formula = game.pbta.sheetConfig.rollFormula ?? defaultFormula;
+    // Check if the actor has an override formula.
+    if (!actor && this.actor) actor = this.actor;
+    if (actor && actor?.data?.data?.resources?.rollFormula?.value) {
+      let validRoll = new Roll(actor.data.data.resources.rollFormula.value.trim(), actor.getRollData()).evaluate();
+      if (validRoll) {
+        formula = actor.data.data.resources.rollFormula.value.trim();
+      }
+    }
+    // Return the final formula.
+    return formula;
+  }
+
+  static getModifiers(actor) {
+    let forward = Number(actor.data.data.resources.forward.value) ?? 0;
+    let ongoing = Number(actor.data.data.resources.ongoing.value) ?? 0;
+    return `+${forward}+${ongoing}`;
   }
 
   static async rollMove(options = {}) {
-    let dice = this.getRollFormula('2d6');
-
     // TODO: Create a way to resolve this using the formula only, sans actor.
     // If there's no actor, we need to exit.
     if (!options.actor) {
@@ -29,6 +44,9 @@ export class PbtaRolls {
     this.actor = options.actor;
     this.actorData = this.actor ? this.actor.data.data : {};
     let actorType = this.actor.data.type;
+
+    // Get the roll formula.
+    let dice = this.getRollFormula('2d6', this.actor);
 
     // Grab the item data, if any.
     const item = options?.data;
@@ -52,9 +70,19 @@ export class PbtaRolls {
           title: item.name,
           trigger: null,
           details: item.data.description,
-          moveResults: item.data.moveResults
+          moveResults: item.data.moveResults,
+          choices: item.data?.choices
         };
-        data.roll = item.type == 'move' ? item.data.rollType.toLowerCase() : item.data.rollFormula;
+
+        if (item.type == 'npcMove' || item.data?.rollType == 'formula') {
+          data.roll = item.data.rollFormula;
+          data.rollType = item.data.rollType ? item.data.rollType.toLowerCase() : 'npc';
+        }
+        else {
+          data.roll = item.data.rollType.toLowerCase();
+          data.rollType = item.data.rollType.toLowerCase();
+        }
+
         data.mod = item.type == 'move' ? item.data.rollMod : 0;
         // If this is an ASK roll, render a prompt first to determine which
         // score to use.
@@ -124,7 +152,10 @@ export class PbtaRolls {
   static async rollMoveExecute(roll, dataset, templateData, form = null) {
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
-    let dice = PbtaUtility.getRollFormula('2d6');
+    let dice = this.getRollFormula('2d6', this.actor);
+    let forwardUsed = false;
+    let resultRangeNeeded = templateData.resultRangeNeeded ?? false;
+    let rollData = this.actor.getRollData();
     // GM rolls.
     let chatData = {
       user: game.user._id,
@@ -139,19 +170,22 @@ export class PbtaRolls {
       // Test if the roll is a formula.
       let validRoll = false;
       try {
-        validRoll = new Roll(roll.trim()).evaluate();
+        validRoll = new Roll(roll.trim(), rollData).evaluate();
       } catch (error) {
         validRoll = false;
       }
       // Roll can be either a formula like `2d6+3` or a raw stat like `str`.
       let formula = validRoll ? roll.trim() : '';
       // Handle prompt (user input).
-      if (!validRoll) {
+      if (!validRoll || dataset?.rollType == 'formula') {
         if (roll.toLowerCase() == 'prompt') {
           formula = form.prompt?.value ? `${dice}+${form.prompt.value}` : dice;
           if (dataset.value && dataset.value != 0) {
             formula += `+${dataset.value}`;
           }
+        }
+        else if (dataset?.rollType == 'formula') {
+          formula = roll;
         }
         // Handle ability scores (no input).
         else if (roll.match(/(\d*)d\d+/g)) {
@@ -171,14 +205,21 @@ export class PbtaRolls {
             formula += `+${dataset.value}`;
           }
         }
+
+        if (this.actor.data.data?.resources?.forward?.value) {
+          let modifiers = PbtaRolls.getModifiers(this.actor);
+          formula = `${formula}${modifiers}`;
+          forwardUsed = Number(this.actor.data.data.resources.forward.value) != 0;
+        }
+        resultRangeNeeded = true;
       }
       if (formula != null) {
         // Do the roll.
-        let roll = new Roll(`${formula}`, this.actor.getRollData());
+        let roll = new Roll(`${formula}`, rollData);
         roll.roll();
         let rollType = templateData.rollType ?? 'move';
         // Add success notification.
-        if (formula.includes(dice) && rollType == 'move') {
+        if (resultRangeNeeded && rollType == 'move') {
           // Retrieve the result ranges.
           let resultRanges = game.pbta.sheetConfig.rollResults;
           let resultType = null;
@@ -258,6 +299,11 @@ export class PbtaRolls {
           ui.combat.render();
         }
       }
+    }
+
+    // Update forward.
+    if (forwardUsed && this.actor.data.data?.resources?.forward) {
+      await this.actor.update({'data.resources.forward.value': 0});
     }
   }
 }
