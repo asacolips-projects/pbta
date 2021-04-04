@@ -292,8 +292,8 @@ export class PbtaUtility {
   }
 
   static applyActorTemplates() {
-    let templates = game.system.template.Actor;
-    let actorTypes = game.system.template.Actor.types;
+    let templates = game.system.model.Actor;
+    let actorTypes = Object.keys(templates);
 
     if (!game.pbta.sheetConfig.actorTypes) {
       let menu = game.settings.menus.get('pbta.sheetConfigMenu');
