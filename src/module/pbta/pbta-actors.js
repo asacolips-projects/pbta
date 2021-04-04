@@ -5,7 +5,7 @@ export class PbtaActorTemplates {
 
     let actorType = actor.type ?? 'character';
 
-    data = mergeObject(origData, game.system.template.Actor[actorType]);
+    data = mergeObject(origData, game.system.model.Actor[actorType]);
     delete data.templates;
     delete data._id;
 
@@ -105,15 +105,13 @@ export class PbtaActorTemplates {
 
   static applyItemTemplate(actor, itemData, options, id) {
     let newItemData = duplicate(itemData);
-    if (!newItemData.data) newItemData.data = {};
 
     let resultRanges = game.pbta.sheetConfig.rollResults;
-    let data = newItemData.data;
-    if (!data.moveResults) data.moveResults = {};
+    if (!newItemData.moveResults) newItemData.moveResults = {};
 
     for (let [key, value] of Object.entries(resultRanges)) {
-      if (!data.moveResults[key]) {
-        data.moveResults[key] = {
+      if (!newItemData.moveResults[key]) {
+        newItemData.moveResults[key] = {
           key: `data.moveResults.${key}.value`,
           label: value.label,
           value: ''

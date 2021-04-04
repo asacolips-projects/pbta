@@ -203,10 +203,6 @@ Hooks.on("renderSettings", (app, html) => {
 Hooks.on('preCreateActor', async (actor, options, id) => {
   let data = PbtaActorTemplates.applyActorTemplate(actor, options, id);
   actor.data = data;
-  // // Allow the character to levelup up when their level changes.
-  // if (actor.data.type == 'character') {
-  //   actor.setFlag('pbta', 'levelup', true);
-  // }
 });
 
 Hooks.on('preUpdateActor', (actor, data, options, id) => {
@@ -240,9 +236,7 @@ Hooks.on('preCreateItem', async (item, options, id) => {
   if (item.type == 'move' || item.type == 'npcMove') {
     let itemData = item.data ?? {};
     let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
-    if (newItemData.data.moveResults) {
-      item.data = newItemData.data;
-    }
+    item.data = newItemData;
   }
 });
 
