@@ -25,13 +25,13 @@ build-beta:
   only:
     - beta
 
-build-prod:
+build-patreon:
   stage: build
   script:
     - export
     - npm ci
     - npm run build
-    - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG
+    - node update-build-tags.js --branch=$CI_COMMIT_TAG --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG
     - cp ./dist/system.json ./system.json
     - mv dist pbta
     - zip -q pbta.zip -r pbta
@@ -40,4 +40,26 @@ build-prod:
       - pbta.zip
       - system.json
   only:
-    - tags
+    - /^alpha\d.*$/i
+  except:
+    - branches
+
+
+build-prod:
+  stage: build
+  script:
+    - export
+    - npm ci
+    - npm run build
+    - node update-build-tags.js --branch='master' --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG
+    - cp ./dist/system.json ./system.json
+    - mv dist pbta
+    - zip -q pbta.zip -r pbta
+  artifacts:
+    paths:
+      - pbta.zip
+      - system.json
+  only:
+    - /^(\d+\.)+(\d+)*$/i
+  except:
+    - branches
