@@ -1,15 +1,15 @@
 .tabs {
-  border-bottom: 1px solid $c-black;
+  border-bottom: 2px solid $c-black;
   border-top: 0;
-  height: 36px;
+  height: 37px;
   padding: 0 20px;
 
   .item {
-    border: 1px solid transparent;
-    border-bottom: 1px solid $c-black;
+    border: 2px solid transparent;
+    border-bottom: 2px solid $c-black;
     background: $c-black;
     color: $c-white;
-    margin: 0 10px -1px;
+    margin: 0 10px -2px;
     padding: 4px;
     line-height: 1.4;
     text-transform: uppercase;
@@ -19,14 +19,14 @@
     &:focus {
       background: $c-white;
       color: $c-black;
-      border: 1px solid $c-black;
+      border: 2px solid $c-black;
       text-shadow: none;
     }
 
     &.active {
       background: #999;
       color: $c-white;
-      border-bottom: 1px solid $c-black;
+      border-bottom: 2px solid $c-black;
       text-shadow: none;
       font-weight: bold;
 

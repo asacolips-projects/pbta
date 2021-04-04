@@ -9,6 +9,8 @@ Actor:
       attributesLeft: {}
       attrTop: {}
       attrLeft: {}
+      details:
+        biography: ''
     resources:
       resources:
         forward:
