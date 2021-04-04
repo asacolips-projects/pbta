@@ -10,9 +10,9 @@ export class PbtaActorNpcSheet extends PbtaActorSheet {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["pbta", "sheet", "actor", "npc"],
-      width: 560,
-      height: 560,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "moves" }]
+      width: 720,
+      height: 640,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-tabs-content", initial: "moves" }]
     });
   }
 
