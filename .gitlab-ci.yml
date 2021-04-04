@@ -77,14 +77,18 @@ build-patreon:
 
 deploy-patreon:
   stage: deploy
-  # image: microsoft/azure-cli
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  # TODO: Azure Upload
+  # image: microsoft/azure-cli
   dependencies:
     - build-patreon
   script:
     - aws configure set region us-east-1
     - aws s3 cp ./pbta.zip s3://$S3_BUCKET/pbta/$CI_COMMIT_TAG/pbta.zip
+    - aws s3 cp ./system.json s3://$S3_BUCKET/pbta/$CI_COMMIT_TAG/system.json
+    # TODO: Azure upload
     # - az storage blob upload-batch --connection-string $AZ_STORAGE_CONNECTION_STRING --source ./pbta.zip --destination pbta --destination-path $CI_COMMIT_TAG
+    # - az storage blob upload-batch --connection-string $AZ_STORAGE_CONNECTION_STRING --source ./system.json --destination pbta --destination-path $CI_COMMIT_TAG
   only:
     # Example: alpha20-0.1.0
     - /^alpha\d+-\d+.*$/i
