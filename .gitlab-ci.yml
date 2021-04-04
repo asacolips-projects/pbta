@@ -40,7 +40,8 @@ build-patreon:
       - pbta.zip
       - system.json
   only:
-    - /^alpha\d.*$/i
+    # Example: alpha20-0.1.0
+    - /^alpha\d+-\d+.*$/i
   except:
     - branches
 
@@ -60,6 +61,7 @@ build-prod:
       - pbta.zip
       - system.json
   only:
+    # Example: 0.1.0
     - /^(\d+\.)+(\d+)*$/i
   except:
     - branches
