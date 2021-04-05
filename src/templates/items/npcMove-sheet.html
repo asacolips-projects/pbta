@@ -14,51 +14,40 @@
     <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
   </nav>
 
+  {{log data.data}}
+
   {{!-- Sheet Body --}}
   <section class="sheet-body">
 
       {{!-- Description Tab --}}
       <div class="tab" data-group="primary" data-tab="description">
-          {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+          {{editor content=data.data.description target="data.description" button=true owner=owner editable=editable}}
       </div>
 
       {{!-- Details Tab --}}
       <div class="tab" data-group="primary" data-tab="details">
         <div class="resource">
           <label>{{localize "PBTA.RollFormula"}}</label>
-          <input type="text" name="data.rollFormula" value="{{data.rollFormula}}" placeholder="ex: {{data.rollExample}}" data-dtype="String"/>
+          <input type="text" name="data.rollFormula" value="{{data.data.rollFormula}}" placeholder="ex: {{data.data.rollExample}}" data-dtype="String"/>
         </div>
 
         <div class="resource">
           <label>{{localize "PBTA.MoveType"}}</label>
           <select name="data.moveType" data-dtype="String">
-            {{#select data.moveType}}
+            {{#select data.data.moveType}}
             <option value="">—</option>
-            {{#each data.moveTypes as |move key|}}
+            {{#each data.data.moveTypes as |move key|}}
             <option value="{{key}}">{{move.label}}</option>
             {{/each}}
             {{/select}}
           </select>
         </div>
 
-        <div class="resource">
-          <label>{{localize "PBTA.RequiresMove"}}</label>
-          <input type="text" name="data.requiresMove" value="{{data.requiresMove}}" data-dtype="String"/>
-        </div>
-
-        <div class="resource">
-          <label>{{localize "PBTA.MoveGroup"}}</label>
-          <input type="text" name="data.moveGroup" value="{{data.moveGroup}}" placeholder="ex: barbarian-armor" data-dtype="String"/>
-          {{!-- <span class="help-text">{{localize "PBTA.MoveGroupHelp"}}</span> --}}
-        </div>
-
-        {{#if data.moveResults}}
-          {{#each data.moveResults as |result key|}}
+        {{#if data.data.moveResults}}
+          {{#each data.data.moveResults as |result key|}}
             <div class="resource">
               <label>{{result.label}}</label>
-              {{!-- <textarea class="textarea textarea--title" name="data.moveResults.{{key}}.value" rows="5">{{result.value}}</textarea> --}}
               {{editor content=result.value target=result.rangeName button=true owner=../owner editable=../editable}}
-              {{!-- {{editor content=result.value target=result.key button=true owner=owner editable=editable}} --}}
             </div>
           {{/each}}
         {{/if}}

@@ -1,12 +1,14 @@
 <form class="{{cssClass}}" autocomplete="off">
 
+  {{log 'test'}}
+
   <div class="sheet-wrapper">
 
       {{!-- Sheet Header --}}
       <header class="sheet-header">
           <div class="sheet-header__fields">
               <input class="input--title" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
-              <input class="input--title charplaybook" name="data.details.playbook" type="text" value="{{data.details.playbook}}" placeholder="Playbook" list="playbooks"/>
+              <input class="input--title charplaybook" name="data.details.playbook" type="text" value="{{data.data.details.playbook}}" placeholder="Playbook" list="playbooks"/>
               <datalist id="playbooks">
                 {{#each data.playbooks as |playbook id|}}
                 <option value="{{playbook}}" />
@@ -14,11 +16,11 @@
               </datalist>
               {{!-- <div class="flex-item flex-item--level">
                 <label for="data.atributes.level.value">{{ localize "PBTA.Level" }}</label>
-                <input name="data.attributes.level.value" type="text" value="{{data.attributes.level.value}}" placeholder="Level" data-dtype="Number"/>
+                <input name="data.attributes.level.value" type="text" value="{{data.data.attributes.level.value}}" placeholder="Level" data-dtype="Number"/>
               </div>
               <div class="flex-item flex-item--xp">
                 <label for="data.attributes.xp.value">{{ localize "PBTA.XP" }}</label>
-                <input name="data.attributes.xp.value" type="text" value="{{data.attributes.xp.value}}" placeholder="XP" data-dtype="Number"/>
+                <input name="data.attributes.xp.value" type="text" value="{{data.data.attributes.xp.value}}" placeholder="XP" data-dtype="Number"/>
                 {{{progressCircle data.xpSvg}}}
               </div>
               <div class="flex-item flex-item--level-up">
@@ -43,7 +45,7 @@
 
           <div class="cell cell--stats">
             <ol class="stats-list">
-            {{#each data.stats as |stat key|}}
+            {{#each data.data.stats as |stat key|}}
               <li class="stat flexrow" data-stat="{{key}}">
                 <span class="stat-icon stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
                 <label for="data.stats.{{key}}.value" class="cell__title stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}">{{ stat.label }}</label>
@@ -59,7 +61,7 @@
         </section>
 
         <section class="sheet-attributes-top">
-          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrTop group="attrTop" class="attributes-top" owner=owner editable=editable}}
+          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.data.attrTop group="attrTop" class="attributes-top" owner=owner editable=editable}}
         </section>
       </section>
 
@@ -67,7 +69,7 @@
         {{!-- Sidebar --}}
         <section class="sheet-look">
           <div class="cell cell--aesthetics">
-            {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left" owner=owner editable=editable}}
+            {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.data.attrLeft group="attrLeft" class="attributes-left" owner=owner editable=editable}}
           </div>
 
           {{!-- TODO: Re-enable the look toggle later --}}
@@ -93,7 +95,7 @@
                   <div class="cell cell--bio">
                     <label class="cell__title">{{localize "PBTA.Biography"}}</label>
                     {{!-- We're avoiding WYSIWYGs... for now... --}}
-                    {{editor content=data.details.biography target="data.details.biography" button=true owner=owner editable=editable}}
+                    {{editor content=data.data.details.biography target="data.details.biography" button=true owner=owner editable=editable}}
                   </div>
                 </div>
               </div>
@@ -112,7 +114,7 @@
                     <div class="cell cell--roll-formula">
                       <label class="cell__title">{{localize "PBTA.RollFormulaOverride"}}</label>
                       <div class="cell__wrapper">
-                        <input type="text" name="data.resources.rollFormula.value" value="{{data.resources.rollFormula.value}}" placeholder="ex: 3d6kh2"/>
+                        <input type="text" name="data.resources.rollFormula.value" value="{{data.data.resources.rollFormula.value}}" placeholder="ex: 3d6kh2"/>
                       </div>
                     </div>
 
@@ -120,7 +122,7 @@
                       <label class="cell__title">{{localize "PBTA.Forward"}}</label>
                       <div class="cell__wrapper">
                         <button class="resource-control resource-decrease" data-action="decrease" data-attr="resources.forward.value">-</button>
-                        <input type="number" name="data.resources.forward.value" value="{{numberFormat data.resources.forward.value decimals=0 sign=false}}" data-dtype="Number"/>
+                        <input type="number" name="data.resources.forward.value" value="{{numberFormat data.data.resources.forward.value decimals=0 sign=false}}" data-dtype="Number"/>
                         <button class="resource-control resource-increase" data-action="increase" data-attr="resources.forward.value">+</button>
                       </div>
                     </div>
@@ -129,16 +131,16 @@
                       <label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
                       <div class="cell__wrapper">
                         <button class="resource-control resource-decrease" data-action="decrease" data-attr="resources.ongoing.value">-</button>
-                        <input type="number" name="data.resources.ongoing.value" value="{{numberFormat data.resources.ongoing.value decimals=0 sign=false}}" data-dtype="Number"/>
+                        <input type="number" name="data.resources.ongoing.value" value="{{numberFormat data.data.resources.ongoing.value decimals=0 sign=false}}" data-dtype="Number"/>
                         <button class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
                       </div>
                     </div>
                   </section>
 
-                  {{#each actor.moves as |moveGroup moveKey|}}
+                  {{#each data.moves as |moveGroup moveKey|}}
                     <div class="cell cell--moves cell--{{moveKey}}">
                       <h2 class="cell__title">
-                        <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../actor.moveTypes moveKey}}{{/if}}</label>
+                        <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../data.moveTypes moveKey}}{{/if}}</label>
                         <div class="item-controls">
                           <button type="button" class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
                             <i class="fas fa-plus"></i>
@@ -148,7 +150,7 @@
                       <ol class="items-list">
                       {{#each moveGroup as |item id|}}
                         <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
-                          {{> "systems/pbta/templates/parts/sheet-moves.html" item=item statSettings=../../data.statSettings}}
+                          {{> "systems/pbta/templates/parts/sheet-moves.html" item=item statSettings=../../data.data.statSettings}}
                         </li>
                       {{/each}}
                       </ol>
@@ -175,10 +177,10 @@
                       </button>
                     </div>
                   </h2> --}}
-                  {{#each actor.equipment as |equipmentGroup equipmentKey|}}
+                  {{#each data.equipment as |equipmentGroup equipmentKey|}}
                     <div class="cell cell--equipment cell--{{equipmentKey}}">
                       <h2 class="cell__title">
-                        <label>{{#if (eq equipmentKey "PBTA_OTHER")}}{{localize equipmentKey}}{{else}}{{getLabel ../actor.equipmentTypes equipmentKey}}{{/if}}</label>
+                        <label>{{#if (eq equipmentKey "PBTA_OTHER")}}{{localize equipmentKey}}{{else}}{{getLabel ../data.equipmentTypes equipmentKey}}{{/if}}</label>
                         <div class="item-controls">
                           <button type="button" class="item-control item-create" title='{{localize "PBTA.EquipmentCreate"}}' data-type="equipment" data-equipmentType="{{equipmentKey}}">
                             <i class="fas fa-plus"></i>

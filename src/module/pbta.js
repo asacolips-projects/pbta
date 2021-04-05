@@ -200,9 +200,9 @@ Hooks.on("renderSettings", (app, html) => {
 /* -------------------------------------------- */
 /*  Actor Updates                               */
 /* -------------------------------------------- */
-Hooks.on('preCreateActor', async (actor, options, id) => {
-  let data = PbtaActorTemplates.applyActorTemplate(actor, options, id);
-  actor.data = data;
+Hooks.on('preCreateActor', async (actor, data, options, id) => {
+  let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
+  data.data = templateData;
 });
 
 Hooks.on('preUpdateActor', (actor, data, options, id) => {
@@ -232,11 +232,11 @@ Hooks.on('preUpdateActor', (actor, data, options, id) => {
 //   }
 // });
 
-Hooks.on('preCreateItem', async (item, options, id) => {
+Hooks.on('preCreateItem', async (item, data, options, id) => {
   if (item.type == 'move' || item.type == 'npcMove') {
-    let itemData = item.data ?? {};
+    let itemData = data ?? {};
     let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
-    item.data = newItemData;
+    data.data = newItemData.data;
   }
 });
 

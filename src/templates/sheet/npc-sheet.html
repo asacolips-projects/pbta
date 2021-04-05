@@ -15,16 +15,16 @@
     {{!-- Main --}}
     <section class="sheet-main sheet-main--npc">
 
-      {{#if data.attrTop}}
+      {{#if data.data.attrTop}}
         <section class="sheet-attributes-top">
-          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrTop group="attrTop" class="attributes-top"}}
+          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.data.attrTop group="attrTop" class="attributes-top"}}
         </section>
       {{/if}}
 
-      {{#if data.attrLeft}}
+      {{#if data.data.attrLeft}}
         <section class="sheet-attributes-left">
           <div class="cell cell--aesthetics">
-            {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.attrLeft group="attrLeft" class="attributes-left"}}
+            {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=data.data.attrLeft group="attrLeft" class="attributes-left"}}
           </div>
         </section>
       {{/if}}
@@ -46,7 +46,7 @@
               <div class="cell cell--bio">
                 <label class="cell__title">{{localize "PBTA.Biography"}}</label>
                 {{!-- We're avoiding WYSIWYGs... for now... --}}
-                {{editor content=data.details.biography target="data.details.biography" button=true owner=owner editable=editable}}
+                {{editor content=data.data.details.biography target="data.details.biography" button=true owner=owner editable=editable}}
               </div>
             </div>
           </div>
@@ -54,10 +54,10 @@
           <div class="tab moves active" data-group="primary" data-tab="moves">
             <div class="sheet-tab">
               <div class="sheet-moves moves">
-                {{#each actor.moves as |moveGroup moveKey|}}
+                {{#each data.moves as |moveGroup moveKey|}}
                   <div class="cell cell--moves cell--{{moveKey}}">
                     <h2 class="cell__title">
-                      <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../actor.moveTypes moveKey}}{{/if}}</label>
+                      <label>{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../data.moveTypes moveKey}}{{/if}}</label>
                       <div class="item-controls">
                         <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="npcMove" data-moveType="{{moveKey}}">
                           <i class="fas fa-plus"></i>
@@ -98,7 +98,7 @@
           <div class="tab equipment" data-group="primary" data-tab="equipment">
             {{!-- <div class="cell cell--equipment"> --}}
               <section class="sheet-notifications" style="margin-top:10px;">
-                {{#if data.isToken}}
+                {{#if data.data.isToken}}
                 <div class="cell__title warning small-text">Equipment cannot be rearranged while this token is not linked to an actor.</div>
                 {{/if}}
               </section>
@@ -111,10 +111,10 @@
                   </button>
                 </div>
               </h2> --}}
-              {{#each actor.equipment as |equipmentGroup equipmentKey|}}
+              {{#each data.equipment as |equipmentGroup equipmentKey|}}
                 <div class="cell cell--equipment cell--{{equipmentKey}}">
                   <h2 class="cell__title">
-                    <label>{{#if (eq equipmentKey "PBTA_OTHER")}}{{localize equipmentKey}}{{else}}{{getLabel ../actor.equipmentTypes equipmentKey}}{{/if}}</label>
+                    <label>{{#if (eq equipmentKey "PBTA_OTHER")}}{{localize equipmentKey}}{{else}}{{getLabel ../data.equipmentTypes equipmentKey}}{{/if}}</label>
                     <div class="item-controls">
                       <button type="button" class="item-control item-create" title='{{localize "PBTA.EquipmentCreate"}}' data-type="equipment" data-equipmentType="{{equipmentKey}}">
                         <i class="fas fa-plus"></i>
