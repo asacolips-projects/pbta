@@ -19,10 +19,10 @@
 
       {{!-- Description Tab --}}
       <div class="tab" data-group="primary" data-tab="description">
-        {{editor content=data.data.description target="data.description" button=true owner=owner editable=editable}}
+        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
 
-        {{#if data.data.moveResults}}
-          {{#each data.data.moveResults as |result key|}}
+        {{#if data.moveResults}}
+          {{#each data.moveResults as |result key|}}
             <div class="resource">
               <label>{{result.label}}</label>
               {{editor content=result.value target=result.rangeName button=true owner=../owner editable=../editable}}
@@ -32,7 +32,7 @@
 
         <div class="resource">
           <label>{{localize "PBTA.Choices"}}</label>
-          {{editor content=data.data.choices target="data.choices" button=true owner=owner editable=editable}}
+          {{editor content=data.choices target="data.choices" button=true owner=owner editable=editable}}
         </div>
       </div>
 
@@ -41,10 +41,10 @@
         <div class="resource">
           <label>{{localize "PBTA.Roll"}}</label>
           <select name="data.rollType" data-dtype="String">
-            {{#select data.data.rollType}}
+            {{#select data.rollType}}
               <option value="">—</option>
-              {{#if data.data.stats}}
-                {{#each data.data.stats as |stat key|}}
+              {{#if data.stats}}
+                {{#each data.stats as |stat key|}}
                   <option value="{{key}}">{{stat.label}}</option>
                 {{/each}}
               {{/if}}
@@ -52,24 +52,24 @@
           </select>
         </div>
 
-        {{#if (eq data.data.rollType 'formula')}}
+        {{#if (eq data.rollType 'formula')}}
           <div class="resource">
             <label>{{localize "PBTA.RollFormula"}}</label>
-            <input type="text" name="data.rollFormula" value="{{data.data.rollFormula}}" placeholder="ex: d6 + d8 + @stats.cool.value" data-dtype="String"/>
+            <input type="text" name="data.rollFormula" value="{{data.rollFormula}}" placeholder="ex: d6 + d8 + @stats.cool.value" data-dtype="String"/>
           </div>
         {{/if}}
 
         <div class="resource">
           <label>{{localize "PBTA.Modifier"}}</label>
-          <input type="text" name="data.rollMod" value="{{data.data.rollMod}}" data-dtype="Number"/>
+          <input type="text" name="data.rollMod" value="{{data.rollMod}}" data-dtype="Number"/>
         </div>
 
         <div class="resource">
           <label>{{localize "PBTA.Playbook"}}</label>
           <select name="data.playbook">
-            {{#select data.data.playbook}}
+            {{#select data.playbook}}
               <option value="">—</option>
-              {{#each data.data.playbooks as |playbook id|}}
+              {{#each data.playbooks as |playbook id|}}
               <option value="{{playbook}}">{{playbook}}</option>
               {{/each}}
             {{/select}}
@@ -79,9 +79,9 @@
         <div class="resource">
           <label>{{localize "PBTA.MoveType"}}</label>
           <select name="data.moveType" data-dtype="String">
-            {{#select data.data.moveType}}
+            {{#select data.moveType}}
             <option value="">—</option>
-            {{#each data.data.moveTypes as |move key|}}
+            {{#each data.moveTypes as |move key|}}
             <option value="{{key}}">{{move.label}}</option>
             {{/each}}
             {{/select}}
@@ -90,12 +90,12 @@
 
         <div class="resource">
           <label>{{localize "PBTA.RequiresMove"}}</label>
-          <input type="text" name="data.requiresMove" value="{{data.data.requiresMove}}" data-dtype="String"/>
+          <input type="text" name="data.requiresMove" value="{{data.requiresMove}}" data-dtype="String"/>
         </div>
 
         <div class="resource">
           <label>{{localize "PBTA.MoveGroup"}}</label>
-          <input type="text" name="data.moveGroup" value="{{data.data.moveGroup}}" placeholder="ex: barbarian-armor" data-dtype="String"/>
+          <input type="text" name="data.moveGroup" value="{{data.moveGroup}}" placeholder="ex: barbarian-armor" data-dtype="String"/>
           <span class="help-text">{{localize "PBTA.MoveGroupHelp"}}</span>
         </div>
 

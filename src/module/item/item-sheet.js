@@ -30,8 +30,7 @@ export class PbtaItemSheet extends ItemSheet {
 
   /** @override */
   async getData() {
-    // const data = super.getData();
-    // const data = super.getData();
+    this.options.title = this.document.data.name;
     const isOwner = this.document.isOwner;
     const isEditable = this.isEditable;
     const data = foundry.utils.deepClone(this.object.data);
@@ -96,7 +95,7 @@ export class PbtaItemSheet extends ItemSheet {
       item: this.object.data.document,
       cssClass: isEditable ? "editable" : "locked",
       editable: isEditable,
-      data: data,
+      data: data.data,
       effects: effects,
       limited: this.object.limited,
       options: this.options,
