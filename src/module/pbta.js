@@ -116,6 +116,9 @@ Hooks.once("ready", async function() {
   PBTA.playbooks = await PbtaPlaybooks.getPlaybooks();
   CONFIG.PBTA = PBTA;
 
+  // Feature flag for 0.8.x.
+  CONFIG.PBTA.core8x = isNewerVersion(game.data.version, '0.8.0');
+
   // Apply structure to actor types.
   PbtaUtility.applyActorTemplates();
 
@@ -200,9 +203,15 @@ Hooks.on("renderSettings", (app, html) => {
 /* -------------------------------------------- */
 /*  Actor Updates                               */
 /* -------------------------------------------- */
-Hooks.on('preCreateActor', async (actor, options, id) => {
-  let data = PbtaActorTemplates.applyActorTemplate(actor, options, id);
-  actor.data = data;
+Hooks.on('preCreateActor', async (actor, data, options, id) => {
+  if (CONFIG.PBTA.core8x) {
+    let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
+    data.data = templateData;
+  }
+  else {
+    let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
+    actor.data = templateData;
+  }
 });
 
 Hooks.on('preUpdateActor', (actor, data, options, id) => {
@@ -232,11 +241,18 @@ Hooks.on('preUpdateActor', (actor, data, options, id) => {
 //   }
 // });
 
-Hooks.on('preCreateItem', async (item, options, id) => {
+Hooks.on('preCreateItem', async (item, data, options, id) => {
   if (item.type == 'move' || item.type == 'npcMove') {
-    let itemData = item.data ?? {};
-    let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
-    item.data = newItemData;
+    if (CONFIG.PBTA.core8x) {
+      let itemData = data ?? {};
+      let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
+      data.data = newItemData.data;
+    }
+    else {
+      let itemData = item.data ?? {};
+      let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
+      item.data = newItemData.data;
+    }
   }
 });
 
