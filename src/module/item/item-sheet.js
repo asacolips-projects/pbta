@@ -30,14 +30,25 @@ export class PbtaItemSheet extends ItemSheet {
 
   /** @override */
   async getData() {
-    this.options.title = this.document.data.name;
-    const isOwner = this.document.isOwner;
-    const isEditable = this.isEditable;
-    const data = foundry.utils.deepClone(this.object.data);
+    let isOwner = false;
+    let isEditable = this.isEditable;
+    let data = {};
+    let items = {};
+    let effects = {};
 
-    // Copy Active Effects
-    const effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
-    data.effects = effects;
+    if (CONFIG.PBTA.core8x) {
+      this.options.title = this.document.data.name;
+      isOwner = this.document.isOwner;
+      isEditable = this.isEditable;
+      data = foundry.utils.deepClone(this.object.data);
+
+      // Copy Active Effects
+      effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
+      data.effects = effects;
+    }
+    else {
+      data = super.getData();
+    }
 
     data.dtypes = ["String", "Number", "Boolean"];
     // Add playbooks.
@@ -90,18 +101,23 @@ export class PbtaItemSheet extends ItemSheet {
       }
     }
 
-
-    let returnData = {
-      item: this.object.data.document,
-      cssClass: isEditable ? "editable" : "locked",
-      editable: isEditable,
-      data: data.data,
-      effects: effects,
-      limited: this.object.limited,
-      options: this.options,
-      owner: isOwner,
-      title: data.name
-    };
+    let returnData = {};
+    if (CONFIG.PBTA.core8x) {
+      returnData = {
+        item: this.object.data.document,
+        cssClass: isEditable ? "editable" : "locked",
+        editable: isEditable,
+        data: data.data,
+        effects: effects,
+        limited: this.object.limited,
+        options: this.options,
+        owner: isOwner,
+        title: data.name
+      };
+    }
+    else {
+      returnData = data;
+    }
 
     return returnData;
   }

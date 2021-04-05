@@ -32,19 +32,30 @@ export class PbtaActorSheet extends ActorSheet {
 
   /** @override */
   async getData() {
-    // const data = super.getData();
-    const isOwner = this.document.isOwner;
-    const isEditable = this.isEditable;
-    const data = foundry.utils.deepClone(this.object.data);
+    let isOwner = false;
+    let isEditable = this.isEditable;
+    let data = {};
+    let items = {};
+    let effects = {};
 
-    // Copy and sort Items
-    const items = this.object.items.map(i => foundry.utils.deepClone(i.data));
-    items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    data.items = items;
+    if (CONFIG.PBTA.core8x) {
+      // const data = super.getData();
+      isOwner = this.document.isOwner;
+      isEditable = this.isEditable;
+      data = foundry.utils.deepClone(this.object.data);
 
-    // Copy Active Effects
-    const effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
-    data.effects = effects;
+      // Copy and sort Items
+      items = this.object.items.map(i => foundry.utils.deepClone(i.data));
+      items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+      data.items = items;
+
+      // Copy Active Effects
+      effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
+      data.effects = effects;
+    }
+    else {
+      data = super.getData();
+    }
 
     // // Prepare items.
     this._prepareCharacterItems(data);
@@ -164,7 +175,7 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {object} sheetData Data prop on actor.
    */
   _sortAttrs(sheetData) {
-    const actorData = sheetData;
+    const actorData = CONFIG.PBTA.core8x ? sheetData : sheetData.actor;
     let groups = [
       'stats',
       'attrTop',
@@ -1106,9 +1117,17 @@ export class PbtaActorSheet extends ActorSheet {
       data: data
     };
 
-    await this.actor.createEmbeddedDocuments('Item', [itemData], {});
+    if (CONFIG.PBTA.core8x) {
+      await this.actor.createEmbeddedDocuments('Item', [itemData], {});
+    }
+    else {
+      if (type == 'move' || type == 'npcMove') {
+        itemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, {}, null);
+      }
+      delete itemData.data["type"];
 
-    // await this.actor.createOwnedItem(itemData);
+      await this.actor.createOwnedItem(itemData);
+    }
   }
 
   /* -------------------------------------------- */
