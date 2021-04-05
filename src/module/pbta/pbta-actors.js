@@ -107,11 +107,11 @@ export class PbtaActorTemplates {
     let newItemData = duplicate(itemData);
 
     let resultRanges = game.pbta.sheetConfig.rollResults;
-    if (!newItemData.moveResults) newItemData.moveResults = {};
+    if (!newItemData.data.moveResults) newItemData.data.moveResults = {};
 
     for (let [key, value] of Object.entries(resultRanges)) {
-      if (!newItemData.moveResults[key]) {
-        newItemData.moveResults[key] = {
+      if (!newItemData.data.moveResults[key]) {
+        newItemData.data.moveResults[key] = {
           key: `data.moveResults.${key}.value`,
           label: value.label,
           value: ''

@@ -19,7 +19,19 @@
 
       {{!-- Description Tab --}}
       <div class="tab" data-group="primary" data-tab="description">
-          {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+          <div class="resource">
+            <label>{{localize "PBTA.Common.Description"}}</label>
+            {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+          </div>
+
+          {{#if data.moveResults}}
+            {{#each data.moveResults as |result key|}}
+              <div class="resource">
+                <label>{{result.label}}</label>
+                {{editor content=result.value target=result.rangeName button=true owner=../owner editable=../editable}}
+              </div>
+            {{/each}}
+          {{/if}}
       </div>
 
       {{!-- Details Tab --}}
@@ -40,28 +52,6 @@
             {{/select}}
           </select>
         </div>
-
-        <div class="resource">
-          <label>{{localize "PBTA.RequiresMove"}}</label>
-          <input type="text" name="data.requiresMove" value="{{data.requiresMove}}" data-dtype="String"/>
-        </div>
-
-        <div class="resource">
-          <label>{{localize "PBTA.MoveGroup"}}</label>
-          <input type="text" name="data.moveGroup" value="{{data.moveGroup}}" placeholder="ex: barbarian-armor" data-dtype="String"/>
-          {{!-- <span class="help-text">{{localize "PBTA.MoveGroupHelp"}}</span> --}}
-        </div>
-
-        {{#if data.moveResults}}
-          {{#each data.moveResults as |result key|}}
-            <div class="resource">
-              <label>{{result.label}}</label>
-              {{!-- <textarea class="textarea textarea--title" name="data.moveResults.{{key}}.value" rows="5">{{result.value}}</textarea> --}}
-              {{editor content=result.value target=result.rangeName button=true owner=../owner editable=../editable}}
-              {{!-- {{editor content=result.value target=result.key button=true owner=owner editable=editable}} --}}
-            </div>
-          {{/each}}
-        {{/if}}
 
       </div>
   </section>
