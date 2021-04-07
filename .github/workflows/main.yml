@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 15.x]
+        node-version: [14.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -48,7 +48,7 @@ jobs:
         # Either upload or download
         action: upload
         # Azure Blob Storage connection string
-        connection_string: ${{ secrets.ConnectionString }}
+        connection_string: ${{ secrets.AZ_STORAGE_CONNECTION_STRING }}
         # Azure Blob Storage container name
         container_name: pbta
         # Directory in Azure to copy from or to
