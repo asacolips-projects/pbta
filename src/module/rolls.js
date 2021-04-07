@@ -7,6 +7,13 @@ export class PbtaRolls {
     this.actorData = null;
   }
 
+  /**
+   * Retrieve the roll formula.
+   *
+   * @param {string} defaultFormula | Dice formula to use for rolls as a fallback.
+   * @param {object|null} actor | (optional) Actor object to check for roll overrides.
+   * @returns
+   */
   static getRollFormula(defaultFormula = '2d6', actor = null) {
     // Get the default formula.
     let formula = game.pbta.sheetConfig.rollFormula ?? defaultFormula;
@@ -22,12 +29,42 @@ export class PbtaRolls {
     return formula;
   }
 
+  /**
+   * Retrieve forward and ongoing stats as a string to be appended to rolls.
+   *
+   * @param {object} actor | Actor object to retrieve forward and ongoing modifiers for.
+   * @returns
+   */
   static getModifiers(actor) {
     let forward = Number(actor.data.data.resources.forward.value) ?? 0;
     let ongoing = Number(actor.data.data.resources.ongoing.value) ?? 0;
     return `+${forward}+${ongoing}`;
   }
 
+  /**
+   * Roll a move.
+   *
+   * Plain example:
+   * let templateData = {
+   *   title: 'My Move Name',
+   *   resultRangeNeeded: true
+   * };
+   * let actor = game.actors.getName('My Actor');
+   * let formula = '2d6+4';
+   * PbtaRolls.rollMove({actor: actor, data: null, formula: formula, templateData: templateData});
+   *
+   * Item example:
+   * let actor = game.actors.getName('My Actor');
+   * let item = actor.items.find(i => i.name == 'My Item');
+   * PbtaRolls.rollMove({actor: actor, data: item.data});
+   *
+   * @param {object} options
+   * @param {object} options.actor | Actor to perform the roll for.
+   * @param {object} options.formula | Roll formula to use, if supplying one manually.
+   * @param {object} options.data | Item data to use instead of a formula.
+   * @param {object} options.templateData | Object to pass when rendering the template.
+   * @returns
+   */
   static async rollMove(options = {}) {
     // TODO: Create a way to resolve this using the formula only, sans actor.
     // If there's no actor, we need to exit.
@@ -149,6 +186,14 @@ export class PbtaRolls {
     }
   }
 
+  /**
+   * Execute a roll
+   *
+   * @param {string} roll | Roll formula or stat name, e.g. '2d6+2' or 'cool'
+   * @param {object} dataset | Cleaned up item data passed to the roll
+   * @param {object} templateData | Template data passed to the template
+   * @param {object} form | HTML element if this used the ask or prompt forms.
+   */
   static async rollMoveExecute(roll, dataset, templateData, form = null) {
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';

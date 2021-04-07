@@ -220,7 +220,7 @@ export class PbtaActorSheet extends ActorSheet {
    */
   _prepareCharacterItems(sheetData) {
     const actorData = sheetData;
-    const actorType = actorData.type ?? 'character';
+    const actorType = (actorData?.type || actorData?.actor?.type) ?? 'character';
     const moveType = actorType == 'character' ? 'move' : 'npcMove';
 
     let moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes;

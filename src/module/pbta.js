@@ -15,6 +15,7 @@ import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
 import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
 import { PbtaRegisterHelpers } from "./handlebars.js";
 import { PbtaUtility } from "./utility.js";
+import { PbtaRolls } from "./rolls.js";
 import { CombatSidebarPbta } from "./combat/combat.js";
 import { MigratePbta } from "./migrate/migrate.js";
 import { PbtaSettingsConfigDialog } from "./settings/settings.js";
@@ -35,7 +36,8 @@ Hooks.once("init", async function() {
     PbtaUtility,
     PbtaActorTemplates,
     MigratePbta,
-    PbtaSettingsConfigDialog
+    PbtaSettingsConfigDialog,
+    PbtaRolls
   };
 
   // TODO: Extend the combat class.
