@@ -1035,32 +1035,19 @@ export class PbtaActorSheet extends ActorSheet {
     const data = a.dataset;
     const itemId = $(a).parents('.item').attr('data-item-id');
     const item = this.actor.getOwnedItem(itemId);
-    let formula = null;
     let flavorText = null;
     let templateData = {};
 
-    let dice = PbtaUtility.getRollFormula('2d6');
-
     // Handle rolls coming directly from the ability score.
     if ($(a).hasClass('stat-rollable') && data.mod) {
-      // Determine if the stat toggle is in effect.
-      let hasToggle = game.pbta.sheetConfig.statToggle;
-      let toggleModifier = 0;
-      if (hasToggle) {
-        const stat = $(a).parents('.stat').data('stat');
-        const statToggle = this.actor.data.data.stats[stat].toggle;
-        toggleModifier = statToggle ? game.pbta.sheetConfig.statToggle.modifier : 0;
-      }
-
-      formula = `${dice}+${data.mod}${toggleModifier ? '+' + toggleModifier : ''}`;
+      let stat = $(a).parents('.stat').data('stat') ?? null;
       flavorText = data.label;
-
       templateData = {
         title: flavorText,
         resultRangeNeeded: true
       };
 
-      PbtaRolls.rollMove({actor: this.actor, data: null, formula: formula, templateData: templateData});
+      PbtaRolls.rollMove({actor: this.actor, data: null, formula: stat, templateData: templateData});
     }
     else if ($(a).hasClass('attr-rollable') && data.roll) {
       templateData = {
