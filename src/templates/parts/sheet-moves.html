@@ -28,10 +28,12 @@
   <div>{{{item.data.description}}}</div>
   {{#if item.data.moveResults}}
     {{#each item.data.moveResults as |result key|}}
-      <div class="result result--{{key}}">
-        <strong class="result-label">{{result.label}}</strong>
-        <div class="result-content">{{{result.value}}}</div>
-      </div>
+      {{#if result.value}}
+        <div class="result result--{{key}}">
+          <strong class="result-label">{{result.label}}</strong>
+          <div class="result-content">{{{result.value}}}</div>
+        </div>
+      {{/if}}
     {{/each}}
   {{/if}}
   {{#if item.data.choices}}
