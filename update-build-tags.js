@@ -58,5 +58,5 @@ else {
 
 fs.writeFileSync('./dist/system.json', JSON.stringify(system, null, 2));
 console.log(`Build: ${system.version}`);
-console.log(`Manifest: ${system.manifest}`);
-console.log(`Download: ${system.download}`);
+console.log(`Manifest: ${system.manifest}?test=test`);
+console.log(`Download: ${system.download}?test=test`);
