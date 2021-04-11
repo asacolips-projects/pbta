@@ -105,6 +105,7 @@ export class PbtaActorTemplates {
 
   static applyItemTemplate(actor, itemData, options, id) {
     let newItemData = duplicate(itemData);
+    if (!newItemData.data) newItemData.data = {};
 
     let resultRanges = game.pbta.sheetConfig.rollResults;
     if (!newItemData.data.moveResults) newItemData.data.moveResults = {};
