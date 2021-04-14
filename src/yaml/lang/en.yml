@@ -88,6 +88,9 @@ PBTA.MoveGroupHelp: "Multiple moves with the same move-group will be either/or s
 PBTA.Forward: "Forward"
 PBTA.Ongoing: "Ongoing"
 PBTA.RollFormulaOverride: "Roll Formula Override"
+PBTA.Create: "Create"
+PBTA.New: "New"
+PBTA.NoTemplate: "No Template"
 #################################
 # NEW STUFF
 #################################

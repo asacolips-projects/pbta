@@ -11,6 +11,7 @@ import { ActorPbta } from "./actor/actor.js";
 import { ItemPbta } from "./item/item.js";
 import { PbtaItemSheet } from "./item/item-sheet.js";
 import { PbtaActorSheet } from "./actor/actor-sheet.js";
+import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
 import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
 import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
 import { PbtaRegisterHelpers } from "./handlebars.js";
@@ -51,6 +52,10 @@ Hooks.once("init", async function() {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("pbta", PbtaActorSheet, {
     types: ['character'],
+    makeDefault: true
+  });
+  Actors.registerSheet("pbta", PbtaActorOtherSheet, {
+    types: ['other'],
     makeDefault: true
   });
   Actors.registerSheet("pbta", PbtaActorNpcSheet, {
@@ -344,4 +349,78 @@ function rollItemMacro(itemName) {
   // Trigger the item roll
   // if ( item.data.type === "spell" ) return actor.useSpell(item);
   return item.roll();
+}
+
+/* -------------------------------------------- */
+/*  Entity Creation Override                    */
+/* -------------------------------------------- */
+
+async function _onCreateEntity(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  return _pbtaDirectoryTemplates(this, event);
+}
+ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x+
+
+/**
+ * Display the entity template dialog.
+ *
+ * Helper function to display a dialog if there are multiple template types defined for the entity type.
+ * TODO: Refactor in 0.7.x to play more nicely with the Entity.createDialog method
+ *1
+ * @param {EntityCollection} entityType - The sidebar tab
+ * @param {MouseEvent} event - Triggering event
+ */
+ async function _pbtaDirectoryTemplates(collection, event) {
+
+  // Retrieve the collection and find any available templates
+  const entityCollection = collection.tabName === "actors" ? game.actors : game.items;
+  const cls = collection.tabName === "actors" ? Actor : Item;
+  // let templates = entityCollection.filter(a => a.getFlag("worldbuilding", "isTemplate"));
+  let ent = game.i18n.localize(cls.config.label);
+
+  let actorTypes = Object.keys(game.pbta.sheetConfig.actorTypes);
+
+  // Setup default creation data
+  let type = collection.tabName === "actors" ? 'character' : 'item';
+  let createData = {
+    name: `${game.i18n.localize("PBTA.New")} ${ent}`,
+    // type: type,
+    folder: event.currentTarget.dataset.folder
+  };
+  // if ( !templates.length ) return cls.create(createData, {renderSheet: true});
+
+  // Build an array of types for the form, including an empty default.
+  let types = actorTypes.map(a => {
+    // TODO: Make these values different.
+    return {
+      value: a,
+      type: a == 'character' || a == 'npc' ? a : 'other',
+      label: a
+    }
+  });
+
+  // Render the confirmation dialog window
+  const templateData = {upper: ent, lower: ent.toLowerCase(), types: types};
+  const dlg = await renderTemplate(`systems/pbta/templates/sidebar/entity-create.html`, templateData);
+  return Dialog.confirm({
+    title: `${game.i18n.localize("PBTA.Create")} ${createData.name}`,
+    content: dlg,
+    yes: html => {
+      const form = html[0].querySelector("form");
+      const templateBase = game.pbta.sheetConfig.actorTypes[form.type.value] ?? null;
+      if ( templateBase ) {
+        const template = {
+          data: templateBase
+        };
+        createData = mergeObject(createData, template, {inplace: false});
+        createData.type = form.type.value == 'character' || form.type.value == 'npc' ? form.type.value : 'other';
+        console.log(createData);
+      }
+      createData.name = form.name.value;
+      return cls.create(createData, {renderSheet: true});
+    },
+    no: () => {},
+    defaultYes: false
+  });
 }
