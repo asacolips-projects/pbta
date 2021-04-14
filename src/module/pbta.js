@@ -216,6 +216,7 @@ Hooks.on('preCreateActor', async (actor, data, options, id) => {
     data.data = templateData;
   }
   else {
+    console.log(data);
     let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
     actor.data = templateData;
   }
@@ -383,11 +384,12 @@ ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x+
 
   // Setup default creation data
   let type = collection.tabName === "actors" ? 'character' : 'item';
-  let createData = {
-    name: `${game.i18n.localize("PBTA.New")} ${ent}`,
-    // type: type,
-    folder: event.currentTarget.dataset.folder
-  };
+  let name = `${game.i18n.localize("PBTA.New")} ${ent}`;
+  // let createData = {
+  //   name: `${game.i18n.localize("PBTA.New")} ${ent}`,
+  //   // type: type,
+  //   folder: event.currentTarget.dataset.folder
+  // };
   // if ( !templates.length ) return cls.create(createData, {renderSheet: true});
 
   // Build an array of types for the form, including an empty default.
@@ -404,20 +406,36 @@ ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x+
   const templateData = {upper: ent, lower: ent.toLowerCase(), types: types};
   const dlg = await renderTemplate(`systems/pbta/templates/sidebar/entity-create.html`, templateData);
   return Dialog.confirm({
-    title: `${game.i18n.localize("PBTA.Create")} ${createData.name}`,
+    title: `${game.i18n.localize("PBTA.Create")} ${name}`,
     content: dlg,
     yes: html => {
       const form = html[0].querySelector("form");
-      const templateBase = game.pbta.sheetConfig.actorTypes[form.type.value] ?? null;
-      if ( templateBase ) {
-        const template = {
-          data: templateBase
-        };
-        createData = mergeObject(createData, template, {inplace: false});
-        createData.type = form.type.value == 'character' || form.type.value == 'npc' ? form.type.value : 'other';
-        console.log(createData);
-      }
+      let actorType = form.type.value;
+      let baseType = actorType == 'character' || actorType == 'npc' ? actorType : 'other';
+      console.log(game.pbta.sheetConfig.actorTypes[actorType]);
+      console.log(actorType);
+      const tplBase = game.pbta.sheetConfig.actorTypes[actorType] ?? null;
+      if (baseType == 'other') tplBase.customType = actorType;
+      let createData = {
+        name: name,
+        type: baseType,
+        data: {data: duplicate(tplBase)},
+        folder: event.currentTarget.dataset.folder
+      };
+      console.log(tplBase);
+      // if ( templateBase ) {
+      //   const template = {
+      //     data: templateBase
+      //   };
+      //   createData = mergeObject(createData, {data: templateBase}, {inplace: false});
+      //   if (baseType == 'other') {
+      //     createData.data.customType = actorType;
+      //   }
+      //   console.log(createData);
+      // }
+      // createData.type = baseType;
       createData.name = form.name.value;
+      console.log(createData);
       return cls.create(createData, {renderSheet: true});
     },
     no: () => {},

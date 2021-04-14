@@ -87,7 +87,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
   async close(options) {
     super.close(options);
-    window.location.reload();
+    // window.location.reload();
   }
 
   /* -------------------------------------------- */
@@ -95,7 +95,9 @@ export class PbtaSettingsConfigDialog extends FormApplication {
   /** @override */
   async _onSubmit(event, options) {
     // event.target.querySelectorAll("input[disabled]").forEach(i => i.disabled = false);
-    return super._onSubmit(event, options);
+    // return super._onSubmit(event, options);
+    super._onSubmit(event, options);
+    window.location.reload();
   }
 
   /* -------------------------------------------- */
@@ -177,6 +179,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
     // Handle actor config.
     let actorTypes = ['character', 'npc'];
+    if (game.pbta.sheetConfig.actorTypes) {
+      for (let actorType of Object.keys(game.pbta.sheetConfig.actorTypes)) {
+        if (!actorTypes.includes(actorType)) actorTypes.push(actorType);
+      }
+    }
 
     // Iterate through the actor types.
     for (let actorType of actorTypes) {
@@ -201,7 +208,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       }
       // Stats are required for characters (but not for NPCs).
       else {
-        if (actorType == 'character') {
+        if (actorType == 'character' || actorConfig[actorType]?.baseType == 'character') {
           errors.push(`${t.statsRequired1} '${actorType}' ${t.statsRequired2}.`);
         }
       }
@@ -287,6 +294,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       'npc': {}
     };
     let actorTypes = ['character', 'npc'];
+    if (game.pbta.sheetConfig.actorTypes) {
+      for (let actorType of Object.keys(game.pbta.sheetConfig.actorTypes)) {
+        if (!actorTypes.includes(actorType)) actorTypes.push(actorType);
+        if (!updatesDiff[actorType]) updatesDiff[actorType] = {};
+      }
+    }
     let attrGroups = ['stats', 'attrLeft', 'attrTop', 'moveTypes', 'equipmentTypes'];
 
     for (let actorType of actorTypes) {

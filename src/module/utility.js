@@ -151,6 +151,10 @@ export class PbtaUtility {
           }
         }
 
+        if (k !== 'character' && k !== 'npc') {
+          actorType.baseType = v.baseType ?? 'character';
+        }
+
         delete v.attributesTop;
         delete v.attributesLeft;
 
