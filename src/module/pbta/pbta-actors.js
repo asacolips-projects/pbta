@@ -3,15 +3,11 @@ export class PbtaActorTemplates {
     let origData = actor?.data?.data ? duplicate(actor.data.data) : {};
     let data = duplicate(origData);
 
-    console.log(actor);
-
     let actorType = actor.type ?? 'character';
     let sheetType = actorType;
     if (sheetType == 'other') {
       sheetType = data?.customType ?? 'character';
     }
-
-    console.log(sheetType);
 
     let model = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
 
@@ -20,11 +16,6 @@ export class PbtaActorTemplates {
     delete data._id;
 
     return data;
-
-    // await actor.update({
-    //   _id: actor.data._id,
-    //   data: data
-    // });
   }
 
   static async updateActors(newConfig, options={}) {
@@ -68,8 +59,6 @@ export class PbtaActorTemplates {
         updates.push(update);
       }
     }
-
-    console.log(updates);
 
     // Apply updates to actors.
     if (updates.length > 0) {

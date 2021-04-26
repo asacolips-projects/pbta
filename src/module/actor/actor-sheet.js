@@ -60,7 +60,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Handle actor types.
     data.pbtaActorType = this.actor.data.type;
     if (data.pbtaActorType == 'other') {
-      data.pbtaSheetType = data?.customType ?? 'character';
+      data.pbtaSheetType = this.actor.data.data?.customType ?? 'character';
       data.pbtaBaseType = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
     }
     else {
@@ -68,7 +68,7 @@ export class PbtaActorSheet extends ActorSheet {
       data.pbtaBaseType = data.pbtaActorType;
     }
 
-    // // Prepare items.
+    // Prepare items.
     this._prepareCharacterItems(data);
     this._prepareNpcItems(data);
     this._prepareAttrs(data);

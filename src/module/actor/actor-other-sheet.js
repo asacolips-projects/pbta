@@ -12,7 +12,7 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
       classes: ["pbta", "sheet", "actor", "other"],
       width: 840,
       height: 780,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-tabs-content", initial: "moves" }],
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "moves" }],
     });
   }
 
@@ -35,6 +35,7 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
 
     if (baseType == 'npc') {
       this.options.classes.push('npc');
+      this.options.tabs[0].contentSelector = '.sheet-tabs-content';
 
       this.options.width = 720;
       this.options.height = 640;

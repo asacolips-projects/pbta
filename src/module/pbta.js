@@ -216,7 +216,6 @@ Hooks.on('preCreateActor', async (actor, data, options, id) => {
     data.data = templateData;
   }
   else {
-    console.log(data);
     let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
     actor.data = templateData;
   }
@@ -385,12 +384,6 @@ ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x+
   // Setup default creation data
   let type = collection.tabName === "actors" ? 'character' : 'item';
   let name = `${game.i18n.localize("PBTA.New")} ${ent}`;
-  // let createData = {
-  //   name: `${game.i18n.localize("PBTA.New")} ${ent}`,
-  //   // type: type,
-  //   folder: event.currentTarget.dataset.folder
-  // };
-  // if ( !templates.length ) return cls.create(createData, {renderSheet: true});
 
   // Build an array of types for the form, including an empty default.
   let types = actorTypes.map(a => {
@@ -410,32 +403,21 @@ ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x+
     content: dlg,
     yes: html => {
       const form = html[0].querySelector("form");
+      // First we need to find the base actor type to model this after.
       let actorType = form.type.value;
       let baseType = actorType == 'character' || actorType == 'npc' ? actorType : 'other';
-      console.log(game.pbta.sheetConfig.actorTypes[actorType]);
-      console.log(actorType);
       const tplBase = game.pbta.sheetConfig.actorTypes[actorType] ?? null;
+      // Set the custom type.
       if (baseType == 'other') tplBase.customType = actorType;
+      // Initialize create data on the object.
       let createData = {
         name: name,
         type: baseType,
         data: {data: duplicate(tplBase)},
         folder: event.currentTarget.dataset.folder
       };
-      console.log(tplBase);
-      // if ( templateBase ) {
-      //   const template = {
-      //     data: templateBase
-      //   };
-      //   createData = mergeObject(createData, {data: templateBase}, {inplace: false});
-      //   if (baseType == 'other') {
-      //     createData.data.customType = actorType;
-      //   }
-      //   console.log(createData);
-      // }
-      // createData.type = baseType;
       createData.name = form.name.value;
-      console.log(createData);
+      // Create the actor.
       return cls.create(createData, {renderSheet: true});
     },
     no: () => {},
