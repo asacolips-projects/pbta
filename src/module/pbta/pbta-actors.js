@@ -69,6 +69,8 @@ export class PbtaActorTemplates {
       }
     }
 
+    console.log(updates);
+
     // Apply updates to actors.
     if (updates.length > 0) {
       try {

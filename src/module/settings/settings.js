@@ -87,17 +87,19 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
   async close(options) {
     super.close(options);
-    // window.location.reload();
+    console.log(this);
+    if (typeof this._submitting !== 'undefined') {
+      window.location.reload();
+    }
   }
 
   /* -------------------------------------------- */
 
   /** @override */
   async _onSubmit(event, options) {
-    // event.target.querySelectorAll("input[disabled]").forEach(i => i.disabled = false);
-    // return super._onSubmit(event, options);
     super._onSubmit(event, options);
-    window.location.reload();
+    // TODO: Uncomment before committing.
+    // window.location.reload();
   }
 
   /* -------------------------------------------- */
@@ -109,6 +111,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
     if (formData.tomlString) {
       computed = toml.parse(formData.tomlString);
+      console.log(computed);
       errors = this.validateSheetConfig(computed);
     }
     else {
@@ -277,6 +280,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
   }
 
   async diffSheetConfig(sheetConfig) {
+    if (!game.pbta.sheetConfig) return;
+
+    console.log(sheetConfig);
+
     let currentConfig = game.pbta.sheetConfig;
     let duplicateConfig = duplicate(sheetConfig);
     let newConfig = PbtaUtility.convertSheetConfig(duplicateConfig);
@@ -302,7 +309,19 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     }
     let attrGroups = ['stats', 'attrLeft', 'attrTop', 'moveTypes', 'equipmentTypes'];
 
+    console.log(newConfig);
+
     for (let actorType of actorTypes) {
+      // Handle baseType on custom actor types.
+      if (newConfig.actorTypes[actorType].baseType) {
+        console.log(newConfig.actorTypes[actorType].baseType);
+        console.log(currentConfig.actorTypes[actorType].baseType);
+        if (newConfig.actorTypes[actorType].baseType != currentConfig.actorTypes[actorType].baseType) {
+          configDiff.hardType.push(`${actorType}.baseType`);
+          // updatesDiff[actorType][`baseType`] = newConfig.actorTypes[actorType].baseType;
+        }
+      }
+      // Handle attribute groups.
       for (let attrGroup of attrGroups) {
         if (!currentConfig.actorTypes[actorType][attrGroup]) {
           // configDiff.add.push(`${actorType}.${attrGroup}`);
@@ -399,6 +418,9 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       }
     }
 
+    console.log(configDiff);
+    console.log(updatesDiff);
+
     let hasAdditions = configDiff.add.length > 0;
     let hasDeletions = configDiff.del.length > 0;
     let hasMax = configDiff.max.length > 0;
@@ -423,6 +445,8 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       'noteConfirmUpdateBold': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirmUpdateBold'),
       'noteCancel': game.i18n.localize('PBTA.Settings.sheetConfig.noteCancel'),
     };
+
+    // console.log(configDiff);
 
     if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType || hasSafe) {
       let content = `<p>${t.noteChangesDetected}</p><ul><li>${t.noteConfirm}</li><li>${t.noteConfirmUpdate}<strong> (${t.noteConfirmUpdateBold})</strong></li><li>${t.noteCancel}</li></ul>`;
@@ -450,6 +474,8 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       if (hasSafe) {
         content = content + `<h2>${t.cosmetic}</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.safe.join('</li><li><strong> * </strong>')}</li></ul>`;
       }
+
+      // console.log(content);
 
       return this._confirm({
         title: game.i18n.localize('PBTA.Settings.sheetConfig.confirmChanges'),
