@@ -192,7 +192,6 @@ export class PbtaActorSheet extends ActorSheet {
       'attrTop',
       'attrLeft'
     ];
-    console.log(sheetData);
     // Iterate through the groups that need to be sorted.
     for (let group of groups) {
       // Confirm the keys exist, and assign them to a sorting array if so.
