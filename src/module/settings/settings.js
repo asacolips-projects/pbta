@@ -189,13 +189,15 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     // Iterate through the actor types.
     for (let actorType of actorTypes) {
       // Error for missing actor type.
-      if (!sheetConfig[actorType]) {
+      if (!sheetConfig[actorType] && ['character', 'npc'].includes(actorType)) {
         errors.push(`'${actorType}' ${t.actorTypeRequired}`);
         continue;
       }
 
       // Store this in an easier to reference variable.
       let actorConfig = sheetConfig[actorType];
+
+      if (!actorConfig) continue;
 
       // Validate stats.
       if (actorConfig.stats) {
@@ -306,6 +308,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     let attrGroups = ['stats', 'attrLeft', 'attrTop', 'moveTypes', 'equipmentTypes'];
 
     for (let actorType of actorTypes) {
+      // Handle deleting custom actor types.
+      if (typeof newConfig?.actorTypes[actorType] === 'undefined' || !newConfig.actorTypes[actorType]) {
+        configDiff.del.push(`${actorType}`);
+        continue;
+      }
       // Handle baseType on custom actor types.
       if (newConfig.actorTypes[actorType].baseType) {
         if (newConfig.actorTypes[actorType].baseType != currentConfig.actorTypes[actorType].baseType) {
