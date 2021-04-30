@@ -2,6 +2,7 @@ Actor:
   types:
     - character
     - npc
+    - other
   templates:
     base:
       stats: {}
@@ -23,6 +24,7 @@ Actor:
   character:
     templates:
       - base
+      - resources
     details:
       playbook: ''
   npc:
@@ -30,6 +32,15 @@ Actor:
       - base
     tags: []
     tagsString: ''
+  other:
+    templates:
+      - base
+      - resources
+    customType: ''
+    details:
+      playbook: ''
+    tags: []
+    tagsSTring: ''
 Item:
   types:
     - move
