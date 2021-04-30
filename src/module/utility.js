@@ -121,7 +121,10 @@ export class PbtaUtility {
         if (v.stats) {
           actorType.stats = {};
           for (let [statKey, statLabel] of Object.entries(v.stats)) {
-            actorType.stats[PbtaUtility.cleanClass(statKey, false)] = {
+            let cleanKey = PbtaUtility.cleanClass(statKey, false);
+            if (['ask', 'formula', 'prompt'].includes(cleanKey)) continue;
+
+            actorType.stats[cleanKey] = {
               label: statLabel,
               value: 0
             };
@@ -148,6 +151,16 @@ export class PbtaUtility {
               label: etLabel,
               moves: []
             };
+          }
+        }
+
+        if (k !== 'character' && k !== 'npc') {
+          actorType.baseType = 'character';
+          if (v.baseType) {
+            actorType.baseType = v.baseType;
+          }
+          else if (v.basetype) {
+            actorType.baseType = v.basetype;
           }
         }
 
@@ -294,6 +307,8 @@ export class PbtaUtility {
   static applyActorTemplates() {
     let templates = game.system.model.Actor;
     let actorTypes = Object.keys(templates);
+
+    if (!game.pbta.sheetConfig) return;
 
     if (!game.pbta.sheetConfig.actorTypes) {
       let menu = game.settings.menus.get('pbta.sheetConfigMenu');

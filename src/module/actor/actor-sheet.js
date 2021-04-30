@@ -57,16 +57,27 @@ export class PbtaActorSheet extends ActorSheet {
       data = super.getData();
     }
 
-    // // Prepare items.
+    // Handle actor types.
+    data.pbtaActorType = this.actor.data.type;
+    if (data.pbtaActorType == 'other') {
+      data.pbtaSheetType = this.actor.data.data?.customType ?? 'character';
+      data.pbtaBaseType = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
+    }
+    else {
+      data.pbtaSheetType = data.pbtaActorType;
+      data.pbtaBaseType = data.pbtaActorType;
+    }
+
+    // Prepare items.
     this._prepareCharacterItems(data);
     this._prepareNpcItems(data);
     this._prepareAttrs(data);
 
     // Add playbooks.
-    if (this.actor.data.type == 'character') {
+    if (data.pbtaSheetType == 'character') {
       data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
       data.data.statToggle = game.pbta.sheetConfig?.statToggle ?? false;
-      data.data.statSettings = game.pbta.sheetConfig.actorTypes[this.actor.data.type].stats ?? {};
+      data.data.statSettings = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType].stats ?? {};
 
       if (data.data.statSettings) {
         data.data.statSettings['ask'] = {label: game.i18n.localize('PBTA.Ask'), value: 0};
@@ -184,7 +195,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Iterate through the groups that need to be sorted.
     for (let group of groups) {
       // Confirm the keys exist, and assign them to a sorting array if so.
-      let sortKeys = game.pbta.sheetConfig.actorTypes[actorData.type][group];
+      let sortKeys = game.pbta.sheetConfig.actorTypes[sheetData.pbtaSheetType][group];
       let sortingArray = [];
       if (sortKeys) {
         sortingArray = Object.keys(sortKeys);
@@ -220,8 +231,8 @@ export class PbtaActorSheet extends ActorSheet {
    */
   _prepareCharacterItems(sheetData) {
     const actorData = sheetData;
-    const actorType = (actorData?.type || actorData?.actor?.type) ?? 'character';
-    const moveType = actorType == 'character' ? 'move' : 'npcMove';
+    const actorType = sheetData.pbtaSheetType ?? 'character';
+    const moveType = sheetData.pbtaBaseType == 'npc' ? 'npcMove' : 'move';
 
     let moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes;
     actorData.moveTypes = {};
@@ -246,15 +257,6 @@ export class PbtaActorSheet extends ActorSheet {
     }
 
     if (!actorData.equipment['PBTA_OTHER']) actorData.equipment['PBTA_OTHER'] = [];
-
-    // Initialize containers.
-    // const moves = [];
-    // const basicMoves = [];
-    // const startingMoves = [];
-    // const advancedMoves = [];
-    // const specialMoves = [];
-    // const equipment = [];
-
     if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
 
     // Iterate through items, allocating to containers
@@ -268,31 +270,8 @@ export class PbtaActorSheet extends ActorSheet {
           actorData.moves[i.data.moveType].push(i);
         }
         else {
-          // if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
           actorData.moves['PBTA_OTHER'].push(i);
         }
-
-        // switch (i.data.moveType) {
-        //   case 'basic':
-        //     basicMoves.push(i);
-        //     break;
-
-        //   case 'starting':
-        //     startingMoves.push(i);
-        //     break;
-
-        //   case 'advanced':
-        //     advancedMoves.push(i);
-        //     break;
-
-        //   case 'special':
-        //     specialMoves.push(i);
-        //     break;
-
-        //   default:
-        //     moves.push(i);
-        //     break;
-        // }
       }
       // If this is equipment, we currently lump it together.
       else if (i.type === 'equipment') {
@@ -300,22 +279,10 @@ export class PbtaActorSheet extends ActorSheet {
           actorData.equipment[i.data.equipmentType].push(i);
         }
         else {
-          // if (!actorData.equipment['PBTA_OTHER']) actorData.equipment['PBTA_OTHER'] = [];
           actorData.equipment['PBTA_OTHER'].push(i);
         }
-        // equipment.push(i);
       }
-
     }
-
-    // Assign and return
-    // actorData.moves = moves;
-    // actorData.basicMoves = basicMoves;
-    // actorData.startingMoves = startingMoves;
-    // actorData.advancedMoves = advancedMoves;
-    // actorData.specialMoves = specialMoves;
-    // Equipment
-    // actorData.equipment = equipment;
   }
 
   /**
@@ -325,7 +292,7 @@ export class PbtaActorSheet extends ActorSheet {
    */
   _prepareNpcItems(data) {
     // Handle preprocessing for tagify data.
-    if (data.data.type == 'npc') {
+    if (data.pbtaSheetType == 'npc') {
       // If there are tags, convert it into a string.
       if (data.data.tags != undefined && data.data.tags != '') {
         let tagArray = [];

@@ -87,15 +87,18 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
   async close(options) {
     super.close(options);
-    window.location.reload();
+    if (typeof this._submitting !== 'undefined') {
+      window.location.reload();
+    }
   }
 
   /* -------------------------------------------- */
 
   /** @override */
   async _onSubmit(event, options) {
-    // event.target.querySelectorAll("input[disabled]").forEach(i => i.disabled = false);
-    return super._onSubmit(event, options);
+    super._onSubmit(event, options);
+    // TODO: Uncomment before committing.
+    // window.location.reload();
   }
 
   /* -------------------------------------------- */
@@ -177,6 +180,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
     // Handle actor config.
     let actorTypes = ['character', 'npc'];
+    if (game.pbta.sheetConfig.actorTypes) {
+      for (let actorType of Object.keys(game.pbta.sheetConfig.actorTypes)) {
+        if (!actorTypes.includes(actorType)) actorTypes.push(actorType);
+      }
+    }
 
     // Iterate through the actor types.
     for (let actorType of actorTypes) {
@@ -201,7 +209,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       }
       // Stats are required for characters (but not for NPCs).
       else {
-        if (actorType == 'character') {
+        if (actorType == 'character' || actorConfig[actorType]?.baseType == 'character') {
           errors.push(`${t.statsRequired1} '${actorType}' ${t.statsRequired2}.`);
         }
       }
@@ -270,6 +278,8 @@ export class PbtaSettingsConfigDialog extends FormApplication {
   }
 
   async diffSheetConfig(sheetConfig) {
+    if (!game.pbta.sheetConfig) return;
+
     let currentConfig = game.pbta.sheetConfig;
     let duplicateConfig = duplicate(sheetConfig);
     let newConfig = PbtaUtility.convertSheetConfig(duplicateConfig);
@@ -287,9 +297,24 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       'npc': {}
     };
     let actorTypes = ['character', 'npc'];
+    if (game.pbta.sheetConfig.actorTypes) {
+      for (let actorType of Object.keys(game.pbta.sheetConfig.actorTypes)) {
+        if (!actorTypes.includes(actorType)) actorTypes.push(actorType);
+        if (!updatesDiff[actorType]) updatesDiff[actorType] = {};
+      }
+    }
     let attrGroups = ['stats', 'attrLeft', 'attrTop', 'moveTypes', 'equipmentTypes'];
 
     for (let actorType of actorTypes) {
+      // Handle baseType on custom actor types.
+      if (newConfig.actorTypes[actorType].baseType) {
+        if (newConfig.actorTypes[actorType].baseType != currentConfig.actorTypes[actorType].baseType) {
+          // This is only stored in the sheetConfig and not on actor's directly,
+          // so we just need to notify the user that a change will be made.
+          configDiff.hardType.push(`${actorType}.baseType`);
+        }
+      }
+      // Handle attribute groups.
       for (let attrGroup of attrGroups) {
         if (!currentConfig.actorTypes[actorType][attrGroup]) {
           // configDiff.add.push(`${actorType}.${attrGroup}`);

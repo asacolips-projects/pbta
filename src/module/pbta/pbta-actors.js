@@ -4,31 +4,42 @@ export class PbtaActorTemplates {
     let data = duplicate(origData);
 
     let actorType = actor.type ?? 'character';
+    let sheetType = actorType;
+    if (sheetType == 'other') {
+      sheetType = data?.customType ?? 'character';
+    }
 
-    data = mergeObject(origData, game.system.model.Actor[actorType]);
+    let model = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
+
+    data = mergeObject(origData, model);
     delete data.templates;
     delete data._id;
 
     return data;
-
-    // await actor.update({
-    //   _id: actor.data._id,
-    //   data: data
-    // });
   }
 
   static async updateActors(newConfig, options={}) {
     let success = true;
     let newTokenConfig = {
       'character': {},
-      'npc': {}
+      'npc': {},
     };
 
     // Get all active actors.
     let entities = {
       'character': Object.keys(newConfig.character).length > 0 ? game.actors.filter(a => a.data.type == 'character') : [],
-      'npc': Object.keys(newConfig.npc).length > 0 ? game.actors.filter(a => a.data.type == 'npc') : []
+      'npc': Object.keys(newConfig.npc).length > 0 ? game.actors.filter(a => a.data.type == 'npc') : [],
     };
+
+    // Determine if we need to query other actors.
+    for (let actorType of Object.keys(newConfig)) {
+      if (actorType == 'character' || actorType == 'npc') continue;
+      if (!newTokenConfig[actorType]) newTokenConfig[actorType] = {};
+      if (!entities[actorType]) {
+        let actors = Object.keys(newConfig[actorType]).length > 0 ? game.actors.filter(a => a.data.type == 'other' && a.data.data?.customType == actorType) : [];
+        entities[actorType] = actors;
+      }
+    }
 
     let updates = [];
 
@@ -79,8 +90,11 @@ export class PbtaActorTemplates {
             // We need to load the actor to get the actor type.
             let prototypeActor = game.actors.get(t.actorId);
             if (prototypeActor) {
+              let actorType = prototypeActor.data.type;
+              let sheetType = actorType != 'other' ? actorType : prototypeActor.data?.customType;
+              if (!sheetType) sheetType = 'character';
               // Build the update and append to the scene's update array.
-              let tokenUpdate = duplicate(newTokenConfig[prototypeActor.data.type]);
+              let tokenUpdate = duplicate(newTokenConfig[sheetType]);
               tokenUpdate['_id'] = t._id;
               tokenUpdates.push(tokenUpdate);
             }

@@ -13,7 +13,6 @@ export class PbtaActorNpcSheet extends PbtaActorSheet {
       width: 720,
       height: 640,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-tabs-content", initial: "moves" }],
-      baseApplication: "ItemSheet"
     });
   }
 

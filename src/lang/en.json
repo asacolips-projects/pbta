@@ -88,5 +88,8 @@
   "PBTA.MoveGroupHelp": "Multiple moves with the same move-group will be either/or selections when creating a new character using the character builder.",
   "PBTA.Forward": "Forward",
   "PBTA.Ongoing": "Ongoing",
-  "PBTA.RollFormulaOverride": "Roll Formula Override"
+  "PBTA.RollFormulaOverride": "Roll Formula Override",
+  "PBTA.Create": "Create",
+  "PBTA.New": "New",
+  "PBTA.NoTemplate": "No Template"
 }
