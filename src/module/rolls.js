@@ -251,10 +251,12 @@ export class PbtaRolls {
           }
         }
 
-        if (this.actor.data.data?.resources?.forward?.value) {
+        if (this.actor.data.data?.resources?.forward?.value || this.actor.data.data?.resources?.ongoing?.value) {
           let modifiers = PbtaRolls.getModifiers(this.actor);
           formula = `${formula}${modifiers}`;
-          forwardUsed = Number(this.actor.data.data.resources.forward.value) != 0;
+          if (this.actor.data.data?.resources?.forward?.value) {
+            forwardUsed = Number(this.actor.data.data.resources.forward.value) != 0;
+          }
         }
         resultRangeNeeded = true;
       }
