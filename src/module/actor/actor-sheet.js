@@ -238,6 +238,8 @@ export class PbtaActorSheet extends ActorSheet {
     actorData.moveTypes = {};
     actorData.moves = {};
 
+    let items = CONFIG.PBTA.core8x ? sheetData._source.items : sheetData.items;
+
     if (moveTypes) {
       for (let [k,v] of Object.entries(moveTypes)) {
         actorData.moveTypes[k] = v.label;
@@ -259,11 +261,15 @@ export class PbtaActorSheet extends ActorSheet {
     if (!actorData.equipment['PBTA_OTHER']) actorData.equipment['PBTA_OTHER'] = [];
     if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
 
+    console.log(sheetData);
+
     // Iterate through items, allocating to containers
     // let totalWeight = 0;
-    for (let i of sheetData.items) {
+    for (let i of items) {
       let item = i.data;
-      i.img = i.img || DEFAULT_TOKEN;
+      if (!CONFIG.PBTA.core8x) {
+        i.img = i.img || DEFAULT_TOKEN;
+      }
       // If this is a move, sort into various arrays.
       if (i.type === moveType) {
         if (actorData.moves[i.data.moveType]) {
@@ -1001,9 +1007,22 @@ export class PbtaActorSheet extends ActorSheet {
     const a = event.currentTarget;
     const data = a.dataset;
     const itemId = $(a).parents('.item').attr('data-item-id');
-    const item = this.actor.getOwnedItem(itemId);
+    let item = null;
     let flavorText = null;
     let templateData = {};
+
+
+    // Retrieve the item.
+    if (itemId) {
+      if (CONFIG.PBTA.core8x) {
+        console.log(this.actor);
+        // let actor = game.actors.get(this.actor.data._id);
+        // item = actor.items.get(itemId);
+      }
+      else {
+        item = this.actor.getOwnedItem(itemId);
+      }
+    }
 
     // Handle rolls coming directly from the ability score.
     if ($(a).hasClass('stat-rollable') && data.mod) {

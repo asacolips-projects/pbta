@@ -333,7 +333,8 @@ export class PbtaRolls {
     if (game.combat && game.combat.combatants) {
       let combatant = game.combat.combatants.find(c => c.actor.data._id == this.actor._id);
       if (combatant) {
-        let moveCount = combatant.flags.pbta ? combatant.flags.pbta.moveCount : 0;
+        let flags = CONFIG.PBTA.core8x ? combatant.data.flags : combatant.flags;
+        let moveCount = flags.pbta ? flags.pbta.moveCount : 0;
         moveCount = moveCount ? Number(moveCount) + 1 : 1;
         // Emit a socket for the GM client.
         if (!game.user.isGM) {

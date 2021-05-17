@@ -281,7 +281,11 @@ export class CombatSidebarPbta {
         let moveTotal = 0;
         if (combatants.character) {
           combatants.character.forEach(c => {
-            moveTotal = c.flags.pbta ? moveTotal + Number(c.flags.pbta.moveCount) : moveTotal;
+            if (CONFIG.PBTA.core8x) {
+              c.flags = c.data.flags;
+            }
+            console.log(c);
+            moveTotal = c?.flags?.pbta ? moveTotal + Number(c.flags.pbta?.moveCount || 0) : moveTotal;
           });
         }
 
@@ -336,7 +340,22 @@ export class CombatSidebarPbta {
         }
 
         // Retrieve the health bars mode from the token's resource settings.
-        let displayBarsMode = Object.entries(CONST.TOKEN_DISPLAY_MODES).find(i => i[1] == combatant.token.displayBars)[0];
+        console.log(Object.values(CONST.TOKEN_DISPLAY_MODES));
+        console.log(combatant);
+        let token = CONFIG.PBTA.core8x ? combatant._token.data : combatant.token;
+        let displayBarsMode = 'NONE';
+        for (let [modeKey, modeValue] of Object.entries(CONST.TOKEN_DISPLAY_MODES)) {
+          if (modeValue == token.displayBars) {
+            displayBarsMode = modeKey;
+            break;
+          }
+          console.log({
+            k: modeKey,
+            v: modeValue,
+            t: token.displayBars
+          })
+        }
+        // let displayBarsMode = Object.entries(CONST.TOKEN_DISPLAY_MODES).find(i => i[1] == token.displayBars)[0];
         // Assume player characters should always show their health bar.
         let displayHealth = group == 'character' ? true : false;
 
