@@ -1137,11 +1137,12 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {Event} event   The originating click event
    * @private
    */
-  _onItemDelete(event) {
+  async _onItemDelete(event) {
     event.preventDefault();
     const li = event.currentTarget.closest(".item");
     if (CONFIG.PBTA.core8x) {
-      this.actor.items.delete(li.dataset.itemId);
+      // await this.actor.items.delete(li.dataset.itemId);
+      await this.actor.deleteOwnedItem(li.dataset.itemId);
     }
     else {
       this.actor.deleteOwnedItem(li.dataset.itemId);

@@ -1,3 +1,4 @@
+import { PbtaActorTemplates } from '../pbta/pbta-actors.js';
 import { PbtaUtility } from "../utility.js";
 import { PbtaRolls } from "../rolls.js";
 
@@ -52,5 +53,20 @@ export class ItemPbta extends Item {
    */
   async roll({ configureDialog = true } = {}) {
     PbtaRolls.rollMove({actor: this.actor, data: this.data});
+  }
+
+  /** @inheritdoc */
+  async _preCreate(data, options, userId) {
+    await super._preCreate(data, options, userId);
+
+    if (CONFIG.PBTA.core8x) {
+      if (this.data.type == 'move' || this.data.type == 'npcMove') {
+        let item = this.data;
+        let templateData = PbtaActorTemplates.applyItemTemplate(item, options, null);
+        this.data._source.data = foundry.utils.mergeObject(templateData.data, this.data._source.data);
+        console.log(this);
+        console.log(templateData);
+      }
+    }
   }
 }

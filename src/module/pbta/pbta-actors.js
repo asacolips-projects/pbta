@@ -15,16 +15,11 @@ export class PbtaActorTemplates {
     let actorType = actor.type ?? 'character';
     let sheetType = actorType;
     if (sheetType == 'other') {
-      console.log(data);
-      if (CONFIG.PBTA.core8x) {
-        sheetType = data.data?.customType ?? 'character';
-      }
-      else {
-        sheetType = data?.customType ?? 'character';
-      }
+      sheetType = data?.customType ?? 'character';
     }
 
     let model = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
+    console.log(sheetType);
     console.log(model);
 
     data = mergeObject(origData, model);
