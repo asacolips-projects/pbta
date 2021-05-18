@@ -1,15 +1,31 @@
 export class PbtaActorTemplates {
   static applyActorTemplate(actor, options, id) {
-    let origData = actor?.data?.data ? duplicate(actor.data.data) : {};
-    let data = duplicate(origData);
+    let origData = {};
+    let data = {};
+
+    if (CONFIG.PBTA.core8x) {
+      origData = foundry.utils.deepClone(actor.data.data);
+      data = foundry.utils.deepClone(origData);
+    }
+    else {
+      origData = actor?.data?.data ? duplicate(actor.data.data) : {};
+      data = duplicate(origData);
+    }
 
     let actorType = actor.type ?? 'character';
     let sheetType = actorType;
     if (sheetType == 'other') {
-      sheetType = data?.customType ?? 'character';
+      console.log(data);
+      if (CONFIG.PBTA.core8x) {
+        sheetType = data.data?.customType ?? 'character';
+      }
+      else {
+        sheetType = data?.customType ?? 'character';
+      }
     }
 
     let model = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
+    console.log(model);
 
     data = mergeObject(origData, model);
     delete data.templates;

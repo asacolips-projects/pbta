@@ -211,11 +211,8 @@ Hooks.on("renderSettings", (app, html) => {
 /*  Actor Updates                               */
 /* -------------------------------------------- */
 Hooks.on('preCreateActor', async (actor, data, options, id) => {
-  if (CONFIG.PBTA.core8x) {
-    let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
-    data.data = templateData;
-  }
-  else {
+  if (!CONFIG.PBTA.core8x) {
+    console.log('test');
     let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
     actor.data = templateData;
   }
@@ -360,7 +357,13 @@ async function _onCreateEntity(event) {
   event.stopPropagation();
   return _pbtaDirectoryTemplates(this, event);
 }
-ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x+
+
+if (typeof ActorDirectory.prototype._onCreateEntity !== 'undefined') {
+  ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x
+}
+else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
+  ActorDirectory.prototype._onCreateDocument = _onCreateEntity; // For 0.8.x+
+}
 
 /**
  * Display the entity template dialog.
@@ -406,14 +409,21 @@ ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x+
       // First we need to find the base actor type to model this after.
       let actorType = form.type.value;
       let baseType = actorType == 'character' || actorType == 'npc' ? actorType : 'other';
-      const tplBase = game.pbta.sheetConfig.actorTypes[actorType] ?? null;
+      let tplBase = {};
       // Set the custom type.
-      if (baseType == 'other') tplBase.customType = actorType;
+      if (baseType == 'other') {
+        if (CONFIG.PBTA.core8x) {
+          tplBase.customType = actorType;
+        }
+        else {
+          tplBase = game.pbta.sheetConfig.actorTypes[actorType] ?? null;
+        }
+      }
       // Initialize create data on the object.
       let createData = {
         name: name,
         type: baseType,
-        data: {data: duplicate(tplBase)},
+        data: {data: foundry.utils.deepClone(tplBase)},
         folder: event.currentTarget.dataset.folder
       };
       createData.name = form.name.value;

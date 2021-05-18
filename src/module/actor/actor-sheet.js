@@ -66,9 +66,14 @@ export class PbtaActorSheet extends ActorSheet {
     }
 
     // Handle actor types.
-    data.pbtaActorType = this.actor.data.type;
+    data.pbtaActorType = CONFIG.PBTA.core8x ? this.actor.type : this.actor.data.type;
     if (data.pbtaActorType == 'other') {
-      data.pbtaSheetType = this.actor.data.data?.customType ?? 'character';
+      if (CONFIG.PBTA.core8x) {
+        data.pbtaSheetType = actorData.data.data?.customType ?? 'character';
+      }
+      else {
+        data.pbtaSheetType = this.actor.data.data?.customType ?? 'character';
+      }
       data.pbtaBaseType = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
     }
     else {
@@ -200,6 +205,7 @@ export class PbtaActorSheet extends ActorSheet {
       'attrTop',
       'attrLeft'
     ];
+    console.log(sheetData);
     // Iterate through the groups that need to be sorted.
     for (let group of groups) {
       // Confirm the keys exist, and assign them to a sorting array if so.

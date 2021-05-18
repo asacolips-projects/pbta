@@ -1,4 +1,6 @@
+import { PbtaActorTemplates } from '../pbta/pbta-actors.js';
 import { PbtaUtility } from '../utility.js';
+import { PbtaActorNpcSheet } from './actor-npc-sheet.js';
 
 /**
  * Extends the basic Actor class for Powered by the Apocalypse.
@@ -188,6 +190,19 @@ export class ActorPbta extends Actor {
         chatData.content = content;
         ChatMessage.create(chatData);
       });
+    }
+  }
+
+
+  /** @inheritdoc */
+  async _preCreate(data, options, userId) {
+    await super._preCreate(data, options, userId);
+
+    if (CONFIG.PBTA.core8x) {
+      let actor = this.data;
+      let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, null);
+      this.data._source.data = templateData;
+      console.log(this);
     }
   }
 }
