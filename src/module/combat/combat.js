@@ -17,7 +17,8 @@ export class CombatSidebarPbta {
         let $actorElem = $self.parents('.actor-elem');
         let combatant_id = $actorElem.length > 0 ? $actorElem.attr('data-combatant-id') : null;
         if (combatant_id) {
-          let combatant = game.combat.combatants.find(c => c._id == combatant_id);
+          let combatants = CONFIG.PBTA.core8x ? game.combat.data.combatants : game.combat.combatants;
+          let combatant = combatants.find(c => c._id == combatant_id);
           let actor = combatant.actor ? combatant.actor : null;
           if (actor) {
             actor._onRoll(event, actor);
@@ -86,7 +87,8 @@ export class CombatSidebarPbta {
             // Store the combatant type for reference. We have to do this
             // because dragover doesn't have access to the drag data, so we
             // store it as a new type entry that can be split later.
-            let newCombatant = game.combat.combatants.find(c => c._id == dragData.combatantId);
+            let combatants = CONFIG.PBTA.core8x ? game.combat.data.combatants : game.combat.combatants;
+            let newCombatant = combatants.find(c => c._id == dragData.combatantId);
             event.originalEvent.dataTransfer.setData(`newtype--${dragData.actorType}`, '');
           })
           // Add a class on hover, if the actor types match.
@@ -142,6 +144,7 @@ export class CombatSidebarPbta {
           .on('drop', '#combat .directory-item.actor-elem', async (event) => {
             // Retrieve the default encounter.
             let combat = game.combat;
+            let combatants = CONFIG.PBTA.core8x ? combat.data.combatants : combat.combatants;
 
             // TODO: This is how foundry.js retrieves the combat in certain
             // scenarios, so I'm leaving it here as a comment in case this
@@ -166,12 +169,12 @@ export class CombatSidebarPbta {
             }
 
             // Retrieve the combatant being dropped.
-            let newCombatant = combat.combatants.find(c => c._id == data.combatantId);
+            let newCombatant = combatants.find(c => c._id == data.combatantId);
 
             // Retrieve the combatants grouped by type.
-            let combatants = this.getCombatantsData(false);
+            let combatantsData = this.getCombatantsData(false);
             // Retrieve the combatant being dropped onto.
-            let originalCombatant = combatants[newCombatant.actor.data.type].find(c => {
+            let originalCombatant = combatantsData[newCombatant.actor.data.type].find(c => {
               return c._id == $dropTarget.data('combatant-id');
             });
 
@@ -183,14 +186,14 @@ export class CombatSidebarPbta {
             if (oldInit !== null) {
               // Set the initiative of the actor being draged to the drop
               // target's +1. This will later be adjusted increments of 10.
-              let updatedCombatant = combatants[newCombatant.actor.data.type].find(c => c._id == newCombatant._id);
+              let updatedCombatant = combatantsData[newCombatant.actor.data.type].find(c => c._id == newCombatant._id);
               updatedCombatant.initiative = Number(oldInit) + 1;
 
-              // Loop through all combatants in initiative order, and assign
+              // Loop through all combatantsData in initiative order, and assign
               // a new initiative in increments of 10. The "updates" variable
               // will be an array of objects iwth _id and initiative keys.
               let updatedInit = 0;
-              let updates = combatants[newCombatant.actor.data.type].sort((a, b) => a.initiative - b.initiative).map(c => {
+              let updates = combatantsData[newCombatant.actor.data.type].sort((a, b) => a.initiative - b.initiative).map(c => {
                 let result = {
                   _id: c._id,
                   initiative: updatedInit
@@ -245,7 +248,17 @@ export class CombatSidebarPbta {
 
         // Iterate over actors of this type and update the initiative of this
         // actor based on that.
-        combat.combatants.filter(c => c.actor.data.type == actorType).forEach(c => {
+        console.log(combat);
+        let combatants = [];
+
+        if (CONFIG.PBTA.core8x) {
+          combatants = combat.parent.data.combatants;
+        }
+        else {
+          combatants = combat.combatants;
+        }
+
+        combatants.filter(c => c.actor.data.type == actorType).forEach(c => {
           let init = Number(c.initiative);
           if (init >= highestInit) {
             highestInit = init + 10;

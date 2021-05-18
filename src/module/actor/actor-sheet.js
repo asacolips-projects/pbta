@@ -37,19 +37,27 @@ export class PbtaActorSheet extends ActorSheet {
     let data = {};
     let items = {};
     let effects = {};
+    let actorData = {};
 
     if (CONFIG.PBTA.core8x) {
       // const data = super.getData();
       isOwner = this.document.isOwner;
       isEditable = this.isEditable;
-      data = foundry.utils.deepClone(this.object.data);
+      // The Actor's data
+      actorData = this.actor.data.toObject(false);
+      data.actor = actorData;
+      data.data = actorData.data;
 
-      // Copy and sort Items
-      items = this.object.items.map(i => foundry.utils.deepClone(i.data));
-      items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-      data.items = items;
+      // Owned Items
+      data.items = actorData.items;
+      for ( let i of data.items ) {
+        const item = this.actor.items.get(i._id);
+        i.labels = item.labels;
+      }
+      data.items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
 
       // Copy Active Effects
+      // TODO: Test and refactor this.
       effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
       data.effects = effects;
     }
@@ -238,7 +246,8 @@ export class PbtaActorSheet extends ActorSheet {
     actorData.moveTypes = {};
     actorData.moves = {};
 
-    let items = CONFIG.PBTA.core8x ? sheetData._source.items : sheetData.items;
+    // let items = CONFIG.PBTA.core8x ? sheetData._source.items : sheetData.items;
+    let items = sheetData.items;
 
     if (moveTypes) {
       for (let [k,v] of Object.entries(moveTypes)) {
@@ -1015,9 +1024,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Retrieve the item.
     if (itemId) {
       if (CONFIG.PBTA.core8x) {
-        console.log(this.actor);
-        // let actor = game.actors.get(this.actor.data._id);
-        // item = actor.items.get(itemId);
+        item = this.actor.items.get(itemId);
       }
       else {
         item = this.actor.getOwnedItem(itemId);
@@ -1127,7 +1134,12 @@ export class PbtaActorSheet extends ActorSheet {
   _onItemDelete(event) {
     event.preventDefault();
     const li = event.currentTarget.closest(".item");
-    this.actor.deleteOwnedItem(li.dataset.itemId);
+    if (CONFIG.PBTA.core8x) {
+      this.actor.items.delete(li.dataset.itemId);
+    }
+    else {
+      this.actor.deleteOwnedItem(li.dataset.itemId);
+    }
   }
 
   /**
