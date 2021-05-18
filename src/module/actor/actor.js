@@ -117,7 +117,7 @@ export class ActorPbta extends Actor {
    * Roll a move and use the chat card template.
    * @param {Object} templateData
    */
-  rollMove(roll, actor, dataset, templateData, form = null, applyDamage = false) {
+  async rollMove(roll, actor, dataset, templateData, form = null, applyDamage = false) {
     let actorData = actor.data.data;
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
@@ -156,7 +156,7 @@ export class ActorPbta extends Actor {
       if (formula != null) {
         // Do the roll.
         let roll = new Roll(`${formula}`, actor.getRollData());
-        roll.roll();
+        await roll.evaluate({async: true});
         // Add success notification.
         if (formula.includes(dice)) {
           if (roll.total < 7) {

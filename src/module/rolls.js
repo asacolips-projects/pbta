@@ -263,7 +263,7 @@ export class PbtaRolls {
       if (formula != null) {
         // Do the roll.
         let roll = new Roll(`${formula}`, rollData);
-        roll.roll();
+        await roll.evaluate({async: true});
         let rollType = templateData.rollType ?? 'move';
         // Add success notification.
         if (resultRangeNeeded && rollType == 'move') {

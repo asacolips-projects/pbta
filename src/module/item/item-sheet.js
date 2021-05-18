@@ -35,6 +35,7 @@ export class PbtaItemSheet extends ItemSheet {
     let data = {};
     let items = {};
     let effects = {};
+    let actor = null;
 
     if (CONFIG.PBTA.core8x) {
       this.options.title = this.document.data.name;
@@ -45,6 +46,9 @@ export class PbtaItemSheet extends ItemSheet {
       // Copy Active Effects
       effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
       data.effects = effects;
+
+      // Grab the parent actor, if any.
+      actor = this.object?.parent?.data;
     }
     else {
       data = super.getData();
@@ -55,7 +59,23 @@ export class PbtaItemSheet extends ItemSheet {
     data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
 
     // Add stats.
-    data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes?.character?.stats);
+    console.log(this);
+    // Handle actor types.
+    let pbtaActorType = CONFIG.PBTA.core8x ? actor.type : actor.data.type;
+    let pbtaSheetType = 'character';
+    let pbtaBaseType = 'character';
+    if (CONFIG.PBTA.core8x) {
+      if (pbtaActorType == 'other') {
+        pbtaSheetType = actor.data?.customType ?? 'character';
+        pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
+      }
+      else {
+        pbtaSheetType = pbtaActorType;
+        pbtaBaseType = pbtaActorType;
+      }
+    }
+
+    data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats);
     data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
     data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
     data.data.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};

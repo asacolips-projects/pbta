@@ -247,12 +247,7 @@ Hooks.on('preUpdateActor', (actor, data, options, id) => {
 
 Hooks.on('preCreateItem', async (item, data, options, id) => {
   if (item.type == 'move' || item.type == 'npcMove') {
-    if (CONFIG.PBTA.core8x) {
-      let itemData = data ?? {};
-      let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
-      data.data = newItemData.data;
-    }
-    else {
+    if (!CONFIG.PBTA.core8x) {
       let itemData = item.data ?? {};
       let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
       item.data = newItemData.data;
