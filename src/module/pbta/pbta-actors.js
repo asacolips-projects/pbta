@@ -19,8 +19,6 @@ export class PbtaActorTemplates {
     }
 
     let model = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
-    console.log(sheetType);
-    console.log(model);
 
     data = mergeObject(origData, model);
     delete data.templates;

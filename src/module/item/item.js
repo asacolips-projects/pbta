@@ -65,8 +65,6 @@ export class ItemPbta extends Item {
         let item = this.data;
         let templateData = PbtaActorTemplates.applyItemTemplate(item, options, null);
         this.data._source.data = foundry.utils.mergeObject(templateData.data, this.data._source.data);
-        console.log(this);
-        console.log(templateData);
       }
     }
   }

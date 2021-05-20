@@ -205,7 +205,6 @@ export class PbtaActorSheet extends ActorSheet {
       'attrTop',
       'attrLeft'
     ];
-    console.log(sheetData);
     // Iterate through the groups that need to be sorted.
     for (let group of groups) {
       // Confirm the keys exist, and assign them to a sorting array if so.
@@ -275,8 +274,6 @@ export class PbtaActorSheet extends ActorSheet {
 
     if (!actorData.equipment['PBTA_OTHER']) actorData.equipment['PBTA_OTHER'] = [];
     if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
-
-    console.log(sheetData);
 
     // Iterate through items, allocating to containers
     // let totalWeight = 0;
@@ -384,7 +381,9 @@ export class PbtaActorSheet extends ActorSheet {
     // Character builder dialog.
     // html.find('.clickable-level-up').on('click', this._onLevelUp.bind(this));
 
-    if (this.actor.owner) {
+    let isOwner = CONFIG.PBTA.core8x ? this.actor.isOwner : this.actor.owner;
+
+    if (isOwner) {
       /* Item Dragging */
       // Core handlers from foundry.js
       var handler;

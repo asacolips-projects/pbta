@@ -211,8 +211,8 @@ Hooks.on("renderSettings", (app, html) => {
 /*  Actor Updates                               */
 /* -------------------------------------------- */
 Hooks.on('preCreateActor', async (actor, data, options, id) => {
+  // TODO: Remove this after Foundry 0.8.6.
   if (!CONFIG.PBTA.core8x) {
-    console.log('test');
     let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
     actor.data = templateData;
   }

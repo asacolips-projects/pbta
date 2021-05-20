@@ -248,7 +248,6 @@ export class CombatSidebarPbta {
 
         // Iterate over actors of this type and update the initiative of this
         // actor based on that.
-        console.log(combat);
         let combatants = [];
 
         if (CONFIG.PBTA.core8x) {
@@ -297,7 +296,6 @@ export class CombatSidebarPbta {
             if (CONFIG.PBTA.core8x) {
               c.flags = c.data.flags;
             }
-            console.log(c);
             moveTotal = c?.flags?.pbta ? moveTotal + Number(c.flags.pbta?.moveCount || 0) : moveTotal;
           });
         }
@@ -339,6 +337,7 @@ export class CombatSidebarPbta {
     // Reduce the combatants array into a new object with keys based on
     // the actor types.
     let combatants = game.combat.data.combatants.reduce((groups, combatant) => {
+      let isOwner = CONFIG.PBTA.core8x ? combatant.isOwner : combatant.owner;
       // If this is for a combatant that has had its token/actor deleted,
       // remove it from the combat.
       if (!combatant.actor) {
@@ -353,8 +352,6 @@ export class CombatSidebarPbta {
         }
 
         // Retrieve the health bars mode from the token's resource settings.
-        console.log(Object.values(CONST.TOKEN_DISPLAY_MODES));
-        console.log(combatant);
         let token = CONFIG.PBTA.core8x ? combatant._token.data : combatant.token;
         let displayBarsMode = 'NONE';
         for (let [modeKey, modeValue] of Object.entries(CONST.TOKEN_DISPLAY_MODES)) {
@@ -362,11 +359,6 @@ export class CombatSidebarPbta {
             displayBarsMode = modeKey;
             break;
           }
-          console.log({
-            k: modeKey,
-            v: modeValue,
-            t: token.displayBars
-          })
         }
         // let displayBarsMode = Object.entries(CONST.TOKEN_DISPLAY_MODES).find(i => i[1] == token.displayBars)[0];
         // Assume player characters should always show their health bar.
@@ -378,7 +370,7 @@ export class CombatSidebarPbta {
           // If the mode is one of the owner options, only the token owner or
           // the GM should be able to see it.
           if (displayBarsMode.includes("OWNER")) {
-            if (combatant.owner || game.user.isGM) {
+            if (isOwner || game.user.isGM) {
               displayHealth = true;
             }
           }
@@ -406,7 +398,7 @@ export class CombatSidebarPbta {
         // Set a property for whether or not this is editable. This controls
         // whether editabel fields like HP will be shown as an input or a div
         // in the combat tracker HTML template.
-        combatant.editable = combatant.owner || game.user.isGM;
+        combatant.editable = isOwner || game.user.isGM;
 
         // // Build the radial progress circle settings for the template.
         // combatant.healthSvg = PbtaUtility.getProgressCircle({
@@ -417,7 +409,7 @@ export class CombatSidebarPbta {
 
         // If this is the GM or the owner, push to the combatants list.
         // Otherwise, only push if the token isn't hidden in the scene.
-        if (game.user.isGM || combatant.owner || !combatant.token.hidden) {
+        if (game.user.isGM || isOwner || !combatant.token.hidden) {
           groups[group].push(combatant);
         }
       }

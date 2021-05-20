@@ -202,7 +202,6 @@ export class ActorPbta extends Actor {
       let actor = this.data;
       let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, null);
       this.data._source.data = templateData;
-      console.log(this);
     }
   }
 }

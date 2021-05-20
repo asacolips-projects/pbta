@@ -59,7 +59,7 @@ export class PbtaItemSheet extends ItemSheet {
     data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
 
     // Add stats.
-    console.log(this);
+
     // Handle actor types.
     let pbtaActorType = CONFIG.PBTA.core8x ? actor.type : actor.data.type;
     let pbtaSheetType = 'character';
