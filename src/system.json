@@ -4,7 +4,7 @@
   "description": "Run games for any PbtA system in Foundry VTT!",
   "version": "0.0.1",
   "minimumCoreVersion": "0.7.5",
-  "compatibleCoreVersion": "0.7.9",
+  "compatibleCoreVersion": "0.8.6",
   "templateVersion": 2,
   "author": "Asacolips",
   "esmodules": [

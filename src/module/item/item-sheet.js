@@ -51,6 +51,7 @@ export class PbtaItemSheet extends ItemSheet {
       actor = this.object?.parent?.data;
     }
     else {
+      actor = this.object?.options?.actor;
       data = super.getData();
     }
 
@@ -74,6 +75,16 @@ export class PbtaItemSheet extends ItemSheet {
         pbtaBaseType = pbtaActorType;
       }
     }
+    else {
+      if (pbtaActorType == 'other') {
+        pbtaSheetType = actor.data.data?.customType ?? 'character';
+        pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
+      }
+      else {
+        pbtaSheetType = pbtaActorType;
+        pbtaBaseType = pbtaActorType;
+      }
+    }
 
     data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats);
     data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
@@ -87,8 +98,8 @@ export class PbtaItemSheet extends ItemSheet {
     else if (this.object.type == 'npcMove') actorType = 'npc';
     else actorType = 'character';
 
-    data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes ?? {};
-    data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.equipmentTypes ?? null;
+    data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.moveTypes ?? {};
+    data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.equipmentTypes ?? null;
 
     // Add roll example.
     if (this.object.type == 'npcMove') {

@@ -412,13 +412,14 @@ else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
         }
         else {
           tplBase = game.pbta.sheetConfig.actorTypes[actorType] ?? null;
+          tplBase.customType = actorType;
         }
       }
       // Initialize create data on the object.
       let createData = {
         name: name,
         type: baseType,
-        data: {data: foundry.utils.deepClone(tplBase)},
+        data: {data: CONFIG.PBTA.core8x ? foundry.utils.deepClone(tplBase) : duplicate(tplBase)},
         folder: event.currentTarget.dataset.folder
       };
       createData.name = form.name.value;
