@@ -58,5 +58,5 @@ else {
 
 fs.writeFileSync('./dist/system.json', JSON.stringify(system, null, 2));
 console.log(`Build: ${system.version}`);
-console.log(`Manifest: ${system.manifest}?test=test`);
-console.log(`Download: ${system.download}?test=test`);
+console.log(`Manifest: ${system.manifest}${argv.jobname == 'build-patreon' ? '?test=test' : ''}`);
+console.log(`Download: ${system.download}${argv.jobname == 'build-patreon' ? '?test=test' : ''}`);
