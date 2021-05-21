@@ -15,6 +15,7 @@ export class PbtaActorSheet extends ActorSheet {
       classes: ["pbta", "sheet", "actor"],
       width: 840,
       height: 780,
+      scrollY: [".window-content"],
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "moves" }]
     });
   }
@@ -31,21 +32,70 @@ export class PbtaActorSheet extends ActorSheet {
 
   /** @override */
   async getData() {
-    const data = super.getData();
+    let isOwner = false;
+    let isEditable = this.isEditable;
+    let data = {};
+    let items = {};
+    let effects = {};
+    let actorData = {};
+
+    if (CONFIG.PBTA.core8x) {
+      // const data = super.getData();
+      isOwner = this.document.isOwner;
+      isEditable = this.isEditable;
+      // The Actor's data
+      actorData = this.actor.data.toObject(false);
+      data.actor = actorData;
+      data.data = actorData.data;
+
+      // Owned Items
+      data.items = actorData.items;
+      for ( let i of data.items ) {
+        const item = this.actor.items.get(i._id);
+        i.labels = item.labels;
+      }
+      data.items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+
+      // Copy Active Effects
+      // TODO: Test and refactor this.
+      effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
+      data.effects = effects;
+    }
+    else {
+      data = super.getData();
+    }
+
+    // Handle actor types.
+    data.pbtaActorType = CONFIG.PBTA.core8x ? this.actor.type : this.actor.data.type;
+    if (data.pbtaActorType == 'other') {
+      if (CONFIG.PBTA.core8x) {
+        data.pbtaSheetType = actorData.data.data?.customType ?? 'character';
+      }
+      else {
+        data.pbtaSheetType = this.actor.data.data?.customType ?? 'character';
+      }
+      data.pbtaBaseType = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
+    }
+    else {
+      data.pbtaSheetType = data.pbtaActorType;
+      data.pbtaBaseType = data.pbtaActorType;
+    }
+
     // Prepare items.
     this._prepareCharacterItems(data);
     this._prepareNpcItems(data);
     this._prepareAttrs(data);
 
     // Add playbooks.
-    if (this.actor.data.type == 'character') {
+    if (data.pbtaSheetType == 'character') {
       data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
       data.data.statToggle = game.pbta.sheetConfig?.statToggle ?? false;
-      data.data.statSettings = game.pbta.sheetConfig.actorTypes[this.actor.data.type].stats ?? {};
+      data.data.statSettings = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType].stats ?? {};
 
       if (data.data.statSettings) {
         data.data.statSettings['ask'] = {label: game.i18n.localize('PBTA.Ask'), value: 0};
         data.data.statSettings['prompt'] = {label: game.i18n.localize('PBTA.Prompt'), value: 0};
+        data.data.statSettings['formula'] = {label: game.i18n.localize('PBTA.Formula'), value: 0};
       }
 
       let xpSvg = {
@@ -54,8 +104,8 @@ export class PbtaActorSheet extends ActorSheet {
         offset: 100,
       };
 
-      // // Set a warning for tokens.
-      // data.data.isToken = this.actor.token != null;
+      // Set a warning for tokens.
+      data.data.isToken = this.actor.token != null;
       // if (!data.data.isToken) {
       //   // Add levelup choice.
       //   let levelup = (Number(data.data.attributes.xp.value) >= Number(data.data.attributes.level.value) + 7) && Number(data.data.attributes.level.value) < 10;
@@ -92,8 +142,25 @@ export class PbtaActorSheet extends ActorSheet {
 
     this._sortAttrs(data);
 
-    // Return data to the sheet
-    return data;
+    let returnData = {
+      actor: this.object,
+      cssClass: isEditable ? "editable" : "locked",
+      editable: isEditable,
+      data: data.data,
+      moves: data.moves,
+      moveTypes: data.moveTypes,
+      equipment: data.equipment,
+      equipmentTypes: data.equipmentTypes,
+      effects: effects,
+      items: items,
+      limited: this.object.limited,
+      options: this.options,
+      owner: isOwner,
+      title: this.title
+    };
+
+    // Return template data
+    return returnData;
   }
 
   /**
@@ -106,7 +173,7 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {object} sheetData Data prop on actor.
    */
   _prepareAttrs(sheetData) {
-    const actorData = sheetData.actor;
+    const actorData = sheetData;
     let groups = [
       'attrTop',
       'attrLeft'
@@ -132,7 +199,7 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {object} sheetData Data prop on actor.
    */
   _sortAttrs(sheetData) {
-    const actorData = sheetData.actor;
+    const actorData = CONFIG.PBTA.core8x ? sheetData : sheetData.actor;
     let groups = [
       'stats',
       'attrTop',
@@ -141,7 +208,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Iterate through the groups that need to be sorted.
     for (let group of groups) {
       // Confirm the keys exist, and assign them to a sorting array if so.
-      let sortKeys = game.pbta.sheetConfig.actorTypes[actorData.type][group];
+      let sortKeys = game.pbta.sheetConfig.actorTypes[sheetData.pbtaSheetType][group];
       let sortingArray = [];
       if (sortKeys) {
         sortingArray = Object.keys(sortKeys);
@@ -176,13 +243,16 @@ export class PbtaActorSheet extends ActorSheet {
    * @return {undefined}
    */
   _prepareCharacterItems(sheetData) {
-    const actorData = sheetData.actor;
-    const actorType = actorData.type ?? 'character';
-    const moveType = actorType == 'character' ? 'move' : 'npcMove';
+    const actorData = sheetData;
+    const actorType = sheetData.pbtaSheetType ?? 'character';
+    const moveType = sheetData.pbtaBaseType == 'npc' ? 'npcMove' : 'move';
 
     let moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes;
     actorData.moveTypes = {};
     actorData.moves = {};
+
+    // let items = CONFIG.PBTA.core8x ? sheetData._source.items : sheetData.items;
+    let items = sheetData.items;
 
     if (moveTypes) {
       for (let [k,v] of Object.entries(moveTypes)) {
@@ -203,53 +273,23 @@ export class PbtaActorSheet extends ActorSheet {
     }
 
     if (!actorData.equipment['PBTA_OTHER']) actorData.equipment['PBTA_OTHER'] = [];
-
-    // Initialize containers.
-    // const moves = [];
-    // const basicMoves = [];
-    // const startingMoves = [];
-    // const advancedMoves = [];
-    // const specialMoves = [];
-    // const equipment = [];
-
     if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
 
     // Iterate through items, allocating to containers
     // let totalWeight = 0;
-    for (let i of sheetData.items) {
+    for (let i of items) {
       let item = i.data;
-      i.img = i.img || DEFAULT_TOKEN;
+      if (!CONFIG.PBTA.core8x) {
+        i.img = i.img || DEFAULT_TOKEN;
+      }
       // If this is a move, sort into various arrays.
       if (i.type === moveType) {
         if (actorData.moves[i.data.moveType]) {
           actorData.moves[i.data.moveType].push(i);
         }
         else {
-          // if (!actorData.moves['PBTA_OTHER']) actorData.moves['PBTA_OTHER'] = [];
           actorData.moves['PBTA_OTHER'].push(i);
         }
-
-        // switch (i.data.moveType) {
-        //   case 'basic':
-        //     basicMoves.push(i);
-        //     break;
-
-        //   case 'starting':
-        //     startingMoves.push(i);
-        //     break;
-
-        //   case 'advanced':
-        //     advancedMoves.push(i);
-        //     break;
-
-        //   case 'special':
-        //     specialMoves.push(i);
-        //     break;
-
-        //   default:
-        //     moves.push(i);
-        //     break;
-        // }
       }
       // If this is equipment, we currently lump it together.
       else if (i.type === 'equipment') {
@@ -257,22 +297,10 @@ export class PbtaActorSheet extends ActorSheet {
           actorData.equipment[i.data.equipmentType].push(i);
         }
         else {
-          // if (!actorData.equipment['PBTA_OTHER']) actorData.equipment['PBTA_OTHER'] = [];
           actorData.equipment['PBTA_OTHER'].push(i);
         }
-        // equipment.push(i);
       }
-
     }
-
-    // Assign and return
-    // actorData.moves = moves;
-    // actorData.basicMoves = basicMoves;
-    // actorData.startingMoves = startingMoves;
-    // actorData.advancedMoves = advancedMoves;
-    // actorData.specialMoves = specialMoves;
-    // Equipment
-    // actorData.equipment = equipment;
   }
 
   /**
@@ -282,7 +310,7 @@ export class PbtaActorSheet extends ActorSheet {
    */
   _prepareNpcItems(data) {
     // Handle preprocessing for tagify data.
-    if (data.entity.type == 'npc') {
+    if (data.pbtaSheetType == 'npc') {
       // If there are tags, convert it into a string.
       if (data.data.tags != undefined && data.data.tags != '') {
         let tagArray = [];
@@ -310,7 +338,7 @@ export class PbtaActorSheet extends ActorSheet {
    * @return {undefined}
    */
   _prepareStatClocks(sheetData) {
-    const actorData = sheetData.actor;
+    const actorData = sheetData;
   }
 
   /* -------------------------------------------- */
@@ -345,7 +373,7 @@ export class PbtaActorSheet extends ActorSheet {
     // html.find('.prepared').click(this._onPrepareSpell.bind(this));
 
     // Resources.
-    // html.find('.resource-control').click(this._onResouceControl.bind(this));
+    html.find('.resource-control').click(this._onResouceControl.bind(this));
 
     // Adjust weight.
     // this._adjustWeight(html);
@@ -353,7 +381,9 @@ export class PbtaActorSheet extends ActorSheet {
     // Character builder dialog.
     // html.find('.clickable-level-up').on('click', this._onLevelUp.bind(this));
 
-    if (this.actor.owner) {
+    let isOwner = CONFIG.PBTA.core8x ? this.actor.isOwner : this.actor.owner;
+
+    if (isOwner) {
       /* Item Dragging */
       // Core handlers from foundry.js
       var handler;
@@ -402,34 +432,34 @@ export class PbtaActorSheet extends ActorSheet {
   //   }
   // }
 
-  // _onResouceControl(event) {
-  //   event.preventDefault();
-  //   const control = $(event.currentTarget);
-  //   const action = control.data('action');
-  //   const attr = control.data('attr');
-  //   // If there's an action and target attribute, update it.
-  //   if (action && attr) {
-  //     // Initialize data structure.
-  //     let data = {};
-  //     let changed = false;
-  //     // Retrieve the existin value.
-  //     data[attr] = Number(getProperty(this.actor.data.data, attr));
-  //     // Decrease the value.
-  //     if (action == 'decrease') {
-  //       data[attr] -= 1;
-  //       changed = true;
-  //     }
-  //     // Increase the value.
-  //     else if (action == 'increase') {
-  //       data[attr] += 1;
-  //       changed = true;
-  //     }
-  //     // If there are changes, apply to the actor.
-  //     if (changed) {
-  //       this.actor.update({ data: data });
-  //     }
-  //   }
-  // }
+  _onResouceControl(event) {
+    event.preventDefault();
+    const control = $(event.currentTarget);
+    const action = control.data('action');
+    const attr = control.data('attr');
+    // If there's an action and target attribute, update it.
+    if (action && attr) {
+      // Initialize data structure.
+      let data = {};
+      let changed = false;
+      // Retrieve the existin value.
+      data[attr] = Number(getProperty(this.actor.data.data, attr));
+      // Decrease the value.
+      if (action == 'decrease') {
+        data[attr] -= 1;
+        changed = true;
+      }
+      // Increase the value.
+      else if (action == 'increase') {
+        data[attr] += 1;
+        changed = true;
+      }
+      // If there are changes, apply to the actor.
+      if (changed) {
+        this.actor.update({ data: data });
+      }
+    }
+  }
 
   async _onClockClick(event) {
     event.preventDefault();
@@ -991,32 +1021,31 @@ export class PbtaActorSheet extends ActorSheet {
     const a = event.currentTarget;
     const data = a.dataset;
     const itemId = $(a).parents('.item').attr('data-item-id');
-    const item = this.actor.getOwnedItem(itemId);
-    let formula = null;
+    let item = null;
     let flavorText = null;
     let templateData = {};
 
-    let dice = PbtaUtility.getRollFormula('2d6');
+
+    // Retrieve the item.
+    if (itemId) {
+      if (CONFIG.PBTA.core8x) {
+        item = this.actor.items.get(itemId);
+      }
+      else {
+        item = this.actor.getOwnedItem(itemId);
+      }
+    }
 
     // Handle rolls coming directly from the ability score.
     if ($(a).hasClass('stat-rollable') && data.mod) {
-      // Determine if the stat toggle is in effect.
-      let hasToggle = game.pbta.sheetConfig.statToggle;
-      let toggleModifier = 0;
-      if (hasToggle) {
-        const stat = $(a).parents('.stat').data('stat');
-        const statToggle = this.actor.data.data.stats[stat].toggle;
-        toggleModifier = statToggle ? game.pbta.sheetConfig.statToggle.modifier : 0;
-      }
-
-      formula = `${dice}+${data.mod}${toggleModifier ? '+' + toggleModifier : ''}`;
+      let stat = $(a).parents('.stat').data('stat') ?? null;
       flavorText = data.label;
-
       templateData = {
-        title: flavorText
+        title: flavorText,
+        resultRangeNeeded: true
       };
 
-      PbtaRolls.rollMove({actor: this.actor, data: null, formula: formula, templateData: templateData});
+      PbtaRolls.rollMove({actor: this.actor, data: null, formula: stat, templateData: templateData});
     }
     else if ($(a).hasClass('attr-rollable') && data.roll) {
       templateData = {
@@ -1050,24 +1079,21 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {Event} event   The originating click event
    * @private
    */
-  _onItemCreate(event) {
-    console.log(event);
+  async _onItemCreate(event) {
     event.preventDefault();
     const header = event.currentTarget;
     const type = header.dataset.type;
-    const data = duplicate(header.dataset);
+    const dataset = duplicate(header.dataset);
+    const data = {};
     const actor = this.actor;
-    if (data.movetype) {
-      data.moveType = data.movetype;
-      delete data.movetype;
+    if (dataset.movetype) {
+      data.moveType = dataset.movetype;
     }
-    if (data.equipmenttype) {
-      data.equipmentType = data.equipmenttype;
-      delete data.equipmenttype;
+    if (dataset.equipmenttype) {
+      data.equipmentType = dataset.equipmenttype;
     }
-    if (data.level) {
-      data.spellLevel = data.level;
-      delete data.level;
+    if (dataset.level) {
+      data.spellLevel = dataset.level;
     }
     const name = type == 'bond' ? game.i18n.localize("PBTA.BondDefault") : `New ${type.capitalize()}`;
     let itemData = {
@@ -1075,11 +1101,18 @@ export class PbtaActorSheet extends ActorSheet {
       type: type,
       data: data
     };
-    if (type == 'move' || type == 'npcMove') {
-      itemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, {}, null);
+
+    if (CONFIG.PBTA.core8x) {
+      await this.actor.createEmbeddedDocuments('Item', [itemData], {});
     }
-    delete itemData.data["type"];
-    return this.actor.createOwnedItem(itemData);
+    else {
+      if (type == 'move' || type == 'npcMove') {
+        itemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, {}, null);
+      }
+      delete itemData.data["type"];
+
+      await this.actor.createOwnedItem(itemData);
+    }
   }
 
   /* -------------------------------------------- */
@@ -1103,10 +1136,16 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {Event} event   The originating click event
    * @private
    */
-  _onItemDelete(event) {
+  async _onItemDelete(event) {
     event.preventDefault();
     const li = event.currentTarget.closest(".item");
-    this.actor.deleteOwnedItem(li.dataset.itemId);
+    if (CONFIG.PBTA.core8x) {
+      let item = this.actor.items.get(li.dataset.itemId);
+      item.delete();
+    }
+    else {
+      this.actor.deleteOwnedItem(li.dataset.itemId);
+    }
   }
 
   /**

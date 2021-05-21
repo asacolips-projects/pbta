@@ -72,42 +72,42 @@ build-prod:
 
 ############### PATREON ################
 
-build-patreon:
-  stage: build
-  script:
-    - export
-    - npm ci
-    - npm run build
-    - node update-build-tags.js --branch=$CI_COMMIT_TAG --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG
-    - cp ./dist/system.json ./system.json
-    - mv dist pbta
-    - zip -q pbta.zip -r pbta
-  artifacts:
-    paths:
-      - pbta.zip
-      - system.json
-  only:
-    # Example: alpha20-0.1.0
-    - /^alpha\d+-\d+.*$/i
-  except:
-    - branches
+# build-patreon:
+#   stage: build
+#   script:
+#     - export
+#     - npm ci
+#     - npm run build
+#     - node update-build-tags.js --branch=$CI_COMMIT_TAG --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG
+#     - cp ./dist/system.json ./system.json
+#     - mv dist pbta
+#     - zip -q pbta.zip -r pbta
+#   artifacts:
+#     paths:
+#       - pbta.zip
+#       - system.json
+#   only:
+#     # Example: alpha20-0.1.0
+#     - /^alpha\d+-\d+.*$/i
+#   except:
+#     - branches
 
-deploy-patreon:
-  stage: deploy
-  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
-  # TODO: Azure Upload
-  # image: microsoft/azure-cli
-  dependencies:
-    - build-patreon
-  script:
-    - aws configure set region us-east-1
-    - aws s3 cp ./pbta.zip s3://$S3_BUCKET/pbta/$CI_COMMIT_TAG/pbta.zip
-    - aws s3 cp ./system.json s3://$S3_BUCKET/pbta/$CI_COMMIT_TAG/system.json
-    # TODO: Azure upload
-    # - az storage blob upload-batch --connection-string $AZ_STORAGE_CONNECTION_STRING --source ./pbta.zip --destination pbta --destination-path $CI_COMMIT_TAG
-    # - az storage blob upload-batch --connection-string $AZ_STORAGE_CONNECTION_STRING --source ./system.json --destination pbta --destination-path $CI_COMMIT_TAG
-  only:
-    # Example: alpha20-0.1.0
-    - /^alpha\d+-\d+.*$/i
-  except:
-    - branches
+# deploy-patreon:
+#   stage: deploy
+#   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+#   # TODO: Azure Upload
+#   # image: microsoft/azure-cli
+#   dependencies:
+#     - build-patreon
+#   script:
+#     - aws configure set region us-east-1
+#     - aws s3 cp ./pbta.zip s3://$S3_BUCKET/pbta/$CI_COMMIT_TAG/pbta.zip
+#     - aws s3 cp ./system.json s3://$S3_BUCKET/pbta/$CI_COMMIT_TAG/system.json
+#     # TODO: Azure upload
+#     # - az storage blob upload-batch --connection-string $AZ_STORAGE_CONNECTION_STRING --source ./pbta.zip --destination pbta --destination-path $CI_COMMIT_TAG
+#     # - az storage blob upload-batch --connection-string $AZ_STORAGE_CONNECTION_STRING --source ./system.json --destination pbta --destination-path $CI_COMMIT_TAG
+#   only:
+#     # Example: alpha20-0.1.0
+#     - /^alpha\d+-\d+.*$/i
+#   except:
+#     - branches

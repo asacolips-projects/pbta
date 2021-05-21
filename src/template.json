@@ -2,7 +2,8 @@
   "Actor": {
     "types": [
       "character",
-      "npc"
+      "npc",
+      "other"
     ],
     "templates": {
       "base": {
@@ -10,12 +11,30 @@
         "attributesTop": {},
         "attributesLeft": {},
         "attrTop": {},
-        "attrLeft": {}
+        "attrLeft": {},
+        "details": {
+          "biography": ""
+        }
+      },
+      "resources": {
+        "resources": {
+          "forward": {
+            "value": 0
+          },
+          "ongoing": {
+            "value": 0
+          },
+          "rollFormula": {
+            "value": "",
+            "stat": ""
+          }
+        }
       }
     },
     "character": {
       "templates": [
-        "base"
+        "base",
+        "resources"
       ],
       "details": {
         "playbook": ""
@@ -27,6 +46,18 @@
       ],
       "tags": [],
       "tagsString": ""
+    },
+    "other": {
+      "templates": [
+        "base",
+        "resources"
+      ],
+      "customType": "",
+      "details": {
+        "playbook": ""
+      },
+      "tags": [],
+      "tagsSTring": ""
     }
   },
   "Item": {
@@ -45,6 +76,7 @@
       "move": {
         "requiresMove": "",
         "moveType": null,
+        "rollFormula": "",
         "moveGroup": "",
         "moveResults": {}
       }
@@ -56,14 +88,14 @@
       ],
       "playbook": "",
       "rollType": "",
-      "rollMod": 0
+      "rollMod": 0,
+      "choices": ""
     },
     "npcMove": {
       "templates": [
         "base",
         "move"
-      ],
-      "rollFormula": ""
+      ]
     },
     "equipment": {
       "templates": [

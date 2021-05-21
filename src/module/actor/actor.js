@@ -1,4 +1,6 @@
+import { PbtaActorTemplates } from '../pbta/pbta-actors.js';
 import { PbtaUtility } from '../utility.js';
+import { PbtaActorNpcSheet } from './actor-npc-sheet.js';
 
 /**
  * Extends the basic Actor class for Powered by the Apocalypse.
@@ -115,7 +117,7 @@ export class ActorPbta extends Actor {
    * Roll a move and use the chat card template.
    * @param {Object} templateData
    */
-  rollMove(roll, actor, dataset, templateData, form = null, applyDamage = false) {
+  async rollMove(roll, actor, dataset, templateData, form = null, applyDamage = false) {
     let actorData = actor.data.data;
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
@@ -154,7 +156,7 @@ export class ActorPbta extends Actor {
       if (formula != null) {
         // Do the roll.
         let roll = new Roll(`${formula}`, actor.getRollData());
-        roll.roll();
+        await roll.evaluate({async: true});
         // Add success notification.
         if (formula.includes(dice)) {
           if (roll.total < 7) {
@@ -179,10 +181,6 @@ export class ActorPbta extends Actor {
               chatData.sound = CONFIG.sounds.dice;
               ChatMessage.create(chatData);
             }
-            // Deal damage to targets.
-            // if (applyDamage) {
-            //   console.log(game.user.targets);
-            // }
           });
         });
       }
@@ -192,6 +190,18 @@ export class ActorPbta extends Actor {
         chatData.content = content;
         ChatMessage.create(chatData);
       });
+    }
+  }
+
+
+  /** @inheritdoc */
+  async _preCreate(data, options, userId) {
+    await super._preCreate(data, options, userId);
+
+    if (CONFIG.PBTA.core8x) {
+      let actor = this.data;
+      let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, null);
+      this.data._source.data = templateData;
     }
   }
 }

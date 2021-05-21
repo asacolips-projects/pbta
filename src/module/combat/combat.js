@@ -17,7 +17,8 @@ export class CombatSidebarPbta {
         let $actorElem = $self.parents('.actor-elem');
         let combatant_id = $actorElem.length > 0 ? $actorElem.attr('data-combatant-id') : null;
         if (combatant_id) {
-          let combatant = game.combat.combatants.find(c => c._id == combatant_id);
+          let combatants = CONFIG.PBTA.core8x ? game.combat.data.combatants : game.combat.combatants;
+          let combatant = combatants.find(c => c._id == combatant_id);
           let actor = combatant.actor ? combatant.actor : null;
           if (actor) {
             actor._onRoll(event, actor);
@@ -86,7 +87,8 @@ export class CombatSidebarPbta {
             // Store the combatant type for reference. We have to do this
             // because dragover doesn't have access to the drag data, so we
             // store it as a new type entry that can be split later.
-            let newCombatant = game.combat.combatants.find(c => c._id == dragData.combatantId);
+            let combatants = CONFIG.PBTA.core8x ? game.combat.data.combatants : game.combat.combatants;
+            let newCombatant = combatants.find(c => c._id == dragData.combatantId);
             event.originalEvent.dataTransfer.setData(`newtype--${dragData.actorType}`, '');
           })
           // Add a class on hover, if the actor types match.
@@ -142,6 +144,7 @@ export class CombatSidebarPbta {
           .on('drop', '#combat .directory-item.actor-elem', async (event) => {
             // Retrieve the default encounter.
             let combat = game.combat;
+            let combatants = CONFIG.PBTA.core8x ? combat.data.combatants : combat.combatants;
 
             // TODO: This is how foundry.js retrieves the combat in certain
             // scenarios, so I'm leaving it here as a comment in case this
@@ -166,12 +169,12 @@ export class CombatSidebarPbta {
             }
 
             // Retrieve the combatant being dropped.
-            let newCombatant = combat.combatants.find(c => c._id == data.combatantId);
+            let newCombatant = combatants.find(c => c._id == data.combatantId);
 
             // Retrieve the combatants grouped by type.
-            let combatants = this.getCombatantsData(false);
+            let combatantsData = this.getCombatantsData(false);
             // Retrieve the combatant being dropped onto.
-            let originalCombatant = combatants[newCombatant.actor.data.type].find(c => {
+            let originalCombatant = combatantsData[newCombatant.actor.data.type].find(c => {
               return c._id == $dropTarget.data('combatant-id');
             });
 
@@ -183,14 +186,14 @@ export class CombatSidebarPbta {
             if (oldInit !== null) {
               // Set the initiative of the actor being draged to the drop
               // target's +1. This will later be adjusted increments of 10.
-              let updatedCombatant = combatants[newCombatant.actor.data.type].find(c => c._id == newCombatant._id);
+              let updatedCombatant = combatantsData[newCombatant.actor.data.type].find(c => c._id == newCombatant._id);
               updatedCombatant.initiative = Number(oldInit) + 1;
 
-              // Loop through all combatants in initiative order, and assign
+              // Loop through all combatantsData in initiative order, and assign
               // a new initiative in increments of 10. The "updates" variable
               // will be an array of objects iwth _id and initiative keys.
               let updatedInit = 0;
-              let updates = combatants[newCombatant.actor.data.type].sort((a, b) => a.initiative - b.initiative).map(c => {
+              let updates = combatantsData[newCombatant.actor.data.type].sort((a, b) => a.initiative - b.initiative).map(c => {
                 let result = {
                   _id: c._id,
                   initiative: updatedInit
@@ -245,7 +248,16 @@ export class CombatSidebarPbta {
 
         // Iterate over actors of this type and update the initiative of this
         // actor based on that.
-        combat.combatants.filter(c => c.actor.data.type == actorType).forEach(c => {
+        let combatants = [];
+
+        if (CONFIG.PBTA.core8x) {
+          combatants = combat.parent.data.combatants;
+        }
+        else {
+          combatants = combat.combatants;
+        }
+
+        combatants.filter(c => c.actor.data.type == actorType).forEach(c => {
           let init = Number(c.initiative);
           if (init >= highestInit) {
             highestInit = init + 10;
@@ -281,7 +293,10 @@ export class CombatSidebarPbta {
         let moveTotal = 0;
         if (combatants.character) {
           combatants.character.forEach(c => {
-            moveTotal = c.flags.pbta ? moveTotal + Number(c.flags.pbta.moveCount) : moveTotal;
+            if (CONFIG.PBTA.core8x) {
+              c.flags = c.data.flags;
+            }
+            moveTotal = c?.flags?.pbta ? moveTotal + Number(c.flags.pbta?.moveCount || 0) : moveTotal;
           });
         }
 
@@ -322,6 +337,7 @@ export class CombatSidebarPbta {
     // Reduce the combatants array into a new object with keys based on
     // the actor types.
     let combatants = game.combat.data.combatants.reduce((groups, combatant) => {
+      let isOwner = CONFIG.PBTA.core8x ? combatant.isOwner : combatant.owner;
       // If this is for a combatant that has had its token/actor deleted,
       // remove it from the combat.
       if (!combatant.actor) {
@@ -336,7 +352,15 @@ export class CombatSidebarPbta {
         }
 
         // Retrieve the health bars mode from the token's resource settings.
-        let displayBarsMode = Object.entries(CONST.TOKEN_DISPLAY_MODES).find(i => i[1] == combatant.token.displayBars)[0];
+        let token = CONFIG.PBTA.core8x ? combatant._token.data : combatant.token;
+        let displayBarsMode = 'NONE';
+        for (let [modeKey, modeValue] of Object.entries(CONST.TOKEN_DISPLAY_MODES)) {
+          if (modeValue == token.displayBars) {
+            displayBarsMode = modeKey;
+            break;
+          }
+        }
+        // let displayBarsMode = Object.entries(CONST.TOKEN_DISPLAY_MODES).find(i => i[1] == token.displayBars)[0];
         // Assume player characters should always show their health bar.
         let displayHealth = group == 'character' ? true : false;
 
@@ -346,7 +370,7 @@ export class CombatSidebarPbta {
           // If the mode is one of the owner options, only the token owner or
           // the GM should be able to see it.
           if (displayBarsMode.includes("OWNER")) {
-            if (combatant.owner || game.user.isGM) {
+            if (isOwner || game.user.isGM) {
               displayHealth = true;
             }
           }
@@ -374,7 +398,7 @@ export class CombatSidebarPbta {
         // Set a property for whether or not this is editable. This controls
         // whether editabel fields like HP will be shown as an input or a div
         // in the combat tracker HTML template.
-        combatant.editable = combatant.owner || game.user.isGM;
+        combatant.editable = isOwner || game.user.isGM;
 
         // // Build the radial progress circle settings for the template.
         // combatant.healthSvg = PbtaUtility.getProgressCircle({
@@ -385,7 +409,7 @@ export class CombatSidebarPbta {
 
         // If this is the GM or the owner, push to the combatants list.
         // Otherwise, only push if the token isn't hidden in the scene.
-        if (game.user.isGM || combatant.owner || !combatant.token.hidden) {
+        if (game.user.isGM || isOwner || !combatant.token.hidden) {
           groups[group].push(combatant);
         }
       }

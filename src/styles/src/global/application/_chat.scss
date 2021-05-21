@@ -53,7 +53,12 @@
     }
 
     .result-details {
-      padding: 10px;
+      padding: 10px 10px 0;
+      margin-bottom: 10px;
+    }
+
+    .result-choices {
+      margin: 10px 0;
     }
 
     .failure {

@@ -2,6 +2,7 @@ Actor:
   types:
     - character
     - npc
+    - other
   templates:
     base:
       stats: {}
@@ -9,9 +10,21 @@ Actor:
       attributesLeft: {}
       attrTop: {}
       attrLeft: {}
+      details:
+        biography: ''
+    resources:
+      resources:
+        forward:
+          value: 0
+        ongoing:
+          value: 0
+        rollFormula:
+          value: ''
+          stat: ''
   character:
     templates:
       - base
+      - resources
     details:
       playbook: ''
   npc:
@@ -19,6 +32,15 @@ Actor:
       - base
     tags: []
     tagsString: ''
+  other:
+    templates:
+      - base
+      - resources
+    customType: ''
+    details:
+      playbook: ''
+    tags: []
+    tagsSTring: ''
 Item:
   types:
     - move
@@ -33,6 +55,7 @@ Item:
     move:
       requiresMove: ''
       moveType: null
+      rollFormula: ''
       moveGroup: ''
       moveResults: {}
   move:
@@ -42,11 +65,11 @@ Item:
     playbook: ''
     rollType: ''
     rollMod: 0
+    choices: ''
   npcMove:
     templates:
       - base
       - move
-    rollFormula: ''
   equipment:
     templates:
       - base

@@ -11,10 +11,12 @@ import { ActorPbta } from "./actor/actor.js";
 import { ItemPbta } from "./item/item.js";
 import { PbtaItemSheet } from "./item/item-sheet.js";
 import { PbtaActorSheet } from "./actor/actor-sheet.js";
+import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
 import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
 import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
 import { PbtaRegisterHelpers } from "./handlebars.js";
 import { PbtaUtility } from "./utility.js";
+import { PbtaRolls } from "./rolls.js";
 import { CombatSidebarPbta } from "./combat/combat.js";
 import { MigratePbta } from "./migrate/migrate.js";
 import { PbtaSettingsConfigDialog } from "./settings/settings.js";
@@ -35,7 +37,8 @@ Hooks.once("init", async function() {
     PbtaUtility,
     PbtaActorTemplates,
     MigratePbta,
-    PbtaSettingsConfigDialog
+    PbtaSettingsConfigDialog,
+    PbtaRolls
   };
 
   // TODO: Extend the combat class.
@@ -49,6 +52,10 @@ Hooks.once("init", async function() {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("pbta", PbtaActorSheet, {
     types: ['character'],
+    makeDefault: true
+  });
+  Actors.registerSheet("pbta", PbtaActorOtherSheet, {
+    types: ['other'],
     makeDefault: true
   });
   Actors.registerSheet("pbta", PbtaActorNpcSheet, {
@@ -115,6 +122,9 @@ Hooks.once("ready", async function() {
 
   PBTA.playbooks = await PbtaPlaybooks.getPlaybooks();
   CONFIG.PBTA = PBTA;
+
+  // Feature flag for 0.8.x.
+  CONFIG.PBTA.core8x = isNewerVersion(game.data.version, '0.8.0');
 
   // Apply structure to actor types.
   PbtaUtility.applyActorTemplates();
@@ -200,9 +210,12 @@ Hooks.on("renderSettings", (app, html) => {
 /* -------------------------------------------- */
 /*  Actor Updates                               */
 /* -------------------------------------------- */
-Hooks.on('preCreateActor', async (actor, options, id) => {
-  let data = PbtaActorTemplates.applyActorTemplate(actor, options, id);
-  actor.data = data;
+Hooks.on('preCreateActor', async (actor, data, options, id) => {
+  // TODO: Remove this after Foundry 0.8.6.
+  if (!CONFIG.PBTA.core8x) {
+    let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
+    actor.data = templateData;
+  }
 });
 
 Hooks.on('preUpdateActor', (actor, data, options, id) => {
@@ -232,11 +245,13 @@ Hooks.on('preUpdateActor', (actor, data, options, id) => {
 //   }
 // });
 
-Hooks.on('preCreateItem', async (item, options, id) => {
+Hooks.on('preCreateItem', async (item, data, options, id) => {
   if (item.type == 'move' || item.type == 'npcMove') {
-    let itemData = item.data ?? {};
-    let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
-    item.data = newItemData;
+    if (!CONFIG.PBTA.core8x) {
+      let itemData = item.data ?? {};
+      let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
+      item.data = newItemData.data;
+    }
   }
 });
 
@@ -326,4 +341,92 @@ function rollItemMacro(itemName) {
   // Trigger the item roll
   // if ( item.data.type === "spell" ) return actor.useSpell(item);
   return item.roll();
+}
+
+/* -------------------------------------------- */
+/*  Entity Creation Override                    */
+/* -------------------------------------------- */
+
+async function _onCreateEntity(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  return _pbtaDirectoryTemplates(this, event);
+}
+
+if (typeof ActorDirectory.prototype._onCreateEntity !== 'undefined') {
+  ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x
+}
+else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
+  ActorDirectory.prototype._onCreateDocument = _onCreateEntity; // For 0.8.x+
+}
+
+/**
+ * Display the entity template dialog.
+ *
+ * Helper function to display a dialog if there are multiple template types defined for the entity type.
+ * TODO: Refactor in 0.7.x to play more nicely with the Entity.createDialog method
+ *1
+ * @param {EntityCollection} entityType - The sidebar tab
+ * @param {MouseEvent} event - Triggering event
+ */
+ async function _pbtaDirectoryTemplates(collection, event) {
+
+  // Retrieve the collection and find any available templates
+  const entityCollection = collection.tabName === "actors" ? game.actors : game.items;
+  const cls = collection.tabName === "actors" ? Actor : Item;
+  // let templates = entityCollection.filter(a => a.getFlag("worldbuilding", "isTemplate"));
+  let ent = game.i18n.localize(cls.config.label);
+
+  let actorTypes = Object.keys(game.pbta.sheetConfig.actorTypes);
+
+  // Setup default creation data
+  let type = collection.tabName === "actors" ? 'character' : 'item';
+  let name = `${game.i18n.localize("PBTA.New")} ${ent}`;
+
+  // Build an array of types for the form, including an empty default.
+  let types = actorTypes.map(a => {
+    // TODO: Make these values different.
+    return {
+      value: a,
+      type: a == 'character' || a == 'npc' ? a : 'other',
+      label: a
+    }
+  });
+
+  // Render the confirmation dialog window
+  const templateData = {upper: ent, lower: ent.toLowerCase(), types: types};
+  const dlg = await renderTemplate(`systems/pbta/templates/sidebar/entity-create.html`, templateData);
+  return Dialog.confirm({
+    title: `${game.i18n.localize("PBTA.Create")} ${name}`,
+    content: dlg,
+    yes: html => {
+      const form = html[0].querySelector("form");
+      // First we need to find the base actor type to model this after.
+      let actorType = form.type.value;
+      let baseType = actorType == 'character' || actorType == 'npc' ? actorType : 'other';
+      let tplBase = {};
+      // Set the custom type.
+      if (baseType == 'other') {
+        if (CONFIG.PBTA.core8x) {
+          tplBase.customType = actorType;
+        }
+        else {
+          tplBase = game.pbta.sheetConfig.actorTypes[actorType] ?? null;
+          tplBase.customType = actorType;
+        }
+      }
+      // Initialize create data on the object.
+      let createData = {
+        name: name,
+        type: baseType,
+        data: {data: CONFIG.PBTA.core8x ? foundry.utils.deepClone(tplBase) : duplicate(tplBase)},
+        folder: event.currentTarget.dataset.folder
+      };
+      createData.name = form.name.value;
+      // Create the actor.
+      return cls.create(createData, {renderSheet: true});
+    },
+    no: () => {},
+    defaultYes: false
+  });
 }

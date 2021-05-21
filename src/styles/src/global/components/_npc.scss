@@ -90,13 +90,29 @@
 
     .sheet-body {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sheet-tabs {
+      flex: 0 auto;
+    }
+
+    .sheet-tabs-content {
+      flex: 1;
     }
 
     .editor {
       height: calc(100% - 34px - 73px);
-      background: $ct-gray;
+      // background: $ct-gray;
       padding: 4px;
       border-radius: 4px;
+    }
+  }
+
+  .sheet-tabs {
+    .item {
+      margin: 0 2px;
     }
   }
 }

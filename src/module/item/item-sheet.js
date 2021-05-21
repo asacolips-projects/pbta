@@ -13,7 +13,8 @@ export class PbtaItemSheet extends ItemSheet {
       width: 520,
       height: 480,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details" }],
-      submitOnChange: false,
+      submitOnChange: true,
+      baseApplication: "ItemSheet"
     });
   }
 
@@ -29,39 +30,90 @@ export class PbtaItemSheet extends ItemSheet {
 
   /** @override */
   async getData() {
-    const data = super.getData();
+    let isOwner = false;
+    let isEditable = this.isEditable;
+    let data = {};
+    let items = {};
+    let effects = {};
+    let actor = null;
+
+    if (CONFIG.PBTA.core8x) {
+      this.options.title = this.document.data.name;
+      isOwner = this.document.isOwner;
+      isEditable = this.isEditable;
+      data = foundry.utils.deepClone(this.object.data);
+
+      // Copy Active Effects
+      effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
+      data.effects = effects;
+
+      // Grab the parent actor, if any.
+      actor = this.object?.parent?.data;
+    }
+    else {
+      actor = this.object?.options?.actor;
+      data = super.getData();
+    }
+
     data.dtypes = ["String", "Number", "Boolean"];
     // Add playbooks.
     data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
 
     // Add stats.
-    data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes?.character?.stats);
+
+    // Handle actor types.
+    let pbtaActorType = CONFIG.PBTA.core8x ? actor.type : actor.data.type;
+    let pbtaSheetType = 'character';
+    let pbtaBaseType = 'character';
+    if (CONFIG.PBTA.core8x) {
+      if (pbtaActorType == 'other') {
+        pbtaSheetType = actor.data?.customType ?? 'character';
+        pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
+      }
+      else {
+        pbtaSheetType = pbtaActorType;
+        pbtaBaseType = pbtaActorType;
+      }
+    }
+    else {
+      if (pbtaActorType == 'other') {
+        pbtaSheetType = actor.data.data?.customType ?? 'character';
+        pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
+      }
+      else {
+        pbtaSheetType = pbtaActorType;
+        pbtaBaseType = pbtaActorType;
+      }
+    }
+
+    data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats);
     data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
     data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
+    data.data.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
 
     // Add move types.
     let actorType = null;
 
-    if (data.entity.type == 'move') actorType = 'character';
-    else if (data.entity.type == 'npcMove') actorType = 'npc';
+    if (this.object.type == 'move') actorType = 'character';
+    else if (this.object.type == 'npcMove') actorType = 'npc';
     else actorType = 'character';
 
-    data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes ?? {};
-    data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.equipmentTypes ?? null;
+    data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.moveTypes ?? {};
+    data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.equipmentTypes ?? null;
 
     // Add roll example.
-    if (data.entity.type == 'npcMove') {
+    if (this.object.type == 'npcMove') {
       data.data.rollExample = game.pbta.sheetConfig?.rollFormula ?? '2d6';
     }
 
-    if (data.entity.type == 'move' || data.entity.type == 'npcMove') {
+    if (this.object.type == 'move' || this.object.type == 'npcMove') {
       for (let [key, value] of Object.entries(data.data.moveResults)) {
         data.data.moveResults[key].rangeName = `data.moveResults.${key}.value`;
       }
     }
 
     // Handle preprocessing for tagify data.
-    if (data.entity.type == 'equipment') {
+    if (this.object.type == 'equipment') {
       // If there are tags, convert it into a string.
       if (data.data.tags != undefined && data.data.tags != '') {
         let tagArray = [];
@@ -80,8 +132,25 @@ export class PbtaItemSheet extends ItemSheet {
       }
     }
 
+    let returnData = {};
+    if (CONFIG.PBTA.core8x) {
+      returnData = {
+        item: this.object.data.document,
+        cssClass: isEditable ? "editable" : "locked",
+        editable: isEditable,
+        data: data.data,
+        effects: effects,
+        limited: this.object.limited,
+        options: this.options,
+        owner: isOwner,
+        title: data.name
+      };
+    }
+    else {
+      returnData = data;
+    }
 
-    return data;
+    return returnData;
   }
 
   /* -------------------------------------------- */
