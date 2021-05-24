@@ -59,30 +59,40 @@ export class PbtaItemSheet extends ItemSheet {
     // Add playbooks.
     data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
 
-    // Add stats.
+    // Add move types.
+    let actorType = null;
+
+    if (this.object.type == 'move') actorType = 'character';
+    else if (this.object.type == 'npcMove') actorType = 'npc';
+    else actorType = 'character';
 
     // Handle actor types.
-    let pbtaActorType = CONFIG.PBTA.core8x ? actor.type : actor.data.type;
-    let pbtaSheetType = 'character';
-    let pbtaBaseType = 'character';
-    if (CONFIG.PBTA.core8x) {
-      if (pbtaActorType == 'other') {
-        pbtaSheetType = actor.data?.customType ?? 'character';
-        pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
+    let pbtaActorType = actorType;
+    let pbtaSheetType = actorType;
+    let pbtaBaseType = actorType;
+
+    // Override with the parent actor if possible.
+    if (actor) {
+      pbtaActorType = CONFIG.PBTA.core8x ? actor.type : actor.data.type;
+      if (CONFIG.PBTA.core8x) {
+        if (pbtaActorType == 'other') {
+          pbtaSheetType = actor.data?.customType ?? 'character';
+          pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
+        }
+        else {
+          pbtaSheetType = pbtaActorType;
+          pbtaBaseType = pbtaActorType;
+        }
       }
       else {
-        pbtaSheetType = pbtaActorType;
-        pbtaBaseType = pbtaActorType;
-      }
-    }
-    else {
-      if (pbtaActorType == 'other') {
-        pbtaSheetType = actor.data.data?.customType ?? 'character';
-        pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
-      }
-      else {
-        pbtaSheetType = pbtaActorType;
-        pbtaBaseType = pbtaActorType;
+        if (pbtaActorType == 'other') {
+          pbtaSheetType = actor.data.data?.customType ?? 'character';
+          pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
+        }
+        else {
+          pbtaSheetType = pbtaActorType;
+          pbtaBaseType = pbtaActorType;
+        }
       }
     }
 
@@ -90,13 +100,6 @@ export class PbtaItemSheet extends ItemSheet {
     data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
     data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
     data.data.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
-
-    // Add move types.
-    let actorType = null;
-
-    if (this.object.type == 'move') actorType = 'character';
-    else if (this.object.type == 'npcMove') actorType = 'npc';
-    else actorType = 'character';
 
     data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.moveTypes ?? {};
     data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.equipmentTypes ?? null;
