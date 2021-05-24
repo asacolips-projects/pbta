@@ -96,10 +96,12 @@ export class PbtaItemSheet extends ItemSheet {
       }
     }
 
-    data.data.stats = duplicate(game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats);
-    data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
-    data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
-    data.data.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
+    if (this.object.type == 'move') {
+      data.data.stats = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats ? duplicate(game.pbta.sheetConfig.actorTypes[pbtaSheetType].stats) : {};
+      data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
+      data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
+      data.data.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
+    }
 
     data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.moveTypes ?? {};
     data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.equipmentTypes ?? null;
