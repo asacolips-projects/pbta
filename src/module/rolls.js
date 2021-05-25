@@ -265,6 +265,16 @@ export class PbtaRolls {
         let roll = new Roll(`${formula}`, rollData);
         await roll.evaluate({async: true});
         let rollType = templateData.rollType ?? 'move';
+        // Handle moves that need result ranges but were missed.
+        if (!resultRangeNeeded && templateData?.moveResults && typeof templateData.moveResults == 'object') {
+          let tempResultRanges = Object.entries(templateData.moveResults);
+          for (let [resultKey, resultRange] of tempResultRanges) {
+            if (resultRange.value) {
+              resultRangeNeeded = true;
+              break;
+            }
+          }
+        }
         // Add success notification.
         if (resultRangeNeeded && rollType == 'move') {
           // Retrieve the result ranges.
