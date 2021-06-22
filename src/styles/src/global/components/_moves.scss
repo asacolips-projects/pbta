@@ -7,6 +7,27 @@
 .cell--equipment,
 .cell--spells {
 
+  .move-group-label,
+  .item-label {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .fas {
+    transition: all ease-in-out 0.25s;
+  }
+
+  .open {
+    &::after {
+      width: 100%;
+    }
+
+    .fas {
+      transform: rotate(180deg);
+    }
+  }
+
   .items-list {
     padding: 0;
 
@@ -138,16 +159,6 @@
 
     .fas {
       transition: all ease-in-out 0.25s;
-    }
-
-    &.open {
-      &::after {
-        width: 100%;
-      }
-
-      .fas {
-        transform: rotate(180deg);
-      }
     }
   }
 
