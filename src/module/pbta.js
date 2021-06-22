@@ -86,6 +86,15 @@ Hooks.once("init", async function() {
     default: 0
   });
 
+  game.settings.register("pbta", "advForward", {
+    name: game.i18n.localize("PBTA.Settings.advForward.name"),
+    hint: game.i18n.localize("PBTA.Settings.advForward.hint"),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
   game.settings.registerMenu("pbta", "sheetConfigMenu", {
     name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
     label: game.i18n.localize("PBTA.Settings.sheetConfig.label"),

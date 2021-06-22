@@ -38,7 +38,10 @@ export class PbtaRolls {
   static getModifiers(actor) {
     let forward = Number(actor.data.data.resources.forward.value) ?? 0;
     let ongoing = Number(actor.data.data.resources.ongoing.value) ?? 0;
-    return `+${forward}+${ongoing}`;
+    let result = '';
+    if (forward) result += `+${forward}`;
+    if (ongoing) result += `+${ongoing}`;
+    return result;
   }
 
   /**
@@ -208,6 +211,7 @@ export class PbtaRolls {
     let template = 'systems/pbta/templates/chat/chat-move.html';
     let dice = this.getRollFormula('2d6', this.actor);
     let forwardUsed = false;
+    let rollModeUsed = false;
     let resultRangeNeeded = templateData.resultRangeNeeded ?? false;
     let rollData = this.actor.getRollData();
     // GM rolls.
@@ -258,6 +262,40 @@ export class PbtaRolls {
           if (dataset.value && dataset.value != 0) {
             formula += `+${dataset.value}`;
           }
+        }
+
+        // Handle adv/dis.
+        let rollMode = this.actor.data.flags?.pbta?.rollMode ?? 'def';
+        switch (rollMode) {
+          case 'adv':
+            rollModeUsed = true;
+            if (formula.includes('2d6')) {
+              formula = formula.replace('2d6', '3d6kh2');
+            }
+            else if (formula.includes('d')) {
+              // Match the first d6 as (n)d6.
+              formula = formula.replace(/(\d*)(d)(\d+)/i, (match, p1, p2, p3, offset, string) => {
+                let keep = p1 ? Number(p1) : 1;
+                let count = keep + 1;
+                return `${count}${p2}${p3}kh${keep}`; // Ex: 2d6 -> 3d6kh2
+              });
+            }
+            break;
+
+          case 'dis':
+            rollModeUsed = true;
+            if (formula.includes('2d6')) {
+              formula = formula.replace('2d6', '3d6kl2');
+            }
+            else if (formula.includes('d')) {
+              // Match the first d6 as (n)d6.
+              formula = formula.replace(/(\d*)(d)(\d+)/i, (match, p1, p2, p3, offset, string) => {
+                let keep = p1 ? Number(p1) : 1;
+                let count = keep + 1;
+                return `${count}${p2}${p3}kl${keep}`; // Ex: 2d6 -> 3d6kh2
+              });
+            }
+            break;
         }
 
         if (this.actor.data.data?.resources?.forward?.value || this.actor.data.data?.resources?.ongoing?.value) {
@@ -369,8 +407,13 @@ export class PbtaRolls {
     }
 
     // Update forward.
-    if (forwardUsed && this.actor.data.data?.resources?.forward) {
-      await this.actor.update({'data.resources.forward.value': 0});
+    if (forwardUsed || rollModeUsed) {
+      let updates = {};
+      if (forwardUsed) updates['data.resources.forward.value'] = 0;
+      if (rollModeUsed && game.settings.get('pbta', 'advForward')) {
+        updates['flags.pbta.rollMode'] = 'def';
+      }
+      await this.actor.update(updates);
     }
   }
 }

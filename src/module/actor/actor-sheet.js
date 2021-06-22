@@ -104,6 +104,13 @@ export class PbtaActorSheet extends ActorSheet {
         offset: 100,
       };
 
+      // Flags
+      data.rollModes = {
+        def: 'PBTA.Normal',
+        adv: 'PBTA.Advantage',
+        dis: 'PBTA.Disadvantage'
+      };
+
       // Set a warning for tokens.
       data.data.isToken = this.actor.token != null;
       // if (!data.data.isToken) {
@@ -151,7 +158,9 @@ export class PbtaActorSheet extends ActorSheet {
       moveTypes: data.moveTypes,
       equipment: data.equipment,
       equipmentTypes: data.equipmentTypes,
+      rollModes: data?.rollModes,
       effects: effects,
+      flags: this.object?.data?.flags ?? {},
       items: items,
       limited: this.object.limited,
       options: this.options,

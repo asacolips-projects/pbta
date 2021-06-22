@@ -9,6 +9,8 @@
   "PBTA.Settings.button.help": "PbtA System Help & Tutorial",
   "PBTA.Settings.stats.name": "Stats",
   "PBTA.Settings.stats.hint": "Enter a comma-separated list of stats/abilities, such as \"Str,Dex,Con,Int,Wis,Cha\"",
+  "PBTA.Settings.advForward.name": "Clear ADV/DIS After Rolls",
+  "PBTA.Settings.advForward.hint": "If enabled, advantage and disadvantage choices on the character sheet will be reset to normal after each roll (similar to Forward).",
   "PBTA.Settings.itemIcons.name": "Enable Item Icons",
   "PBTA.Settings.itemIcons.hint": "Enable visual icons for moves, spells, and equipment in character sheets (requires browser reload).",
   "PBTA.Settings.sheetConfig.label": "PbtA Sheet Configuration",
@@ -91,5 +93,8 @@
   "PBTA.RollFormulaOverride": "Roll Formula Override",
   "PBTA.Create": "Create",
   "PBTA.New": "New",
-  "PBTA.NoTemplate": "No Template"
+  "PBTA.NoTemplate": "No Template",
+  "PBTA.Normal": "Normal",
+  "PBTA.Advantage": "Advantage",
+  "PBTA.Disadvantage": "Disadvantage"
 }

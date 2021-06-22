@@ -133,6 +133,11 @@
                         <button class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
                       </div>
                     </div>
+
+                    <div class="cell cell--roll-mode flexrow">
+                      <label class="cell__title">{{localize "Roll Mode"}}</label>
+                      {{radioBoxes 'flags.pbta.rollMode' rollModes checked=flags.pbta.rollMode localize=true}}
+                    </div>
                   </section>
 
                   {{#each moves as |moveGroup moveKey|}}
