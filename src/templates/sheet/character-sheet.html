@@ -141,9 +141,9 @@
                   </section>
 
                   {{#each moves as |moveGroup moveKey|}}
-                    <div class="cell cell--moves cell--{{moveKey}}">
+                    <div class="cell cell--moves cell--group cell--{{moveKey}}">
                       <h2 class="cell__title">
-                        <label class="move-group-label">{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../moveTypes moveKey}}{{/if}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span></label>
+                        <label class="item-group-label">{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../moveTypes moveKey}}{{/if}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span></label>
                         <div class="item-controls">
                           <button type="button" class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="move" data-moveType="{{moveKey}}">
                             <i class="fas fa-plus"></i>
@@ -165,7 +165,7 @@
 
               {{!-- Owned Equipment Tab --}}
               <div class="tab equipment" data-group="primary" data-tab="equipment">
-                {{!-- <div class="cell cell--equipment"> --}}
+                {{!-- <div class="cell cell--equipment cell--group"> --}}
                   <section class="sheet-notifications" style="margin-top:10px;">
                     {{#if data.isToken}}
                     <div class="cell__title warning small-text">Equipment cannot be rearranged while this token is not linked to an actor.</div>
@@ -181,9 +181,9 @@
                     </div>
                   </h2> --}}
                   {{#each equipment as |equipmentGroup equipmentKey|}}
-                    <div class="cell cell--equipment cell--{{equipmentKey}}">
+                    <div class="cell cell--equipment cell--group cell--{{equipmentKey}}">
                       <h2 class="cell__title">
-                        <label>{{#if (eq equipmentKey "PBTA_OTHER")}}{{localize equipmentKey}}{{else}}{{getLabel ../equipmentTypes equipmentKey}}{{/if}}</label>
+                        <label class="item-group-label">{{#if (eq equipmentKey "PBTA_OTHER")}}{{localize equipmentKey}}{{else}}{{getLabel ../equipmentTypes equipmentKey}}{{/if}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span></label>
                         <div class="item-controls">
                           <button type="button" class="item-control item-create" title='{{localize "PBTA.EquipmentCreate"}}' data-type="equipment" data-equipmentType="{{equipmentKey}}">
                             <i class="fas fa-plus"></i>

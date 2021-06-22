@@ -368,7 +368,7 @@ export class PbtaActorSheet extends ActorSheet {
     html.find('.item-delete').on('click', this._onItemDelete.bind(this));
 
     // Moves
-    html.find('.move-group-label').on('click', this._hideMoveGroup.bind(this));
+    html.find('.item-group-label').on('click', this._hideMoveGroup.bind(this));
     html.find('.item-label').on('click', this._showItemDetails.bind(this));
 
     // Attributes.
@@ -517,7 +517,7 @@ export class PbtaActorSheet extends ActorSheet {
     event.preventDefault();
     const toggler = $(event.currentTarget);
     const toggleIcon = toggler.find('i');
-    const group = toggler.parents('.cell--moves');
+    const group = toggler.parents('.cell--group');
     const description = group.find('.items-list');
 
     toggler.toggleClass('open');
