@@ -3,8 +3,8 @@
   "title": "Powered by the Apocalypse",
   "description": "Run games for any PbtA system in Foundry VTT!",
   "version": "0.1.0",
-  "minimumCoreVersion": "0.7.5",
-  "compatibleCoreVersion": "0.8.6",
+  "minimumCoreVersion": "0.8.6",
+  "compatibleCoreVersion": "0.8.7",
   "templateVersion": 2,
   "author": "Asacolips",
   "esmodules": [

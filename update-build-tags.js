@@ -18,7 +18,7 @@ const argv = yargs
       type: 'string',
       description: 'The git tag used for this version (CI_COMMIT_TAG)'
     })
-    .option('versionpre', {
+    .option('versionpost', {
       type: 'string',
       description: 'specifies the timestamp as a prefix on beta builds (CI_PIPELINE_IID)'
     })
@@ -29,13 +29,13 @@ const systemRaw = fs.readFileSync('./dist/system.json');
 let system = JSON.parse(systemRaw);
 
 // Calculate the version.
-if (argv.branch && argv.branch == 'beta' && argv.versionpre) {
+if (argv.branch && argv.branch == 'beta' && argv.versionpost) {
   let newVersionSplit = system.version.split('.');
   // Set the beta version.
   newVersionSplit[1]++;
   newVersionSplit[2] = 0;
   let newVersion = newVersionSplit.join('.');
-  system.version = `beta${argv.versionpre ? argv.versionpre + '-' : ''}${newVersion}`;
+  system.version = `${newVersion}-beta${argv.versionpost ? argv.versionpost : ''}`;
 }
 else if (argv.tag) {
   system.version = argv.tag;
