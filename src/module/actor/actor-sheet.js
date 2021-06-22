@@ -69,7 +69,7 @@ export class PbtaActorSheet extends ActorSheet {
     data.pbtaActorType = CONFIG.PBTA.core8x ? this.actor.type : this.actor.data.type;
     if (data.pbtaActorType == 'other') {
       if (CONFIG.PBTA.core8x) {
-        data.pbtaSheetType = actorData.data.data?.customType ?? 'character';
+        data.pbtaSheetType = actorData.data?.customType ?? 'character';
       }
       else {
         data.pbtaSheetType = this.actor.data.data?.customType ?? 'character';

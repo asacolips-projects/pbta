@@ -157,6 +157,15 @@ export class PbtaRolls {
                     this.rollMoveExecute('prompt', data, templateData, html[0].querySelector("form"))
                   }
                 }
+              },
+              // Prevent enter triggering a refresh.
+              render: html => {
+                html.on('keydown', function(event) {
+                  if (event.key == 'Enter') {
+                    event.preventDefault();
+                    html.find('button.submit').trigger('click');
+                  }
+                });
               }
             }).render(true);
           })

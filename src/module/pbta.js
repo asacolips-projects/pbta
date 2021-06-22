@@ -427,6 +427,14 @@ else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
       return cls.create(createData, {renderSheet: true});
     },
     no: () => {},
-    defaultYes: false
+    defaultYes: false,
+    render: html => {
+      html.on('keydown', function(event) {
+        if (event.key == 'Enter') {
+          event.preventDefault();
+          html.find('button.yes').trigger('click');
+        }
+      });
+    }
   });
 }

@@ -352,10 +352,10 @@ export class CombatSidebarPbta {
         }
 
         // Retrieve the health bars mode from the token's resource settings.
-        let token = CONFIG.PBTA.core8x ? combatant._token.data : combatant.token;
+        let token = CONFIG.PBTA.core8x ? combatant?._token?.data : combatant?.token;
         let displayBarsMode = 'NONE';
         for (let [modeKey, modeValue] of Object.entries(CONST.TOKEN_DISPLAY_MODES)) {
-          if (modeValue == token.displayBars) {
+          if (modeValue == token?.displayBars) {
             displayBarsMode = modeKey;
             break;
           }

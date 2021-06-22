@@ -61,9 +61,10 @@ export class PbtaItemSheet extends ItemSheet {
 
     // Add move types.
     let actorType = null;
+    let itemType = this?.object?.type ?? 'move';
 
-    if (this.object.type == 'move') actorType = 'character';
-    else if (this.object.type == 'npcMove') actorType = 'npc';
+    if (itemType == 'move') actorType = 'character';
+    else if (itemType == 'npcMove') actorType = 'npc';
     else actorType = 'character';
 
     // Handle actor types.
@@ -96,7 +97,7 @@ export class PbtaItemSheet extends ItemSheet {
       }
     }
 
-    if (this.object.type == 'move') {
+    if (itemType == 'move') {
       data.data.stats = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats ? duplicate(game.pbta.sheetConfig.actorTypes[pbtaSheetType].stats) : {};
       data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
       data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
@@ -107,18 +108,18 @@ export class PbtaItemSheet extends ItemSheet {
     data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.equipmentTypes ?? null;
 
     // Add roll example.
-    if (this.object.type == 'npcMove') {
+    if (itemType == 'npcMove') {
       data.data.rollExample = game.pbta.sheetConfig?.rollFormula ?? '2d6';
     }
 
-    if (this.object.type == 'move' || this.object.type == 'npcMove') {
+    if (itemType == 'move' || itemType == 'npcMove') {
       for (let [key, value] of Object.entries(data.data.moveResults)) {
         data.data.moveResults[key].rangeName = `data.moveResults.${key}.value`;
       }
     }
 
     // Handle preprocessing for tagify data.
-    if (this.object.type == 'equipment') {
+    if (itemType == 'equipment') {
       // If there are tags, convert it into a string.
       if (data.data.tags != undefined && data.data.tags != '') {
         let tagArray = [];
@@ -337,7 +338,7 @@ export class PbtaItemSheet extends ItemSheet {
   _updateObject(event, formData) {
 
     // Exit early for other item types.
-    if (this.object.type != 'class') {
+    if (this?.object?.type != 'class') {
       return this.object.update(formData);
     }
 
