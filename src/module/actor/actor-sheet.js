@@ -87,7 +87,7 @@ export class PbtaActorSheet extends ActorSheet {
     this._prepareAttrs(data);
 
     // Add playbooks.
-    if (data.pbtaSheetType == 'character') {
+    if (data.pbtaSheetType == 'character' || data.pbtaBaseType == 'character') {
       data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
       data.data.statToggle = game.pbta.sheetConfig?.statToggle ?? false;
       data.data.statSettings = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType].stats ?? {};
