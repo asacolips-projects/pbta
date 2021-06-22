@@ -4,6 +4,9 @@
       {{#if image}}<img class="item-icon" src="{{image}}" alt="{{title}}"/>{{/if}}
       <h2 class="cell__title">{{title}}</h2>
     </div>
+    {{#if stat}}
+      <div class="row"><em>{{stat}}{{#if statMod}} ({{numberFormat statMod decimals=0 sign=true}}){{/if}}</em></div>
+    {{/if}}
     {{#if flavor}}<div class="row"><em>{{flavor}}</em></div>{{/if}}
     {{#if trigger}}<div class="row"><strong>Trigger:</strong> {{trigger}}</div>{{/if}}
     {{#if details}}<div class="row">{{{details}}}</div>{{/if}}

@@ -87,6 +87,10 @@
   }
 }
 
+.dialog {
+  @import 'global/base/cell';
+}
+
 // Language overrides.
 .lang-de {
   .ability {

@@ -63,6 +63,8 @@
   "PBTA.Choices": "Choices",
   "PBTA.Dialog.Prompt1": "Choose the modifier for this",
   "PBTA.Dialog.Prompt2": "move.",
+  "PBTA.Dialog.ChooseConditions": "Choose all conditional modifiers that apply:",
+  "PBTA.RollMove": "Roll Move",
   "PBTA.Ask": "Ask",
   "PBTA.AskTitle": "Choose a stat",
   "PBTA.Dialog.Ask1": "Choose a stat for this",
