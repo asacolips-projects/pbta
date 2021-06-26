@@ -99,6 +99,7 @@ PBTA.NoTemplate: "No Template"
 PBTA.Normal: "Normal"
 PBTA.Advantage: "Advantage"
 PBTA.Disadvantage: "Disadvantage"
+PBTA.ConditionsApplied: "Conditions Applied:"
 #################################
 # NEW STUFF
 #################################

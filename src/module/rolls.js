@@ -112,7 +112,7 @@ export class PbtaRolls {
       return {
         key: condition[0],
         label: condition[1].label,
-        conditions: Object.values(condition[1].options).filter(v => v.value).map(v => {
+        conditions: Object.values(condition[1].options).filter(v => v.value && v.label.match(/\d/)).map(v => {
           return {
             label: v.label,
             mod: Math.safeEval(v.label.match(/[\d\+\-]/g).join(''))
@@ -272,6 +272,7 @@ export class PbtaRolls {
     let rollModeUsed = false;
     let resultRangeNeeded = templateData.resultRangeNeeded ?? false;
     let rollData = this.actor.getRollData();
+    let conditions = [];
 
     // GM rolls.
     let chatData = {
@@ -341,6 +342,7 @@ export class PbtaRolls {
                 let input = form.condition[i];
                 let dataAttr = input.dataset;
                 formula += dataAttr.mod >= 0 ? ` + ${dataAttr.mod}` : ` ${dataAttr.mod}`;
+                conditions.push(dataAttr.content);
               }
             }
           }
@@ -348,6 +350,7 @@ export class PbtaRolls {
             let input = form.condition;
             let dataAttr = input.dataset;
             formula += dataAttr.mod >= 0 ? ` + ${dataAttr.mod}` : ` ${dataAttr.mod}`;
+            conditions.push(dataAttr.content);
           }
         }
 
@@ -370,6 +373,7 @@ export class PbtaRolls {
                 return `${count}${p2}${p3}kh${keep}`; // Ex: 2d6 -> 3d6kh2
               });
             }
+            conditions.push(game.i18n.localize("PBTA.Advantage"));
             break;
 
           // Disadvantage.
@@ -386,6 +390,7 @@ export class PbtaRolls {
                 return `${count}${p2}${p3}kl${keep}`; // Ex: 2d6 -> 3d6kh2
               });
             }
+            conditions.push(game.i18n.localize("PBTA.Disadvantage"));
             break;
         }
 
@@ -395,6 +400,16 @@ export class PbtaRolls {
           formula = `${formula}${modifiers}`;
           if (this.actor.data.data?.resources?.forward?.value) {
             forwardUsed = Number(this.actor.data.data.resources.forward.value) != 0;
+          }
+
+          // Add labels for chat output.
+          if (this.actor.data.data.resources.forward?.value) {
+            let forward = Number(this.actor.data.data.resources.forward.value) ?? 0;
+            conditions.push(`${game.i18n.localize('PBTA.Forward')} (${forward >= 0 ? '+' + forward : forward})`);
+          }
+          if (this.actor.data.data.resources.ongoing?.value) {
+            let ongoing = Number(this.actor.data.data.resources.ongoing.value) ?? 0;
+            conditions.push(`${game.i18n.localize('PBTA.Ongoing')} (${ongoing >= 0 ? '+' + ongoing : ongoing})`);
           }
         }
 
@@ -471,6 +486,9 @@ export class PbtaRolls {
 
         // Remove stats if needed.
         if (!resultRangeNeeded) delete templateData.stat;
+
+        // Add conditions for reference.
+        if (conditions.length > 0) templateData.conditions = conditions;
 
         // Render it.
         roll.render().then(r => {

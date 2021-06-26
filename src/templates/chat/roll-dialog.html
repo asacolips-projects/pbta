@@ -20,7 +20,7 @@
                 <ul>
                 {{#each conditionGroup.conditions as |condition key|}}
                     <li>
-                        <label><input type="checkbox" name="condition" data-mod="{{condition.mod}}">{{condition.label}}</label>
+                        <label><input type="checkbox" name="condition" data-mod="{{condition.mod}}" data-content="{{condition.label}}">{{condition.label}}</label>
                     </li>
                 {{/each}}
                 </ul>

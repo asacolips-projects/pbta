@@ -4,9 +4,11 @@
       {{#if image}}<img class="item-icon" src="{{image}}" alt="{{title}}"/>{{/if}}
       <h2 class="cell__title">{{title}}</h2>
     </div>
+    {{!-- Stat label. --}}
     {{#if stat}}
       <div class="row"><em>{{stat}}{{#if statMod}} ({{numberFormat statMod decimals=0 sign=true}}){{/if}}</em></div>
     {{/if}}
+    {{!-- Flavor, trigger, and details. --}}
     {{#if flavor}}<div class="row"><em>{{flavor}}</em></div>{{/if}}
     {{#if trigger}}<div class="row"><strong>Trigger:</strong> {{trigger}}</div>{{/if}}
     {{#if details}}<div class="row">{{{details}}}</div>{{/if}}
@@ -24,9 +26,22 @@
     {{/if}}
     {{!-- Roll results, color coded to match the result type label. --}}
     {{#if rollPbta}}<div class="roll{{#if result}} {{result}}{{/if}}">{{{rollPbta}}}</div>{{/if}}
+    {{!-- Conditions --}}
+    {{#if conditions}}
+      <div class="row row--border conditions">
+        <h3 class="cell__subtitle">{{localize "PBTA.ConditionsApplied"}}</h3>
+        <ul>
+        {{#each conditions as |condition key|}}
+          <li>{{condition}}</li>
+        {{/each}}
+        </ul>
+      </div>
+    {{/if}}
+    {{!-- Tags --}}
     {{#if tags}}
-      <hr>
-      {{{pbtaTags tags}}}
+      <div class="row row--border">
+        {{{pbtaTags tags}}}
+      </div>
     {{/if}}
   </div>
 </section>
