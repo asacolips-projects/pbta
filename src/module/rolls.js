@@ -96,7 +96,6 @@ export class PbtaRolls {
     const itemData = item ? item?.data : null;
 
     // Grab the formula, if any.
-    let formula = options.formula ?? null;
     let label = options?.data?.label ?? '';
 
     // Prepare template data for the roll.
@@ -151,7 +150,7 @@ export class PbtaRolls {
     if (item) {
       // Handle moves.
       if (item.type == 'move' || item.type == 'npcMove') {
-        formula = dice;
+        options.formula = dice;
         templateData = {
           image: item.img,
           title: item.name,
@@ -170,7 +169,7 @@ export class PbtaRolls {
           data.rollType = item.data.rollType.toLowerCase();
         }
 
-        data.mod = item.type == 'move' ? item.data.rollMod : 0;
+        data.mod = item?.data?.rollMod ?? 0;
         // If this is an ASK roll, render a prompt first to determine which
         // score to use.
         if (data.roll == 'ask') {
@@ -205,11 +204,11 @@ export class PbtaRolls {
             hasPrompt: true,
             conditionGroups: conditionGroups ?? null
           };
-
+          options.formula = 'prompt';
         }
         // Otherwise, grab the data from the move and pass it along.
         else {
-          formula = data.roll;
+          options.formula = data.roll;
           templateData.stat = data.roll;
         }
       }
@@ -223,12 +222,12 @@ export class PbtaRolls {
           tags: item.data.tags
         }
         data.roll = null;
-        formula = data.roll;
+        options.formula = data.roll;
       }
     }
 
     if (!needsDialog) {
-      this.rollMoveExecute(formula, data, templateData);
+      this.rollMoveExecute(options.formula, data, templateData);
     }
     else {
       const template = 'systems/pbta/templates/chat/roll-dialog.html';
@@ -319,21 +318,25 @@ export class PbtaRolls {
           }
         }
 
+        // Handle modifiers on the move.
+        if (dataset.mod) formula += Number(dataset.mod) >= 0 ? ` + ${dataset.mod}` : ` ${dataset.mod}`;
+
         // Handle conditions.
         if (form?.condition) {
+          console.log(form.condition);
           if (form.condition?.length > 0) {
             for (let i = 0; i < form.condition.length; i++) {
               if (form.condition[i].checked) {
                 let input = form.condition[i];
-                let dataset = input.dataset;
-                formula += dataset.mod >= 0 ? `+ ${dataset.mod}` : dataset.mod;
+                let dataAttr = input.dataset;
+                formula += dataAttr.mod >= 0 ? ` + ${dataAttr.mod}` : ` ${dataAttr.mod}`;
               }
             }
           }
           else if (form.condition.checked) {
             let input = form.condition;
-            let dataset = input.dataset;
-            formula += dataset.mod >= 0 ? `+ ${dataset.mod}` : dataset.mod;
+            let dataAttr = input.dataset;
+            formula += dataAttr.mod >= 0 ? ` + ${dataAttr.mod}` : ` ${dataAttr.mod}`;
           }
         }
 
@@ -381,6 +384,8 @@ export class PbtaRolls {
         resultRangeNeeded = true;
       }
       if (formula != null) {
+        // Catch wonky operators like "4 + - 3".
+        formula = formula.replace(/\+\s*\-/g, '-');
         // Do the roll.
         let roll = new Roll(`${formula}`, rollData);
         await roll.evaluate({async: true});

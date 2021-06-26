@@ -292,7 +292,8 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       'max': [],
       'softType': [],
       'hardType': [],
-      'safe': []
+      'safe': [],
+      'options': []
     };
     let updatesDiff = {
       'character': {},
@@ -411,6 +412,29 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                   updatesDiff[actorType][`data.${attrGroup}.${attr}`] = newGroup[attr];
                 }
               }
+              else if (newType == 'ListMany') {
+                // Handle diffing condition changes.
+                if ((newGroup[attr]?.condition || oldGroup[attr]?.condition)
+                && (newGroup[attr]?.condition != oldGroup[attr]?.condition)) {
+                  configDiff.softType.push(`${actorType}.${attrGroup}.${attr}`);
+                  updatesDiff[actorType][`data.${attrGroup}.${attr}.condition`] = newGroup[attr]?.condition ?? false;
+                }
+
+                // Handle diffing options.
+                if (newGroup[attr]?.options || oldGroup[attr]?.options) {
+                  if (this.optionsAreDifferent(newGroup[attr]?.options, oldGroup[attr]?.options)) {
+                    // Remove values from options so that they're not unset on existing actors.
+                    if (newGroup[attr]?.options) {
+                      for (let [optK, optV] of Object.entries(newGroup[attr].options)) {
+                        if (typeof optV.value !== 'undefined') delete optV.value;
+                      }
+                    }
+                    // Create the options diff.
+                    configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
+                    updatesDiff[actorType][`data.${attrGroup}.${attr}.options`] = newGroup[attr]?.options ?? [];
+                  }
+                }
+              }
             }
           }
         }
@@ -424,6 +448,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     let hasSoftType = configDiff.softType.length > 0;
     let hasHardType = configDiff.hardType.length > 0;
     let hasSafe = configDiff.safe.length > 0;
+    let hasOptions = configDiff.options.length > 0;
 
     const t = {
       'confirmChanges': game.i18n.localize('PBTA.Settings.sheetConfig.confirmChanges'),
@@ -436,6 +461,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       'type': game.i18n.localize('PBTA.Settings.sheetConfig.type'),
       'typeReset': game.i18n.localize('PBTA.Settings.sheetConfig.typeReset'),
       'cosmetic': game.i18n.localize('PBTA.Settings.sheetConfig.cosmetic'),
+      'options': game.i18n.localize('PBTA.Settings.sheetConfig.options'),
       'noteChangesDetected': game.i18n.localize('PBTA.Settings.sheetConfig.noteChangesDetected'),
       'noteConfirm': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirm'),
       'noteConfirmUpdate': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirmUpdate'),
@@ -443,7 +469,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       'noteCancel': game.i18n.localize('PBTA.Settings.sheetConfig.noteCancel'),
     };
 
-    if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType || hasSafe) {
+    if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType || hasSafe || hasOptions) {
       let content = `<p>${t.noteChangesDetected}</p><ul><li>${t.noteConfirm}</li><li>${t.noteConfirmUpdate}<strong> (${t.noteConfirmUpdateBold})</strong></li><li>${t.noteCancel}</li></ul>`;
 
       if (hasAdditions) {
@@ -468,6 +494,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
       if (hasSafe) {
         content = content + `<h2>${t.cosmetic}</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.safe.join('</li><li><strong> * </strong>')}</li></ul>`;
+      }
+
+      if (hasOptions) {
+        content = content + `<h2>${t.options}</h2><ul class="pbta-changes"><li><strong> * </strong>${configDiff.options.join('</li><li><strong> * </strong>')}</li></ul>`;
       }
 
       return this._confirm({
@@ -538,5 +568,22 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       }, options);
       dialog.render(true);
     });
+  }
+
+  optionsAreDifferent(options1, options2) {
+    if (!options1 || !options2) return true;
+
+    let arr1 = Object.values(options1).map(a => a.label);
+    let arr2 = Object.values(options2).map(a => a.label);
+
+    let options1String = arr1.sort().join('');
+    let options2String = arr2.sort().join('');
+
+    console.log({
+      arr1: options1String,
+      arr2: options2String
+    });
+
+    return options1String != options2String;
   }
 }
