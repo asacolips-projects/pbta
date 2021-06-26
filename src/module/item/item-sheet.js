@@ -37,23 +37,17 @@ export class PbtaItemSheet extends ItemSheet {
     let effects = {};
     let actor = null;
 
-    if (CONFIG.PBTA.core8x) {
-      this.options.title = this.document.data.name;
-      isOwner = this.document.isOwner;
-      isEditable = this.isEditable;
-      data = foundry.utils.deepClone(this.object.data);
+    this.options.title = this.document.data.name;
+    isOwner = this.document.isOwner;
+    isEditable = this.isEditable;
+    data = foundry.utils.deepClone(this.object.data);
 
-      // Copy Active Effects
-      effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
-      data.effects = effects;
+    // Copy Active Effects
+    effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
+    data.effects = effects;
 
-      // Grab the parent actor, if any.
-      actor = this.object?.parent?.data;
-    }
-    else {
-      actor = this.object?.options?.actor;
-      data = super.getData();
-    }
+    // Grab the parent actor, if any.
+    actor = this.object?.parent?.data;
 
     data.dtypes = ["String", "Number", "Boolean"];
     // Add playbooks.
@@ -74,26 +68,14 @@ export class PbtaItemSheet extends ItemSheet {
 
     // Override with the parent actor if possible.
     if (actor) {
-      pbtaActorType = CONFIG.PBTA.core8x ? actor.type : actor.data.type;
-      if (CONFIG.PBTA.core8x) {
-        if (pbtaActorType == 'other') {
-          pbtaSheetType = actor.data?.customType ?? 'character';
-          pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
-        }
-        else {
-          pbtaSheetType = pbtaActorType;
-          pbtaBaseType = pbtaActorType;
-        }
+      pbtaActorType = actor.type;
+      if (pbtaActorType == 'other') {
+        pbtaSheetType = actor.data?.customType ?? 'character';
+        pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
       }
       else {
-        if (pbtaActorType == 'other') {
-          pbtaSheetType = actor.data.data?.customType ?? 'character';
-          pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
-        }
-        else {
-          pbtaSheetType = pbtaActorType;
-          pbtaBaseType = pbtaActorType;
-        }
+        pbtaSheetType = pbtaActorType;
+        pbtaBaseType = pbtaActorType;
       }
     }
 
@@ -139,22 +121,17 @@ export class PbtaItemSheet extends ItemSheet {
     }
 
     let returnData = {};
-    if (CONFIG.PBTA.core8x) {
-      returnData = {
-        item: this.object.data.document,
-        cssClass: isEditable ? "editable" : "locked",
-        editable: isEditable,
-        data: data.data,
-        effects: effects,
-        limited: this.object.limited,
-        options: this.options,
-        owner: isOwner,
-        title: data.name
-      };
-    }
-    else {
-      returnData = data;
-    }
+    returnData = {
+      item: this.object.data.document,
+      cssClass: isEditable ? "editable" : "locked",
+      editable: isEditable,
+      data: data.data,
+      effects: effects,
+      limited: this.object.limited,
+      options: this.options,
+      owner: isOwner,
+      title: data.name
+    };
 
     return returnData;
   }

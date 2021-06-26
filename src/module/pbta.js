@@ -45,8 +45,8 @@ Hooks.once("init", async function() {
   // CONFIG.Combat.entityClass = CombatPbta;
 
   CONFIG.PBTA = PBTA;
-  CONFIG.Actor.entityClass = ActorPbta;
-  CONFIG.Item.entityClass = ItemPbta;
+  CONFIG.Actor.documentClass = ActorPbta;
+  CONFIG.Item.documentClass = ItemPbta;
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
@@ -132,23 +132,8 @@ Hooks.once("ready", async function() {
   PBTA.playbooks = await PbtaPlaybooks.getPlaybooks();
   CONFIG.PBTA = PBTA;
 
-  // Feature flag for 0.8.x.
-  CONFIG.PBTA.core8x = isNewerVersion(game.data.version, '0.8.0');
-
   // Apply structure to actor types.
   PbtaUtility.applyActorTemplates();
-
-  // Grab default stats.
-  // let statsSetting = game.settings.get('pbta', 'stats');
-  // let statArray = statsSetting.split(',');
-  // let stats = {};
-  // if (statArray.length > 0) {
-  //   statArray.forEach(s => {
-  //     let stat = PbtaUtility.cleanClass(s, false);
-  //     stats[stat] = s.trim();
-  //   });
-  // }
-  // game.pbta.stats = stats;
 
   // Add a lang class to the body.
   const lang = game.settings.get('core', 'language');
@@ -216,53 +201,6 @@ Hooks.on("renderSettings", (app, html) => {
   });
 });
 
-/* -------------------------------------------- */
-/*  Actor Updates                               */
-/* -------------------------------------------- */
-Hooks.on('preCreateActor', async (actor, data, options, id) => {
-  // TODO: Remove this after Foundry 0.8.6.
-  if (!CONFIG.PBTA.core8x) {
-    let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, id);
-    actor.data = templateData;
-  }
-});
-
-Hooks.on('preUpdateActor', (actor, data, options, id) => {
-  // if (actor.data.type == 'character') {
-  //   // Allow the character to levelup up when their level changes.
-  //   if (data.data && data.data.attributes && data.data.attributes.level) {
-  //     if (data.data.attributes.level.value > actor.data.data.attributes.level.value) {
-  //       actor.setFlag('pbta', 'levelup', true);
-  //     }
-  //   }
-  // }
-});
-
-/* -------------------------------------------- */
-/*  Item Updates                                */
-/* -------------------------------------------- */
-// Hooks.on('createOwnedItem', async (actor, itemData, options, id) => {
-//   if (itemData.type == 'move' || itemData.type == 'npcMove') {
-//     let newItemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, options, id);
-//     if (newItemData.data.moveResults) {
-//       let update = {
-//         _id: itemData._id,
-//         "data.moveResults": newItemData.data.moveResults
-//       };
-//       await actor.updateEmbeddedEntity('OwnedItem', update);
-//     }
-//   }
-// });
-
-Hooks.on('preCreateItem', async (item, data, options, id) => {
-  if (item.type == 'move' || item.type == 'npcMove') {
-    if (!CONFIG.PBTA.core8x) {
-      let itemData = item.data ?? {};
-      let newItemData = PbtaActorTemplates.applyItemTemplate(null, itemData, options, id);
-      item.data = newItemData.data;
-    }
-  }
-});
 
 /* -------------------------------------------- */
 /*  Level Up Listeners                          */
@@ -416,19 +354,13 @@ else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
       let tplBase = {};
       // Set the custom type.
       if (baseType == 'other') {
-        if (CONFIG.PBTA.core8x) {
-          tplBase.customType = actorType;
-        }
-        else {
-          tplBase = game.pbta.sheetConfig.actorTypes[actorType] ?? null;
-          tplBase.customType = actorType;
-        }
+        tplBase.customType = actorType;
       }
       // Initialize create data on the object.
       let createData = {
         name: name,
         type: baseType,
-        data: {data: CONFIG.PBTA.core8x ? foundry.utils.deepClone(tplBase) : duplicate(tplBase)},
+        data: {data: foundry.utils.deepClone(tplBase)},
         folder: event.currentTarget.dataset.folder
       };
       createData.name = form.name.value;

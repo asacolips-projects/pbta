@@ -59,13 +59,11 @@ export class ItemPbta extends Item {
   async _preCreate(data, options, userId) {
     await super._preCreate(data, options, userId);
 
-    if (CONFIG.PBTA.core8x) {
-      if (this.data.type == 'move' || this.data.type == 'npcMove') {
-        // TODO: This needs to load the appropriate stats per class.
-        let item = this.data;
-        let templateData = PbtaActorTemplates.applyItemTemplate(item, options, null);
-        this.data._source.data = foundry.utils.mergeObject(templateData.data, this.data._source.data);
-      }
+    if (this.data.type == 'move' || this.data.type == 'npcMove') {
+      // TODO: This needs to load the appropriate stats per class.
+      let item = this.data;
+      let templateData = PbtaActorTemplates.applyItemTemplate(item, options, null);
+      this.data._source.data = foundry.utils.mergeObject(templateData.data, this.data._source.data);
     }
   }
 }

@@ -198,10 +198,8 @@ export class ActorPbta extends Actor {
   async _preCreate(data, options, userId) {
     await super._preCreate(data, options, userId);
 
-    if (CONFIG.PBTA.core8x) {
-      let actor = this.data;
-      let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, null);
-      this.data._source.data = templateData;
-    }
+    let actor = this.data;
+    let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, null);
+    this.data._source.data = templateData;
   }
 }

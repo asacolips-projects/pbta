@@ -39,41 +39,31 @@ export class PbtaActorSheet extends ActorSheet {
     let effects = {};
     let actorData = {};
 
-    if (CONFIG.PBTA.core8x) {
-      // const data = super.getData();
-      isOwner = this.document.isOwner;
-      isEditable = this.isEditable;
-      // The Actor's data
-      actorData = this.actor.data.toObject(false);
-      data.actor = actorData;
-      data.data = actorData.data;
+    // const data = super.getData();
+    isOwner = this.document.isOwner;
+    isEditable = this.isEditable;
+    // The Actor's data
+    actorData = this.actor.data.toObject(false);
+    data.actor = actorData;
+    data.data = actorData.data;
 
-      // Owned Items
-      data.items = actorData.items;
-      for ( let i of data.items ) {
-        const item = this.actor.items.get(i._id);
-        i.labels = item.labels;
-      }
-      data.items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    // Owned Items
+    data.items = actorData.items;
+    for ( let i of data.items ) {
+      const item = this.actor.items.get(i._id);
+      i.labels = item.labels;
+    }
+    data.items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
 
-      // Copy Active Effects
-      // TODO: Test and refactor this.
-      effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
-      data.effects = effects;
-    }
-    else {
-      data = super.getData();
-    }
+    // Copy Active Effects
+    // TODO: Test and refactor this.
+    effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
+    data.effects = effects;
 
     // Handle actor types.
-    data.pbtaActorType = CONFIG.PBTA.core8x ? this.actor.type : this.actor.data.type;
+    data.pbtaActorType = this.actor.type;
     if (data.pbtaActorType == 'other') {
-      if (CONFIG.PBTA.core8x) {
-        data.pbtaSheetType = actorData.data?.customType ?? 'character';
-      }
-      else {
-        data.pbtaSheetType = this.actor.data.data?.customType ?? 'character';
-      }
+      data.pbtaSheetType = actorData.data?.customType ?? 'character';
       data.pbtaBaseType = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
     }
     else {
@@ -208,7 +198,7 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {object} sheetData Data prop on actor.
    */
   _sortAttrs(sheetData) {
-    const actorData = CONFIG.PBTA.core8x ? sheetData : sheetData.actor;
+    const actorData = sheetData;
     let groups = [
       'stats',
       'attrTop',
@@ -260,7 +250,6 @@ export class PbtaActorSheet extends ActorSheet {
     actorData.moveTypes = {};
     actorData.moves = {};
 
-    // let items = CONFIG.PBTA.core8x ? sheetData._source.items : sheetData.items;
     let items = sheetData.items;
 
     if (moveTypes) {
@@ -288,9 +277,7 @@ export class PbtaActorSheet extends ActorSheet {
     // let totalWeight = 0;
     for (let i of items) {
       let item = i.data;
-      if (!CONFIG.PBTA.core8x) {
-        i.img = i.img || DEFAULT_TOKEN;
-      }
+      i.img = i.img || DEFAULT_TOKEN;
       // If this is a move, sort into various arrays.
       if (i.type === moveType) {
         if (actorData.moves[i.data.moveType]) {
@@ -391,7 +378,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Character builder dialog.
     // html.find('.clickable-level-up').on('click', this._onLevelUp.bind(this));
 
-    let isOwner = CONFIG.PBTA.core8x ? this.actor.isOwner : this.actor.owner;
+    let isOwner = this.actor.isOwner;
 
     if (isOwner) {
       /* Item Dragging */
@@ -1049,12 +1036,7 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Retrieve the item.
     if (itemId) {
-      if (CONFIG.PBTA.core8x) {
-        item = this.actor.items.get(itemId);
-      }
-      else {
-        item = this.actor.getOwnedItem(itemId);
-      }
+      item = this.actor.items.get(itemId);
     }
 
     // Handle rolls coming directly from the ability score.
@@ -1122,18 +1104,7 @@ export class PbtaActorSheet extends ActorSheet {
       type: type,
       data: data
     };
-
-    if (CONFIG.PBTA.core8x) {
-      await this.actor.createEmbeddedDocuments('Item', [itemData], {});
-    }
-    else {
-      if (type == 'move' || type == 'npcMove') {
-        itemData = PbtaActorTemplates.applyItemTemplate(actor, itemData, {}, null);
-      }
-      delete itemData.data["type"];
-
-      await this.actor.createOwnedItem(itemData);
-    }
+    await this.actor.createEmbeddedDocuments('Item', [itemData], {});
   }
 
   /* -------------------------------------------- */
@@ -1160,13 +1131,8 @@ export class PbtaActorSheet extends ActorSheet {
   async _onItemDelete(event) {
     event.preventDefault();
     const li = event.currentTarget.closest(".item");
-    if (CONFIG.PBTA.core8x) {
-      let item = this.actor.items.get(li.dataset.itemId);
-      item.delete();
-    }
-    else {
-      this.actor.deleteOwnedItem(li.dataset.itemId);
-    }
+    let item = this.actor.items.get(li.dataset.itemId);
+    item.delete();
   }
 
   /**
