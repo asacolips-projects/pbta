@@ -175,6 +175,7 @@ export class PbtaRolls {
         // Add result ranges for moves.
         if (item.type == 'move') {
           templateData.resultRangeNeeded = true;
+          templateData.rollType = 'move';
         }
 
         // Get the roll modifier on the move itself, if any.
@@ -240,6 +241,7 @@ export class PbtaRolls {
       let stats = this?.actor?.data?.data?.stats;
       if (options.formula && typeof stats[options.formula] !== 'undefined') {
         templateData.resultRangeNeeded = true;
+        templateData.rollType = 'move';
       }
     }
 
