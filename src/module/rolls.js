@@ -172,6 +172,11 @@ export class PbtaRolls {
           data.rollType = item.data.rollType.toLowerCase();
         }
 
+        // Add result ranges for moves.
+        if (item.type == 'move') {
+          templateData.resultRangeNeeded = true;
+        }
+
         // Get the roll modifier on the move itself, if any.
         data.mod = item?.data?.rollMod ?? 0;
 
@@ -224,8 +229,17 @@ export class PbtaRolls {
           details: item.data.description,
           tags: item.data.tags
         }
+        // Equipment only output to chat and do not need rolls.
         data.roll = null;
-        options.formula = data.roll;
+        options.formula = null;
+        needsDialog = false;
+      }
+    }
+    // Ensure we have result ranges on raw stat rolls.
+    else {
+      let stats = this?.actor?.data?.data?.stats;
+      if (options.formula && typeof stats[options.formula] !== 'undefined') {
+        templateData.resultRangeNeeded = true;
       }
     }
 
