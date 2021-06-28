@@ -360,7 +360,7 @@ else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
       let createData = {
         name: name,
         type: baseType,
-        data: {data: foundry.utils.deepClone(tplBase)},
+        data: foundry.utils.deepClone(tplBase),
         folder: event.currentTarget.dataset.folder
       };
       createData.name = form.name.value;
