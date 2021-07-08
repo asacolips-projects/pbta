@@ -38,6 +38,7 @@ export class PbtaActorSheet extends ActorSheet {
     let items = {};
     let effects = {};
     let actorData = {};
+    let sheetConfig = foundry.utils.deepClone(game.pbta.sheetConfig);
 
     // const data = super.getData();
     isOwner = this.document.isOwner;
@@ -64,7 +65,7 @@ export class PbtaActorSheet extends ActorSheet {
     data.pbtaActorType = this.actor.type;
     if (data.pbtaActorType == 'other') {
       data.pbtaSheetType = actorData.data?.customType ?? 'character';
-      data.pbtaBaseType = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
+      data.pbtaBaseType = sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
     }
     else {
       data.pbtaSheetType = data.pbtaActorType;
@@ -79,8 +80,8 @@ export class PbtaActorSheet extends ActorSheet {
     // Add playbooks.
     if (data.pbtaSheetType == 'character' || data.pbtaBaseType == 'character') {
       data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
-      data.data.statToggle = game.pbta.sheetConfig?.statToggle ?? false;
-      data.data.statSettings = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType].stats ?? {};
+      data.data.statToggle = sheetConfig?.statToggle ?? false;
+      data.data.statSettings = sheetConfig.actorTypes[data.pbtaSheetType].stats ?? {};
 
       if (data.data.statSettings) {
         data.data.statSettings['ask'] = {label: game.i18n.localize('PBTA.Ask'), value: 0};
