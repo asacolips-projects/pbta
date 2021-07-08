@@ -38,6 +38,7 @@ export class PbtaActorSheet extends ActorSheet {
     let items = {};
     let effects = {};
     let actorData = {};
+    let sheetConfig = {};
 
     if (CONFIG.PBTA.core8x) {
       // const data = super.getData();
@@ -60,9 +61,13 @@ export class PbtaActorSheet extends ActorSheet {
       // TODO: Test and refactor this.
       effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
       data.effects = effects;
+
+      // Duplicate the sheet config.
+      sheetConfig = foundry.utils.deepClone(game.pbta.sheetConfig);
     }
     else {
       data = super.getData();
+      sheetConfig = duplicate(game.pbta.sheetConfig);
     }
 
     // Handle actor types.
@@ -74,7 +79,7 @@ export class PbtaActorSheet extends ActorSheet {
       else {
         data.pbtaSheetType = this.actor.data.data?.customType ?? 'character';
       }
-      data.pbtaBaseType = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
+      data.pbtaBaseType = sheetConfig.actorTypes[data.pbtaSheetType]?.baseType ?? 'character';
     }
     else {
       data.pbtaSheetType = data.pbtaActorType;
@@ -89,8 +94,8 @@ export class PbtaActorSheet extends ActorSheet {
     // Add playbooks.
     if (data.pbtaSheetType == 'character' || data.pbtaBaseType == 'character') {
       data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
-      data.data.statToggle = game.pbta.sheetConfig?.statToggle ?? false;
-      data.data.statSettings = game.pbta.sheetConfig.actorTypes[data.pbtaSheetType].stats ?? {};
+      data.data.statToggle = sheetConfig?.statToggle ?? false;
+      data.data.statSettings = sheetConfig.actorTypes[data.pbtaSheetType].stats ?? {};
 
       if (data.data.statSettings) {
         data.data.statSettings['ask'] = {label: game.i18n.localize('PBTA.Ask'), value: 0};

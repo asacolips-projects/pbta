@@ -419,7 +419,7 @@ else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
       let createData = {
         name: name,
         type: baseType,
-        data: {data: CONFIG.PBTA.core8x ? foundry.utils.deepClone(tplBase) : duplicate(tplBase)},
+        data: CONFIG.PBTA.core8x ? foundry.utils.deepClone(tplBase) : {data: duplicate(tplBase)},
         folder: event.currentTarget.dataset.folder
       };
       createData.name = form.name.value;
