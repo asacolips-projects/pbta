@@ -123,6 +123,25 @@
       right: 5px;
     }
   }
+
+  .cell--roll-mode {
+    grid-column: span 3;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-right: none;
+    align-items: center;
+
+    .cell__title {
+      flex: auto;
+      margin-top: 4px;
+    }
+
+    label.checkbox {
+      height: auto;
+      font-size: 14px;
+    }
+  }
 }
 
 .sheet-resources {

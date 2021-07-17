@@ -4,14 +4,8 @@ export class PbtaActorTemplates {
     let data = {};
 
     // Copy the base actor data.
-    if (CONFIG.PBTA.core8x) {
-      origData = actor.document.data.toObject(false).data;
-      data = foundry.utils.deepClone(origData);
-    }
-    else {
-      origData = actor?.data?.data ? duplicate(actor.data.data) : {};
-      data = duplicate(origData);
-    }
+    origData = actor.document.data.toObject(false).data;
+    data = foundry.utils.deepClone(origData);
 
     // Determine the actor type.
     let actorType = actor.type ?? 'character';
@@ -22,10 +16,10 @@ export class PbtaActorTemplates {
 
     // Merge it with the model for that for that actor type to include missing attributes.
     let origModel = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
-    let model = CONFIG.PBTA.core8x ? JSON.parse(JSON.stringify(origModel)) : duplicate(origModel);
+    let model = foundry.utils.deepClone(origModel);
 
     // Prepare and return the data.
-    data = CONFIG.PBTA.core8x ? foundry.utils.mergeObject(model, data) : mergeObject(model, data);
+    data = foundry.utils.mergeObject(model, data);
     delete data.templates;
     delete data._id;
 

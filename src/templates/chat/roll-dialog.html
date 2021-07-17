@@ -1,7 +1,32 @@
-<form>
-    <p>{{localize "PBTA.Dialog.Prompt1"}} <strong>{{title}}</strong> {{localize "PBTA.Dialog.Prompt2"}}</p>
-    <div class="form-group">
-        <label>{{localize "PBTA.Prompt"}}</label>
-        <input type="text" name="prompt" value="{{prompt}}" placeholder="e.g. 1" data-dtype="Number"/>
+<form class="roll-dialog">
+    {{#if content}}
+    <div class="cell cell--content">{{{content}}}</div>
+    {{/if}}
+    {{#if hasPrompt}}
+    <div class="cell cell--prompt">
+        <p>{{localize "PBTA.Dialog.Prompt1"}} <strong>{{title}}</strong> {{localize "PBTA.Dialog.Prompt2"}}</p>
+        <div class="form-group">
+            <label><strong>{{localize "PBTA.Prompt"}}</strong></label>
+            <input type="text" name="prompt" value="{{prompt}}" placeholder="e.g. 1" data-dtype="Number"/>
+        </div>
     </div>
+    {{/if}}
+    {{#if conditionGroups}}
+    <div class="cell cell--conditions">
+        <p>{{localize "PBTA.Dialog.ChooseConditions"}}</p>
+        <ul class="no-bullets">
+        {{#each conditionGroups as |conditionGroup groupKey|}}
+            <li><strong>{{conditionGroup.label}}</strong>
+                <ul>
+                {{#each conditionGroup.conditions as |condition key|}}
+                    <li>
+                        <label><input type="checkbox" name="condition" data-mod="{{condition.mod}}" data-content="{{condition.label}}">{{condition.label}}</label>
+                    </li>
+                {{/each}}
+                </ul>
+            </li>
+        {{/each}}
+        </ul>
+    </div>
+    {{/if}}
 </form>

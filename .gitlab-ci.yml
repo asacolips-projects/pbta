@@ -15,38 +15,40 @@ stages:
 
 ############### BETA ################
 
-init-beta:
-  stage: init
-  image: docker:latest
-  variables:
-    VAR_NAME: BETA_BUILD_NUMBER
-    TOKEN: ${CI_PIPELINE_IID_TOKEN}
-    GITLAB_URL: "https://gitlab.com"
-  before_script:
-  - apk add --update curl jq
-  script:
-  - "VAR=$(curl -s -f  --header \"PRIVATE-TOKEN: ${TOKEN}\" \"${GITLAB_URL}/api/v4/projects/${CI_PROJECT_ID}/variables/${VAR_NAME}\" | jq  -r '.value' ) "
-  - let VAR=VAR+1
-  - "curl -s -f --request PUT --header \"PRIVATE-TOKEN: ${TOKEN}\" \"${GITLAB_URL}/api/v4/projects/${CI_PROJECT_ID}/variables/${VAR_NAME}\" --form \"value=${VAR}\" "
-  only:
-    - beta
+# TODO: Automatic beta builds are disabled in favor of tagged releases.
 
-build-beta:
-  stage: build
-  script:
-    - export
-    - npm ci
-    - npm run build
-    - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME --versionpre=$BETA_BUILD_NUMBER
-    - cp ./dist/system.json ./system.json
-    - mv dist pbta
-    - zip -q pbta.zip -r pbta
-  artifacts:
-    paths:
-      - pbta.zip
-      - system.json
-  only:
-    - beta
+# init-beta:
+#   stage: init
+#   image: docker:latest
+#   variables:
+#     VAR_NAME: BETA_BUILD_NUMBER
+#     TOKEN: ${CI_PIPELINE_IID_TOKEN}
+#     GITLAB_URL: "https://gitlab.com"
+#   before_script:
+#   - apk add --update curl jq
+#   script:
+#   - "VAR=$(curl -s -f  --header \"PRIVATE-TOKEN: ${TOKEN}\" \"${GITLAB_URL}/api/v4/projects/${CI_PROJECT_ID}/variables/${VAR_NAME}\" | jq  -r '.value' ) "
+#   - let VAR=VAR+1
+#   - "curl -s -f --request PUT --header \"PRIVATE-TOKEN: ${TOKEN}\" \"${GITLAB_URL}/api/v4/projects/${CI_PROJECT_ID}/variables/${VAR_NAME}\" --form \"value=${VAR}\" "
+#   only:
+#     - beta
+
+# build-beta:
+#   stage: build
+#   script:
+#     - export
+#     - npm ci
+#     - npm run build
+#     - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME --versionpost=$BETA_BUILD_NUMBER
+#     - cp ./dist/system.json ./system.json
+#     - mv dist pbta
+#     - zip -q pbta.zip -r pbta
+#   artifacts:
+#     paths:
+#       - pbta.zip
+#       - system.json
+#   only:
+#     - beta
 
 ############### STABLE ################
 

@@ -203,3 +203,13 @@
     cursor: pointer;
   }
 }
+
+.roll-dialog {
+  .cell {
+    margin: $padding-sm 0;
+
+    + .cell {
+      border-top: 2px solid $ct-gray;
+    }
+  }
+}

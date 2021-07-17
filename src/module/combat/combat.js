@@ -17,7 +17,7 @@ export class CombatSidebarPbta {
         let $actorElem = $self.parents('.actor-elem');
         let combatant_id = $actorElem.length > 0 ? $actorElem.attr('data-combatant-id') : null;
         if (combatant_id) {
-          let combatants = CONFIG.PBTA.core8x ? game.combat.data.combatants : game.combat.combatants;
+          let combatants = game.combat.data.combatants;
           let combatant = combatants.find(c => c._id == combatant_id);
           let actor = combatant.actor ? combatant.actor : null;
           if (actor) {
@@ -25,55 +25,6 @@ export class CombatSidebarPbta {
           }
         }
       });
-
-      // // HP change in the combat tracker.
-      // $('body').on('change', '.ct-item input', (event) => {
-      //   event.preventDefault();
-
-      //   // Get the incput and actor element.
-      //   const dataset = event.currentTarget.dataset;
-      //   let $input = $(event.currentTarget);
-      //   let $actorRow = $input.parents('.directory-item.actor-elem');
-
-      //   // If there isn't an actor element, don't proceed.
-      //   if (!$actorRow.length > 0) {
-      //     return;
-      //   }
-
-      //   // Retrieve the combatant for this actor, or exit if not valid.
-      //   const combatant = game.combat.combatants.find(c => c._id == $actorRow.data('combatant-id'));
-      //   if (!combatant) {
-      //     return;
-      //   }
-
-      //   const actor = combatant.actor;
-
-      //   // Check for bad numbers, otherwise convert into a Number type.
-      //   let value = $input.val();
-      //   if (dataset.dtype == 'Number') {
-      //     value = Number(value);
-      //     if (Number.isNaN(value)) {
-      //       $input.val(actor.data.data.attributes.hp.value);
-      //       return false;
-      //     }
-      //   }
-
-      //   // Prepare update data for the actor.
-      //   let updateData = {};
-      //   // If this started with a "+" or "-", handle it as a relative change.
-      //   let operation = $input.val().match(/^\+|\-/g);
-      //   if (operation) {
-      //     updateData[$input.attr('name')] = Number(actor.data.data.attributes.hp.value) + value;
-      //   }
-      //   // Otherwise, set it absolutely.
-      //   else {
-      //     updateData[$input.attr('name')] = value;
-      //   }
-
-      //   // Update the actor.
-      //   actor.update(updateData);
-      //   return;
-      // });
 
       // Add drag events.
       if (game.user.isGM) {
@@ -87,7 +38,7 @@ export class CombatSidebarPbta {
             // Store the combatant type for reference. We have to do this
             // because dragover doesn't have access to the drag data, so we
             // store it as a new type entry that can be split later.
-            let combatants = CONFIG.PBTA.core8x ? game.combat.data.combatants : game.combat.combatants;
+            let combatants = game.combat.data.combatants;
             let newCombatant = combatants.find(c => c._id == dragData.combatantId);
             event.originalEvent.dataTransfer.setData(`newtype--${dragData.actorType}`, '');
           })
@@ -144,7 +95,7 @@ export class CombatSidebarPbta {
           .on('drop', '#combat .directory-item.actor-elem', async (event) => {
             // Retrieve the default encounter.
             let combat = game.combat;
-            let combatants = CONFIG.PBTA.core8x ? combat.data.combatants : combat.combatants;
+            let combatants = combat.data.combatants;
 
             // TODO: This is how foundry.js retrieves the combat in certain
             // scenarios, so I'm leaving it here as a comment in case this
@@ -250,13 +201,7 @@ export class CombatSidebarPbta {
         // actor based on that.
         let combatants = [];
 
-        if (CONFIG.PBTA.core8x) {
-          combatants = combat.parent.data.combatants;
-        }
-        else {
-          combatants = combat.combatants;
-        }
-
+        combatants = combat.parent.data.combatants;
         combatants.filter(c => c.actor.data.type == actorType).forEach(c => {
           let init = Number(c.initiative);
           if (init >= highestInit) {
@@ -293,9 +238,7 @@ export class CombatSidebarPbta {
         let moveTotal = 0;
         if (combatants.character) {
           combatants.character.forEach(c => {
-            if (CONFIG.PBTA.core8x) {
-              c.flags = c.data.flags;
-            }
+            c.flags = c.data.flags;
             moveTotal = c?.flags?.pbta ? moveTotal + Number(c.flags.pbta?.moveCount || 0) : moveTotal;
           });
         }
@@ -337,7 +280,7 @@ export class CombatSidebarPbta {
     // Reduce the combatants array into a new object with keys based on
     // the actor types.
     let combatants = game.combat.data.combatants.reduce((groups, combatant) => {
-      let isOwner = CONFIG.PBTA.core8x ? combatant.isOwner : combatant.owner;
+      let isOwner = combatant.isOwner;
       // If this is for a combatant that has had its token/actor deleted,
       // remove it from the combat.
       if (!combatant.actor) {
@@ -352,7 +295,7 @@ export class CombatSidebarPbta {
         }
 
         // Retrieve the health bars mode from the token's resource settings.
-        let token = CONFIG.PBTA.core8x ? combatant?._token?.data : combatant?.token;
+        let token = combatant?._token?.data;
         let displayBarsMode = 'NONE';
         for (let [modeKey, modeValue] of Object.entries(CONST.TOKEN_DISPLAY_MODES)) {
           if (modeValue == token?.displayBars) {

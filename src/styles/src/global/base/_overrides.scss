@@ -8,3 +8,17 @@ h2 {
   margin: 16px 0 0;
   border-color: $c-black;
 }
+
+.no-bullets {
+  list-style-type: none;
+  padding-left: 0;
+
+  ul {
+    padding-left: $padding-md;
+  }
+
+  ul,
+  li {
+    list-style-type: none;;
+  }
+}

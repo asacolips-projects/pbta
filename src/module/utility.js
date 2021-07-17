@@ -279,6 +279,7 @@ export class PbtaUtility {
             }
           }
 
+          attr.condition = attrValue.condition ?? false;
           attr.options = options;
           break;
 

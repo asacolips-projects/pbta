@@ -38,7 +38,10 @@ export class PbtaRolls {
   static getModifiers(actor) {
     let forward = Number(actor.data.data.resources.forward.value) ?? 0;
     let ongoing = Number(actor.data.data.resources.ongoing.value) ?? 0;
-    return `+${forward}+${ongoing}`;
+    let result = '';
+    if (forward) result += `+${forward}`;
+    if (ongoing) result += `+${ongoing}`;
+    return result;
   }
 
   /**
@@ -77,6 +80,9 @@ export class PbtaRolls {
       return false;
     }
 
+    // Assume we don't need a prompt.
+    let needsDialog = false;
+
     // Grab the actor data.
     this.actor = options.actor;
     this.actorData = this.actor ? this.actor.data.data : {};
@@ -90,27 +96,73 @@ export class PbtaRolls {
     const itemData = item ? item?.data : null;
 
     // Grab the formula, if any.
-    let formula = options.formula ?? null;
     let label = options?.data?.label ?? '';
 
     // Prepare template data for the roll.
     let templateData = options.templateData ? duplicate(options.templateData): {};
     let data = {};
 
+    // Add the sheet type to the template data.
+    let sheetType = this.actor.data.data?.customType ?? actorType;
+    templateData.sheetType = sheetType;
+
+    // Determine if there are any conditions.
+    let attrs = Object.entries(this.actor.data.data.attrLeft).concat(Object.entries(this.actor.data.data.attrTop));
+    let conditionGroups = attrs.filter(condition => condition[1].condition).map(condition => {
+      return {
+        key: condition[0],
+        label: condition[1].label,
+        conditions: Object.values(condition[1].options).filter(v => v.value && v.label.match(/\d/)).map(v => {
+          return {
+            label: v.label,
+            mod: Math.safeEval(v.label.match(/[\d\+\-]/g).join(''))
+          }
+        })
+      };
+    });
+    conditionGroups = conditionGroups.filter(c => c.conditions.length > 0);
+    if (conditionGroups.length > 0) needsDialog = true;
+
+    // Prepare the base set of options used for the roll dialog.
+    let dialogOptions = {
+      title: game.i18n.localize('PBTA.RollMove'),
+      content: null,
+      templateData: {
+        title: null,
+        bond: null,
+        hasPrompt: false,
+        content: null,
+        conditionGroups: conditionGroups ?? null
+      },
+      buttons: {
+        submit: {
+          label: 'Roll',
+          callback: html => {
+            if (options.formula && options?.actor?.data?.data?.stats[options.formula]) {
+              templateData.stat = options.formula;
+            }
+            this.rollMoveExecute(options.formula ?? 'prompt', data, templateData, html[0].querySelector("form"))
+          }
+        }
+      },
+    };
+
     // Handle item rolls (moves).
     if (item) {
       // Handle moves.
       if (item.type == 'move' || item.type == 'npcMove') {
-        formula = dice;
+        options.formula = dice;
         templateData = {
           image: item.img,
           title: item.name,
           trigger: null,
           details: item.data.description,
           moveResults: item.data.moveResults,
-          choices: item.data?.choices
+          choices: item.data?.choices,
+          sheetType: sheetType
         };
 
+        // Get the roll stat for moves.
         if (item.type == 'npcMove' || item.data?.rollType == 'formula') {
           data.roll = item.data.rollFormula;
           data.rollType = item.data.rollType ? item.data.rollType.toLowerCase() : 'npc';
@@ -120,60 +172,53 @@ export class PbtaRolls {
           data.rollType = item.data.rollType.toLowerCase();
         }
 
-        data.mod = item.type == 'move' ? item.data.rollMod : 0;
-        // If this is an ASK roll, render a prompt first to determine which
-        // score to use.
+        // Add result ranges for moves.
+        if (item.type == 'move') {
+          templateData.resultRangeNeeded = true;
+          templateData.rollType = 'move';
+        }
+
+        // Get the roll modifier on the move itself, if any.
+        data.mod = item?.data?.rollMod ?? 0;
+
+        // If this is an ASK roll, adjust the dialog options.
         if (data.roll == 'ask') {
-          let stats = game.pbta.sheetConfig.actorTypes[actorType].stats;
-          let statButtons = Object.entries(stats).filter(stat => stat[0] != 'ask' && stat[0] != 'prompt').map(stat => {
+          needsDialog = true;
+          dialogOptions.title = game.i18n.format('PBTA.AskTitle');
+          dialogOptions.templateData = {
+            title: null,
+            bond: null,
+            hasPrompt: false,
+            content: `<p>${game.i18n.localize('PBTA.Dialog.Ask1')} <strong>${item.name}</strong> ${game.i18n.localize('PBTA.Dialog.Ask2')}.</p>`,
+            conditionGroups: conditionGroups ?? null
+          };
+          let stats = game.pbta.sheetConfig.actorTypes[sheetType].stats;
+          dialogOptions.buttons = Object.entries(stats).filter(stat => stat[0] != 'ask' && stat[0] != 'prompt' && stat[0] != 'formula').map(stat => {
             return {
               label: stat[1].label,
-              callback: () => this.rollMoveExecute(stat[0], data, templateData)
+              callback: html => {
+                templateData.stat = stat[0];
+                this.rollMoveExecute(stat[0], data, templateData, html[0].querySelector("form"));
+              }
             };
           });
-          new Dialog({
-            title: game.i18n.localize('PBTA.AskTitle'),
-            content: `<p>${game.i18n.localize('PBTA.Dialog.Ask1')} <strong>${item.name}</strong> ${game.i18n.localize('PBTA.Dialog.Ask2')}.</p>`,
-            buttons: statButtons
-          }).render(true);
         }
-        // If this is a PROMPT roll, render a different prompt to let the user
-        // enter their bond value.
+        // If this is a PROMPT roll, adjust the dialog options.
         else if (data.roll == 'prompt') {
-          let template = 'systems/pbta/templates/chat/roll-dialog.html';
-          let dialogData = {
+          needsDialog = true;
+          dialogOptions.title = game.i18n.localize('PBTA.PromptTitle');
+          dialogOptions.templateData = {
             title: item.name,
-            bond: null
+            bond: null,
+            hasPrompt: true,
+            conditionGroups: conditionGroups ?? null
           };
-          const html = await renderTemplate(template, dialogData);
-          return new Promise(resolve => {
-            new Dialog({
-              title: game.i18n.localize('PBTA.PromptTitle'),
-              content: html,
-              buttons: {
-                submit: {
-                  label: 'Roll',
-                  callback: html => {
-                    this.rollMoveExecute('prompt', data, templateData, html[0].querySelector("form"))
-                  }
-                }
-              },
-              // Prevent enter triggering a refresh.
-              render: html => {
-                html.on('keydown', function(event) {
-                  if (event.key == 'Enter') {
-                    event.preventDefault();
-                    html.find('button.submit').trigger('click');
-                  }
-                });
-              }
-            }).render(true);
-          })
-
+          options.formula = 'prompt';
         }
         // Otherwise, grab the data from the move and pass it along.
         else {
-          this.rollMoveExecute(data.roll, data, templateData);
+          options.formula = data.roll;
+          templateData.stat = data.roll;
         }
       }
       // Handle equipment.
@@ -185,13 +230,45 @@ export class PbtaRolls {
           details: item.data.description,
           tags: item.data.tags
         }
+        // Equipment only output to chat and do not need rolls.
         data.roll = null;
-        this.rollMoveExecute(data.roll, data, templateData);
+        options.formula = null;
+        needsDialog = false;
       }
     }
-    // Handle formula-only rolls.
+    // Ensure we have result ranges on raw stat rolls.
     else {
-      this.rollMoveExecute(formula, data, templateData);
+      let stats = this?.actor?.data?.data?.stats;
+      if (options.formula && typeof stats[options.formula] !== 'undefined') {
+        templateData.resultRangeNeeded = true;
+        templateData.rollType = 'move';
+      }
+    }
+
+    // If this roll has conditions, ASK, or PROMPT, use a dialog.
+    if (needsDialog) {
+      const template = 'systems/pbta/templates/chat/roll-dialog.html';
+      const html = await renderTemplate(template, dialogOptions.templateData);
+      return new Promise(resolve => {
+        new Dialog({
+          title: dialogOptions.title,
+          content: html,
+          buttons: dialogOptions.buttons,
+          // Prevent enter triggering a refresh.
+          render: html => {
+            html.on('keydown', function(event) {
+              if (event.key == 'Enter') {
+                event.preventDefault();
+                html.find('button.submit').trigger('click');
+              }
+            });
+          }
+        }).render(true);
+      });
+    }
+    // Otherwise, execute the roll immediately.
+    else {
+      this.rollMoveExecute(options.formula, data, templateData);
     }
   }
 
@@ -208,8 +285,11 @@ export class PbtaRolls {
     let template = 'systems/pbta/templates/chat/chat-move.html';
     let dice = this.getRollFormula('2d6', this.actor);
     let forwardUsed = false;
+    let rollModeUsed = false;
     let resultRangeNeeded = templateData.resultRangeNeeded ?? false;
     let rollData = this.actor.getRollData();
+    let conditions = [];
+
     // GM rolls.
     let chatData = {
       user: game.user._id,
@@ -219,6 +299,7 @@ export class PbtaRolls {
     if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
     if (rollMode === "selfroll") chatData["whisper"] = [game.user._id];
     if (rollMode === "blindroll") chatData["blind"] = true;
+
     // Handle dice rolls.
     if (!PbtaUtility.isEmpty(roll)) {
       // Test if the roll is a formula.
@@ -228,20 +309,24 @@ export class PbtaRolls {
       } catch (error) {
         validRoll = false;
       }
+
       // Roll can be either a formula like `2d6+3` or a raw stat like `str`.
       let formula = validRoll ? roll.trim() : '';
       // Handle prompt (user input).
       if (!validRoll || dataset?.rollType == 'formula') {
+
+        // Determine the formula if this is a PROMPT roll.
         if (roll.toLowerCase() == 'prompt') {
           formula = form.prompt?.value ? `${dice}+${form.prompt.value}` : dice;
           if (dataset.value && dataset.value != 0) {
             formula += `+${dataset.value}`;
           }
         }
+        // Determine the formula if it's a custom formula.
         else if (dataset?.rollType == 'formula') {
           formula = roll;
         }
-        // Handle ability scores (no input).
+        // Handle raw ability scores (no input).
         else if (roll.match(/(\d*)d\d+/g)) {
           formula = roll;
         }
@@ -250,26 +335,108 @@ export class PbtaRolls {
           // Determine if the stat toggle is in effect.
           let hasToggle = game.pbta.sheetConfig.statToggle;
           let toggleModifier = 0;
+          templateData.stat = roll;
           if (hasToggle) {
             const statToggle = this.actor.data.data.stats[roll].toggle;
             toggleModifier = statToggle ? game.pbta.sheetConfig.statToggle.modifier : 0;
           }
+          // Set the formula based on the stat.
           formula = `${dice}+${this.actorData.stats[roll].value}${toggleModifier ? '+' + toggleModifier : ''}`;
           if (dataset.value && dataset.value != 0) {
             formula += `+${dataset.value}`;
           }
         }
 
+        // Handle modifiers on the move.
+        if (dataset.mod) formula += Number(dataset.mod) >= 0 ? ` + ${dataset.mod}` : ` ${dataset.mod}`;
+
+        // Handle conditions, if any.
+        if (form?.condition) {
+          if (form.condition?.length > 0) {
+            for (let i = 0; i < form.condition.length; i++) {
+              if (form.condition[i].checked) {
+                let input = form.condition[i];
+                let dataAttr = input.dataset;
+                formula += dataAttr.mod >= 0 ? ` + ${dataAttr.mod}` : ` ${dataAttr.mod}`;
+                conditions.push(dataAttr.content);
+              }
+            }
+          }
+          else if (form.condition.checked) {
+            let input = form.condition;
+            let dataAttr = input.dataset;
+            formula += dataAttr.mod >= 0 ? ` + ${dataAttr.mod}` : ` ${dataAttr.mod}`;
+            conditions.push(dataAttr.content);
+          }
+        }
+
+        // Handle adv/dis. This works by finding the first die in the formula,
+        // increasing its quantity by 1, and then appending kl or kh with the
+        // original quantity.
+        let rollMode = this.actor.data.flags?.pbta?.rollMode ?? 'def';
+        switch (rollMode) {
+          // Advantage.
+          case 'adv':
+            rollModeUsed = true;
+            if (formula.includes('2d6')) {
+              formula = formula.replace('2d6', '3d6kh2');
+            }
+            else if (formula.includes('d')) {
+              // Match the first d6 as (n)d6.
+              formula = formula.replace(/(\d*)(d)(\d+)/i, (match, p1, p2, p3, offset, string) => {
+                let keep = p1 ? Number(p1) : 1;
+                let count = keep + 1;
+                return `${count}${p2}${p3}kh${keep}`; // Ex: 2d6 -> 3d6kh2
+              });
+            }
+            conditions.push(game.i18n.localize("PBTA.Advantage"));
+            break;
+
+          // Disadvantage.
+          case 'dis':
+            rollModeUsed = true;
+            if (formula.includes('2d6')) {
+              formula = formula.replace('2d6', '3d6kl2');
+            }
+            else if (formula.includes('d')) {
+              // Match the first d6 as (n)d6.
+              formula = formula.replace(/(\d*)(d)(\d+)/i, (match, p1, p2, p3, offset, string) => {
+                let keep = p1 ? Number(p1) : 1;
+                let count = keep + 1;
+                return `${count}${p2}${p3}kl${keep}`; // Ex: 2d6 -> 3d6kh2
+              });
+            }
+            conditions.push(game.i18n.localize("PBTA.Disadvantage"));
+            break;
+        }
+
+        // Handle forward and ongoing.
         if (this.actor.data.data?.resources?.forward?.value || this.actor.data.data?.resources?.ongoing?.value) {
           let modifiers = PbtaRolls.getModifiers(this.actor);
           formula = `${formula}${modifiers}`;
           if (this.actor.data.data?.resources?.forward?.value) {
             forwardUsed = Number(this.actor.data.data.resources.forward.value) != 0;
           }
+
+          // Add labels for chat output.
+          if (this.actor.data.data.resources.forward?.value) {
+            let forward = Number(this.actor.data.data.resources.forward.value) ?? 0;
+            conditions.push(`${game.i18n.localize('PBTA.Forward')} (${forward >= 0 ? '+' + forward : forward})`);
+          }
+          if (this.actor.data.data.resources.ongoing?.value) {
+            let ongoing = Number(this.actor.data.data.resources.ongoing.value) ?? 0;
+            conditions.push(`${game.i18n.localize('PBTA.Ongoing')} (${ongoing >= 0 ? '+' + ongoing : ongoing})`);
+          }
         }
+
+        // Establish that this roll is for a move or stat, so we need a result range.
         resultRangeNeeded = true;
       }
+
+
       if (formula != null) {
+        // Catch wonky operators like "4 + - 3".
+        formula = formula.replace(/\+\s*\-/g, '-');
         // Do the roll.
         let roll = new Roll(`${formula}`, rollData);
         await roll.evaluate({async: true});
@@ -284,7 +451,8 @@ export class PbtaRolls {
             }
           }
         }
-        // Add success notification.
+
+        // If a result range is needed, add the result range template.
         if (resultRangeNeeded && rollType == 'move') {
           // Retrieve the result ranges.
           let resultRanges = game.pbta.sheetConfig.rollResults;
@@ -324,7 +492,20 @@ export class PbtaRolls {
           if (templateData?.moveResults && templateData.moveResults[resultType]?.value) {
             templateData.resultDetails = templateData.moveResults[resultType].value;
           }
+
+          // Add the stat label.
+          if (templateData.stat && templateData.sheetType) {
+            templateData.statMod = this.actor.data.data.stats[templateData.stat].value;
+            templateData.stat = game.pbta.sheetConfig.actorTypes[templateData.sheetType]?.stats[templateData.stat]?.label ?? templateData.stat;
+          }
         }
+
+        // Remove stats if needed.
+        if (!resultRangeNeeded) delete templateData.stat;
+
+        // Add conditions for reference.
+        if (conditions.length > 0) templateData.conditions = conditions;
+
         // Render it.
         roll.render().then(r => {
           templateData.rollPbta = r;
@@ -341,6 +522,7 @@ export class PbtaRolls {
         });
       }
     }
+    // If this isn't a roll, handle outputing the item description to chat.
     else {
       renderTemplate(template, templateData).then(content => {
         chatData.content = content;
@@ -352,7 +534,7 @@ export class PbtaRolls {
     if (game.combat && game.combat.combatants) {
       let combatant = game.combat.combatants.find(c => c.actor.data._id == this.actor._id);
       if (combatant) {
-        let flags = CONFIG.PBTA.core8x ? combatant.data.flags : combatant.flags;
+        let flags = combatant.data.flags;
         let moveCount = flags.pbta ? flags.pbta.moveCount : 0;
         moveCount = moveCount ? Number(moveCount) + 1 : 1;
         // Emit a socket for the GM client.
@@ -369,8 +551,13 @@ export class PbtaRolls {
     }
 
     // Update forward.
-    if (forwardUsed && this.actor.data.data?.resources?.forward) {
-      await this.actor.update({'data.resources.forward.value': 0});
+    if (forwardUsed || rollModeUsed) {
+      let updates = {};
+      if (forwardUsed) updates['data.resources.forward.value'] = 0;
+      if (rollModeUsed && game.settings.get('pbta', 'advForward')) {
+        updates['flags.pbta.rollMode'] = 'def';
+      }
+      await this.actor.update(updates);
     }
   }
 }
