@@ -103,7 +103,7 @@ export class PbtaActorTemplates {
               if (!sheetType) sheetType = 'character';
               // Build the update and append to the scene's update array.
               let tokenUpdate = duplicate(newTokenConfig[sheetType]);
-              tokenUpdate['_id'] = t._id;
+              tokenUpdate['_id'] = t.id;
               tokenUpdates.push(tokenUpdate);
             }
           }

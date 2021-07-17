@@ -170,7 +170,7 @@ export class PbtaItemSheet extends ItemSheet {
    */
   async _tagify(html, editable) {
     // Build the tags list.
-    let tags = game.items.entities.filter(item => item.type == 'tag');
+    let tags = game.items.contents.filter(item => item.type == 'tag');
     for (let c of game.packs) {
       if (c.metadata.entity && c.metadata.entity == 'Item' && c.metadata.name == 'tags') {
         let items = c ? await c.getContent() : [];
@@ -376,7 +376,7 @@ export class PbtaItemSheet extends ItemSheet {
       obj[e[0]] = e[1];
       return obj;
     }, {
-      _id: this.object._id,
+      _id: this.object.id,
       "data.equipment": formObj.data.equipment,
       "data.races": formObj.data.races,
       "data.alignments": formObj.data.alignments

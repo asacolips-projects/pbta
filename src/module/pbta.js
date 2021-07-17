@@ -148,7 +148,7 @@ Hooks.on('renderChatMessage', (data, html, options) => {
   let chatData = data.data;
   const whisper = chatData.whisper || [];
   const isBlind = whisper.length && chatData.blind;
-  const isVisible = (whisper.length) ? game.user.isGM || whisper.includes(game.user._id) || (!isBlind) : true;
+  const isVisible = (whisper.length) ? game.user.isGM || whisper.includes(game.user.id) || (!isBlind) : true;
   if (!isVisible) {
     html.find('.dice-formula').text('???');
     html.find('.dice-total').text('?');
@@ -257,7 +257,7 @@ async function createPbtaMacro(data, slot) {
 
   // Create the macro command
   const command = `game.pbta.rollItemMacro("${item.name}");`;
-  let macro = game.macros.entities.find(m => (m.name === item.name) && (m.command === command));
+  let macro = game.macros.contents.find(m => (m.name === item.name) && (m.command === command));
   if (!macro) {
     macro = await Macro.create({
       name: item.name,

@@ -76,7 +76,7 @@ export class ActorPbta extends Actor {
     const data = a.dataset;
     const actorData = actor.data.data;
     const itemId = $(a).parents('.item').attr('data-item-id');
-    const item = actor.getOwnedItem(itemId);
+    const item = actor.items.get(itemId);
     let formula = null;
     let titleText = null;
     let flavorText = null;
@@ -124,12 +124,12 @@ export class ActorPbta extends Actor {
     let dice = PbtaUtility.getRollFormula('2d6');
     // GM rolls.
     let chatData = {
-      user: game.user._id,
+      user: game.user.id,
       speaker: ChatMessage.getSpeaker({ actor: actor })
     };
     let rollMode = game.settings.get("core", "rollMode");
     if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
-    if (rollMode === "selfroll") chatData["whisper"] = [game.user._id];
+    if (rollMode === "selfroll") chatData["whisper"] = [game.user.id];
     if (rollMode === "blindroll") chatData["blind"] = true;
     // Handle dice rolls.
     if (roll) {

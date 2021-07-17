@@ -115,7 +115,7 @@ export class PbtaRolls {
         conditions: Object.values(condition[1].options).filter(v => v.value && v.label.match(/\d/)).map(v => {
           return {
             label: v.label,
-            mod: Math.safeEval(v.label.match(/[\d\+\-]/g).join(''))
+            mod: Roll.safeEval(v.label.match(/[\d\+\-]/g).join(''))
           }
         })
       };
@@ -292,12 +292,12 @@ export class PbtaRolls {
 
     // GM rolls.
     let chatData = {
-      user: game.user._id,
+      user: game.user.id,
       speaker: ChatMessage.getSpeaker({ actor: this.actor })
     };
     let rollMode = game.settings.get("core", "rollMode");
     if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
-    if (rollMode === "selfroll") chatData["whisper"] = [game.user._id];
+    if (rollMode === "selfroll") chatData["whisper"] = [game.user.id];
     if (rollMode === "blindroll") chatData["blind"] = true;
 
     // Handle dice rolls.
@@ -532,7 +532,7 @@ export class PbtaRolls {
 
     // Update the combat flags.
     if (game.combat && game.combat.combatants) {
-      let combatant = game.combat.combatants.find(c => c.actor.data._id == this.actor._id);
+      let combatant = game.combat.combatants.find(c => c.actor.data._id == this.actor.id);
       if (combatant) {
         let flags = combatant.data.flags;
         let moveCount = flags.pbta ? flags.pbta.moveCount : 0;
@@ -540,11 +540,11 @@ export class PbtaRolls {
         // Emit a socket for the GM client.
         if (!game.user.isGM) {
           game.socket.emit('system.pbta', {
-            combatantUpdate: { _id: combatant._id, 'flags.pbta.moveCount': moveCount }
+            combatantUpdate: { _id: combatant.id, 'flags.pbta.moveCount': moveCount }
           });
         }
         else {
-          await game.combat.updateCombatant({ _id: combatant._id, 'flags.pbta.moveCount': moveCount });
+          await game.combat.updateCombatant({ _id: combatant.id, 'flags.pbta.moveCount': moveCount });
           ui.combat.render();
         }
       }

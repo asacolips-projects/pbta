@@ -1118,7 +1118,7 @@ export class PbtaActorSheet extends ActorSheet {
   _onItemEdit(event) {
     event.preventDefault();
     const li = event.currentTarget.closest(".item");
-    const item = this.actor.getOwnedItem(li.dataset.itemId);
+    const item = this.actor.items.get(li.dataset.itemId);
     item.sheet.render(true);
   }
 
@@ -1154,7 +1154,7 @@ export class PbtaActorSheet extends ActorSheet {
 
   async _activateTagging(html) {
     // Build the tags list.
-    let tags = game.items.entities.filter(item => item.type == 'tag');
+    let tags = game.items.contents.filter(item => item.type == 'tag');
     for (let c of game.packs) {
       if (c.metadata.entity && c.metadata.entity == 'Item' && c.metadata.name == 'tags') {
         let items = c ? await c.getContent() : [];

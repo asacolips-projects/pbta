@@ -36,7 +36,7 @@ export class PbtaPlaybooks {
   static async getPlaybooks(labels_only = true) {
     // First, retrieve any custom or overridden playbooks so that we can
     // prioritize those.
-    let playbooks = game.items.entities.filter(item => item.type == 'playbook');
+    let playbooks = game.items.contents.filter(item => item.type == 'playbook');
     // Next, retrieve compendium playbooks and merge them in.
     for (let c of game.packs) {
       if (c.metadata.entity && c.metadata.entity == 'Item' && c.metadata.name == 'playbooks') {
@@ -50,7 +50,7 @@ export class PbtaPlaybooks {
     for (let charPlaybook of playbooks) {
       let charPlaybookName = charPlaybook.data.name;
       if (charPlaybookNames.includes(charPlaybookName) !== false) {
-        playbooks = playbooks.filter(item => item._id != charPlaybook._id);
+        playbooks = playbooks.filter(item => item.id != charPlaybook.id);
       }
       else {
         charPlaybookNames.push(charPlaybookName);

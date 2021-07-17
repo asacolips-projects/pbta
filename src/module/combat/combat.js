@@ -18,7 +18,7 @@ export class CombatSidebarPbta {
         let combatant_id = $actorElem.length > 0 ? $actorElem.attr('data-combatant-id') : null;
         if (combatant_id) {
           let combatants = game.combat.data.combatants;
-          let combatant = combatants.find(c => c._id == combatant_id);
+          let combatant = combatants.find(c => c.id == combatant_id);
           let actor = combatant.actor ? combatant.actor : null;
           if (actor) {
             actor._onRoll(event, actor);
@@ -39,7 +39,7 @@ export class CombatSidebarPbta {
             // because dragover doesn't have access to the drag data, so we
             // store it as a new type entry that can be split later.
             let combatants = game.combat.data.combatants;
-            let newCombatant = combatants.find(c => c._id == dragData.combatantId);
+            let newCombatant = combatants.find(c => c.id == dragData.combatantId);
             event.originalEvent.dataTransfer.setData(`newtype--${dragData.actorType}`, '');
           })
           // Add a class on hover, if the actor types match.
@@ -120,13 +120,13 @@ export class CombatSidebarPbta {
             }
 
             // Retrieve the combatant being dropped.
-            let newCombatant = combatants.find(c => c._id == data.combatantId);
+            let newCombatant = combatants.find(c => c.id == data.combatantId);
 
             // Retrieve the combatants grouped by type.
             let combatantsData = this.getCombatantsData(false);
             // Retrieve the combatant being dropped onto.
             let originalCombatant = combatantsData[newCombatant.actor.data.type].find(c => {
-              return c._id == $dropTarget.data('combatant-id');
+              return c.id == $dropTarget.data('combatant-id');
             });
 
             // Set the initiative equal to the drop target's initiative.
@@ -137,7 +137,7 @@ export class CombatSidebarPbta {
             if (oldInit !== null) {
               // Set the initiative of the actor being draged to the drop
               // target's +1. This will later be adjusted increments of 10.
-              let updatedCombatant = combatantsData[newCombatant.actor.data.type].find(c => c._id == newCombatant._id);
+              let updatedCombatant = combatantsData[newCombatant.actor.data.type].find(c => c.id == newCombatant.id);
               updatedCombatant.initiative = Number(oldInit) + 1;
 
               // Loop through all combatantsData in initiative order, and assign
@@ -146,7 +146,7 @@ export class CombatSidebarPbta {
               let updatedInit = 0;
               let updates = combatantsData[newCombatant.actor.data.type].sort((a, b) => a.initiative - b.initiative).map(c => {
                 let result = {
-                  _id: c._id,
+                  _id: c.id,
                   initiative: updatedInit
                 };
                 updatedInit = updatedInit + 10;
@@ -284,7 +284,7 @@ export class CombatSidebarPbta {
       // If this is for a combatant that has had its token/actor deleted,
       // remove it from the combat.
       if (!combatant.actor) {
-        game.combat.deleteCombatant(combatant._id);
+        game.combat.deleteCombatant(combatant.id);
       }
       // Append valid actors to the appropriate group.
       else {

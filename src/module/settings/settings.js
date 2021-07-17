@@ -579,11 +579,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     let options1String = arr1.sort().join('');
     let options2String = arr2.sort().join('');
 
-    console.log({
-      arr1: options1String,
-      arr2: options2String
-    });
-
     return options1String != options2String;
   }
 }

@@ -23,7 +23,7 @@
     {{!-- Render the combatants for this actor type. --}}
     <ol class="directory-list--pbta {{group}}">
       {{#each combatantGroup as |c index|}}
-        <li class="directory-item actor-elem {{#if c.token.hidden}}hidden{{/if}} grid {{#ifEquals group "character"}}grid-3col{{else}}grid-3col{{/ifEquals}}" data-actor-id="{{c.actor.data._id}}" data-token-id="{{c.tokenId}}" data-combatant-id="{{c._id}}" data-actor-type="{{c.actor.data.type}}">
+        <li class="directory-item actor-elem {{#if c.token.hidden}}hidden{{/if}} grid {{#ifEquals group "character"}}grid-3col{{else}}grid-3col{{/ifEquals}}" data-actor-id="{{c.actor.data._id}}" data-token-id="{{c.tokenId}}" data-combatant-id="{{c.id}}" data-actor-type="{{c.actor.data.type}}">
           {{!-- Token image with a progress circle. --}}
           <div class="ct-item ct-item--img">
             <div class="image-wrapper">
