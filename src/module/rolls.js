@@ -493,8 +493,8 @@ export class PbtaRolls {
             templateData.resultDetails = templateData.moveResults[resultType].value;
           }
 
-          // Add the stat label.
-          if (templateData.stat && templateData.sheetType) {
+          // Add the stat label if this is a stat roll.
+          if (templateData.stat && templateData.sheetType && this.actor.data.data.stats[templateData.stat]) {
             templateData.statMod = this.actor.data.data.stats[templateData.stat].value;
             templateData.stat = game.pbta.sheetConfig.actorTypes[templateData.sheetType]?.stats[templateData.stat]?.label ?? templateData.stat;
           }
