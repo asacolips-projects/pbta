@@ -537,14 +537,20 @@ export class PbtaRolls {
         let flags = combatant.data.flags;
         let moveCount = flags.pbta ? flags.pbta.moveCount : 0;
         moveCount = moveCount ? Number(moveCount) + 1 : 1;
+        let combatantUpdate = {
+          _id: combatant.id,
+          'flags.pbta.moveCount': moveCount
+        };
         // Emit a socket for the GM client.
         if (!game.user.isGM) {
           game.socket.emit('system.pbta', {
-            combatantUpdate: { _id: combatant.id, 'flags.pbta.moveCount': moveCount }
+            combatantUpdate: combatantUpdate
           });
         }
         else {
-          await game.combat.updateCombatant({ _id: combatant.id, 'flags.pbta.moveCount': moveCount });
+          let combatantUpdates = [];
+          combatantUpdates.push(combatantUpdate);
+          await game.combat.updateEmbeddedDocuments('Combatant', combatantUpdates);
           ui.combat.render();
         }
       }

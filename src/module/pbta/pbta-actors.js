@@ -113,7 +113,7 @@ export class PbtaActorTemplates {
       // embedded token entities.
       if (tokenUpdates.length > 0) {
         try {
-          await s.updateEmbeddedEntity('Token', tokenUpdates);
+          await s.updateEmbeddedDocument('Token', tokenUpdates);
         } catch (error) {
           console.log(error);
         }

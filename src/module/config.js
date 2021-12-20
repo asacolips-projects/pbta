@@ -39,7 +39,7 @@ export class PbtaPlaybooks {
     let playbooks = game.items.contents.filter(item => item.type == 'playbook');
     // Next, retrieve compendium playbooks and merge them in.
     for (let c of game.packs) {
-      if (c.metadata.entity && c.metadata.entity == 'Item' && c.metadata.name == 'playbooks') {
+      if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name == 'playbooks') {
         let items = c ? await c.getDocuments() : [];
         playbooks = playbooks.concat(items.map(i => i.data));
       }

@@ -984,13 +984,13 @@ export class PbtaActorSheet extends ActorSheet {
   //   }
 
   //   if (new_moves) {
-  //     await actor.createEmbeddedEntity('OwnedItem', new_moves);
+  //     await actor.createEmbeddedDocument('OwnedItem', new_moves);
   //   }
   //   if (new_equipment) {
-  //     await actor.createEmbeddedEntity('OwnedItem', new_equipment);
+  //     await actor.createEmbeddedDocument('OwnedItem', new_equipment);
   //   }
   //   if (new_spells) {
-  //     await actor.createEmbeddedEntity('OwnedItem', new_spells);
+  //     await actor.createEmbeddedDocument('OwnedItem', new_spells);
   //   }
   //   await actor.update({ data: data });
   //   await actor.setFlag('pbta', 'levelup', false);
@@ -1014,7 +1014,7 @@ export class PbtaActorSheet extends ActorSheet {
   //     $self.toggleClass('unprepared');
 
   //     let update = { _id: item._id, "data.prepared": !item.data.data.prepared };
-  //     await this.actor.updateEmbeddedEntity("OwnedItem", update);
+  //     await this.actor.updateEmbeddedDocument("OwnedItem", update);
 
   //     this.render();
   //   }

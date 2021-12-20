@@ -42,7 +42,7 @@ Hooks.once("init", async function() {
   };
 
   // TODO: Extend the combat class.
-  // CONFIG.Combat.entityClass = CombatPbta;
+  // CONFIG.Combat.documentClass = CombatPbta;
 
   CONFIG.PBTA = PBTA;
   CONFIG.Actor.documentClass = ActorPbta;
@@ -291,37 +291,36 @@ function rollItemMacro(itemName) {
 }
 
 /* -------------------------------------------- */
-/*  Entity Creation Override                    */
+/*  Document Creation Override                    */
 /* -------------------------------------------- */
 
-async function _onCreateEntity(event) {
+async function _onCreateDocument(event) {
   event.preventDefault();
   event.stopPropagation();
   return _pbtaDirectoryTemplates(this, event);
 }
 
-if (typeof ActorDirectory.prototype._onCreateEntity !== 'undefined') {
-  ActorDirectory.prototype._onCreateEntity = _onCreateEntity; // For 0.7.x
-}
-else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
-  ActorDirectory.prototype._onCreateDocument = _onCreateEntity; // For 0.8.x+
+if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
+  ActorDirectory.prototype._onCreateDocument = _onCreateDocument; // For 0.8.x+
 }
 
 /**
- * Display the entity template dialog.
+ * Display the document template dialog.
  *
- * Helper function to display a dialog if there are multiple template types defined for the entity type.
- * TODO: Refactor in 0.7.x to play more nicely with the Entity.createDialog method
+ * Helper function to display a dialog if there are multiple template types defined for the document type.
+ * TODO: Refactor in 0.7.x to play more nicely with the Document.createDialog method
  *1
- * @param {EntityCollection} entityType - The sidebar tab
+ * @param {DocumentCollection} documentType - The sidebar tab
  * @param {MouseEvent} event - Triggering event
  */
  async function _pbtaDirectoryTemplates(collection, event) {
+  console.log(collection);
 
   // Retrieve the collection and find any available templates
-  const entityCollection = collection.tabName === "actors" ? game.actors : game.items;
+  const documentCollection = collection.tabName === "actors" ? game.actors : game.items;
   const cls = collection.tabName === "actors" ? Actor : Item;
-  // let templates = entityCollection.filter(a => a.getFlag("worldbuilding", "isTemplate"));
+  console.log(cls);
+  // @todo Fix this for v9
   let ent = game.i18n.localize(cls.config.label);
 
   let actorTypes = Object.keys(game.pbta.sheetConfig.actorTypes);
@@ -342,7 +341,7 @@ else if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
 
   // Render the confirmation dialog window
   const templateData = {upper: ent, lower: ent.toLowerCase(), types: types};
-  const dlg = await renderTemplate(`systems/pbta/templates/sidebar/entity-create.html`, templateData);
+  const dlg = await renderTemplate(`systems/pbta/templates/sidebar/document-create.html`, templateData);
   return Dialog.confirm({
     title: `${game.i18n.localize("PBTA.Create")} ${name}`,
     content: dlg,
