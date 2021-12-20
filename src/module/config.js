@@ -40,8 +40,8 @@ export class PbtaPlaybooks {
     // Next, retrieve compendium playbooks and merge them in.
     for (let c of game.packs) {
       if (c.metadata.entity && c.metadata.entity == 'Item' && c.metadata.name == 'playbooks') {
-        let items = c ? await c.getContent() : [];
-        playbooks = playbooks.concat(items);
+        let items = c ? await c.getDocuments() : [];
+        playbooks = playbooks.concat(items.map(i => i.data));
       }
     }
     // Reduce duplicates. Because item playbooks happen first, this will prevent

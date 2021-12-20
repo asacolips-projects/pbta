@@ -102,7 +102,7 @@ export class CombatSidebarPbta {
             // needs to be refactored.
             // ---------------------------------------------------------------
             // const view = game.scenes.viewed;
-            // const combats = view ? game.combats.entities.filter(c => c.data.scene === view._id) : [];
+            // const combats = view ? game.combats.filter(c => c.data.scene === view._id) : [];
             // let combat = combats.length ? combats.find(c => c.data.active) || combats[0] : null;
 
             // Retreive the drop target, remove any hover classes.
