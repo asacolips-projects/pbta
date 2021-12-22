@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const prefix = require('gulp-autoprefixer');
 const del = require('del');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const yaml = require('gulp-yaml');
 const webp = require('gulp-webp');
 const git = require('gulp-git');
@@ -24,7 +24,7 @@ const SYSTEM_SCSS = ["src/styles/src/**/*.scss"];
 function compileScss() {
   // Configure options for sass output. For example, 'expanded' or 'nested'
   let options = {
-    outputStyle: 'nested'
+    outputStyle: 'compressed'
   };
   return gulp.src(SYSTEM_SCSS)
     .pipe(
