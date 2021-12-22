@@ -161,7 +161,7 @@ Hooks.on('renderChatMessage', (data, html, options) => {
 /* -------------------------------------------- */
 
 /**
- * This function runs after game data has been requested and loaded from the servers, so entities exist
+ * This function runs after game data has been requested and loaded from the servers, so documents exist
  */
 Hooks.once("setup", function() {
 
