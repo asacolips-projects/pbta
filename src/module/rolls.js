@@ -20,7 +20,7 @@ export class PbtaRolls {
     // Check if the actor has an override formula.
     if (!actor && this.actor) actor = this.actor;
     if (actor && actor?.data?.data?.resources?.rollFormula?.value) {
-      let validRoll = await new Roll(actor.data.data.resources.rollFormula.value.trim(), actor.getRollData()).evaluate();
+      let validRoll = await new Roll(actor.data.data.resources.rollFormula.value.trim(), actor.getRollData()).evaluate({async: true});
       if (validRoll) {
         formula = actor.data.data.resources.rollFormula.value.trim();
       }
@@ -305,7 +305,7 @@ export class PbtaRolls {
       // Test if the roll is a formula.
       let validRoll = false;
       try {
-        validRoll = await new Roll(roll.trim(), rollData).evaluate();
+        validRoll = await new Roll(roll.trim(), rollData).evaluate({async: true});
       } catch (error) {
         validRoll = false;
       }
