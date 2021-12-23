@@ -320,8 +320,7 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
   const documentCollection = collection.tabName === "actors" ? game.actors : game.items;
   const cls = collection.tabName === "actors" ? Actor : Item;
   console.log(cls);
-  // @todo Fix this for v9
-  let ent = game.i18n.localize(cls.config.label);
+  let ent = game.i18n.localize(cls.metadata.label);
 
   let actorTypes = Object.keys(game.pbta.sheetConfig.actorTypes);
 
