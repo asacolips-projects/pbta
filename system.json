@@ -2,7 +2,7 @@
   "name": "pbta",
   "title": "Powered by the Apocalypse",
   "description": "Run games for any PbtA system in Foundry VTT!",
-  "version": "0.3.1",
+  "version": "0.3.2.beta-1",
   "minimumCoreVersion": 9,
   "compatibleCoreVersion": 9,
   "templateVersion": 2,
