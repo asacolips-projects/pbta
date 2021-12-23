@@ -314,8 +314,6 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
  * @param {MouseEvent} event - Triggering event
  */
  async function _pbtaDirectoryTemplates(collection, event) {
-  console.log(collection);
-
   // Retrieve the collection and find any available templates
   const documentCollection = collection.tabName === "actors" ? game.actors : game.items;
   const cls = collection.tabName === "actors" ? Actor : Item;

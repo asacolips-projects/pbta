@@ -384,13 +384,9 @@ export class PbtaActorSheet extends ActorSheet {
     if (isOwner) {
       /* Item Dragging */
       // Core handlers from foundry.js
-      var handler;
-      if (!isNewerVersion(game.data.version, "0.7")) {
-        handler = ev => this._onDragItemStart(ev);
-      }
-      else {
-        handler = ev => this._onDragStart(ev);
-      }
+      let handler;
+      handler = ev => this._onDragStart(ev);
+
       html.find('li.item').each((i, li) => {
         if (li.classList.contains("inventory-header")) return;
         li.setAttribute("draggable", true);
