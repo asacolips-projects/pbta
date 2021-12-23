@@ -170,7 +170,7 @@ export class PbtaItemSheet extends ItemSheet {
    */
   async _tagify(html, editable) {
     // Build the tags list.
-    let tags = game.items.contents.filter(item => item.type == 'tag');
+    let tags = game.items.filter(item => item.type == 'tag');
     for (let c of game.packs) {
       if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name == 'tags') {
         let items = c?.index ? c.index.map(indexedItem => {
