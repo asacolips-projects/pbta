@@ -39,5 +39,5 @@
   "socket": true,
   "url": "https://asacolips.gitbook.io/pbta-system/",
   "manifest": "https://gitlab.com/asacolips-projects/foundry-mods/archmage/-/raw/beta/system.json",
-  "download": "https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/jobs/artifacts/beta/raw/pbta.zip?job=build-beta"
+  "download": "https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/jobs/artifacts/0.3.2-beta-1/raw/pbta.zip?job=build-prod"
 }
