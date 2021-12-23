@@ -71,7 +71,7 @@ export class PbtaActorTemplates {
     // Apply updates to actors.
     if (updates.length > 0) {
       try {
-        await Actor.update(updates, options);
+        await Actor.updateDocuments(updates, options);
         success = true;
       } catch (error) {
         console.log(error);
