@@ -319,7 +319,6 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
   // Retrieve the collection and find any available templates
   const documentCollection = collection.tabName === "actors" ? game.actors : game.items;
   const cls = collection.tabName === "actors" ? Actor : Item;
-  console.log(cls);
   let ent = game.i18n.localize(cls.metadata.label);
 
   let actorTypes = Object.keys(game.pbta.sheetConfig.actorTypes);
@@ -339,7 +338,12 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
   });
 
   // Render the confirmation dialog window
-  const templateData = {upper: ent, lower: ent.toLowerCase(), types: types};
+  const templateData = {
+    name: game.i18n.format('DOCUMENT.Create', {type: ent}),
+    upper: ent,
+    lower: ent.toLowerCase(),
+    types: types
+  };
   const dlg = await renderTemplate(`systems/pbta/templates/sidebar/document-create.html`, templateData);
   return Dialog.confirm({
     title: `${game.i18n.localize("PBTA.Create")} ${name}`,
