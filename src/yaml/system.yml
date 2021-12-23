@@ -31,5 +31,5 @@ secondaryTokenAttribute:
 initiative: 1d20
 socket: true
 url: https://asacolips.gitbook.io/pbta-system/
-manifest: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/jobs/artifacts/beta/raw/system.json?job=build-beta
+manifest: https://gitlab.com/asacolips-projects/foundry-mods/archmage/-/raw/beta/system.json
 download: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/jobs/artifacts/beta/raw/pbta.zip?job=build-beta
