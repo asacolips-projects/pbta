@@ -352,7 +352,8 @@ export class PbtaUtility {
     for (let pack of game.packs) {
       if (pack.metadata.name.includes('equipment')) {
         if (pack) {
-          items = items.concat(await pack.getContent());
+          let packItems = await pack.getDocuments;
+          items = items.concat(packItems);
         }
       }
     }

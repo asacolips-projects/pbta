@@ -104,7 +104,7 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
     let newItems = itemData.data.equipment[groupId]['items'].filter(i => i != equipmentId);
     itemData.data.equipment[groupId]['items'] = newItems;
 
-    // Update the entity.
+    // Update the document.
     await this.item.update(itemData, { diff: false });
     this.render(true);
   }
@@ -125,7 +125,7 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
     if (!existing_items.includes(equipmentId)) {
       existing_items.push(equipmentId);
       itemData.data.equipment[groupId]['items'] = existing_items;
-      // Update the entity.
+      // Update the document.
       await this.item.update(itemData, { diff: false });
       this.render(true);
     }

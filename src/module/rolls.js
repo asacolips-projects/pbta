@@ -14,13 +14,13 @@ export class PbtaRolls {
    * @param {object|null} actor | (optional) Actor object to check for roll overrides.
    * @returns
    */
-  static getRollFormula(defaultFormula = '2d6', actor = null) {
+  static async getRollFormula(defaultFormula = '2d6', actor = null) {
     // Get the default formula.
     let formula = game.pbta.sheetConfig.rollFormula ?? defaultFormula;
     // Check if the actor has an override formula.
     if (!actor && this.actor) actor = this.actor;
     if (actor && actor?.data?.data?.resources?.rollFormula?.value) {
-      let validRoll = new Roll(actor.data.data.resources.rollFormula.value.trim(), actor.getRollData()).evaluate();
+      let validRoll = await new Roll(actor.data.data.resources.rollFormula.value.trim(), actor.getRollData()).evaluate({async: true});
       if (validRoll) {
         formula = actor.data.data.resources.rollFormula.value.trim();
       }
@@ -89,7 +89,7 @@ export class PbtaRolls {
     let actorType = this.actor.data.type;
 
     // Get the roll formula.
-    let dice = this.getRollFormula('2d6', this.actor);
+    let dice = await this.getRollFormula('2d6', this.actor);
 
     // Grab the item data, if any.
     const item = options?.data;
@@ -283,7 +283,7 @@ export class PbtaRolls {
   static async rollMoveExecute(roll, dataset, templateData, form = null) {
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
-    let dice = this.getRollFormula('2d6', this.actor);
+    let dice = await this.getRollFormula('2d6', this.actor);
     let forwardUsed = false;
     let rollModeUsed = false;
     let resultRangeNeeded = templateData.resultRangeNeeded ?? false;
@@ -305,7 +305,7 @@ export class PbtaRolls {
       // Test if the roll is a formula.
       let validRoll = false;
       try {
-        validRoll = new Roll(roll.trim(), rollData).evaluate();
+        validRoll = await new Roll(roll.trim(), rollData).evaluate({async: true});
       } catch (error) {
         validRoll = false;
       }
@@ -537,14 +537,20 @@ export class PbtaRolls {
         let flags = combatant.data.flags;
         let moveCount = flags.pbta ? flags.pbta.moveCount : 0;
         moveCount = moveCount ? Number(moveCount) + 1 : 1;
+        let combatantUpdate = {
+          _id: combatant.id,
+          'flags.pbta.moveCount': moveCount
+        };
         // Emit a socket for the GM client.
         if (!game.user.isGM) {
           game.socket.emit('system.pbta', {
-            combatantUpdate: { _id: combatant.id, 'flags.pbta.moveCount': moveCount }
+            combatantUpdate: combatantUpdate
           });
         }
         else {
-          await game.combat.updateCombatant({ _id: combatant.id, 'flags.pbta.moveCount': moveCount });
+          let combatantUpdates = [];
+          combatantUpdates.push(combatantUpdate);
+          await game.combat.updateEmbeddedDocuments('Combatant', combatantUpdates);
           ui.combat.render();
         }
       }

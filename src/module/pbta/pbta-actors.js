@@ -34,7 +34,7 @@ export class PbtaActorTemplates {
     };
 
     // Get all active actors.
-    let entities = {
+    let documents = {
       'character': Object.keys(newConfig.character).length > 0 ? game.actors.filter(a => a.data.type == 'character') : [],
       'npc': Object.keys(newConfig.npc).length > 0 ? game.actors.filter(a => a.data.type == 'npc') : [],
     };
@@ -43,15 +43,15 @@ export class PbtaActorTemplates {
     for (let actorType of Object.keys(newConfig)) {
       if (actorType == 'character' || actorType == 'npc') continue;
       if (!newTokenConfig[actorType]) newTokenConfig[actorType] = {};
-      if (!entities[actorType]) {
+      if (!documents[actorType]) {
         let actors = Object.keys(newConfig[actorType]).length > 0 ? game.actors.filter(a => a.data.type == 'other' && a.data.data?.customType == actorType) : [];
-        entities[actorType] = actors;
+        documents[actorType] = actors;
       }
     }
 
     let updates = [];
 
-    for (let [actorType, actors] of Object.entries(entities)) {
+    for (let [actorType, actors] of Object.entries(documents)) {
       // Tokens won't need the full update, we only need to do updates for
       // deleted keys. All other updates can be inferred from the base actor.
       for (let [cfgK, cfgV] of Object.entries(newConfig[actorType])) {
@@ -71,7 +71,7 @@ export class PbtaActorTemplates {
     // Apply updates to actors.
     if (updates.length > 0) {
       try {
-        await Actor.update(updates, options);
+        await Actor.updateDocuments(updates, options);
         success = true;
       } catch (error) {
         console.log(error);
@@ -110,10 +110,10 @@ export class PbtaActorTemplates {
         });
       }
       // If this scene has token updates, we need to apply them to the
-      // embedded token entities.
+      // embedded token documents.
       if (tokenUpdates.length > 0) {
         try {
-          await s.updateEmbeddedEntity('Token', tokenUpdates);
+          await s.updateEmbeddedDocuments('Token', tokenUpdates);
         } catch (error) {
           console.log(error);
         }

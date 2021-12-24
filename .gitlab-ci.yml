@@ -67,8 +67,9 @@ build-prod:
       - pbta.zip
       - system.json
   only:
-    # Example: 0.1.0
-    - /^(\d+\.)+(\d+)*$/i
+    # Examples: 0.1.0, 0.1.2.beta-1, 0.3.4.alpha
+    # At least one digit + period, followed by additional digits, followed by an optional beta/alpha, followed by a build number.
+    - /^(\d+\.)+(\d+)*((beta|alpha)+(-)*\d+)*$/i
   except:
     - branches
 
