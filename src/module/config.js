@@ -41,7 +41,7 @@ export class PbtaPlaybooks {
     for (let c of game.packs) {
       if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name == 'playbooks') {
         let items = c ? await c.getDocuments() : [];
-        playbooks = playbooks.concat(items.map(i => i.data));
+        playbooks = playbooks.concat(items);
       }
     }
     // Reduce duplicates. Because item playbooks happen first, this will prevent
