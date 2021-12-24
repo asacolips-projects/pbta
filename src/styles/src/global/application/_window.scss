@@ -96,7 +96,7 @@
   .dialog-buttons {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: stretch;
     justify-content: space-between;
   }

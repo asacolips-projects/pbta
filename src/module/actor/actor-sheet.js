@@ -384,13 +384,9 @@ export class PbtaActorSheet extends ActorSheet {
     if (isOwner) {
       /* Item Dragging */
       // Core handlers from foundry.js
-      var handler;
-      if (!isNewerVersion(game.data.version, "0.7")) {
-        handler = ev => this._onDragItemStart(ev);
-      }
-      else {
-        handler = ev => this._onDragStart(ev);
-      }
+      let handler;
+      handler = ev => this._onDragStart(ev);
+
       html.find('li.item').each((i, li) => {
         if (li.classList.contains("inventory-header")) return;
         li.setAttribute("draggable", true);
@@ -577,7 +573,7 @@ export class PbtaActorSheet extends ActorSheet {
   //   let pack_id = `pbta.${char_class}-moves`;
   //   let pack = game.packs.get(pack_id);
 
-  //   let compendium = pack ? await pack.getContent() : [];
+  //   let compendium = pack ? await pack.getDocuments() : [];
 
   //   let class_item = class_list_items.find(i => i.data.name == orig_class_name);
   //   let blurb = class_item ? class_item.data.data.description : null;
@@ -640,7 +636,7 @@ export class PbtaActorSheet extends ActorSheet {
   //   const actorMoves = this.actor.data.items.filter(i => i.type == 'move');
 
   //   // Get the item moves as the priority.
-  //   let moves = game.items.entities.filter(i => i.type == 'move' && i.data.data.class == char_class_name);
+  //   let moves = game.items.filter(i => i.type == 'move' && i.data.data.class == char_class_name);
   //   // Get the compendium moves next.
   //   let moves_compendium = compendium.filter(m => {
   //     const available_level = m.data.data.requiresLevel <= char_level;
@@ -712,7 +708,7 @@ export class PbtaActorSheet extends ActorSheet {
   //     spells = [];
   //     for (let caster_class of cast_spells) {
   //       // Get the item spells as the priority.
-  //       let spells_items = game.items.entities.filter(i => {
+  //       let spells_items = game.items.filter(i => {
   //         // Return true for custom spell items that have a class.
   //         return i.type == 'spell'
   //           && i.data.data.class
@@ -720,7 +716,7 @@ export class PbtaActorSheet extends ActorSheet {
   //           && [caster_class, `the ${caster_class}`].includes(i.data.data.class.toLowerCase());
   //       });
   //       let spells_pack = game.packs.get(`pbta.${char_class}-spells`);
-  //       let spells_compendium = spells_pack ? await spells_pack.getContent() : [];
+  //       let spells_compendium = spells_pack ? await spells_pack.getDocuments() : [];
   //       // Get the compendium spells next.
   //       let spells_compendium_items = spells_compendium.filter(s => {
   //         const available_level = s.data.data.spellLevel <= caster_level;
@@ -984,13 +980,13 @@ export class PbtaActorSheet extends ActorSheet {
   //   }
 
   //   if (new_moves) {
-  //     await actor.createEmbeddedEntity('OwnedItem', new_moves);
+  //     await actor.createEmbeddedDocument('OwnedItem', new_moves);
   //   }
   //   if (new_equipment) {
-  //     await actor.createEmbeddedEntity('OwnedItem', new_equipment);
+  //     await actor.createEmbeddedDocument('OwnedItem', new_equipment);
   //   }
   //   if (new_spells) {
-  //     await actor.createEmbeddedEntity('OwnedItem', new_spells);
+  //     await actor.createEmbeddedDocument('OwnedItem', new_spells);
   //   }
   //   await actor.update({ data: data });
   //   await actor.setFlag('pbta', 'levelup', false);
@@ -1014,7 +1010,7 @@ export class PbtaActorSheet extends ActorSheet {
   //     $self.toggleClass('unprepared');
 
   //     let update = { _id: item._id, "data.prepared": !item.data.data.prepared };
-  //     await this.actor.updateEmbeddedEntity("OwnedItem", update);
+  //     await this.actor.updateEmbeddedDocument("OwnedItem", update);
 
   //     this.render();
   //   }
@@ -1154,21 +1150,20 @@ export class PbtaActorSheet extends ActorSheet {
 
   async _activateTagging(html) {
     // Build the tags list.
-    let tags = game.items.contents.filter(item => item.type == 'tag');
+    let tags = game.items.filter(item => item.type == 'tag');
     for (let c of game.packs) {
-      if (c.metadata.entity && c.metadata.entity == 'Item' && c.metadata.name == 'tags') {
-        let items = c ? await c.getContent() : [];
+      if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name == 'tags') {
+        let items = c?.index ? c.index.map(indexedItem => {
+          return indexedItem.name;
+        }) : [];
         tags = tags.concat(items);
       }
     }
     // Reduce duplicates.
     let tagNames = [];
     for (let tag of tags) {
-      let tagName = tag.data.name.toLowerCase();
-      if (tagNames.includes(tagName) !== false) {
-        tags = tags.filter(item => item._id != tag._id);
-      }
-      else {
+      let tagName = tag.toLowerCase();
+      if (tagNames.includes(tagName) === false) {
         tagNames.push(tagName);
       }
     }

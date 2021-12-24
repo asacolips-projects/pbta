@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const prefix = require('gulp-autoprefixer');
 const del = require('del');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const yaml = require('gulp-yaml');
 const webp = require('gulp-webp');
 const git = require('gulp-git');
@@ -24,7 +24,7 @@ const SYSTEM_SCSS = ["src/styles/src/**/*.scss"];
 function compileScss() {
   // Configure options for sass output. For example, 'expanded' or 'nested'
   let options = {
-    outputStyle: 'nested'
+    outputStyle: 'compressed'
   };
   return gulp.src(SYSTEM_SCSS)
     .pipe(
@@ -46,9 +46,18 @@ function compileYaml() {
   return gulp.src(SYSTEM_YAML)
     .pipe(yaml({ space: 2 }))
     .pipe(gulp.dest('./dist'))
-    .pipe(gulp.dest('./src'))
 }
 const yamlTask = gulp.series(compileYaml);
+
+/* ----------------------------------------- */
+/* Copy the manifest YAML.
+/* ----------------------------------------- */
+function compileManifest() {
+  return gulp.src('src/yaml/system.yml')
+    .pipe(yaml({ space: 2 }))
+    .pipe(gulp.dest('./'))
+}
+const manifestTask = gulp.series(compileManifest);
 
 /* ----------------------------------------- */
 /* Delete files
@@ -77,11 +86,6 @@ function copyFiles() {
   return gulp.src(SYSTEM_COPY, {base: 'src'})
     .pipe(gulp.dest('./dist'))
 }
-// function copyManifest() {
-//   return gulp.src('./dist/system.json')
-//     .pipe(gulp.dest('./'))
-// }
-// const copyTask = gulp.series(copyFiles, copyManifest);
 const copyTask = gulp.series(copyFiles);
 
 /* ----------------------------------------- */
@@ -170,7 +174,7 @@ function commitTag() {
 /* ----------------------------------------- */
 
 function watchUpdates() {
-  gulp.watch(SYSTEM_YAML, yamlTask);
+  gulp.watch(SYSTEM_YAML, yamlTask, manifestTask);
   gulp.watch(SYSTEM_IMAGES, compileImages);
   gulp.watch(SYSTEM_SCSS, cssTask);
   gulp.watch(SYSTEM_COPY, copyTask);
@@ -195,7 +199,7 @@ const buildTask = gulp.series(
   compileImages,
   compileScss,
   copyFiles,
-  // copyManifest
+  compileManifest
 );
 
 exports.default = defaultTask;

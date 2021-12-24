@@ -52,7 +52,7 @@ if (argv.jobname == 'build-patreon') {
   system.download = `https://patreon.azurewebsites.net/api/download/pbta/${artifactVersion}/pbta.zip`;
 }
 else {
-  system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/system.json?job=${argv.jobname}`;
+  system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactBranch}/raw/system.json?job=${argv.jobname}`;
   system.download = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/pbta.zip?job=${argv.jobname}`;
 }
 

@@ -102,7 +102,7 @@ export class CombatSidebarPbta {
             // needs to be refactored.
             // ---------------------------------------------------------------
             // const view = game.scenes.viewed;
-            // const combats = view ? game.combats.entities.filter(c => c.data.scene === view._id) : [];
+            // const combats = view ? game.combats.filter(c => c.data.scene === view._id) : [];
             // let combat = combats.length ? combats.find(c => c.data.active) || combats[0] : null;
 
             // Retreive the drop target, remove any hover classes.
@@ -155,7 +155,7 @@ export class CombatSidebarPbta {
 
               // If there are updates, update the combatants at once.
               if (updates) {
-                await combat.updateCombatant(updates);
+                await combat.updateEmbeddedDocuments('Combatant', updates, {});
               }
             }
           });
@@ -182,7 +182,7 @@ export class CombatSidebarPbta {
       }
 
       if (data.combatantUpdate) {
-        game.combat.updateCombatant(data.combatantUpdate);
+        game.combat.updateEmbeddedDocuments('Combatant', Array.isArray(data.combatantUpdate) ? data.combatantUpdate : [data.combatantUpdate]);
         ui.combat.render();
       }
     });
@@ -284,7 +284,7 @@ export class CombatSidebarPbta {
       // If this is for a combatant that has had its token/actor deleted,
       // remove it from the combat.
       if (!combatant.actor) {
-        game.combat.deleteCombatant(combatant.id);
+        game.combat.deleteEmbeddedDocuments('Combatant', [combatant.id]);
       }
       // Append valid actors to the appropriate group.
       else {
