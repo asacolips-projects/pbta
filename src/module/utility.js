@@ -353,7 +353,7 @@ export class PbtaUtility {
       if (pack.metadata.name.includes('equipment')) {
         if (pack) {
           let packItems = await pack.getDocuments;
-          items = items.concat(packItems.map(i => i.data));
+          items = items.concat(packItems);
         }
       }
     }
