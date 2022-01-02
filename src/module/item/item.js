@@ -39,6 +39,7 @@ export class ItemPbta extends Item {
     if (itemData.data.equipment) {
       for (let [group, group_items] of Object.entries(itemData.data.equipment)) {
         if (group_items) {
+          console.log(i);
           equipment[group] = items.filter(i => group_items['items'].includes(i.data._id));
         }
       }
