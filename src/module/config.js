@@ -39,9 +39,11 @@ export class PbtaPlaybooks {
     let playbooks = game.items.filter(item => item.type == 'playbook');
     // Next, retrieve compendium playbooks and merge them in.
     for (let c of game.packs) {
-      if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name == 'playbooks') {
+      if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name.includes('playbooks')) {
+        // Load the compendium and then merge it with the existing items. Filter
+        // it to include only playbook items.
         let items = c ? await c.getDocuments() : [];
-        playbooks = playbooks.concat(items);
+        playbooks = playbooks.concat(items.filter(i => i.type == 'playbook'));
       }
     }
     // Reduce duplicates. Because item playbooks happen first, this will prevent

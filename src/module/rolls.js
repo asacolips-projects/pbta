@@ -532,7 +532,7 @@ export class PbtaRolls {
 
     // Update the combat flags.
     if (game.combat && game.combat.combatants) {
-      let combatant = game.combat.combatants.find(c => c.actor.data._id == this.actor.id);
+      let combatant = game.combat.combatants.find(c => c.actor.id == this.actor.id);
       if (combatant) {
         let flags = combatant.data.flags;
         let moveCount = flags.pbta ? flags.pbta.moveCount : 0;
