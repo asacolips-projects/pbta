@@ -423,7 +423,7 @@ export class PbtaUtility {
     //   let actor = this;
 
     //   // Use the current token if possible.
-    //   let token = canvas.tokens.controlled.find(t => t.actor.data._id == this.data._id);
+    //   let token = canvas.tokens.controlled.find(t => t.actor.id == this.id);
     //   if (token) {
     //     actor = token.actor;
     //   }
