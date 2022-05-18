@@ -212,7 +212,7 @@
                               </div>
                               <div class="item-description">
                                 {{#if item.data.tags}}{{{pbtaTags item.data.tags}}}{{/if}}
-                                <div class="description">{{{item.data.description}}}</div>
+                                <div class="description">{{{enrichText item.data.description rollData}}}</div>
                               </div>
                           </li>
                         {{/each}}

@@ -156,7 +156,8 @@ export class PbtaActorSheet extends ActorSheet {
       limited: this.object.limited,
       options: this.options,
       owner: isOwner,
-      title: this.title
+      title: this.title,
+      rollData: this.actor.getRollData()
     };
 
     // Return template data

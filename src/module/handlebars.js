@@ -63,5 +63,9 @@ export class PbtaRegisterHelpers {
       />
     </svg>`;
     });
+
+    Handlebars.registerHelper('enrichText', function(content, rollData) {
+      return TextEditor.enrichHTML(content, {rollData});
+    });
   }
 }
