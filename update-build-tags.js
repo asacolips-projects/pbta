@@ -18,7 +18,7 @@ const argv = yargs
       type: 'string',
       description: 'The git tag used for this version (CI_COMMIT_TAG)'
     })
-    .option('versionpost', {
+    .option('versionpre', {
       type: 'string',
       description: 'specifies the timestamp as a prefix on beta builds (CI_PIPELINE_IID)'
     })
@@ -29,13 +29,13 @@ const systemRaw = fs.readFileSync('./dist/system.json');
 let system = JSON.parse(systemRaw);
 
 // Calculate the version.
-if (argv.branch && argv.branch == 'beta' && argv.versionpost) {
+if (argv.branch && argv.branch == 'beta' && argv.versionpre) {
   let newVersionSplit = system.version.split('.');
   // Set the beta version.
-  newVersionSplit[1]++;
-  newVersionSplit[2] = 0;
+  // newVersionSplit[1]++;
+  // newVersionSplit[2] = 0;
   let newVersion = newVersionSplit.join('.');
-  system.version = `${newVersion}-beta${argv.versionpost ? argv.versionpost : ''}`;
+  system.version = `beta${argv.versionpre ? argv.versionpre + '-' : ''}${newVersion}`;
 }
 else if (argv.tag) {
   system.version = argv.tag;
@@ -47,16 +47,15 @@ let artifactVersion = argv.tag ? argv.tag : argv.branch;
 
 // Update URLs.
 system.url = `https://gitlab.com/${argv.gitlabpath}`;
-if (argv.jobname == 'build-patreon') {
-  system.manifest = `https://patreon.azurewebsites.net/api/download/pbta/${artifactVersion}/system.json`;
-  system.download = `https://patreon.azurewebsites.net/api/download/pbta/${artifactVersion}/pbta.zip`;
+if (artifactBranch != 'master') {
+  system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/system.json?job=${argv.jobname}`;
 }
 else {
-  system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactBranch}/raw/system.json?job=${argv.jobname}`;
-  system.download = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/pbta.zip?job=${argv.jobname}`;
+  system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/raw/${artifactBranch}/system.json`;
 }
+system.download = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/pbta.zip?job=${argv.jobname}`;
 
 fs.writeFileSync('./dist/system.json', JSON.stringify(system, null, 2));
 console.log(`Build: ${system.version}`);
-console.log(`Manifest: ${system.manifest}${argv.jobname == 'build-patreon' ? '?test=test' : ''}`);
-console.log(`Download: ${system.download}${argv.jobname == 'build-patreon' ? '?test=test' : ''}`);
+console.log(`Manifest: ${system.manifest}`);
+console.log(`Download: ${system.download}`);
