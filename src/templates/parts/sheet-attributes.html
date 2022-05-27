@@ -49,9 +49,19 @@
       {{else if (eq attr.type "ListMany") }}
         <ul class="cell__checkboxes flexcol">
           {{#each attr.options as |option optionKey|}}
-            <label>
-              <input type="checkbox" class="attr-list" name="data.{{../../group}}.{{key}}.options.{{optionKey}}.value" {{checked option.value}}/>
-              {{option.label}}
+            <label class="flexrow">
+              {{#if option.values}}
+                {{#each option.values as |suboption suboptionKey|}}
+                  <input type="checkbox" class="attr-list" name="data.{{../../../group}}.{{key}}.options.{{optionKey}}.values.{{suboptionKey}}.value" {{checked suboption.value}}/>
+                {{/each}}
+              {{else}}
+                <input type="checkbox" class="attr-list" name="data.{{../../group}}.{{key}}.options.{{optionKey}}.value" {{checked option.value}}/>
+              {{/if}}
+              {{#if (eq option.label "[Text]")}}
+                <input type="text" class="input input-title" name="data.{{../../group}}.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
+              {{else}}
+                {{option.label}}
+              {{/if}}
             </label>
           {{/each}}
         </ul>
