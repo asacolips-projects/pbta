@@ -184,6 +184,23 @@ export class PbtaActorSheet extends ActorSheet {
         if (attrValue.type == 'LongText') {
           actorData.data[group][attrKey].attrName = `data.${group}.${attrKey}.value`;
         }
+        if (attrValue.type == 'ListMany') {
+          console.log(attrValue);
+          for (let [optKey, optObj] of Object.entries(attrValue.options)) {
+            let optCount = optObj.label.match(/(\|)(\d)/);
+            if (optCount && optCount[2] && Number.isNumeric(optCount[2])) {
+              let subOptObj = {};
+              for (let subOptKey = 0; subOptKey < optCount[2]; subOptKey++) {
+                subOptObj[subOptKey] = {
+                  value: false
+                };
+              }
+              actorData.data[group][attrKey]['options'][optKey]['values'] = subOptObj;
+              actorData.data[group][attrKey]['options'][optKey]['label'] = optObj.label.split('|')[0];
+            }
+          }
+          console.log(actorData.data[group][attrKey]);
+        }
       }
     }
   }

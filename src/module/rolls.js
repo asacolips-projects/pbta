@@ -109,13 +109,16 @@ export class PbtaRolls {
     // Determine if there are any conditions.
     let attrs = Object.entries(this.actor.data.data.attrLeft).concat(Object.entries(this.actor.data.data.attrTop));
     let conditionGroups = attrs.filter(condition => condition[1].condition).map(condition => {
+      console.log(condition);
       return {
         key: condition[0],
         label: condition[1].label,
-        conditions: Object.values(condition[1].options).filter(v => v.value && v.label.match(/\d/)).map(v => {
+        conditions: Object.values(condition[1].options).filter(v => v.value && (v.userLabel ?? v.label).match(/\d/)).map(v => {
+          let conditionLabel = v.userLabel ?? v.label;
+          console.log(conditionLabel);
           return {
-            label: v.label,
-            mod: Roll.safeEval(v.label.match(/[\d\+\-]/g).join(''))
+            label: conditionLabel,
+            mod: Roll.safeEval(conditionLabel.match(/[\d\+\-]/g).join(''))
           }
         })
       };
