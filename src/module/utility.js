@@ -277,6 +277,20 @@ export class PbtaUtility {
                 };
               }
             }
+            // Handle special options.
+            for (let [optK, optV] of Object.entries(options)) {
+              let optCount = optV.label.match(/(\|)(\d)/);
+              if (optCount && optCount[2] && Number.isNumeric(optCount[2])) {
+                let subOptV = {};
+                for (let subOptK = 0; subOptK < optCount[2]; subOptK++) {
+                  subOptV[subOptK] = {
+                    value: false
+                  };
+                }
+                options[optK]['values'] = subOptV;
+                options[optK]['label'] = optV.label.split('|')[0];
+              }
+            }
           }
 
           attr.condition = attrValue.condition ?? false;
