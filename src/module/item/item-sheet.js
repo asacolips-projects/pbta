@@ -170,7 +170,9 @@ export class PbtaItemSheet extends ItemSheet {
    */
   async _tagify(html, editable) {
     // Build the tags list.
-    let tags = game.items.filter(item => item.type == 'tag');
+    let tags = game.items.filter(item => item.type == 'tag').map(item => {
+      return item.name;
+    });
     for (let c of game.packs) {
       if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name == 'tags') {
         let items = c?.index ? c.index.map(indexedItem => {
@@ -182,9 +184,11 @@ export class PbtaItemSheet extends ItemSheet {
     // Reduce duplicates.
     let tagNames = [];
     for (let tag of tags) {
-      let tagName = tag.toLowerCase();
-      if (tagNames.includes(tagName) === false) {
-        tagNames.push(tagName);
+      if (typeof tag == 'string') {
+        let tagName = tag.toLowerCase();
+        if (tagNames.includes(tagName) === false) {
+          tagNames.push(tagName);
+        }
       }
     }
 
