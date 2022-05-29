@@ -31,8 +31,6 @@ export class ActorPbta extends Actor {
       'attrTop',
       'attrLeft'
     ];
-
-    // @todo: This isn't quite working yet.
     for (let group of groups) {
       for (let [attrKey, attrValue] of Object.entries(actorData.data[group])) {
         // ListMany field handling.
@@ -42,21 +40,25 @@ export class ActorPbta extends Actor {
             // If there's a multi-value field, we need to propagate its value up
             // to the parent `value` property.
             if (optV.values) {
-              // Assume the loop doesn't finish.
+              // Set up some tracking variables for the loop.
               let loopFinished = false;
+              let loopStep = 0;
+              let optArray = Object.values(optV.values);
               // Iterate over suboptions.
-              for (let i = 0; i < optV.values.length; i++) {
+              for (let subOpt of optArray) {
                 // If any option is true, set the value and exit.
-                if (subOpt) {
+                if (subOpt.value) {
                   optV.value = true;
                   break;
                 }
                 // On the last step, mark that we finished.
-                if (i == optV.values.length - 1) {
+                if (loopStep == optArray.length - 1) {
                   loopFinished = true;
                 }
+                loopStep++;
               }
-              // If the loop finish, unset the value.
+              // If the loop finished, all possible values were false. Mark this
+              // attribute as false as well.
               if (loopFinished) {
                 optV.value = false;
               }
