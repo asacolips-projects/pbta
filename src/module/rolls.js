@@ -112,10 +112,11 @@ export class PbtaRolls {
       return {
         key: condition[0],
         label: condition[1].label,
-        conditions: Object.values(condition[1].options).filter(v => v.value && v.label.match(/\d/)).map(v => {
+        conditions: Object.values(condition[1].options).filter(v => v.value && (v.userLabel ?? v.label).match(/\d/)).map(v => {
+          let conditionLabel = v.userLabel ?? v.label;
           return {
-            label: v.label,
-            mod: Roll.safeEval(v.label.match(/[\d\+\-]/g).join(''))
+            label: conditionLabel,
+            mod: Roll.safeEval(conditionLabel.match(/[\d\+\-]/g).join(''))
           }
         })
       };

@@ -39,7 +39,7 @@ stages:
 #     - export
 #     - npm ci
 #     - npm run build
-#     - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME --versionpost=$BETA_BUILD_NUMBER
+#     - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG --versionpost=$BETA_BUILD_NUMBER
 #     - cp ./dist/system.json ./system.json
 #     - mv dist pbta
 #     - zip -q pbta.zip -r pbta
@@ -48,6 +48,9 @@ stages:
 #       - pbta.zip
 #       - system.json
 #   only:
+#     # Examples: 0.1.0, 0.1.2.beta-1, 0.3.4.alpha
+#     # At least one digit + period, followed by additional digits, followed by an optional beta/alpha, followed by a build number.
+#     # - /^(\d+\.)+(\d+)*((beta|alpha)+(-)*\d+)*$/i
 #     - beta
 
 ############### STABLE ################
