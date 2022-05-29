@@ -26,6 +26,48 @@ export class ActorPbta extends Actor {
   _prepareCharacterData(actorData) {
     const data = actorData.data;
 
+    // Handle special attributes.
+    let groups = [
+      'attrTop',
+      'attrLeft'
+    ];
+    for (let group of groups) {
+      for (let [attrKey, attrValue] of Object.entries(actorData.data[group])) {
+        // ListMany field handling.
+        if (attrValue.type == 'ListMany') {
+          // Iterate over options.
+          for (let [optK, optV] of Object.entries(attrValue.options)) {
+            // If there's a multi-value field, we need to propagate its value up
+            // to the parent `value` property.
+            if (optV.values) {
+              // Set up some tracking variables for the loop.
+              let loopFinished = false;
+              let loopStep = 0;
+              let optArray = Object.values(optV.values);
+              // Iterate over suboptions.
+              for (let subOpt of optArray) {
+                // If any option is true, set the value and exit.
+                if (subOpt.value) {
+                  optV.value = true;
+                  break;
+                }
+                // On the last step, mark that we finished.
+                if (loopStep == optArray.length - 1) {
+                  loopFinished = true;
+                }
+                loopStep++;
+              }
+              // If the loop finished, all possible values were false. Mark this
+              // attribute as false as well.
+              if (loopFinished) {
+                optV.value = false;
+              }
+            }
+          }
+        }
+      }
+    }
+
     // let statsSetting = game.settings.get('pbta', 'stats');
     // let statsArray = statsSetting.split(',');
     // let stats = data.stats;
