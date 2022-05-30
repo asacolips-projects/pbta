@@ -36,6 +36,7 @@ let system = JSON.parse(systemRaw);
 let artifactBranch = argv.branch ? argv.branch : 'master';
 let artifactVersion = argv.tag ? argv.tag : argv.branch;
 let versionParsed = 'master';
+let bucket = argv.bucket ? argv.bucket : '';
 
 // Calculate the version.
 if (argv.branch && argv.branch == 'beta' && argv.versionpost) {
@@ -56,8 +57,8 @@ else if (argv.tag) {
 // Update URLs.
 system.url = `https://gitlab.com/${argv.gitlabpath}`;
 if (versionParsed == 'beta' || versionParsed == 'alpha') {
-  system.manifest = `https://${argv.bucket}.amazonaws.com/${system.name}/${artifactBranch}/system.json`;
-  system.download = `https://${argv.bucket}.amazonaws.com/${system.name}/${artifactVersion}/${system.name}.zip`;
+  system.manifest = `https://${bucket}.amazonaws.com/${system.name}/${artifactBranch}/system.json`;
+  system.download = `https://${bucket}.amazonaws.com/${system.name}/${artifactVersion}/${system.name}.zip`;
 }
 else {
   if (artifactBranch != 'master') {
