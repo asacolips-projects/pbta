@@ -35,7 +35,7 @@ if (argv.branch && argv.branch == 'beta' && argv.versionpost) {
   // newVersionSplit[1]++;
   // newVersionSplit[2] = 0;
   let newVersion = newVersionSplit.join('.');
-  system.version = `${newVersion}-beta${argv.versionpost ?? ''}`;
+  system.version = `${newVersion}-beta${argv.versionpost ? argv.versionpost : ''}`;
 }
 else if (argv.tag) {
   system.version = argv.tag;

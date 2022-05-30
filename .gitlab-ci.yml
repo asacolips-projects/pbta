@@ -1,4 +1,4 @@
-image: node:12
+image: node:16
 
 before_script:
   - apt-get update
@@ -59,7 +59,7 @@ build-prod:
   stage: build
   script:
     - export
-    - npm install
+    - npm ci
     - npm run build
     - node update-build-tags.js --branch=$CI_COMMIT_BRANCH --gitlabpath=$CI_PROJECT_PATH --jobname=$CI_JOB_NAME  --tag=$CI_COMMIT_TAG
     - cp ./dist/system.json ./system.json
