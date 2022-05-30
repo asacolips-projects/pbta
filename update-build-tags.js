@@ -57,8 +57,8 @@ else if (argv.tag) {
 // Update URLs.
 system.url = `https://gitlab.com/${argv.gitlabpath}`;
 if (versionParsed == 'beta' || versionParsed == 'alpha') {
-  system.manifest = `https://${bucket}.amazonaws.com/${system.name}/${artifactBranch}/system.json`;
-  system.download = `https://${bucket}.amazonaws.com/${system.name}/${artifactVersion}/${system.name}.zip`;
+  system.manifest = `https://${bucket}.s3.amazonaws.com/${system.name}/${artifactBranch}/system.json`;
+  system.download = `https://${bucket}.s3.amazonaws.com/${system.name}/${artifactVersion}/${system.name}.zip`;
 }
 else {
   if (artifactBranch != 'master') {
