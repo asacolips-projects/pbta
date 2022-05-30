@@ -35,6 +35,7 @@ let system = JSON.parse(systemRaw);
 // Set the artifact path.
 let artifactBranch = argv.branch ? argv.branch : 'master';
 let artifactVersion = argv.tag ? argv.tag : argv.branch;
+let versionParsed = 'master';
 
 // Calculate the version.
 if (argv.branch && argv.branch == 'beta' && argv.versionpost) {
@@ -48,7 +49,7 @@ if (argv.branch && argv.branch == 'beta' && argv.versionpost) {
 else if (argv.tag) {
   system.version = argv.tag;
   // Determine if this is a pre-release version tag.
-  let versionParsed = system.version.match(/beta|alpha/);
+  versionParsed = system.version.match(/beta|alpha/);
   if (versionParsed && versionParsed[0]) artifactBranch = versionParsed[0];
 }
 
