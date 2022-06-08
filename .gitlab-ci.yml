@@ -70,6 +70,6 @@ deploy-beta:
   only:
     # Examples: 0.1.0, 0.1.2.beta-1, 0.3.4.alpha
     # Unlike the build script, this _only_ runs on beta/alpha tags.
-    - /^(\d+\.)+(\d+)*((beta|alpha)+(-v\d+)*(-)*\d+)+$/i
+    - /^(\d+\.)+(\d+)*((beta|alpha)+(([-.v])*\d+)+)*$/i
   except:
     - branches
