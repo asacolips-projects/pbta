@@ -61,13 +61,14 @@ if (versionParsed == 'beta' || versionParsed == 'alpha') {
   system.download = `https://${bucket}.s3.amazonaws.com/${system.name}/${artifactVersion}/${system.name}.zip`;
 }
 else {
-  if (artifactBranch != 'master') {
-    system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/system.json?job=${argv.jobname}`;
+  if (artifactBranch == 'master') {
+    system.manifest = `https://${bucket}.s3.amazonaws.com/${system.name}/${artifactBranch}/system.json`;
+    system.download = `https://${bucket}.s3.amazonaws.com/${system.name}/${artifactVersion}/${system.name}.zip`;
   }
   else {
-    system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/raw/${artifactBranch}/system.json`;
+    system.manifest = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/system.json?job=${argv.jobname}`;
+    system.download = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/${system.name}.zip?job=${argv.jobname}`;
   }
-  system.download = `https://gitlab.com/${argv.gitlabpath}/-/jobs/artifacts/${artifactVersion}/raw/${system.name}.zip?job=${argv.jobname}`;
 }
 
 fs.writeFileSync('./dist/system.json', JSON.stringify(system, null, 2));
