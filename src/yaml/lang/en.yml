@@ -73,6 +73,7 @@ PBTA:
       statsRequired2: "group."
       statString1: "Stat"
       statString2: "must be a string, such as \"Cool\""
+      tomlError: "There's a syntax error in your TOML configuration on line {line} at column {column}. See console for more details."
   Settings:
     button:
       help: "PbtA System Help & Tutorial"

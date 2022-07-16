@@ -19,7 +19,8 @@
   text-transform: capitalize;
   list-style-type: none;
 
-  &.tag--quantity {
+  &.tag--quantity,
+  &.tag--uses {
     cursor: pointer;
   }
 }
