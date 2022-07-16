@@ -68,6 +68,11 @@
         </div>
 
         <div class="resource">
+          <label>{{localize "PBTA.Uses"}}</label>
+          <input type="number" name="data.uses" value="{{data.uses}}" data-dtype="Number"/>
+        </div>
+
+        <div class="resource">
           <label>{{localize "PBTA.Playbook"}}</label>
           <select name="data.playbook">
             {{#select data.playbook}}
