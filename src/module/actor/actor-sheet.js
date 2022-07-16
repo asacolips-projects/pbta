@@ -140,6 +140,20 @@ export class PbtaActorSheet extends ActorSheet {
 
     this._sortAttrs(data);
 
+    // Get sheet visibility settings.
+    const sheetSettings = {};
+    const settingKeys = [
+      'hideRollFormula',
+      'hideForward',
+      'hideOngoing',
+      'hideRollMode',
+      'hideUses'
+    ];
+
+    for (let key of settingKeys) {
+      sheetSettings[key] = game.settings.get('pbta', key);
+    }
+
     let returnData = {
       actor: this.object,
       cssClass: isEditable ? "editable" : "locked",
@@ -157,7 +171,8 @@ export class PbtaActorSheet extends ActorSheet {
       options: this.options,
       owner: isOwner,
       title: this.title,
-      rollData: this.actor.getRollData()
+      rollData: this.actor.getRollData(),
+      sheetSettings: sheetSettings
     };
 
     // Return template data
@@ -370,6 +385,13 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Spells.
     // html.find('.prepared').click(this._onPrepareSpell.bind(this));
+
+    // Quantity.
+    html.find('.item-meta .tag--quantity').on('click', this._onUsagesControl.bind(this, 'data.quantity', 1));
+    html.find('.item-meta .tag--quantity').on('contextmenu', this._onUsagesControl.bind(this, 'data.quantity', -1));
+
+    html.find('.item-meta .tag--uses').on('click', this._onUsagesControl.bind(this, 'data.uses', 1));
+    html.find('.item-meta .tag--uses').on('contextmenu', this._onUsagesControl.bind(this, 'data.uses', -1));
 
     // Resources.
     html.find('.resource-control').click(this._onResouceControl.bind(this));
@@ -1016,6 +1038,28 @@ export class PbtaActorSheet extends ActorSheet {
   //     this.render();
   //   }
   // }
+
+  /**
+   * Adjust a numerical field on click.
+   * @param string property
+   * @param int delta
+   * @param {MouseEvent} event
+   */
+  async _onUsagesControl(property, delta, event) {
+    event.preventDefault();
+    const a = event.currentTarget;
+    const itemId = $(a).parents('.item').attr('data-item-id');
+    const item = this.actor.items.get(itemId);
+
+    if (item) {
+      let originalAmount = getProperty(item.data.toObject(), property) ?? 0;
+      let update = {}
+      update[property] = Number(originalAmount) + delta;
+      await item.update(update);
+
+      this.render();
+    }
+  }
 
   /**
    * Listen for click events on rollables.

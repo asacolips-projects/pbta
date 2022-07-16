@@ -13,10 +13,13 @@
 </h4>
 {{#if item.data.rollType}}
   <div class="item-meta tags">
+    {{#if (not sheetSettings.hideUses)}}
+      <span class="tag tag--uses">{{localize "PBTA.Uses"}}: {{item.data.uses}}</span>
+    {{/if}}
     {{#if (eq item.data.rollType 'formula')}}
-      <span class="tag">{{item.data.rollFormula}}</span>
+      <span class="tag tag--formula">{{item.data.rollFormula}}</span>
     {{else}}
-      <span class="tag">{{getLabel statSettings item.data.rollType}}</span>
+      <span class="tag tag--formula">{{getLabel statSettings item.data.rollType}}</span>
     {{/if}}
   </div>
 {{/if}}

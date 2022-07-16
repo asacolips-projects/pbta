@@ -52,6 +52,8 @@ Item:
     base:
       name: ''
       description: ''
+    resource:
+      uses: 0
     move:
       requiresMove: ''
       moveType: null
@@ -62,6 +64,7 @@ Item:
     templates:
       - base
       - move
+      - resource
     playbook: ''
     rollType: ''
     rollMod: 0
@@ -70,13 +73,14 @@ Item:
     templates:
       - base
       - move
+      - resource
   equipment:
     templates:
       - base
+      - resource
     playbook: ''
     quantity: 1
     weight: 0
-    uses: 0
     tags: []
     tagsString: ''
     itemType:

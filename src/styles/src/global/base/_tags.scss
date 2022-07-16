@@ -18,6 +18,10 @@
   border-radius: 4px;
   text-transform: capitalize;
   list-style-type: none;
+
+  &.tag--quantity {
+    cursor: pointer;
+  }
 }
 
 // Tagging widget.

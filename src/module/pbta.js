@@ -95,6 +95,51 @@ Hooks.once("init", async function() {
     default: false
   });
 
+  game.settings.register("pbta", "hideRollFormula", {
+    name: game.i18n.localize("PBTA.Settings.hideRollFormula.name"),
+    hint: game.i18n.localize("PBTA.Settings.hideRollFormula.hint"),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register("pbta", "hideForward", {
+    name: game.i18n.localize("PBTA.Settings.hideForward.name"),
+    hint: game.i18n.localize("PBTA.Settings.hideForward.hint"),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register("pbta", "hideOngoing", {
+    name: game.i18n.localize("PBTA.Settings.hideOngoing.name"),
+    hint: game.i18n.localize("PBTA.Settings.hideOngoing.hint"),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register("pbta", "hideRollMode", {
+    name: game.i18n.localize("PBTA.Settings.hideRollMode.name"),
+    hint: game.i18n.localize("PBTA.Settings.hideRollMode.hint"),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register("pbta", "hideUses", {
+    name: game.i18n.localize("PBTA.Settings.hideUses.name"),
+    hint: game.i18n.localize("PBTA.Settings.hideUses.hint"),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
   game.settings.registerMenu("pbta", "sheetConfigMenu", {
     name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
     label: game.i18n.localize("PBTA.Settings.sheetConfig.label"),
