@@ -109,35 +109,43 @@
                   </section>
 
                   <section class="sheet-resources">
-                    <div class="cell cell--roll-formula">
-                      <label class="cell__title">{{localize "PBTA.RollFormulaOverride"}}</label>
-                      <div class="cell__wrapper">
-                        <input type="text" name="data.resources.rollFormula.value" value="{{data.resources.rollFormula.value}}" placeholder="ex: 3d6kh2"/>
+                    {{#if (not sheetSettings.hideRollFormula)}}
+                      <div class="cell cell--roll-formula">
+                        <label class="cell__title">{{localize "PBTA.RollFormulaOverride"}}</label>
+                        <div class="cell__wrapper">
+                          <input type="text" name="data.resources.rollFormula.value" value="{{data.resources.rollFormula.value}}" placeholder="ex: 3d6kh2"/>
+                        </div>
                       </div>
-                    </div>
+                    {{/if}}
 
+                    {{#if (not sheetSettings.hideForward)}}
                     <div class="cell cell--forward">
-                      <label class="cell__title">{{localize "PBTA.Forward"}}</label>
-                      <div class="cell__wrapper">
-                        <button class="resource-control resource-decrease" data-action="decrease" data-attr="resources.forward.value">-</button>
-                        <input type="number" name="data.resources.forward.value" value="{{numberFormat data.resources.forward.value decimals=0 sign=false}}" data-dtype="Number"/>
-                        <button class="resource-control resource-increase" data-action="increase" data-attr="resources.forward.value">+</button>
+                        <label class="cell__title">{{localize "PBTA.Forward"}}</label>
+                        <div class="cell__wrapper">
+                          <button class="resource-control resource-decrease" data-action="decrease" data-attr="resources.forward.value">-</button>
+                          <input type="number" name="data.resources.forward.value" value="{{numberFormat data.resources.forward.value decimals=0 sign=false}}" data-dtype="Number"/>
+                          <button class="resource-control resource-increase" data-action="increase" data-attr="resources.forward.value">+</button>
+                        </div>
                       </div>
-                    </div>
+                    {{/if}}
 
-                    <div class="cell cell--ongoing">
-                      <label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
-                      <div class="cell__wrapper">
-                        <button class="resource-control resource-decrease" data-action="decrease" data-attr="resources.ongoing.value">-</button>
-                        <input type="number" name="data.resources.ongoing.value" value="{{numberFormat data.resources.ongoing.value decimals=0 sign=false}}" data-dtype="Number"/>
-                        <button class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
+                    {{#if (not sheetSettings.hideOngoing)}}
+                      <div class="cell cell--ongoing">
+                        <label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
+                        <div class="cell__wrapper">
+                          <button class="resource-control resource-decrease" data-action="decrease" data-attr="resources.ongoing.value">-</button>
+                          <input type="number" name="data.resources.ongoing.value" value="{{numberFormat data.resources.ongoing.value decimals=0 sign=false}}" data-dtype="Number"/>
+                          <button class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
+                        </div>
                       </div>
-                    </div>
+                    {{/if}}
 
-                    <div class="cell cell--roll-mode flexrow">
-                      <label class="cell__title">{{localize "Roll Mode"}}</label>
-                      {{radioBoxes 'flags.pbta.rollMode' rollModes checked=flags.pbta.rollMode localize=true}}
-                    </div>
+                    {{#if (not sheetSettings.hideRollMode)}}
+                      <div class="cell cell--roll-mode flexrow">
+                        <label class="cell__title">{{localize "Roll Mode"}}</label>
+                        {{radioBoxes 'flags.pbta.rollMode' rollModes checked=flags.pbta.rollMode localize=true}}
+                      </div>
+                    {{/if}}
                   </section>
 
                   {{#each moves as |moveGroup moveKey|}}
@@ -202,9 +210,9 @@
                               </h4>
 
                               <div class="item-meta tags">
-                                {{#if item.data.uses }}<span class="tag">{{localize "PBTA.Uses"}}: {{item.data.uses}}</span>{{/if}}
-                                {{#if item.data.quantity }}<span class="tag">{{localize "PBTA.Qty"}}: {{item.data.quantity}}</span>{{/if}}
-                                {{#if item.data.weight }}<span class="tag">{{localize "PBTA.Wt"}}: {{item.data.weight}}</span>{{/if}}
+                                <span class="tag tag--uses">{{localize "PBTA.Uses"}}: {{item.data.uses}}</span>
+                                <span class="tag tag--quantity">{{localize "PBTA.Qty"}}: {{item.data.quantity}}</span>
+                                {{#if item.data.weight }}<span class="tag tag--weight">{{localize "PBTA.Wt"}}: {{item.data.weight}}</span>{{/if}}
                               </div>
                               <div class="item-controls">
                                   <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

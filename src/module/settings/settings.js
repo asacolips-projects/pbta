@@ -108,20 +108,39 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     let computed = {};
     let errors = [];
 
+    // Try to retrieve the TOML string.
     if (formData.tomlString) {
-      computed = toml.parse(formData.tomlString);
-      errors = this.validateSheetConfig(computed);
+      // Get the parsed value.
+      try {
+        computed = toml.parse(formData.tomlString);
+      }
+      // Catch and report parser errors.
+      catch (error) {
+        console.error(error);
+        errors = [game.i18n.format('PBTA.Messages.sheetConfig.tomlError', {
+          line: error.line,
+          column: error.column
+        })];
+      }
+
+      // If the TOML was parsed successfully, check it for validation errors.
+      if (!foundry.utils.isObjectEmpty(computed)) {
+        errors = this.validateSheetConfig(computed);
+      }
     }
+    // If there's no TOML string, report an error.
     else {
       errors = [game.i18n.localize('PBTA.Messages.sheetConfig.noConfig')];
     }
 
+    // If there are errors, output them.
     if (errors.length > 0) {
       for (let error of errors) {
         ui.notifications.error(error, {permanent: true});
       }
       throw new Error(errors.join('\r\n'));
     }
+    // Otherwise, determine if we need to save.
     else {
       let confirm = true;
       if (game.pbta.sheetConfig?.actorTypes?.character && game.pbta.sheetConfig?.actorTypes?.npc) {
@@ -132,7 +151,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       }
       if (computed) {
         formData.computed = computed;
-        // throw new Error('Test Error');
       }
       await game.settings.set("pbta", "sheetConfig", formData);
     }
