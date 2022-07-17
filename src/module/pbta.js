@@ -158,8 +158,6 @@ Hooks.once("init", async function() {
     default: 0
   });
 
-  PbtaUtility.replaceRollData();
-
   // Build out character data structures.
   const pbtaSettings = game.settings.get('pbta', 'sheetConfig');
 
@@ -190,7 +188,8 @@ Hooks.once("ready", async function() {
 
 Hooks.on('renderChatMessage', (data, html, options) => {
   // Determine visibility.
-  let chatData = data.data;
+  // @todo v10
+  let chatData = data;
   const whisper = chatData.whisper || [];
   const isBlind = whisper.length && chatData.blind;
   const isVisible = (whisper.length) ? game.user.isGM || whisper.includes(game.user.id) || (!isBlind) : true;
@@ -246,44 +245,6 @@ Hooks.on("renderSettings", (app, html) => {
   });
 });
 
-
-/* -------------------------------------------- */
-/*  Level Up Listeners                          */
-/* -------------------------------------------- */
-Hooks.on('renderDialog', (dialog, html, options) => {
-  // If this is the levelup dialog, we need to add listeners to it.
-  if (dialog.data.id && dialog.data.id == 'level-up') {
-    // If an ability score is chosen, we need to update the available options.
-    html.find('.cell--ability-scores select').on('change', () => {
-      // Build the list of selected score values.
-      let scores = [];
-      html.find('.cell--ability-scores select').each((index, item) => {
-        let $self = $(item);
-        if ($self.val()) {
-          scores.push($self.val());
-        }
-      });
-      // Loop over the list again, disabling invalid options.
-      html.find('.cell--ability-scores select').each((index, item) => {
-        let $self = $(item);
-        // Loop over the options in the select.
-        $self.find('option').each((opt_index, opt_item) => {
-          let $opt = $(opt_item);
-          let val = $opt.attr('value');
-          if (val) {
-            if (scores.includes(val) && $self.val() != val) {
-              $opt.attr('disabled', true);
-            }
-            else {
-              $opt.attr('disabled', false);
-            }
-          }
-        });
-      });
-    })
-  }
-});
-
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */
 /* -------------------------------------------- */
@@ -298,6 +259,7 @@ Hooks.on('renderDialog', (dialog, html, options) => {
 async function createPbtaMacro(data, slot) {
   if (data.type !== "Item") return;
   if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned Items");
+  // @todo v10
   const item = data.data;
 
   // Create the macro command
@@ -323,6 +285,7 @@ async function createPbtaMacro(data, slot) {
  * @return {Promise}
  */
 function rollItemMacro(itemName) {
+  // @todo v10
   const speaker = ChatMessage.getSpeaker();
   let actor;
   if (speaker.token) actor = game.actors.tokens[speaker.token];
@@ -331,7 +294,7 @@ function rollItemMacro(itemName) {
   if (!item) return ui.notifications.warn(`Your controlled Actor does not have an item named ${itemName}`);
 
   // Trigger the item roll
-  // if ( item.data.type === "spell" ) return actor.useSpell(item);
+  // if ( item.type === "spell" ) return actor.useSpell(item);
   return item.roll();
 }
 
@@ -405,7 +368,7 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
       let createData = {
         name: name,
         type: baseType,
-        data: foundry.utils.deepClone(tplBase),
+        system: foundry.utils.deepClone(tplBase),
         folder: event.currentTarget.dataset.folder
       };
       createData.name = form.name.value;

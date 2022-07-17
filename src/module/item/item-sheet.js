@@ -23,7 +23,7 @@ export class PbtaItemSheet extends ItemSheet {
   /** @override */
   get template() {
     const path = "systems/pbta/templates/items";
-    return `${path}/${this.item.data.type}-sheet.html`;
+    return `${path}/${this.item.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
@@ -32,26 +32,26 @@ export class PbtaItemSheet extends ItemSheet {
   async getData() {
     let isOwner = false;
     let isEditable = this.isEditable;
-    let data = {};
+    let context = this.object.toObject(false);
     let items = {};
     let effects = {};
     let actor = null;
 
-    this.options.title = this.document.data.name;
+    this.options.title = this.document.name;
     isOwner = this.document.isOwner;
     isEditable = this.isEditable;
-    data = foundry.utils.deepClone(this.object.data);
+    // context = foundry.utils.deepClone(this.object.data);
 
     // Copy Active Effects
-    effects = this.object.effects.map(e => foundry.utils.deepClone(e.data));
-    data.effects = effects;
+    effects = this.object.effects.map(e => foundry.utils.deepClone(e));
+    context.effects = effects;
 
     // Grab the parent actor, if any.
-    actor = this.object?.parent?.data;
+    actor = this.object?.parent;
 
-    data.dtypes = ["String", "Number", "Boolean"];
+    context.dtypes = ["String", "Number", "Boolean"];
     // Add playbooks.
-    data.data.playbooks = await PbtaPlaybooks.getPlaybooks();
+    context.system.playbooks = await PbtaPlaybooks.getPlaybooks();
 
     // Add move types.
     let actorType = null;
@@ -70,7 +70,7 @@ export class PbtaItemSheet extends ItemSheet {
     if (actor) {
       pbtaActorType = actor.type;
       if (pbtaActorType == 'other') {
-        pbtaSheetType = actor.data?.customType ?? 'character';
+        pbtaSheetType = actor.system?.customType ?? 'character';
         pbtaBaseType = game.pbta.sheetConfig.actorTypes[pbtaSheetType]?.baseType ?? 'character';
       }
       else {
@@ -80,57 +80,57 @@ export class PbtaItemSheet extends ItemSheet {
     }
 
     if (itemType == 'move') {
-      data.data.stats = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats ? duplicate(game.pbta.sheetConfig.actorTypes[pbtaSheetType].stats) : {};
-      data.data.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
-      data.data.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
-      data.data.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
+      context.system.stats = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats ? duplicate(game.pbta.sheetConfig.actorTypes[pbtaSheetType].stats) : {};
+      context.system.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
+      context.system.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
+      context.system.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
     }
 
-    data.data.moveTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.moveTypes ?? {};
-    data.data.equipmentTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.equipmentTypes ?? null;
+    context.system.moveTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.moveTypes ?? {};
+    context.system.equipmentTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.equipmentTypes ?? null;
 
     // Add roll example.
     if (itemType == 'npcMove') {
-      data.data.rollExample = game.pbta.sheetConfig?.rollFormula ?? '2d6';
+      context.system.rollExample = game.pbta.sheetConfig?.rollFormula ?? '2d6';
     }
 
     if (itemType == 'move' || itemType == 'npcMove') {
-      for (let [key, value] of Object.entries(data.data.moveResults)) {
-        data.data.moveResults[key].rangeName = `data.moveResults.${key}.value`;
+      for (let [key, value] of Object.entries(context.system.moveResults)) {
+        context.system.moveResults[key].rangeName = `system.moveResults.${key}.value`;
       }
     }
 
     // Handle preprocessing for tagify data.
     if (itemType == 'equipment') {
       // If there are tags, convert it into a string.
-      if (data.data.tags != undefined && data.data.tags != '') {
+      if (context.system.tags != undefined && context.system.tags != '') {
         let tagArray = [];
         try {
-          tagArray = JSON.parse(data.data.tags);
+          tagArray = JSON.parse(context.system.tags);
         } catch (e) {
-          tagArray = [data.data.tags];
+          tagArray = [context.system.tags];
         }
-        data.data.tagsString = tagArray.map((item) => {
+        context.system.tagsString = tagArray.map((item) => {
           return item.value;
         }).join(', ');
       }
       // Otherwise, set tags equal to the string.
       else {
-        data.data.tags = data.data.tagsString;
+        context.system.tags = context.system.tagsString;
       }
     }
 
     let returnData = {};
     returnData = {
-      item: this.object.data.document,
+      item: this.object,
       cssClass: isEditable ? "editable" : "locked",
       editable: isEditable,
-      data: data.data,
+      system: context.system,
       effects: effects,
       limited: this.object.limited,
       options: this.options,
       owner: isOwner,
-      title: data.name
+      title: context.name
     };
 
     return returnData;
@@ -206,7 +206,7 @@ export class PbtaItemSheet extends ItemSheet {
     });
 
     // Tagify!
-    var $input = html.find('input[name="data.tags"]');
+    var $input = html.find('input[name="system.tags"]');
     if ($input.length > 0) {
       if (!editable) {
         $input.attr('readonly', true);
@@ -248,22 +248,22 @@ export class PbtaItemSheet extends ItemSheet {
     // // Add new attribute
     if (action === "create") {
       if (Object.keys(field_types).includes(field_type)) {
-        const field_values = this.object.data.data[field_type];
+        const field_values = this.object.system[field_type];
         const nk = Object.keys(field_values).length + 1;
         let newKey = document.createElement("div");
         newKey.innerHTML = `<li class="item ${field_types[field_type]}" data-index="${nk}">
     <div class="flexrow">
-      <input type="text" class="input input--title" name="data.${field_type}.${nk}.label" value="" data-dtype="string"/>
+      <input type="text" class="input input--title" name="system.${field_type}.${nk}.label" value="" data-dtype="string"/>
       <a class="class-control" data-action="delete" data-type="${field_type}"><i class="fas fa-trash"></i></a>
     </div>
-    <textarea class="${field_types[field_type]}" name="data.${field_type}.${nk}.description" rows="5" title="What's your ${field_types[field_type]}?" data-dtype="String"></textarea>
+    <textarea class="${field_types[field_type]}" name="system.${field_type}.${nk}.description" rows="5" title="What's your ${field_types[field_type]}?" data-dtype="String"></textarea>
   </li>`;
         newKey = newKey.children[0];
         form.appendChild(newKey);
         await this._onSubmit(event);
       }
       else if (field_type == 'equipment-groups') {
-        const field_values = this.object.data.data.equipment;
+        const field_values = this.object.system.equipment;
         const nk = Object.keys(field_values).length + 1;
         let template = '/systems/pbta/templates/items/_class-sheet--equipment-group.html';
         let templateData = {
@@ -273,8 +273,8 @@ export class PbtaItemSheet extends ItemSheet {
         newKey.innerHTML = await renderTemplate(template, templateData);
         newKey = newKey.children[0];
 
-        let update = duplicate(this.object.data);
-        update.data.equipment[nk] = {
+        let update = duplicate(this.object);
+        update.system.equipment[nk] = {
           label: '',
           mode: 'radio',
           items: [],
@@ -296,7 +296,7 @@ export class PbtaItemSheet extends ItemSheet {
         const nk = elem.dataset.index;
         elem.parentElement.removeChild(elem);
         let update = {};
-        update[`data.equipment.-=${nk}`] = null;
+        update[`system.equipment.-=${nk}`] = null;
         await this.object.update(update);
         await this._onSubmit(event);
       }
@@ -305,7 +305,7 @@ export class PbtaItemSheet extends ItemSheet {
         const nk = li.dataset.index;
         li.parentElement.removeChild(li);
         let update = {};
-        update[`data.${field_type}.-=${nk}`] = null;
+        update[`system.${field_type}.-=${nk}`] = null;
         await this.object.update(update);
         await this._onSubmit(event);
       }
@@ -316,76 +316,6 @@ export class PbtaItemSheet extends ItemSheet {
 
   /** @override */
   _updateObject(event, formData) {
-
-    // Exit early for other item types.
-    if (this?.object?.type != 'class') {
-      return this.object.update(formData);
-    }
-
-    // Handle the freeform lists on classes.
-    const formObj = expandObject(formData);
-
-    // Re-index the equipment.
-    let i = 0;
-    let deletedKeys = [];
-    if (typeof formObj.data.equipment == 'object') {
-      for (let [k, v] of Object.entries(formObj.data.equipment)) {
-        if (i != k) {
-          v.items = duplicate(this.object.data.data.equipment[k].items);
-          formObj.data.equipment[i] = v;
-          delete formObj.data.equipment[k];
-          deletedKeys.push(`equipment.${k}`);
-        }
-        i++;
-      }
-    }
-
-    // Re-index the races.
-    i = 0;
-    if (typeof formObj.data.races == 'object') {
-      for (let [k, v] of Object.entries(formObj.data.races)) {
-        if (i != k) {
-          formObj.data.races[i] = v;
-          delete formObj.data.races[k];
-          deletedKeys.push(`races.${k}`);
-        }
-        i++;
-      }
-    }
-
-    // Re-index the alignments.
-    i = 0;
-    if (typeof formObj.data.alignments == 'object') {
-      for (let [k, v] of Object.entries(formObj.data.alignments)) {
-        if (i != k) {
-          formObj.data.alignments[i] = v;
-          delete formObj.data.alignments[k];
-          deletedKeys.push(`alignments.${k}`);
-        }
-        i++;
-      }
-    }
-
-    // Remove deleted keys.
-    for (let k of deletedKeys) {
-      const keys = k.split('.');
-      if (formObj.data[keys[0]][keys[1]] == undefined) {
-        formObj.data[keys[0]][`-=${keys[1]}`] = null;
-      }
-    }
-
-    // Re-combine formData
-    formData = Object.entries(formData).filter(e => !e[0].match(/data\.(equipment|alignments|races)/g)).reduce((obj, e) => {
-      obj[e[0]] = e[1];
-      return obj;
-    }, {
-      _id: this.object.id,
-      "data.equipment": formObj.data.equipment,
-      "data.races": formObj.data.races,
-      "data.alignments": formObj.data.alignments
-    });
-
-
     // Update the Item
     return this.object.update(formData);
   }

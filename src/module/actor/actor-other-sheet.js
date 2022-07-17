@@ -20,7 +20,7 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
   get template() {
     const path = "systems/pbta/templates/sheet";
     // Handle actor types.
-    let sheetType = this.actor.data.data?.customType ?? null;
+    let sheetType = this.actor.system?.customType ?? null;
     let baseType = game.pbta.sheetConfig.actorTypes[sheetType]?.baseType ?? 'character';
     // Returns a format such as `character-sheet.html` or `other-character-sheet.html`.
     return `${path}/other-${baseType}-sheet.html`;
@@ -30,7 +30,7 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
   constructor(...args) {
     super(...args);
 
-    let sheetType = this.actor.data.data?.customType ?? null;
+    let sheetType = this.actor.system?.customType ?? null;
     let baseType = game.pbta.sheetConfig.actorTypes[sheetType]?.baseType ?? 'character';
 
     if (baseType == 'npc') {

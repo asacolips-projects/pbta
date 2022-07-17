@@ -124,7 +124,8 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       }
 
       // If the TOML was parsed successfully, check it for validation errors.
-      if (!foundry.utils.isObjectEmpty(computed)) {
+      // @todo foundry.utils.isEmpty() is throwing an error here in v10. Bug?
+      if (computed && Object.keys(computed).length > 0) {
         errors = this.validateSheetConfig(computed);
       }
     }
@@ -358,22 +359,22 @@ export class PbtaSettingsConfigDialog extends FormApplication {
         for (let attr of Object.keys(newGroup)) {
           if (!oldGroup[attr]) {
             configDiff.add.push(`${actorType}.${attrGroup}.${attr}`);
-            updatesDiff[actorType][`data.${attrGroup}.${attr}`] = newGroup[attr];
+            updatesDiff[actorType][`system.${attrGroup}.${attr}`] = newGroup[attr];
           }
           else {
             // Handle updating label values.
             if (newGroup[attr].label && newGroup[attr].label != oldGroup[attr].label) {
               configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.label`);
-              updatesDiff[actorType][`data.${attrGroup}.${attr}.label`] = newGroup[attr].label;
+              updatesDiff[actorType][`system.${attrGroup}.${attr}.label`] = newGroup[attr].label;
             }
             if (newGroup[attr].customLabel && newGroup[attr].customLabel != oldGroup[attr].customLabel) {
               configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.customLabel`);
-              updatesDiff[actorType][`data.${attrGroup}.${attr}.customLabel`] = newGroup[attr].customLabel;
+              updatesDiff[actorType][`system.${attrGroup}.${attr}.customLabel`] = newGroup[attr].customLabel;
             }
             // Handle updating description values.
             if (newGroup[attr].description && newGroup[attr].description != oldGroup[attr].description) {
               configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.description`);
-              updatesDiff[actorType][`data.${attrGroup}.${attr}.description`] = newGroup[attr].description;
+              updatesDiff[actorType][`system.${attrGroup}.${attr}.description`] = newGroup[attr].description;
             }
           }
         }
@@ -384,22 +385,22 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
           if (!newGroup[attr]) {
             configDiff.del.push(`${actorType}.${attrGroup}.${attr}`);
-            updatesDiff[actorType][`data.${attrGroup}.-=${attr}`] = null;
+            updatesDiff[actorType][`system.${attrGroup}.-=${attr}`] = null;
           }
           else {
             // Handle updating max values.
             if (newGroup[attr].max && oldGroup[attr].max) {
               if (newGroup[attr].max != oldGroup[attr].max) {
                 configDiff.max.push(`${actorType}.${attrGroup}.${attr}`);
-                updatesDiff[actorType][`data.${attrGroup}.${attr}.max`] = newGroup[attr].max;
-                updatesDiff[actorType][`data.${attrGroup}.${attr}.value`] = newGroup[attr].default ?? 0;
+                updatesDiff[actorType][`system.${attrGroup}.${attr}.max`] = newGroup[attr].max;
+                updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].default ?? 0;
 
                 // Handle types that have steps.
                 if (newGroup[attr].steps) {
-                  updatesDiff[actorType][`data.${attrGroup}.${attr}.steps`] = newGroup[attr].steps;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.steps`] = newGroup[attr].steps;
                 }
                 else {
-                  updatesDiff[actorType][`data.${attrGroup}.${attr}.-=steps`] = null;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.-=steps`] = null;
                 }
               }
             }
@@ -423,11 +424,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                 if ((resourceTypes.includes(newType) && resourceTypes.includes(oldType) && oldType != 'Resource')
                 || (singleTypes.includes(newType) && singleTypes.includes(oldType)) && newType != 'Number') {
                   configDiff.softType.push(`${actorType}.${attrGroup}.${attr}`);
-                  updatesDiff[actorType][`data.${attrGroup}.${attr}.type`] = newGroup[attr].type;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.type`] = newGroup[attr].type;
                 }
                 else {
                   configDiff.hardType.push(`${actorType}.${attrGroup}.${attr}`);
-                  updatesDiff[actorType][`data.${attrGroup}.${attr}`] = newGroup[attr];
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}`] = newGroup[attr];
                 }
               }
               else if (newType == 'ListMany') {
@@ -435,7 +436,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                 if ((newGroup[attr]?.condition || oldGroup[attr]?.condition)
                 && (newGroup[attr]?.condition != oldGroup[attr]?.condition)) {
                   configDiff.softType.push(`${actorType}.${attrGroup}.${attr}`);
-                  updatesDiff[actorType][`data.${attrGroup}.${attr}.condition`] = newGroup[attr]?.condition ?? false;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.condition`] = newGroup[attr]?.condition ?? false;
                 }
 
                 // Handle diffing options.
@@ -449,7 +450,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                     }
                     // Create the options diff.
                     configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
-                    updatesDiff[actorType][`data.${attrGroup}.${attr}.options`] = newGroup[attr]?.options ?? [];
+                    updatesDiff[actorType][`system.${attrGroup}.${attr}.options`] = newGroup[attr]?.options ?? [];
                   }
                 }
               }

@@ -1,7 +1,7 @@
 <h4 class="item-name">
   <div class="item-avatar">
-    <span class="rollable move-rollable" data-roll="{{item.data.rollType}}" data-mod="{{item.data.rollMod}}">
-      {{#if item.data.rollType}}
+    <span class="rollable move-rollable" data-roll="{{item.system.rollType}}" data-mod="{{item.system.rollMod}}">
+      {{#if item.system.rollType}}
         <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
       {{else}}
         <i class="fas fa-book"></i>
@@ -11,15 +11,15 @@
   </div>
   <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
 </h4>
-{{#if item.data.rollType}}
+{{#if item.system.rollType}}
   <div class="item-meta tags">
     {{#if (not sheetSettings.hideUses)}}
-      <span class="tag tag--uses">{{localize "PBTA.Uses"}}: {{item.data.uses}}</span>
+      <span class="tag tag--uses">{{localize "PBTA.Uses"}}: {{item.system.uses}}</span>
     {{/if}}
-    {{#if (eq item.data.rollType 'formula')}}
-      <span class="tag tag--formula">{{item.data.rollFormula}}</span>
+    {{#if (eq item.system.rollType 'formula')}}
+      <span class="tag tag--formula">{{item.system.rollFormula}}</span>
     {{else}}
-      <span class="tag tag--formula">{{getLabel statSettings item.data.rollType}}</span>
+      <span class="tag tag--formula">{{getLabel statSettings item.system.rollType}}</span>
     {{/if}}
   </div>
 {{/if}}
@@ -28,9 +28,9 @@
   <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
 </div>
 <div class="item-description">
-  <div>{{{enrichText item.data.description rollData}}}</div>
-  {{#if item.data.moveResults}}
-    {{#each item.data.moveResults as |result key|}}
+  <div>{{{enrichText item.system.description rollData}}}</div>
+  {{#if item.system.moveResults}}
+    {{#each item.system.moveResults as |result key|}}
       {{#if result.value}}
         <div class="result result--{{key}}">
           <strong class="result-label">{{result.label}}</strong>
@@ -39,10 +39,10 @@
       {{/if}}
     {{/each}}
   {{/if}}
-  {{#if item.data.choices}}
+  {{#if item.system.choices}}
     <div class="result result--choices">
       <strong class="result-label">{{localize "PBTA.Choices"}}</strong>
-      <div class="result-content">{{{enrichText item.data.choices rollData}}}</div>
+      <div class="result-content">{{{enrichText item.system.choices rollData}}}</div>
     </div>
   {{/if}}
 </div>

@@ -10,14 +10,14 @@ export class ItemPbta extends Item {
     super.prepareData();
 
     // Get the Item's data
-    const itemData = this.data;
-    const actorData = this.actor ? this.actor.data : {};
-    const data = itemData.data;
+    const itemData = this;
+    const actorData = this.actor ? this.actor : {};
+    const data = itemData.system;
 
     // Clean up broken groups.
     if (itemData.type == 'class') {
-      if (itemData.data.equipment) {
-        for (let [group_key, group] of Object.entries(itemData.data.equipment)) {
+      if (itemData.system.equipment) {
+        for (let [group_key, group] of Object.entries(itemData.system.equipment)) {
           if (group) {
             if (PbtaUtility.isEmpty(group['items'])) {
               group['items'] = [];
@@ -31,15 +31,15 @@ export class ItemPbta extends Item {
 
   async _getEquipmentObjects(force_reload = false) {
     let obj = null;
-    let itemData = this.data;
+    let itemData = this;
 
     let items = await PbtaUtility.getEquipment(force_reload);
     let equipment = [];
 
-    if (itemData.data.equipment) {
-      for (let [group, group_items] of Object.entries(itemData.data.equipment)) {
+    if (itemData.system.equipment) {
+      for (let [group, group_items] of Object.entries(itemData.system.equipment)) {
         if (group_items) {
-          equipment[group] = items.filter(i => group_items['items'].includes(i.data._id));
+          equipment[group] = items.filter(i => group_items['items'].includes(i._id));
         }
       }
     }
@@ -52,18 +52,20 @@ export class ItemPbta extends Item {
    * @return {Promise}
    */
   async roll({ configureDialog = true } = {}) {
-    PbtaRolls.rollMove({actor: this.actor, data: this.data});
+    PbtaRolls.rollMove({actor: this.actor, data: this});
   }
 
   /** @inheritdoc */
   async _preCreate(data, options, userId) {
     await super._preCreate(data, options, userId);
 
-    if (this.data.type == 'move' || this.data.type == 'npcMove') {
+    if (this.type == 'move' || this.type == 'npcMove') {
       // TODO: This needs to load the appropriate stats per class.
-      let item = this.data;
+      let item = this;
       let templateData = PbtaActorTemplates.applyItemTemplate(item, options, null);
-      this.data._source.data = foundry.utils.mergeObject(templateData.data, this.data._source.data);
+      this.updateSource({
+        system: mergeObject(templateData.system, this.toObject(false).system)
+      });
     }
   }
 }
