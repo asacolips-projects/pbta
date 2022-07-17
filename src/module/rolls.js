@@ -19,10 +19,10 @@ export class PbtaRolls {
     let formula = game.pbta.sheetConfig.rollFormula ?? defaultFormula;
     // Check if the actor has an override formula.
     if (!actor && this.actor) actor = this.actor;
-    if (actor && actor?.data?.data?.resources?.rollFormula?.value) {
-      let validRoll = await new Roll(actor.data.data.resources.rollFormula.value.trim(), actor.getRollData()).evaluate({async: true});
+    if (actor && actor?.system?.resources?.rollFormula?.value) {
+      let validRoll = await new Roll(actor.system.resources.rollFormula.value.trim(), actor.getRollData()).evaluate({async: true});
       if (validRoll) {
-        formula = actor.data.data.resources.rollFormula.value.trim();
+        formula = actor.system.resources.rollFormula.value.trim();
       }
     }
     // Return the final formula.
@@ -36,8 +36,8 @@ export class PbtaRolls {
    * @returns
    */
   static getModifiers(actor) {
-    let forward = Number(actor.data.data.resources.forward.value) ?? 0;
-    let ongoing = Number(actor.data.data.resources.ongoing.value) ?? 0;
+    let forward = Number(actor.system.resources.forward.value) ?? 0;
+    let ongoing = Number(actor.system.resources.ongoing.value) ?? 0;
     let result = '';
     if (forward) result += `+${forward}`;
     if (ongoing) result += `+${ongoing}`;
@@ -59,7 +59,7 @@ export class PbtaRolls {
    * Item example:
    * let actor = game.actors.getName('My Actor');
    * let item = actor.items.find(i => i.name == 'My Item');
-   * PbtaRolls.rollMove({actor: actor, data: item.data});
+   * PbtaRolls.rollMove({actor: actor, data: item});
    *
    * @param {object} options
    * @param {object} options.actor | Actor to perform the roll for.
@@ -85,15 +85,15 @@ export class PbtaRolls {
 
     // Grab the actor data.
     this.actor = options.actor;
-    this.actorData = this.actor ? this.actor.data.data : {};
-    let actorType = this.actor.data.type;
+    this.actorData = this.actor ? this.actor.system : {};
+    let actorType = this.actor.type;
 
     // Get the roll formula.
     let dice = await this.getRollFormula('2d6', this.actor);
 
     // Grab the item data, if any.
     const item = options?.data;
-    const itemData = item ? item?.data : null;
+    const itemData = item ? item?.system : null;
 
     // Grab the formula, if any.
     let label = options?.data?.label ?? '';
@@ -103,11 +103,11 @@ export class PbtaRolls {
     let data = {};
 
     // Add the sheet type to the template data.
-    let sheetType = this.actor.data.data?.customType ?? actorType;
+    let sheetType = this.actor.system?.customType ?? actorType;
     templateData.sheetType = sheetType;
 
     // Determine if there are any conditions.
-    let attrs = Object.entries(this.actor.data.data.attrLeft).concat(Object.entries(this.actor.data.data.attrTop));
+    let attrs = Object.entries(this.actor.system.attrLeft).concat(Object.entries(this.actor.system.attrTop));
     let conditionGroups = attrs.filter(condition => condition[1].condition).map(condition => {
       return {
         key: condition[0],
@@ -139,7 +139,7 @@ export class PbtaRolls {
         submit: {
           label: 'Roll',
           callback: html => {
-            if (options.formula && options?.actor?.data?.data?.stats[options.formula]) {
+            if (options.formula && options?.actor?.system?.stats[options.formula]) {
               templateData.stat = options.formula;
             }
             this.rollMoveExecute(options.formula ?? 'prompt', data, templateData, html[0].querySelector("form"))
@@ -157,20 +157,20 @@ export class PbtaRolls {
           image: item.img,
           title: item.name,
           trigger: null,
-          details: item.data.description,
-          moveResults: item.data.moveResults,
-          choices: item.data?.choices,
+          details: item.system.description,
+          moveResults: item.system.moveResults,
+          choices: item.system?.choices,
           sheetType: sheetType
         };
 
         // Get the roll stat for moves.
-        if (item.type == 'npcMove' || item.data?.rollType == 'formula') {
-          data.roll = item.data.rollFormula;
-          data.rollType = item.data.rollType ? item.data.rollType.toLowerCase() : 'npc';
+        if (item.type == 'npcMove' || item.system?.rollType == 'formula') {
+          data.roll = item.system.rollFormula;
+          data.rollType = item.system.rollType ? item.system.rollType.toLowerCase() : 'npc';
         }
         else {
-          data.roll = item.data.rollType.toLowerCase();
-          data.rollType = item.data.rollType.toLowerCase();
+          data.roll = item.system.rollType.toLowerCase();
+          data.rollType = item.system.rollType.toLowerCase();
         }
 
         // Add result ranges for moves.
@@ -180,7 +180,7 @@ export class PbtaRolls {
         }
 
         // Get the roll modifier on the move itself, if any.
-        data.mod = item?.data?.rollMod ?? 0;
+        data.mod = item?.system?.rollMod ?? 0;
 
         // If this is an ASK roll, adjust the dialog options.
         if (data.roll == 'ask') {
@@ -228,8 +228,8 @@ export class PbtaRolls {
           image: item.img,
           title: item.name,
           trigger: null,
-          details: item.data.description,
-          tags: item.data.tags
+          details: item.system.description,
+          tags: item.system.tags
         }
         // Equipment only output to chat and do not need rolls.
         data.roll = null;
@@ -239,7 +239,7 @@ export class PbtaRolls {
     }
     // Ensure we have result ranges on raw stat rolls.
     else {
-      let stats = this?.actor?.data?.data?.stats;
+      let stats = this?.actor?.system?.stats;
       if (options.formula && typeof stats[options.formula] !== 'undefined') {
         templateData.resultRangeNeeded = true;
         templateData.rollType = 'move';
@@ -338,7 +338,7 @@ export class PbtaRolls {
           let toggleModifier = 0;
           templateData.stat = roll;
           if (hasToggle) {
-            const statToggle = this.actor.data.data.stats[roll].toggle;
+            const statToggle = this.actor.system.stats[roll].toggle;
             toggleModifier = statToggle ? game.pbta.sheetConfig.statToggle.modifier : 0;
           }
           // Set the formula based on the stat.
@@ -374,7 +374,7 @@ export class PbtaRolls {
         // Handle adv/dis. This works by finding the first die in the formula,
         // increasing its quantity by 1, and then appending kl or kh with the
         // original quantity.
-        let rollMode = this.actor.data.flags?.pbta?.rollMode ?? 'def';
+        let rollMode = this.actor.flags?.pbta?.rollMode ?? 'def';
         switch (rollMode) {
           // Advantage.
           case 'adv':
@@ -412,20 +412,20 @@ export class PbtaRolls {
         }
 
         // Handle forward and ongoing.
-        if (this.actor.data.data?.resources?.forward?.value || this.actor.data.data?.resources?.ongoing?.value) {
+        if (this.actor.system?.resources?.forward?.value || this.actor.system?.resources?.ongoing?.value) {
           let modifiers = PbtaRolls.getModifiers(this.actor);
           formula = `${formula}${modifiers}`;
-          if (this.actor.data.data?.resources?.forward?.value) {
-            forwardUsed = Number(this.actor.data.data.resources.forward.value) != 0;
+          if (this.actor.system?.resources?.forward?.value) {
+            forwardUsed = Number(this.actor.system.resources.forward.value) != 0;
           }
 
           // Add labels for chat output.
-          if (this.actor.data.data.resources.forward?.value) {
-            let forward = Number(this.actor.data.data.resources.forward.value) ?? 0;
+          if (this.actor.system.resources.forward?.value) {
+            let forward = Number(this.actor.system.resources.forward.value) ?? 0;
             conditions.push(`${game.i18n.localize('PBTA.Forward')} (${forward >= 0 ? '+' + forward : forward})`);
           }
-          if (this.actor.data.data.resources.ongoing?.value) {
-            let ongoing = Number(this.actor.data.data.resources.ongoing.value) ?? 0;
+          if (this.actor.system.resources.ongoing?.value) {
+            let ongoing = Number(this.actor.system.resources.ongoing.value) ?? 0;
             conditions.push(`${game.i18n.localize('PBTA.Ongoing')} (${ongoing >= 0 ? '+' + ongoing : ongoing})`);
           }
         }
@@ -495,8 +495,8 @@ export class PbtaRolls {
           }
 
           // Add the stat label.
-          if (templateData.stat && templateData.sheetType && this.actor.data.data.stats[templateData.stat]) {
-            templateData.statMod = this.actor.data.data.stats[templateData.stat].value;
+          if (templateData.stat && templateData.sheetType && this.actor.system.stats[templateData.stat]) {
+            templateData.statMod = this.actor.system.stats[templateData.stat].value;
             templateData.stat = game.pbta.sheetConfig.actorTypes[templateData.sheetType]?.stats[templateData.stat]?.label ?? templateData.stat;
           }
         }
@@ -535,7 +535,7 @@ export class PbtaRolls {
     if (game.combat && game.combat.combatants) {
       let combatant = game.combat.combatants.find(c => c.actor.id == this.actor.id);
       if (combatant) {
-        let flags = combatant.data.flags;
+        let flags = combatant.flags;
         let moveCount = flags.pbta ? flags.pbta.moveCount : 0;
         moveCount = moveCount ? Number(moveCount) + 1 : 1;
         let combatantUpdate = {
@@ -560,7 +560,7 @@ export class PbtaRolls {
     // Update forward.
     if (forwardUsed || rollModeUsed) {
       let updates = {};
-      if (forwardUsed) updates['data.resources.forward.value'] = 0;
+      if (forwardUsed) updates['system.resources.forward.value'] = 0;
       if (rollModeUsed && game.settings.get('pbta', 'advForward')) {
         updates['flags.pbta.rollMode'] = 'def';
       }

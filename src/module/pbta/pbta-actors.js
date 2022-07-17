@@ -1,29 +1,30 @@
 export class PbtaActorTemplates {
   static applyActorTemplate(actor, options, id) {
-    let origData = {};
-    let data = {};
+    let origSystemData = {};
+    let systemData = {};
 
     // Copy the base actor data.
-    origData = actor.document.data.toObject(false).data;
-    data = foundry.utils.deepClone(origData);
+    console.log(actor);
+    origSystemData = actor.toObject(false).system;
+    systemData = foundry.utils.deepClone(origSystemData);
 
     // Determine the actor type.
     let actorType = actor.type ?? 'character';
     let sheetType = actorType;
     if (sheetType == 'other') {
-      sheetType = data?.customType ?? 'character';
+      sheetType = systemData?.customType ?? 'character';
     }
 
     // Merge it with the model for that for that actor type to include missing attributes.
     let origModel = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
     let model = foundry.utils.deepClone(origModel);
 
-    // Prepare and return the data.
-    data = foundry.utils.mergeObject(model, data);
-    delete data.templates;
-    delete data._id;
+    // Prepare and return the systemData.
+    systemData = foundry.utils.mergeObject(model, systemData);
+    delete systemData.templates;
+    delete systemData._id;
 
-    return data;
+    return systemData;
   }
 
   static async updateActors(newConfig, options={}) {
@@ -35,8 +36,8 @@ export class PbtaActorTemplates {
 
     // Get all active actors.
     let documents = {
-      'character': Object.keys(newConfig.character).length > 0 ? game.actors.filter(a => a.data.type == 'character') : [],
-      'npc': Object.keys(newConfig.npc).length > 0 ? game.actors.filter(a => a.data.type == 'npc') : [],
+      'character': Object.keys(newConfig.character).length > 0 ? game.actors.filter(a => a.type == 'character') : [],
+      'npc': Object.keys(newConfig.npc).length > 0 ? game.actors.filter(a => a.type == 'npc') : [],
     };
 
     // Determine if we need to query other actors.
@@ -44,7 +45,7 @@ export class PbtaActorTemplates {
       if (actorType == 'character' || actorType == 'npc') continue;
       if (!newTokenConfig[actorType]) newTokenConfig[actorType] = {};
       if (!documents[actorType]) {
-        let actors = Object.keys(newConfig[actorType]).length > 0 ? game.actors.filter(a => a.data.type == 'other' && a.data.data?.customType == actorType) : [];
+        let actors = Object.keys(newConfig[actorType]).length > 0 ? game.actors.filter(a => a.type == 'other' && a.system?.customType == actorType) : [];
         documents[actorType] = actors;
       }
     }
@@ -98,8 +99,8 @@ export class PbtaActorTemplates {
             // We need to load the actor to get the actor type.
             let prototypeActor = game.actors.get(t.actorId);
             if (prototypeActor) {
-              let actorType = prototypeActor.data.type;
-              let sheetType = actorType != 'other' ? actorType : prototypeActor.data?.customType;
+              let actorType = prototypeActor.type;
+              let sheetType = actorType != 'other' ? actorType : prototypeActor?.system?.customType;
               if (!sheetType) sheetType = 'character';
               // Build the update and append to the scene's update array.
               let tokenUpdate = duplicate(newTokenConfig[sheetType]);
@@ -127,15 +128,15 @@ export class PbtaActorTemplates {
 
   static applyItemTemplate(actor, itemData, options, id) {
     let newItemData = duplicate(itemData);
-    if (!newItemData.data) newItemData.data = {};
+    if (!newItemData.system) newItemData.system = {};
 
     let resultRanges = game.pbta.sheetConfig.rollResults;
-    if (!newItemData.data.moveResults) newItemData.data.moveResults = {};
+    if (!newItemData.system.moveResults) newItemData.system.moveResults = {};
 
     for (let [key, value] of Object.entries(resultRanges)) {
-      if (!newItemData.data.moveResults[key]) {
-        newItemData.data.moveResults[key] = {
-          key: `data.moveResults.${key}.value`,
+      if (!newItemData.system.moveResults[key]) {
+        newItemData.system.moveResults[key] = {
+          key: `system.moveResults.${key}.value`,
           label: value.label,
           value: ''
         };

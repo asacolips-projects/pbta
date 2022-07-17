@@ -124,7 +124,7 @@ export class CombatSidebarPbta {
             // Retrieve the combatants grouped by type.
             let combatants = this.getCombatantsData(false);
             // Retrieve the combatant being dropped onto.
-            let originalCombatant = combatants[newCombatant.actor.data.type].find(c => {
+            let originalCombatant = combatants[newCombatant.actor.type].find(c => {
               return c.id == $dropTarget.data('combatant-id');
             });
 
@@ -136,14 +136,14 @@ export class CombatSidebarPbta {
             if (oldInit !== null) {
               // Set the initiative of the actor being draged to the drop
               // target's +1. This will later be adjusted increments of 10.
-              let updatedCombatant = combatants[newCombatant.actor.data.type].find(c => c.id == newCombatant.id);
-              updatedCombatant.data.initiative = Number(oldInit) + 1;
+              let updatedCombatant = combatants[newCombatant.actor.type].find(c => c.id == newCombatant.id);
+              updatedCombatant.initiative = Number(oldInit) + 1;
 
               // Loop through all combatants in initiative order, and assign
               // a new initiative in increments of 10. The "updates" variable
               // will be an array of objects iwth _id and initiative keys.
               let updatedInit = 0;
-              let updates = combatants[newCombatant.actor.data.type].sort((a, b) => a.initiative - b.initiative).map(c => {
+              let updates = combatants[newCombatant.actor.type].sort((a, b) => a.initiative - b.initiative).map(c => {
                 let result = {
                   _id: c.id,
                   initiative: updatedInit
@@ -194,11 +194,11 @@ export class CombatSidebarPbta {
       if (!data.initiative) {
         let highestInit = 0;
         let token = canvas.tokens.get(data.tokenId);
-        let actorType = token.actor ? token.actor.data.type : 'character';
+        let actorType = token.actor ? token.actor.type : 'character';
 
         // Iterate over actors of this type and update the initiative of this
         // actor based on that.
-        document.parent.data.combatants.filter(c => c.actor.data.type == actorType).forEach(c => {
+        document.parent.combatants.filter(c => c.actor.type == actorType).forEach(c => {
           let init = Number(c.initiative);
           if (init >= highestInit) {
             highestInit = init + 10;
@@ -206,7 +206,7 @@ export class CombatSidebarPbta {
         });
 
         // Update this combatant.
-        document.data.update({initiative: highestInit});
+        document.updateSource({initiative: highestInit});
       }
     });
 
@@ -234,7 +234,7 @@ export class CombatSidebarPbta {
         let moveTotal = 0;
         if (combatants.character) {
           combatants.character.forEach(c => {
-            c.flags = c.data.flags;
+            c.flags = c.flags;
             moveTotal = c?.flags?.pbta ? moveTotal + Number(c.flags.pbta?.moveCount || 0) : moveTotal;
           });
         }
@@ -268,14 +268,14 @@ export class CombatSidebarPbta {
    */
   getCombatantsData(updateInitiative = false) {
     // If there isn't a combat, exit and return an empty array.
-    if (!game.combat || !game.combat.data) {
+    if (!game.combat) {
       return [];
     }
 
     let currentInitiative = 0;
     // Reduce the combatants array into a new object with keys based on
     // the actor types.
-    let combatants = game.combat.data.combatants.reduce((groups, combatant) => {
+    let combatants = game.combat.combatants.reduce((groups, combatant) => {
       let isOwner = combatant.isOwner;
       // If this is for a combatant that has had its token/actor deleted,
       // remove it from the combat.
@@ -285,13 +285,13 @@ export class CombatSidebarPbta {
       // Append valid actors to the appropriate group.
       else {
         // Initialize the group if it doesn't exist.
-        let group = combatant.actor.data.type;
+        let group = combatant.actor.type;
         if (!groups[group]) {
           groups[group] = [];
         }
 
         // Retrieve the health bars mode from the token's resource settings.
-        let token = combatant?._token?.data;
+        let token = combatant?._token;
         let displayBarsMode = 'NONE';
         for (let [modeKey, modeValue] of Object.entries(CONST.TOKEN_DISPLAY_MODES)) {
           if (modeValue == token?.displayBars) {
@@ -341,8 +341,8 @@ export class CombatSidebarPbta {
 
         // // Build the radial progress circle settings for the template.
         // combatant.healthSvg = PbtaUtility.getProgressCircle({
-        //   current: combatant.actor.data.data.attributes.hp.value,
-        //   max: combatant.actor.data.data.attributes.hp.max,
+        //   current: combatant.actor.system.attributes.hp.value,
+        //   max: combatant.actor.system.attributes.hp.max,
         //   radius: 16
         // });
 

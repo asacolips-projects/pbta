@@ -50,7 +50,7 @@ export class PbtaPlaybooks {
     // duplicate compendium entries from overriding the items.
     let charPlaybookNames = [];
     for (let charPlaybook of playbooks) {
-      let charPlaybookName = charPlaybook.data.name;
+      let charPlaybookName = charPlaybook.name;
       if (charPlaybookNames.includes(charPlaybookName) !== false) {
         playbooks = playbooks.filter(item => item.id != charPlaybook.id);
       }
@@ -78,8 +78,8 @@ export class PbtaPlaybooks {
     // Sort the playbook objects list.
     else {
       playbooks.sort((a, b) => {
-        const aSort = a.data.name.toLowerCase();
-        const bSort = b.data.name.toLowerCase();
+        const aSort = a.name.toLowerCase();
+        const bSort = b.name.toLowerCase();
         if (aSort < bSort) {
           return -1;
         }
