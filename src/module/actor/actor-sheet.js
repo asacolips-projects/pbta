@@ -122,6 +122,14 @@ export class PbtaActorSheet extends ActorSheet {
       sheetSettings[key] = game.settings.get('pbta', key);
     }
 
+    // Get flags.
+    const flags = this.object?.flags ?? {};
+
+    if (!flags?.pbta?.rollMode) {
+      if (!flags?.pbta) flags.pbta = {};
+      flags.pbta.rollMode = 'def';
+    }
+
     let returnData = {
       actor: this.object,
       cssClass: isEditable ? "editable" : "locked",
@@ -133,7 +141,7 @@ export class PbtaActorSheet extends ActorSheet {
       equipmentTypes: context.equipmentTypes,
       rollModes: context?.rollModes,
       effects: effects,
-      flags: this.object?.flags ?? {},
+      flags: flags,
       items: items,
       limited: this.object.limited,
       options: this.options,
