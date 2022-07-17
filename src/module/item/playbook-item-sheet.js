@@ -23,16 +23,16 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
   /** @override */
   get template() {
     const path = "systems/pbta/templates/items";
-    return `${path}/${this.item.data.type}-sheet.html`;
+    return `${path}/${this.item.type}-sheet.html`;
   }
 
   async getData() {
-    const data = await super.getData();
+    const context = await super.getData();
     let equipmentObjects = await this.item._getEquipmentObjects();
     for (let [group, group_items] of Object.entries(equipmentObjects)) {
-      data.data.equipment[group]['objects'] = group_items;
+      context.system.equipment[group]['objects'] = group_items;
     }
-    return data;
+    return context;
   }
 
   async activateListeners(html) {
@@ -98,11 +98,11 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
   }
 
   async _deleteEquipment(equipmentId, groupId) {
-    let itemData = duplicate(this.item.data);
+    let itemData = this.item.toObject();
 
     // Filter items.
-    let newItems = itemData.data.equipment[groupId]['items'].filter(i => i != equipmentId);
-    itemData.data.equipment[groupId]['items'] = newItems;
+    let newItems = itemData.system.equipment[groupId]['items'].filter(i => i != equipmentId);
+    itemData.system.equipment[groupId]['items'] = newItems;
 
     // Update the document.
     await this.item.update(itemData, { diff: false });
@@ -110,13 +110,13 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
   }
 
   async _createEquipment(equipmentId, groupId) {
-    let itemData = duplicate(this.item.data);
+    let itemData = this.item.toObject();
 
     // Filter items.
     let existing_items = [];
 
-    if (!PbtaUtility.isEmpty(itemData.data.equipment[groupId]['items'])) {
-      existing_items = itemData.data.equipment[groupId]['items'];
+    if (!PbtaUtility.isEmpty(itemData.system.equipment[groupId]['items'])) {
+      existing_items = itemData.system.equipment[groupId]['items'];
     }
     else {
       existing_items = [];
@@ -124,7 +124,7 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
     // Append our item.
     if (!existing_items.includes(equipmentId)) {
       existing_items.push(equipmentId);
-      itemData.data.equipment[groupId]['items'] = existing_items;
+      itemData.system.equipment[groupId]['items'] = existing_items;
       // Update the document.
       await this.item.update(itemData, { diff: false });
       this.render(true);

@@ -13,8 +13,8 @@ export class ActorPbta extends Actor {
   prepareData() {
     super.prepareData();
 
-    const actorData = this.data;
-    const data = actorData.data;
+    const actorData = this;
+    const data = actorData.system;
     const flags = actorData.flags;
 
     if (actorData.type === 'character') this._prepareCharacterData(actorData);
@@ -24,15 +24,13 @@ export class ActorPbta extends Actor {
    * Prepare Character type specific data
    */
   _prepareCharacterData(actorData) {
-    const data = actorData.data;
-
     // Handle special attributes.
     let groups = [
       'attrTop',
       'attrLeft'
     ];
     for (let group of groups) {
-      for (let [attrKey, attrValue] of Object.entries(actorData.data[group])) {
+      for (let [attrKey, attrValue] of Object.entries(actorData.system[group])) {
         // ListMany field handling.
         if (attrValue.type == 'ListMany') {
           // Iterate over options.
@@ -67,37 +65,6 @@ export class ActorPbta extends Actor {
         }
       }
     }
-
-    // let statsSetting = game.settings.get('pbta', 'stats');
-    // let statsArray = statsSetting.split(',');
-    // let stats = data.stats;
-
-    // if (statsArray.length > 0) {
-    //   statsArray.forEach(s => {
-    //     let stat = PbtaUtility.cleanClass(s, false);
-    //     stats[stat] = {
-    //       label: s.trim(),
-    //       value: stats[stat]?.value ?? 0,
-    //       toggle: stats[stat]?.toggle ?? false
-    //     };
-    //   });
-    // }
-
-    // let stats = data.stats ?? {};
-
-    // if (game.pbta.sheetConfig?.character) {
-    //   let cfg = game.pbta.sheetConfig.character;
-    //   console.log(cfg);
-    //   if (cfg.stats) {
-    //     for (let [k,v] of Object.entries(cfg.stats)) {
-    //       if (!stats[k]) {
-    //         stats[k] = v;
-    //       }
-    //     }
-    //   }
-    // }
-
-    // data.stats = stats;
   }
 
   /**
@@ -110,13 +77,13 @@ export class ActorPbta extends Actor {
     // Initialize variables.
     event.preventDefault();
 
-    if (!actor.data) {
+    if (!actor) {
       return;
     }
 
     const a = event.currentTarget;
     const data = a.dataset;
-    const actorData = actor.data.data;
+    const actorData = actor.system;
     const itemId = $(a).parents('.item').attr('data-item-id');
     const item = actor.items.get(itemId);
     let formula = null;
@@ -160,7 +127,7 @@ export class ActorPbta extends Actor {
    * @param {Object} templateData
    */
   async rollMove(roll, actor, dataset, templateData, form = null, applyDamage = false) {
-    let actorData = actor.data.data;
+    let actorData = actor.system;
     // Render the roll.
     let template = 'systems/pbta/templates/chat/chat-move.html';
     let dice = PbtaUtility.getRollFormula('2d6');
@@ -240,8 +207,9 @@ export class ActorPbta extends Actor {
   async _preCreate(data, options, userId) {
     await super._preCreate(data, options, userId);
 
-    let actor = this.data;
+    let actor = this;
     let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, null);
-    this.data._source.data = templateData;
+    // @todo v10
+    this.updateSource({system: templateData});
   }
 }
