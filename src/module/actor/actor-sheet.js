@@ -72,10 +72,25 @@ export class PbtaActorSheet extends ActorSheet {
       context.pbtaBaseType = context.pbtaActorType;
     }
 
+    // Handle rich text fields.
+    const enrichmentOptions = {
+      secrets: false,
+      documents: true,
+      links: true,
+      rolls: true,
+      rollData: this.actor.getRollData() ?? {},
+      async: true,
+    };
+    context.enrichmentOptions = enrichmentOptions;
+
     // Prepare items.
-    this._prepareCharacterItems(context);
-    this._prepareNpcItems(context);
-    this._prepareAttrs(context);
+    await this._prepareCharacterItems(context);
+    await this._prepareNpcItems(context);
+    await this._prepareAttrs(context);
+
+    if (context.system?.details?.biography) {
+      context.system.details.biography = await TextEditor.enrichHTML(context.system.details.biography, enrichmentOptions);
+    }
 
     // Add playbooks.
     if (context.pbtaSheetType == 'character' || context.pbtaBaseType == 'character') {
@@ -164,7 +179,7 @@ export class PbtaActorSheet extends ActorSheet {
    *
    * @param {object} sheetData Data prop on actor.
    */
-  _prepareAttrs(sheetData) {
+  async _prepareAttrs(sheetData) {
     const actorData = sheetData;
     let groups = [
       'attrTop',
@@ -174,6 +189,7 @@ export class PbtaActorSheet extends ActorSheet {
       for (let [attrKey, attrValue] of Object.entries(actorData.system[group])) {
         if (attrValue.type == 'LongText') {
           actorData.system[group][attrKey].attrName = `system.${group}.${attrKey}.value`;
+          actorData.system[group][attrKey].value = await TextEditor.enrichHTML(attrValue.value, actorData.enrichmentOptions);
         }
       }
     }
@@ -234,7 +250,7 @@ export class PbtaActorSheet extends ActorSheet {
    *
    * @return {undefined}
    */
-  _prepareCharacterItems(context) {
+  async _prepareCharacterItems(context) {
     const actorData = context;
     const actorType = context.pbtaSheetType ?? 'character';
     const moveType = context.pbtaBaseType == 'npc' ? 'npcMove' : 'move';
@@ -271,6 +287,20 @@ export class PbtaActorSheet extends ActorSheet {
     for (let i of items) {
       let item = i;
       i.img = i.img || DEFAULT_TOKEN;
+      // Enrich text fields.
+      if (i.system?.description) {
+        i.system.description = await TextEditor.enrichHTML(i.system.description, actorData.enrichmentOptions);
+      }
+      if (i.system?.choices) {
+        i.system.choices = await TextEditor.enrichHTML(i.system.choices, actorData.enrichmentOptions);
+      }
+      if (i.system?.moveResults) {
+        for (let [mK, mV] of Object.entries(i.system.moveResults)) {
+          if (mV.value) {
+            i.system.moveResults[mK].value = await TextEditor.enrichHTML(mV.value, actorData.enrichmentOptions);
+          }
+        }
+      }
       // If this is a move, sort into various arrays.
       if (i.type === moveType) {
         if (actorData.moves[i.system.moveType]) {
@@ -297,7 +327,7 @@ export class PbtaActorSheet extends ActorSheet {
    *
    * @param {Object} context The actor to prepare.
    */
-  _prepareNpcItems(context) {
+  async _prepareNpcItems(context) {
     // Handle preprocessing for tagify data.
     if (context.pbtaSheetType == 'npc') {
       // If there are tags, convert it into a string.

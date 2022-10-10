@@ -94,10 +94,30 @@ export class PbtaItemSheet extends ItemSheet {
       context.system.rollExample = game.pbta.sheetConfig?.rollFormula ?? '2d6';
     }
 
+    // Handle rich text fields.
+    const enrichmentOptions = {
+      secrets: false,
+      documents: true,
+      links: true,
+      rolls: true,
+      rollData: actor?.getRollData() ?? {},
+      async: true,
+      relativeTo: actor ?? null
+    };
+
+    if (context.system?.description) {
+      context.system.description = await TextEditor.enrichHTML(context.system.description, enrichmentOptions);
+    }
+
     if (itemType == 'move' || itemType == 'npcMove') {
-      for (let [key, value] of Object.entries(context.system.moveResults)) {
+      for (let [key, moveResult] of Object.entries(context.system.moveResults)) {
         context.system.moveResults[key].rangeName = `system.moveResults.${key}.value`;
+        context.system.moveResults[key].value = await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
       }
+    }
+
+    if (context.system?.choices) {
+      context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
     }
 
     // Handle preprocessing for tagify data.

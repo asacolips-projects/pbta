@@ -84,7 +84,7 @@
                           <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                           <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                         </div>
-                        <div class="item-description">{{{enrichText item.system.description rollData}}}</div>
+                        <div class="item-description">{{{item.system.description}}}</div>
                       </li>
                     {{/each}}
                     </ol>
@@ -135,7 +135,7 @@
                           </div>
                           <div class="item-description">
                             {{#if item.system.tags}}{{{pbtaTags item.system.tags}}}{{/if}}
-                            <div class="description">{{{enrichText item.system.description rollData}}}</div>
+                            <div class="description">{{{item.system.description}}}</div>
                           </div>
                       </li>
                     {{/each}}

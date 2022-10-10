@@ -28,13 +28,13 @@
   <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
 </div>
 <div class="item-description">
-  <div>{{{enrichText item.system.description rollData}}}</div>
+  <div>{{{item.system.description}}}</div>
   {{#if item.system.moveResults}}
     {{#each item.system.moveResults as |result key|}}
       {{#if result.value}}
         <div class="result result--{{key}}">
           <strong class="result-label">{{result.label}}</strong>
-          <div class="result-content">{{{enrichText result.value rollData}}}</div>
+          <div class="result-content">{{{result.value}}}</div>
         </div>
       {{/if}}
     {{/each}}
@@ -42,7 +42,7 @@
   {{#if item.system.choices}}
     <div class="result result--choices">
       <strong class="result-label">{{localize "PBTA.Choices"}}</strong>
-      <div class="result-content">{{{enrichText item.system.choices rollData}}}</div>
+      <div class="result-content">{{{item.system.choices}}}</div>
     </div>
   {{/if}}
 </div>

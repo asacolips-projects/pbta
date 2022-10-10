@@ -103,10 +103,13 @@
     }
 
     .editor {
-      height: calc(100% - 34px - 73px);
-      // background: $ct-gray;
+      height: auto;
       padding: 4px;
       border-radius: 4px;
+    }
+
+    .editor-content {
+      min-height: 30px;
     }
   }
 

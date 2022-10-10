@@ -6,6 +6,10 @@
   justify-content: flex-start;
   height: 100%;
 
+  .tox-edit-area {
+    min-height: 170px;
+  }
+
   .sheet-header {
     // Use 101% to force a line break;
     width: 101%;
