@@ -40,7 +40,7 @@ secondaryTokenAttribute:
 initiative: 1d20
 socket: true
 url: https://asacolips.gitbook.io/pbta-system/
-manifest: https://asacolips-artifacts.s3.amazonaws.com/pbta/0.6.1/system.json
+manifest: https://asacolips-artifacts.s3.amazonaws.com/pbta/master/system.json
 download: https://asacolips-artifacts.s3.amazonaws.com/pbta/0.6.1/pbta.zip
 changelog: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/raw/master/CHANGELOG.md
 bugs: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/issues
