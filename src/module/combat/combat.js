@@ -249,7 +249,7 @@ export class CombatSidebarPbta {
         // Render the template and update the markup with our new version.
         let content = await renderTemplate(template, templateData)
         newHtml.find('#combat-tracker').remove();
-        newHtml.find('#combat-round').after(content);
+        newHtml.find('.combat-tracker-header').after(content);
 
         // Drag handler for the combat tracker.
         if (game.user.isGM) {

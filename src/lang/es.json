@@ -1,0 +1,147 @@
+{
+  "Powered by the Apocalypse": "Powered by the Apocalypse",
+  "PBTA": {
+    "Advantage": "Ventaja",
+    "Ask": "Preguntar",
+    "AskTitle": "Elige un atributo",
+    "Biography": "Biografía",
+    "Choices": "Opciones",
+    "ConditionsApplied": "Condiciones Aplicadas:",
+    "Create": "Crear",
+    "Description": "Descripción",
+    "description": "¡Juega cualquier sistema PbtA en FoundryVTT!",
+    "Disadvantage": "Desventaja",
+    "Equipment": "Equipo",
+    "EquipmentType": "Tipo de Equipo",
+    "failure": "Complicaciones (agrega experiencia)",
+    "Formula": "Fórmula Personalizada de Tirada",
+    "Forward": "En la siguiente",
+    "Modifier": "Modificación",
+    "MoveGroup": "Grupo de Movimientos",
+    "MoveGroupHelp": "Múltiples movimentos bajo un mismo grupo de movimientos serán opciones 'una de dos' cuando se crea un personaje nuevo usando el creador de personajes.",
+    "Moves": "Movimientos",
+    "MoveType": "Tipo de Movimiento",
+    "New": "Nuevo",
+    "Normal": "Normal",
+    "NoTemplate": "Sin Formato",
+    "Ongoing": "En adelante",
+    "partial": "Éxito Parcial",
+    "Playbook": "Libreto",
+    "Prompt": "Mensaje",
+    "PromptTitle": "Agrega tu modificador",
+    "Qty": "Cant.",
+    "Quantity": "Cantidad",
+    "RequiresMove": "Require Movimento",
+    "Roll": "Tirar",
+    "RollFormula": "Fórmula de Tiradas",
+    "RollFormulaOverride": "Tirar con la fórmula",
+    "RollMove": "Tirada de Movimiento ",
+    "success": "Éxito",
+    "Tags": "Etiquetas",
+    "TagsHelp": "(Usa tabulador para autocompletar, comas para crear nuevas etiquetas, y doble clic para editar etiqueta)",
+    "title": "Powered by the Apocalypse",
+    "Uses": "Usos",
+    "Weight": "Peso",
+    "Wt": "p.",
+    "Common": {
+      "Description": "Descripción",
+      "Details": "Detalles",
+      "Name": "Nombre"
+    },
+    "Dialog": {
+      "Ask1": "Elige un atributo para este",
+      "Ask2": "movimiento.",
+      "ChooseConditions": "Elige todas las modificationes condicionales que apliquen:",
+      "Prompt1": "Elige la modificación para este",
+      "Prompt2": "movimiento."
+    },
+    "Messages": {
+      "sheetConfig": {
+        "actorTypeRequired": "tipo de actor es requerido.",
+        "attribute": "Atributo",
+        "attributeMax": "debe incluir una propiedad máxima ('max').",
+        "attributeOptions": "debe incluir un grupo de opciones ('options').",
+        "attributeOptionsEmpty": "debe incluir al menos una opción en el grupo de optiones.",
+        "attributeType": "debe ser uno de los siguientes tipos:",
+        "attributeTypeNull": "no tiene un tipo (puede tratarse de opciones que tuvieron un elemento padre renombrado).",
+        "equipmentTypes": "es requerido y debe tener al menos un tipo de equipo.",
+        "groupAttributes": "debe ser un grupo de atributos.",
+        "moveTypes": "es requerido y debe tener al menos un tipo de movimiento.",
+        "noConfig": "No ha sido ingresada la hoja de configuración.",
+        "reset": "Restablecer hoja de configuración.",
+        "rollFormulaRequired": "se requiere una fórmula de tirada ('rollFormula').",
+        "rollResultsIncorrect": "se ingresaron incorrectamente los resultados de tirada ('rollResults').",
+        "rollResultsRequired": "se require resultados de tirada ('rollResults')",
+        "statsRequired1": "se require atributos ('stats') para",
+        "statsRequired2": "grupo.",
+        "statString1": "Atributo",
+        "statString2": "debe ser un texto (string), como \"Fuerza\"",
+        "tomlError": "Hay un error de sintaxis en tu configuración TOML en la línea {line} a la altura de la columna {column}. Mira la consola para más detalles."
+      }
+    },
+    "Settings": {
+      "button": {
+        "help": "Ayuda y Tutorial para el Sistema PbtA"
+      },
+      "stats": {
+        "name": "Atributos",
+        "hint": "Ingresa una lista de atributos separados por comas, como \"Fue,Des,Con,Int,Sab,Car\""
+      },
+      "advForward": {
+        "name": "Borrar Ventaja/Desventaja Después de las Tiradas",
+        "hint": "Si esto es hablidato, las opciones de ventaja y desventaja en la hoja de personaje se restablecen a normal después de cada tirada (similar a 'En la siguiente')."
+      },
+      "hideRollFormula": {
+        "name": "Esconder fórmula de tiradas",
+        "hint": "Esconde la fórmula personalizada de tirada en la hoja de personaje."
+      },
+      "hideForward": {
+        "name": "Esconder 'En la siguiente'",
+        "hint": "Esconde la opción de 'En la siguiente' en la hoja de personaje."
+      },
+      "hideOngoing": {
+        "name": "Esconder 'En adelante'",
+        "hint": "Esconde la opción de 'En adelante' en la hoja de personaje."
+      },
+      "hideRollMode": {
+        "name": "Esconder modo de tirada",
+        "hint": "Esconde el modo de tirada (normal/ventaja/desventaja) en la hoja de personaje."
+      },
+      "hideUses": {
+        "name": "Esconder usos",
+        "hint": "Esconde los usos que quedan para cada movimiento en el resumen de movimiento que aparece en las hojas de personaje y PNJ (personaje no-jugador)."
+      },
+      "itemIcons": {
+        "name": "Habilitar Íconos",
+        "hint": "Habilita el ícono visual para movimientos, hechizos y equipo en la hoja de personajes (requiere reiniciar el navegador)."
+      },
+      "sheetConfig": {
+        "label": "Configuración de Hoja PbtA",
+        "name": "Configurar la hoja de personaje",
+        "hint": "Elige la estructura de datos para la hoja de personaje, como atributos, habilidades y detalles.",
+        "additions": "Adiciones:",
+        "confirm": "Confirmar",
+        "confirmChanges": "Confirmar Cambios",
+        "confirmUpdate": "Confirmar y Actualizar",
+        "cosmetic": "Cambios Cosméticos (etiqueta o descripción):",
+        "deletions": "Eliminaciones:",
+        "maxValue": "Valor máximo cambiado:",
+        "noteCancel": "Cancelar y prevenir que los cambios se guarden",
+        "noteChangesDetected": "Se detectaron cambios en los tipos de actores. Revisa los siguientes cambios y después elige una de las siguientes opciones:",
+        "noteConfirm": "Confirmar sin actualizar los actores existentes",
+        "noteConfirmUpdate": "Confirmar y actualizar los actores existentes",
+        "noteConfirmUpdateBold": "NOTA: Datos existentes en los atributos borrados se eliminarán permanentemente",
+        "notes1": "¡Bienvenido/a a la versión alpha del sistema PbtA!",
+        "notes2": "Eventualmente tendremos una interfaz gráfica de usario (GUI) para construir hojas de personajes, pero por ahora tendrás que ingresar los datos en un formato TOML. Escribir TOML es similar a trabajar con archivos .ini que son comunes en la modificiación de configuraciones para los juegos de ordenador/computadora.",
+        "notes3": "Lee la documentación que se encuentra en el enlace siguiente antes de configurar tu hoja. También puedes ingresar al canal #powered-by-the-apocalypse en el discord oficial de Foundry Virtual Tabletop para preguntas y ayuda.",
+        "options": "Lista de opciones cambiada (los valores se mantendrán):",
+        "resetDefaults": "Restablecer Original",
+        "saveConfiguration": "Guardar Configuración",
+        "title": "Configurar hojas de personajes",
+        "type": "Tipo cambiado:",
+        "typeReset": "Tipo cambiado (atributo se restablecerá):"
+      }
+    }
+  },
+  "PBTA_OTHER": "Otro"
+}
