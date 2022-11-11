@@ -177,6 +177,9 @@ Hooks.once("init", async function() {
 });
 
 Hooks.once("ready", async function() {
+  // Force sheet config override off, unless a module changes it.
+  await game.settings.set('pbta', 'sheetConfigOverride', false);
+
   // Override sheet config.
   Hooks.callAll('pbtaSheetConfig');
 
