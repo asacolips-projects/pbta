@@ -1,3 +1,14 @@
+# 0.6.2
+
+# New Translations
+
+- German (@felodin.blutstein)
+- Spanish (@elfonochasis)
+
+# Bug Fixes
+
+- Resolved issue with combatants not being able to be added to the combat tracker (@gonzaPaEst)
+
 # 0.6.1
 
 ## Bug Fixes
