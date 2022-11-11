@@ -126,4 +126,5 @@ PBTA:
       title: "Configure character sheets"
       type: "Type changed:"
       typeReset: "Type changed (attribute will be reset):"
+      sheetConfigDisabledModule: "Sheet configuration has been disabled due to a module that is providing it."
 PBTA_OTHER: "Other"
