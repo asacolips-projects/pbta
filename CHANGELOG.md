@@ -1,3 +1,18 @@
+# 0.7.0
+
+# Features
+
+- Added new `pbtaSheetConfig` hook to allow modules to override the sheet config and disable the TOML editor. See the [README](https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/tree/master#overriding-sheet-config-in-a-module) for more information and example.
+
+# New Translations
+
+- German (@felodin.blutstein)
+- Spanish (@elfonochasis)
+
+# Bug Fixes
+
+- Resolved issue with combatants not being able to be added to the combat tracker (@gonzaPaEst)
+
 # 0.6.1
 
 ## Bug Fixes
