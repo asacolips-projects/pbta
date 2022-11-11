@@ -158,6 +158,14 @@ Hooks.once("init", async function() {
     default: 0
   });
 
+  game.settings.register("pbta", "sheetConfigOverride", {
+    name: "Override PBTA Sheet Config",
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false,
+  });
+
   // Build out character data structures.
   const pbtaSettings = game.settings.get('pbta', 'sheetConfig');
 
@@ -169,6 +177,9 @@ Hooks.once("init", async function() {
 });
 
 Hooks.once("ready", async function() {
+  // Override sheet config.
+  Hooks.callAll('pbtaSheetConfig');
+
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createPbtaMacro(data, slot));
 

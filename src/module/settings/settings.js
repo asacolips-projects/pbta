@@ -23,6 +23,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
   /** @override */
   async getData(options) {
     const data = await game.settings.get("pbta", "sheetConfig");
+    data.sheetConfigOverride = game.settings.get("pbta", "sheetConfigOverride");
     if (!data.tomlString) {
       data.tomlString = '';
     }
@@ -37,24 +38,26 @@ export class PbtaSettingsConfigDialog extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
     html.find('button[name="reset"]').click(this._onResetDefaults.bind(this));
-    // Load toml syntax. This is a failsafe in case other modules that use
-    // CodeMirror (such as Custom CSS Rules) are enabled.
-    if (!CodeMirror.modes.toml) {
-      codeMirrorAddToml();
+    if (!game.settings.get('pbta', 'sheetConfigOverride')) {
+      // Load toml syntax. This is a failsafe in case other modules that use
+      // CodeMirror (such as Custom CSS Rules) are enabled.
+      if (!CodeMirror.modes.toml) {
+        codeMirrorAddToml();
+      }
+  
+      // Enable the CodeMirror code editor.
+      this.codeEditor = CodeMirror.fromTextArea(html.find(".pbta-sheet-config")[0], {
+        mode: "toml",
+        indentUnit: 4,
+        smartIndent: true,
+        indentWithTabs: false,
+        tabSize: 2,
+        lineNumbers: true,
+        inputStyle: "contenteditable",
+        autofocus: true,
+        theme: 'material-palenight'
+      });
     }
-
-    // Enable the CodeMirror code editor.
-    this.codeEditor = CodeMirror.fromTextArea(html.find(".pbta-sheet-config")[0], {
-      mode: "toml",
-      indentUnit: 4,
-      smartIndent: true,
-      indentWithTabs: false,
-      tabSize: 2,
-      lineNumbers: true,
-      inputStyle: "contenteditable",
-      autofocus: true,
-      theme: 'material-palenight'
-  });
   }
 
   /**
