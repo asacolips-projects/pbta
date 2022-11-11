@@ -44,6 +44,11 @@
       "lang": "pt-BR",
       "name": "Português (Brasil)",
       "path": "lang/pt-br.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch (German)",
+      "path": "lang/de.json"
     }
   ],
   "gridDistance": 5,
