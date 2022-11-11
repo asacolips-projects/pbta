@@ -5,6 +5,9 @@
   <p class="sheet-config-notes">{{{localize 'PBTA.Settings.sheetConfig.notes3'}}}</p>
   <p class="sheet-config-notes"><button type="button" class="button" style="max-width:250px;margin:5px auto 20px;display:block;" onclick="event.preventDefault();window.open('https://asacolips.gitbook.io/pbta-system/', 'pbtaHelp', 'width=1032,height=720');"><i class="fas fa-question-circle"></i> {{localize "PBTA.Settings.button.help"}}</button></p>
 
+  {{#if sheetConfigOverride}}
+  <strong>{{localize "Sheet configuration has been disabled due to a module that is providing it."}}</strong>
+  {{else}}
   <section class="pbta-sheet-config-editor">
     <textarea name="tomlString" class="pbta-sheet-config">
     {{~" "}}{{{tomlString}}}{{" "~}}
@@ -20,4 +23,5 @@
       <i class="fas fa-sync"></i> {{localize 'PERMISSION.Reset'}}
     </button>
   </div>
+  {{/if}}
 </form>
