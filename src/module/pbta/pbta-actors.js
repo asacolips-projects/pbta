@@ -4,7 +4,6 @@ export class PbtaActorTemplates {
     let systemData = {};
 
     // Copy the base actor data.
-    console.log(actor);
     origSystemData = actor.toObject(false).system;
     systemData = foundry.utils.deepClone(origSystemData);
 
