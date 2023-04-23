@@ -169,19 +169,51 @@ Hooks.once("init", async function() {
   // Build out character data structures.
   const pbtaSettings = game.settings.get('pbta', 'sheetConfig');
 
-  // Update stored config.
-  game.pbta.sheetConfig = pbtaSettings.computed ? PbtaUtility.convertSheetConfig(pbtaSettings.computed) : pbtaSettings;
+  // Retrieve overridden config, if enabled.
+  if (pbtaSettings?.overridden && game.settings.get('pbta', 'sheetConfigOverride')) {
+    game.pbta.sheetConfig = pbtaSettings.overridden;
+  }
+  // Otherwise, retrieve computed config.
+  else if (pbtaSettings?.computed) {
+    game.pbta.sheetConfig = PbtaUtility.convertSheetConfig(pbtaSettings.computed);
+  }
+  // Fallback to empty config.
+  else {
+    game.pbta.sheetConfig = pbtaSettings;
+  }
 
   // Preload template partials.
   preloadHandlebarsTemplates();
 });
 
 Hooks.once("ready", async function() {
-  // Force sheet config override off, unless a module changes it.
-  await game.settings.set('pbta', 'sheetConfigOverride', false);
-
+  
   // Override sheet config.
-  Hooks.callAll('pbtaSheetConfig');
+  if (game.user.isGM) {
+    // Force sheet config override off, unless a module changes it.
+    await game.settings.set('pbta', 'sheetConfigOverride', false);
+    
+    // Allow modules to override the sheet config.
+    Hooks.callAll('pbtaSheetConfig');
+    
+    // @todo find something better than this timeout hack.
+    const timeout = 1000;
+    setTimeout(() => {
+      // Retrieve the previous configuration.
+      let existingConfig = game.settings.get('pbta', 'sheetConfig') ?? {};
+      // If a module enabled the override, assign it to the config so that player
+      // clients can use it without the GM being logged in.
+      if (game.settings.get('pbta', 'sheetConfigOverride')) {
+        existingConfig.overridden = game.pbta.sheetConfig;
+        game.settings.set('pbta', 'sheetConfig', existingConfig);
+      }
+      // Otherwise, delete the override config.
+      else {
+        delete existingConfig.overridden;
+        game.settings.set('pbta', 'sheetConfig', existingConfig);
+      }
+    }, timeout);
+  }
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createPbtaMacro(data, slot));
