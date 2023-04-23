@@ -190,6 +190,9 @@ Hooks.once("ready", async function() {
   
   // Override sheet config.
   if (game.user.isGM) {
+    // Store default actor types for later.
+    game.pbta.defaultModel = game.system.model;
+    
     // Force sheet config override off, unless a module changes it.
     await game.settings.set('pbta', 'sheetConfigOverride', false);
     
@@ -208,8 +211,24 @@ Hooks.once("ready", async function() {
         game.settings.set('pbta', 'sheetConfig', existingConfig);
       }
       // Otherwise, delete the override config.
-      else {
-        delete existingConfig.overridden;
+      else if (existingConfig?.overridden) {
+        ui.notifications.warn('Removed PbtA module sheet overrides.');
+        // If not tomlString exists, delete the config outright to prevent
+        // it from being malformed.
+        if (!existingConfig?.tomlString) {
+          existingConfig = null;
+        }
+        // Otherwise, restore the previous config.
+        else {
+          // Delete overrides.
+          delete existingConfig.overridden;
+          delete existingConfig.computed;
+          // Restore computed config and reapply.
+          existingConfig.computed = PbtaUtility.parseTomlString(existingConfig.tomlString);
+          game.pbta.sheetConfig = PbtaUtility.convertSheetConfig(existingConfig.computed);
+          PbtaUtility.applyActorTemplates(true);
+          ui.notifications.info('Restored previous PbtA sheet settings.');
+        }
         game.settings.set('pbta', 'sheetConfig', existingConfig);
       }
     }, timeout);
