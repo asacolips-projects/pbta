@@ -4,14 +4,13 @@
   "title": "Powered by the Apocalypse",
   "description": "Run games for any PbtA system in Foundry VTT!",
   "version": "0.7.0",
-  "minimumCoreVersion": 10,
-  "compatibleCoreVersion": 10,
+  "minimumCoreVersion": "10",
+  "compatibleCoreVersion": "10",
   "compatibility": {
-    "minimum": 10,
-    "verified": 10.287,
-    "maximum": 10
+    "minimum": "10",
+    "verified": "11.301",
+    "maximum": "11"
   },
-  "templateVersion": 2,
   "authors": [
     {
       "name": "Asacolips"
