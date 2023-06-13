@@ -1,3 +1,11 @@
+# 0.7.1
+
+## Bug Fixes
+
+- Added support for Foundry v11.
+- Fixed an issue where TOML sheet configurations provided by modules wouldn't apply successfully for non-GM users.
+- Updated spanish localization (thanks @WallaceMcGregor!)
+
 # 0.7.0
 
 ## Features
