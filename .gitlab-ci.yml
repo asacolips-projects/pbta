@@ -11,6 +11,7 @@ cache:
 stages:
   - init
   - build
+  - deploy
 
 ############### BETA ################
 
@@ -50,5 +51,25 @@ build-prod:
     # Examples: 0.1.0, 0.1.2.beta-1, 0.3.4.alpha
     # At least one digit + period, followed by additional digits, followed by an optional beta/alpha, followed by a build number.
     - /^(\d+\.)+(\d+)*((beta|alpha)+(-)*\d+)*$/i
+  except:
+    - branches
+
+deploy-beta:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  dependencies:
+    - build-prod
+  script:
+    - BRANCH=$(./get-version.sh)
+    - aws configure set region us-east-1
+    # Write the tagged artifact and manifest.
+    - aws s3 cp ./pbta.zip s3://$S3_BUCKET/pbta/$CI_COMMIT_TAG/pbta.zip --acl="public-read"
+    - aws s3 cp ./system.json s3://$S3_BUCKET/pbta/$CI_COMMIT_TAG/system.json --acl="public-read"
+    # Write the general beta/alpha manifest.
+    - aws s3 cp ./system.json s3://$S3_BUCKET/pbta/$BRANCH/system.json --acl="public-read"
+  only:
+    # Examples: 0.1.0, 0.1.2.beta-1, 0.3.4.alpha
+    # Unlike the build script, this _only_ runs on beta/alpha tags.
+    - /^(\d+\.)+(\d+)*((beta|alpha)+(([-.v])*\d+)+)*$/i
   except:
     - branches
