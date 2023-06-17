@@ -56,7 +56,7 @@
     }
   }
 
-  .item-avatar {
+  .item-showMove, .item-avatar {
     flex: 0 0 32px;
     display: inline-block;
     height: 32px;
@@ -64,6 +64,32 @@
     border-radius: 4px;
     margin-right: 4px;
     overflow: hidden;
+
+    .showable {
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: all ease-in-out 0.25s;
+      text-align: center;
+      background: $c-navy-top;
+      color: $c-white;
+      background: $c-black;
+      font-size: 14px;
+      opacity: 0.5;
+
+      &:hover {
+        // transform: scale(1.2);
+        opacity: 1;
+        color: $c-white;
+        background: $c-black;
+      }
+    }
 
     .rollable {
       display: flex;

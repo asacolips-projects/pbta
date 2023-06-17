@@ -151,7 +151,7 @@ export class PbtaRolls {
     // Handle item rolls (moves).
     if (item) {
       // Handle moves.
-      if (item.type == 'move' || item.type == 'npcMove') {
+      if ((item.type == 'move' || item.type == 'npcMove') && !options?.parameters?.descriptionOnly) {
         options.formula = dice;
         templateData = {
           image: item.img,
@@ -223,7 +223,7 @@ export class PbtaRolls {
         }
       }
       // Handle equipment.
-      else if (item.type == 'equipment') {
+      else if (item.type == 'equipment' || options?.parameters?.descriptionOnly) {
         templateData = {
           image: item.img,
           title: item.name,
