@@ -22,8 +22,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
   /** @override */
   async getData(options) {
-    const data = await game.settings.get("pbta", "sheetConfig");
-    data.sheetConfigOverride = game.settings.get("pbta", "sheetConfigOverride");
+    let data = game.settings.get("pbta", "sheetConfig") ?? {};
+    // @todo hack to fix the old the default value. Remove in a future update.
+    if (typeof data != 'object') data = {};
+    data.sheetConfigOverride = game.settings.get("pbta", "sheetConfigOverride") ?? {};
     if (!data.tomlString) {
       data.tomlString = '';
     }

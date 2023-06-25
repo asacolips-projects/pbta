@@ -1,3 +1,9 @@
+# 0.7.2
+
+## Bug Fixes
+
+- Fixed an issue where TOML sheet configurations wouldn't apply correctly on new worlds that hadn't yet had any TOML manually applied.
+
 # 0.7.1
 
 ## Bug Fixes

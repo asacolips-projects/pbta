@@ -155,7 +155,7 @@ Hooks.once("init", async function() {
     scope: "world",
     config: false,
     type: Object,
-    default: 0
+    default: {}
   });
 
   game.settings.register("pbta", "sheetConfigOverride", {
@@ -204,6 +204,8 @@ Hooks.once("ready", async function() {
     setTimeout(() => {
       // Retrieve the previous configuration.
       let existingConfig = game.settings.get('pbta', 'sheetConfig') ?? {};
+      // @todo hack to fix the old the default value. Remove in a future update.
+      if (typeof existingConfig !== 'object') existingConfig = {};
       // If a module enabled the override, assign it to the config so that player
       // clients can use it without the GM being logged in.
       if (game.settings.get('pbta', 'sheetConfigOverride')) {
