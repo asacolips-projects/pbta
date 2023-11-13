@@ -78,6 +78,13 @@
                             </span>
                             <img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>
                           </div>
+                          {{#if item.system.rollFormula}}
+                          <div class="item-showMove">
+                            <span class="showable" data-roll="{{item.system.rollFormula}}" data-show="description">
+                              <i class="fas fa-comments"></i>
+                            </span>
+                          </div>
+                          {{/if}}
                           <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
                         </h4>
                         <div class="item-meta tags">

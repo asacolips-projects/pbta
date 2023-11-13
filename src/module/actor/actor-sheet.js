@@ -368,6 +368,7 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Rollables.
     html.find('.rollable').on('click', this._onRollable.bind(this));
+    html.find('.showable').on('click', this._onRollable.bind(this));
 
     // // View playbook.
     html.find('.view-playbook').on('click', this._onViewPlaybook.bind(this));
@@ -565,7 +566,7 @@ export class PbtaActorSheet extends ActorSheet {
     let item = null;
     let flavorText = null;
     let templateData = {};
-
+    const descriptionOnly = a.getAttribute("data-show") === 'description';
 
     // Retrieve the item.
     if (itemId) {
@@ -592,7 +593,7 @@ export class PbtaActorSheet extends ActorSheet {
       PbtaRolls.rollMove({actor: this.actor, data: null, formula: data.roll, templateData: templateData});
     }
     else if (itemId != undefined) {
-      item.roll();
+      item.roll({configureDialog: true, descriptionOnly});
     }
   }
 
