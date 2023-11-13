@@ -34,6 +34,7 @@ PBTA:
   Roll: "Roll"
   RollFormula: "Roll Formula"
   RollFormulaOverride: "Roll Formula Override"
+  RollFOrmulaHardCap: "Original modifier ({value}) was hard-capped."
   RollMove: "Roll Move"
   success: "Success"
   Tags: "Tags"
