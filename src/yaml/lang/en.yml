@@ -41,6 +41,7 @@ PBTA:
   TagsHelp: "(Use tab to autocomplete, commas to create new tags, and double click a tag to edit it)"
   title: "Powered by the Apocalypse"
   Uses: "Uses"
+  ViewPlaybook: "View playbook"
   Weight: "Weight"
   Wt: "Wt"
   Common:
