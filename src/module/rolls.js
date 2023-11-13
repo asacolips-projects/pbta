@@ -436,23 +436,19 @@ export class PbtaRolls {
 
 
       if (formula != null) {
-        // Hard-cap the modifiers if the sytsem calls for it.
-        // For example, Masks p32:
-        // > You can never roll with more than +4, and less than -3, no matter
-        // > what penalties or bonuses you’d have.
-        let systemMinMod = game.pbta.sheetConfig.minMod ?? false;
-        let systemMaxMod = game.pbta.sheetConfig.maxMod ?? false;
-        if (systemMinMod && systemMaxMod) {
-          let [baseFormula, modifierString] = formula.split(/\+(.*)/s);
-          // This should be a string of integers joined with + and -. This
-          // should be safe to eval.
-          let totalMod = eval(modifierString ?? 0);
-          totalMod = Math.max(systemMinMod, Math.min(systemMaxMod, totalMod));
-          // Admittedly, this flattens the mod visible in the chat log; I'm not
-          // sure of the best way to get around this. Perhaps we could do this:
-          // clamp the mod as we currently are, then put the whole mod formula
-          // and also an explanatory note in the label part of the formula?
-          formula = `${formula}+${totalMod}`;
+        // Hard-cap the modifiers if the system calls for it.
+        let { minMod, maxMod } = game.pbta.sheetConfig;
+        if (minMod || maxMod) {
+          minMod ??= -Infinity;
+          maxMod ??= Infinity;
+          let [baseFormula, modifierString = "0"] = formula.split(/\+(.*)/s);
+          // This should be a string of integers joined with + and -. This should be safe to eval.
+          let originalMod = eval(modifierString);
+          if (originalMod < minMod || originalMod > maxMod) {
+            let totalMod = Math.clamped(originalMod, minMod, maxMod);
+            formula = `${baseFormula}+${totalMod}`;
+            templateData.originalMod = originalMod;
+          }
         }
 
         // Catch wonky operators like "4 + - 3".
