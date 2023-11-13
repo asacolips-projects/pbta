@@ -8,6 +8,9 @@
     {{#if stat}}
       <div class="row"><em>{{stat}}{{#if statMod}} ({{numberFormat statMod decimals=0 sign=true}}){{/if}}</em></div>
     {{/if}}
+    {{#if originalMod includeZero=true}}
+      <div class="row"><em>{{localize "PBTA.RollFOrmulaHardCap" value=(numberFormat originalMod decimals=0 sign=true)}}</em></div>
+    {{/if}}
     {{!-- Flavor, trigger, and details. --}}
     {{#if flavor}}<div class="row"><em>{{flavor}}</em></div>{{/if}}
     {{#if trigger}}<div class="row"><strong>Trigger:</strong> {{trigger}}</div>{{/if}}

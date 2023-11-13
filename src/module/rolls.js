@@ -122,7 +122,7 @@ export class PbtaRolls {
       };
     });
     conditionGroups = conditionGroups.filter(c => c.conditions.length > 0);
-    if (conditionGroups.length > 0) needsDialog = true;
+    if (conditionGroups.length > 0 && item.system.rollType !== '') needsDialog = true;
 
     // Prepare the base set of options used for the roll dialog.
     let dialogOptions = {
@@ -436,8 +436,24 @@ export class PbtaRolls {
 
 
       if (formula != null) {
+        // Hard-cap the modifiers if the system calls for it.
+        let { minMod, maxMod } = game.pbta.sheetConfig;
+        if (minMod || maxMod) {
+          minMod ??= -Infinity;
+          maxMod ??= Infinity;
+          let [baseFormula, modifierString = "0"] = formula.split(/\+(.*)/s);
+          // This should be a string of integers joined with + and -. This should be safe to eval.
+          let originalMod = eval(modifierString);
+          if (originalMod < minMod || originalMod > maxMod) {
+            let totalMod = Math.clamped(originalMod, minMod, maxMod);
+            formula = `${baseFormula}+${totalMod}`;
+            templateData.originalMod = originalMod;
+          }
+        }
+
         // Catch wonky operators like "4 + - 3".
         formula = formula.replace(/\+\s*\-/g, '-');
+
         // Do the roll.
         let roll = new Roll(`${formula}`, rollData);
         await roll.evaluate({async: true});

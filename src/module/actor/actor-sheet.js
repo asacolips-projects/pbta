@@ -370,6 +370,9 @@ export class PbtaActorSheet extends ActorSheet {
     html.find('.rollable').on('click', this._onRollable.bind(this));
     html.find('.showable').on('click', this._onRollable.bind(this));
 
+    // // View playbook.
+    html.find('.view-playbook').on('click', this._onViewPlaybook.bind(this));
+
     // // Toggle look.
     html.find('.toggle--look').on('click', this._toggleLook.bind(this, html));
 
@@ -591,6 +594,22 @@ export class PbtaActorSheet extends ActorSheet {
     }
     else if (itemId != undefined) {
       item.roll({configureDialog: true, descriptionOnly});
+    }
+  }
+
+  /**
+ * Listen for click events on view playbook.
+ * @param {MouseEvent} event
+ */
+  async _onViewPlaybook(event) {
+    // Initialize variables.
+    event.preventDefault();
+    const a = event.currentTarget;
+    const selectedPlaybook = a.getAttribute("data-playbook");
+    const playbooks = await PbtaPlaybooks.getPlaybooks(false);
+    const foundPlaybook = playbooks.find(playbook => playbook.name === selectedPlaybook);
+    if (foundPlaybook) {
+      foundPlaybook.sheet.render(true);
     }
   }
 

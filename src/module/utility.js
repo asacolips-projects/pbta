@@ -218,7 +218,7 @@ export class PbtaUtility {
         newConfig.rollFormula = validRoll ? rollFormula.trim() : '';
       }
 
-      if (k == 'statToggle') {
+      else if (k == 'statToggle') {
         if (!v) {
           newConfig.statToggle = false;
         }
@@ -238,7 +238,7 @@ export class PbtaUtility {
         }
       }
 
-      if (k == "rollResults") {
+      else if (k == "rollResults") {
         newConfig.rollResults = {};
         // Set result ranges.
         for (let [rollKey, rollSetting] of Object.entries(v)) {
@@ -297,8 +297,18 @@ export class PbtaUtility {
         }
       }
 
+      else if (k == "minMod") {
+        newConfig.minMod = v;
+
+      }
+      else if (k == "maxMod") {
+        newConfig.maxMod = v;
+      }
+
+
+
       // Actors.
-      if (v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
+      else if (v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
         let actorType = {};
         if (v.stats) {
           actorType.stats = {};

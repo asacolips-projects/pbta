@@ -81,6 +81,7 @@ PBTA.Dialog.Prompt2: movimento.
 PBTA.Dialog.ChooseConditions: 'Escolha todos os modificadores condicionais que se
   aplicam:'
 PBTA.RollMove: Rolagem de Movimento
+PBTA.RollMode: "Modo de Rolar"
 PBTA.Ask: Perguntar
 PBTA.AskTitle: Escolha um Atributo
 PBTA.Dialog.Ask1: Escolha um Atributo para esse
@@ -117,4 +118,5 @@ PBTA.NoTemplate: Sem Template
 PBTA.Normal: Normal
 PBTA.Advantage: Vantagem
 PBTA.Disadvantage: Desvantagem
-PBTA.ConditionsApplied: 'Condições Aplicadas:'
+PBTA.ConditionsApplied: "Condições Aplicadas:"
+PBTA.ViewPlaybook: "Ver cartilha"
