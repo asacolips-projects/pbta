@@ -5,37 +5,28 @@
   padding: 0 20px;
 
   .item {
-    border: 2px solid transparent;
-    border-bottom: 2px solid $c-black;
-    background: $c-black;
+    border-radius: 4px 4px 0 0;
+    background: #999;
     color: $c-white;
-    margin: 0 10px -2px;
+    margin: 0 10px;
     padding: 4px;
-    line-height: 1.4;
+    line-height: 1.6;
     text-transform: uppercase;
     font-size: 18px;
     flex: 1;
 
     &:hover,
     &:focus {
-      background: $c-white;
+      background: #BBB;
       color: $c-black;
-      border: 2px solid $c-black;
       text-shadow: none;
     }
 
     &.active {
-      background: #999;
+      background: $c-black;
       color: $c-white;
-      border-bottom: 2px solid $c-black;
       text-shadow: none;
       font-weight: bold;
-
-      &:hover,
-      &:focus {
-        background: $c-white;
-        color: $c-black;
-      }
     }
   }
 }
