@@ -122,7 +122,7 @@ export class PbtaRolls {
       };
     });
     conditionGroups = conditionGroups.filter(c => c.conditions.length > 0);
-    if (conditionGroups.length > 0) needsDialog = true;
+    if (conditionGroups.length > 0 && item.system.rollType !== '') needsDialog = true;
 
     // Prepare the base set of options used for the roll dialog.
     let dialogOptions = {
