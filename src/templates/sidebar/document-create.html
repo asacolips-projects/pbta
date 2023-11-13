@@ -1,11 +1,11 @@
 <form id="document-create" autocomplete="off" onsubmit="event.preventDefault();">
     <div class="form-group">
-        <label>{{localize "Name"}}</label>
+        <label>{{localize "PBTA.Name"}}</label>
         <input type="text" name="name" placeholder="{{name}}"/>
     </div>
 
     <div class="form-group">
-        <label>{{localize "Type"}}</label>
+        <label>{{localize "PBTA.Type"}}</label>
         <select name="type">
         {{#each types}}
             <option value="{{this.value}}" data-type="{{this.type}}">{{this.label}}</option>

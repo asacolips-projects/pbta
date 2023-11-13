@@ -20,6 +20,7 @@ PBTA:
   MoveGroupHelp: "Multiple moves with the same move-group will be either/or selections when creating a new character using the character builder."
   Moves: "Moves"
   MoveType: "Move Type"
+  Name: "Name"
   New: "New"
   Normal: "Normal"
   NoTemplate: "No Template"
@@ -36,10 +37,12 @@ PBTA:
   RollFormulaOverride: "Roll Formula Override"
   RollFOrmulaHardCap: "Original modifier ({value}) was hard-capped."
   RollMove: "Roll Move"
+  RollMode: "Roll Mode"
   success: "Success"
   Tags: "Tags"
   TagsHelp: "(Use tab to autocomplete, commas to create new tags, and double click a tag to edit it)"
   title: "Powered by the Apocalypse"
+  Type: "Type"
   Uses: "Uses"
   ViewPlaybook: "View playbook"
   Weight: "Weight"
@@ -86,20 +89,20 @@ PBTA:
       name: "Clear ADV/DIS After Rolls"
       hint: "If enabled, advantage and disadvantage choices on the character sheet will be reset to normal after each roll (similar to Forward)."
     hideRollFormula:
-      name: Hide roll formula
-      hint: Hides custom roll formula input on character sheets.
+      name: "Hide roll formula"
+      hint: "Hides custom roll formula input on character sheets."
     hideForward:
-      name: Hide forward
-      hint: Hides forward input on character sheets.
+      name: "Hide forward"
+      hint: "Hides forward input on character sheets."
     hideOngoing:
-      name: Hide ongoing
-      hint: Hides ongoing input on character sheets.
+      name: "Hide ongoing"
+      hint: "Hides ongoing input on character sheets."
     hideRollMode:
-      name: Hide roll mode
-      hint: Hides roll mode override (normal/advantage/disadvantage) on character sheets.
+      name: "Hide roll mode"
+      hint: "Hides roll mode override (normal/advantage/disadvantage) on character sheets."
     hideUses:
-      name: Hide uses
-      hint: Hides uses remaining for each move on the move's summary for characters and NPCs.
+      name: "Hide uses"
+      hint: "Hides uses remaining for each move on the move's summary for characters and NPCs."
     itemIcons:
       name: "Enable Item Icons"
       hint: "Enable visual icons for moves, spells, and equipment in character sheets (requires browser reload)."

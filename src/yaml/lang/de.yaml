@@ -23,6 +23,7 @@ PBTA:
     angeboten.
   Moves: Spielzug
   MoveType: Spielzugart
+  Name: "Name"
   New: Neu
   Normal: Normal
   NoTemplate: Ohne Vorlage
@@ -38,11 +39,13 @@ PBTA:
   RollFormula: WÃ¼rfelmodus
   RollFormulaOverride: Ãœberschreibung des WÃ¼rfelmodus
   RollMove: FÃ¼hre einen Spielzug aus
+  RollMode: "WÃ¼rfelmodus"
   success: Erfolg
   Tags: Tags
   TagsHelp: "(Nutze Tab zur AutovervollstÃ¤ndigung, Kommas um neue Tags zu erstellen
     und Doppelklick um einen Tag zu editieren.)"
   title: Powered by the Apocalypse
+  Type: "Typ"
   Uses: Nutzungen
   ViewPlaybook: "View playbook"
   Weight: Gewicht
