@@ -424,7 +424,7 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
 
   // Setup default creation data
   let type = collection.tabName === "actors" ? 'character' : 'item';
-  let name = `${game.i18n.localize("PBTA.New")} ${ent}`;
+  let defaultName = game.i18n.format("DOCUMENT.New", {type: ent});
 
   // Build an array of types for the form, including an empty default.
   let types = actorTypes.map(a => {
@@ -445,7 +445,7 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
   };
   const dlg = await renderTemplate(`systems/pbta/templates/sidebar/document-create.html`, templateData);
   return Dialog.confirm({
-    title: `${game.i18n.localize("PBTA.Create")} ${name}`,
+    title: game.i18n.format("DOCUMENT.Create", {type: ent}),
     content: dlg,
     yes: html => {
       const form = html[0].querySelector("form");
@@ -458,13 +458,16 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
         tplBase.customType = actorType;
       }
       // Initialize create data on the object.
+      if (!form.name.value) {
+        const count = game.collections.get(cls.documentName)?.size;
+        if ( count > 0 ) defaultName += ` (${count + 1})`;
+      }
       let createData = {
-        name: name,
+        name: form.name.value || defaultName,
         type: baseType,
         system: foundry.utils.deepClone(tplBase),
         folder: event.currentTarget.dataset.folder
       };
-      createData.name = form.name.value;
       // Create the actor.
       return cls.create(createData, {renderSheet: true});
     },
