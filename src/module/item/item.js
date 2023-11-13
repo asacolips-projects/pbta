@@ -51,8 +51,8 @@ export class ItemPbta extends Item {
    * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
    * @return {Promise}
    */
-  async roll({ configureDialog = true } = {}) {
-    PbtaRolls.rollMove({actor: this.actor, data: this});
+  async roll({ configureDialog = true, descriptionOnly = false } = {}) {
+    PbtaRolls.rollMove({actor: this.actor, data: this, parameters: { configureDialog, descriptionOnly }});
   }
 
   /** @inheritdoc */
