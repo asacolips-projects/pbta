@@ -43,6 +43,7 @@ PBTA:
   title: "Propulsé par l'Apocalypse"
   Type: "Type"
   Uses: "Utilisations"
+  ViewPlaybook: "Voir le livret"
   Weight: "Poids"
   Wt: "Pds"
   Common:

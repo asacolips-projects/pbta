@@ -6,12 +6,17 @@
       <header class="sheet-header">
           <div class="sheet-header__fields">
               <input class="input--title" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
-              <input class="input--title charplaybook" name="system.details.playbook" type="text" value="{{system.details.playbook}}" placeholder="Playbook" list="playbooks"/>
-              <datalist id="playbooks">
-                {{#each system.playbooks as |playbook id|}}
-                <option value="{{playbook}}" />
-                {{/each}}
-              </datalist>
+              <span class="sheet-playbook">
+                <span class="view-playbook" data-playbook="{{system.details.playbook}}" title="{{localize 'PBTA.ViewPlaybook'}}"">
+                  <i class="fas fa-eye"></i>
+                </span>
+                <input class="input--title charplaybook" name="system.details.playbook" type="text" value="{{system.details.playbook}}" placeholder="Playbook" list="playbooks"/>
+                <datalist id="playbooks">
+                  {{#each system.playbooks as |playbook id|}}
+                  <option value="{{playbook}}">
+                  {{/each}}
+                </datalist>
+              </span>
               {{!-- <div class="flex-item flex-item--level">
                 <label for="system.atributes.level.value">{{ localize "PBTA.Level" }}</label>
                 <input name="system.attributes.level.value" type="text" value="{{system.attributes.level.value}}" placeholder="Level" data-dtype="Number"/>

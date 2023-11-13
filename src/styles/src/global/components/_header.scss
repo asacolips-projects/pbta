@@ -127,4 +127,38 @@
   gap: 10px;
   margin: 10px 0;
   padding: 0;
+
+  .sheet-playbook {
+    display: flex;
+  }
+
+  .charplaybook {
+    width: calc(100% - 50px);
+    border-radius: 0 4px 4px 0;
+    margin-left: 0;
+    margin-right: 10px;
+  }
+
+  .view-playbook {
+    border-radius: 4px 0 0 4px;
+    margin-right: 0;
+    overflow: hidden;
+    background: $c-black;
+    color: $c-white;
+    width: 32px;
+    height: 32px;
+    line-height: 2.3;
+    text-align: center;
+    opacity: 0.5;
+    transition: all ease-in-out 0.25s;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    i {
+      vertical-align: middle;
+    }
+  }
 }
