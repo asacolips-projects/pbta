@@ -464,7 +464,7 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Retrieve the attribute.
     let prop = $self.data('name');
-    let attr = getProperty(this.actor, prop);
+    let attr = deepclone(getProperty(this.actor, prop));
 
     // Step is offset by 1 (0 index). Adjust and fix.
     step++;
