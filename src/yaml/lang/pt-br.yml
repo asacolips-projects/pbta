@@ -1,4 +1,11 @@
 Powered by the Apocalypse: Powered by the Apocalypse
+TYPES:
+  Item:
+    move: "Movimento"
+    npcMove: "Movimento de NPC"
+    equipment: "Equipamento"
+    playbook: "Cartilha"
+    tag: "Tag"
 PBTA:
   title: Powered by the Apocalypse
   description: Jogue qualquer sistema PbtA no FoundryVTT!
