@@ -1,4 +1,14 @@
 Powered by the Apocalypse: "Powered by the Apocalypse"
+TYPES:
+  Actor:
+    character: "Character"
+    npc: "NPC"
+  Item:
+    move: "Move"
+    npcMove: "NPC Move"
+    equipment: "Equipment"
+    playbook: "Playbook"
+    tag: "Tag"
 PBTA:
   Advantage: "Advantage"
   Ask: "Ask"

@@ -308,8 +308,11 @@ export class PbtaUtility {
 
 
       // Actors.
-      else if (v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
+      else if (v.label || v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
         let actorType = {};
+        if (v.label) {
+          actorType.label = game.i18n.localize(v.label);
+        }
         if (v.stats) {
           actorType.stats = {};
           for (let [statKey, statLabel] of Object.entries(v.stats)) {

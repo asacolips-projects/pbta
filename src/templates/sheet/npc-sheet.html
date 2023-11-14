@@ -59,7 +59,7 @@
                     <h2 class="cell__title">
                       <label class="item-group-label">{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../moveTypes moveKey}}{{/if}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span></label>
                       <div class="item-controls">
-                        <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="npcMove" data-moveType="{{moveKey}}">
+                        <button type="button" class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="npcMove" data-moveType="{{moveKey}}">
                           <i class="fas fa-plus"></i>
                         </button>
                       </div>

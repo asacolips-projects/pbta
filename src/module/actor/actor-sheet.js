@@ -404,7 +404,7 @@ export class PbtaActorSheet extends ActorSheet {
     html.find('.item-meta .tag--uses').on('contextmenu', this._onUsagesControl.bind(this, 'system.uses', -1));
 
     // Resources.
-    html.find('.resource-control').click(this._onResouceControl.bind(this));
+    html.find('.resource-control').on('click', this._onResouceControl.bind(this));
 
     let isOwner = this.actor.isOwner;
 
@@ -703,7 +703,9 @@ export class PbtaActorSheet extends ActorSheet {
 
   async _activateTagging(html) {
     // Build the tags list.
-    let tags = game.items.filter(item => item.type == 'tag');
+    let tags = game.items.filter(item => item.type == 'tag').map(item => {
+      return item.name;
+    });;
     for (let c of game.packs) {
       if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name == 'tags') {
         let items = c?.index ? c.index.map(indexedItem => {
