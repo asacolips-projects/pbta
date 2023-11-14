@@ -20,6 +20,8 @@ export class PbtaActorSheet extends ActorSheet {
     });
   }
 
+  static unsupportedItemTypes = new Set(["npcMove", "tag"]);
+
   /* -------------------------------------------- */
 
   /** @override */
@@ -669,6 +671,22 @@ export class PbtaActorSheet extends ActorSheet {
     const li = event.currentTarget.closest(".item");
     const item = this.actor.items.get(li.dataset.itemId);
     item.sheet.render(true);
+  }
+
+  /* -------------------------------------------- */
+
+  async _onDropItemCreate(itemData) {
+    let items = itemData instanceof Array ? itemData : [itemData];
+    const toCreate = [];
+    for ( const item of items ) {
+      if ( this.constructor.unsupportedItemTypes.has(item.type) ) {
+        continue;
+      }
+      toCreate.push(item);
+    }
+
+    // Create the owned items as normal
+    return this.actor.createEmbeddedDocuments("Item", toCreate);
   }
 
   /* -------------------------------------------- */

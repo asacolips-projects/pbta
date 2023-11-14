@@ -16,4 +16,18 @@ export class PbtaActorNpcSheet extends PbtaActorSheet {
     });
   }
 
+  static unsupportedItemTypes = new Set(["move", "playbook"]);
+
+  async _onDropItemCreate(itemData) {
+    let items = itemData instanceof Array ? itemData : [itemData];
+    const toCreate = [];
+    for ( const item of items ) {
+      if ( this.constructor.unsupportedItemTypes.has(item.type) ) {
+        continue;
+      }
+      toCreate.push(item);
+    }
+    // Create the owned items as normal
+    return this.actor.createEmbeddedDocuments("Item", toCreate);
+  }
 }
