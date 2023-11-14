@@ -187,18 +187,18 @@ Hooks.once("init", async function() {
 });
 
 Hooks.once("ready", async function() {
-  
+
   // Override sheet config.
   if (game.user.isGM) {
     // Store default actor types for later.
     game.pbta.defaultModel = game.system.model;
-    
+
     // Force sheet config override off, unless a module changes it.
     await game.settings.set('pbta', 'sheetConfigOverride', false);
-    
+
     // Allow modules to override the sheet config.
     Hooks.callAll('pbtaSheetConfig');
-    
+
     // @todo find something better than this timeout hack.
     const timeout = 1000;
     setTimeout(() => {
@@ -429,10 +429,14 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
   // Build an array of types for the form, including an empty default.
   let types = actorTypes.map(a => {
     // TODO: Make these values different.
+    let label = game.pbta.sheetConfig.actorTypes[a].label ?? game.i18n.localize(`TYPES.Actor.${a}`);
+    if (label === `TYPES.Actor.${a}`) {
+      label = a;
+    }
     return {
       value: a,
       type: a == 'character' || a == 'npc' ? a : 'other',
-      label: a
+      label
     }
   });
 
