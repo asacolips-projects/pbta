@@ -71,7 +71,7 @@
           </div>
 
           {{!-- TODO: Re-enable the look toggle later --}}
-          {{!-- <button class="toggle toggle--look"><i class="fas fa-chevron-left"></i></button> --}}
+          {{!-- <button type="button" class="toggle toggle--look"><i class="fas fa-chevron-left"></i></button> --}}
         </section>
 
         {{!-- Main --}}
@@ -122,9 +122,9 @@
                     <div class="cell cell--forward">
                         <label class="cell__title">{{localize "PBTA.Forward"}}</label>
                         <div class="cell__wrapper">
-                          <button class="resource-control resource-decrease" data-action="decrease" data-attr="resources.forward.value">-</button>
+                          <button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.forward.value">-</button>
                           <input type="number" name="system.resources.forward.value" value="{{numberFormat system.resources.forward.value decimals=0 sign=false}}" data-dtype="Number"/>
-                          <button class="resource-control resource-increase" data-action="increase" data-attr="resources.forward.value">+</button>
+                          <button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.forward.value">+</button>
                         </div>
                       </div>
                     {{/if}}
@@ -133,9 +133,9 @@
                       <div class="cell cell--ongoing">
                         <label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
                         <div class="cell__wrapper">
-                          <button class="resource-control resource-decrease" data-action="decrease" data-attr="resources.ongoing.value">-</button>
+                          <button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.ongoing.value">-</button>
                           <input type="number" name="system.resources.ongoing.value" value="{{numberFormat system.resources.ongoing.value decimals=0 sign=false}}" data-dtype="Number"/>
-                          <button class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
+                          <button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
                         </div>
                       </div>
                     {{/if}}
@@ -183,7 +183,7 @@
                   {{!-- <h2 class="cell__title">
                     <label>{{localize "PBTA.Equipment"}}</label>
                     <div class="item-controls">
-                      <button class="item-control item-create" title='{{localize "PBTA.Equipment"}}' data-type="equipment">
+                      <button type="button" class="item-control item-create" title='{{localize "PBTA.Equipment"}}' data-type="equipment">
                         <i class="fas fa-plus"></i>
                       </button>
                     </div>
