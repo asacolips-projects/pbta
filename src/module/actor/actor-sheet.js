@@ -20,6 +20,8 @@ export class PbtaActorSheet extends ActorSheet {
     });
   }
 
+  static unsupportedItemTypes = new Set(["npcMove", "tag"]);
+
   /* -------------------------------------------- */
 
   /** @override */
@@ -464,7 +466,7 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Retrieve the attribute.
     let prop = $self.data('name');
-    let attr = getProperty(this.actor, prop);
+    let attr = deepclone(getProperty(this.actor, prop));
 
     // Step is offset by 1 (0 index). Adjust and fix.
     step++;
@@ -669,6 +671,22 @@ export class PbtaActorSheet extends ActorSheet {
     const li = event.currentTarget.closest(".item");
     const item = this.actor.items.get(li.dataset.itemId);
     item.sheet.render(true);
+  }
+
+  /* -------------------------------------------- */
+
+  async _onDropItemCreate(itemData) {
+    let items = itemData instanceof Array ? itemData : [itemData];
+    const toCreate = [];
+    for ( const item of items ) {
+      if ( this.constructor.unsupportedItemTypes.has(item.type) ) {
+        continue;
+      }
+      toCreate.push(item);
+    }
+
+    // Create the owned items as normal
+    return this.actor.createEmbeddedDocuments("Item", toCreate);
   }
 
   /* -------------------------------------------- */
