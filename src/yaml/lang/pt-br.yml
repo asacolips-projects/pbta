@@ -7,16 +7,32 @@ PBTA:
   success: Successo
   Playbook: Arquétipo
   Settings:
-    button.help: Ajuda do Sistema Pbta e Tutorial
-    stats.name: Atributos
-    stats.hint: Insira uma lista de atributos/habilidades separadas por
-      vírgula, como "For,Des,Con,Int,Sab,Car"
-    advForward.name: Limpar VAN/DES depois das rolagens
-    advForward.hint: Se habilitado, escolhas de vantagem e desvantagem na
-      ficha serão resetados ao normal após cada rolagem (similar a Adiante).
-    itemIcons.name: Habilitar ícones nos Itens
-    itemIcons.hint: Habilitar ícones visuais nos movimentos, magias e equipamentos
-      nas fichas de personagem (requer Atualizar).
+    button:
+      help: Ajuda do Sistema Pbta e Tutorial
+    stats:
+      name: Atributos
+      hint: Insira uma lista de atributos/habilidades separadas por vírgula, como "For,Des,Con,Int,Sab,Car"
+    advForward:
+      name: Limpar VAN/DES depois das rolagens
+      hint: Se habilitado, escolhas de vantagem e desvantagem na ficha serão resetados ao normal após cada rolagem (similar a Adiante).
+    hideRollFormula:
+      name: "Esconder fórmulas de rolagem"
+      hint: "Esconde a seção de \"Rolar com a Fórmula\" nas fichas de personagem."
+    hideForward:
+      name: "Esconder Adiante"
+      hint: "Esconde a seção \"Adiante\" nas fichas de personagem."
+    hideOngoing:
+      name: "Esconder Constante"
+      hint: "Esconde a seção \"Constante\" nas fichas de personagem."
+    hideRollMode:
+      name: "Esconder Modo de Rolagem"
+      hint: "Esconde a seção \"Modo de Rolagem\" nas fichas de personagem."
+    hideUses:
+      name: "Esconder Usos"
+      hint: "Esconde os usos restantes de cada movimento no sumário de movimentos nas fichas de personagens."
+    itemIcons:
+      name: Habilitar ícones nos Itens
+      hint: Habilitar ícones visuais nos movimentos, magias e equipamentos nas fichas de personagem (requer Atualizar).
     sheetConfig:
       label: Configuração da Ficha Pbta
       name: Configure as Fichas de Personagem
@@ -90,7 +106,7 @@ PBTA:
     Ask1: Escolha um Atributo para esse
     Ask2: movimento.
   RollMove: Rolagem de Movimento
-  RollMode: "Modo de Rolar"
+  RollMode: "Modo de Rolagem"
   Ask: Perguntar
   AskTitle: Escolha um Atributo
   Formula: Fórmula de Rolagem Customizada
