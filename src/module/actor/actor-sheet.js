@@ -404,7 +404,7 @@ export class PbtaActorSheet extends ActorSheet {
     html.find('.item-meta .tag--uses').on('contextmenu', this._onUsagesControl.bind(this, 'system.uses', -1));
 
     // Resources.
-    html.find('.resource-control').click(this._onResouceControl.bind(this));
+    html.find('.resource-control').on('click', this._onResouceControl.bind(this));
 
     let isOwner = this.actor.isOwner;
 
