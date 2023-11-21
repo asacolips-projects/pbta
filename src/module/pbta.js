@@ -27,8 +27,6 @@ import { PbtaUtility } from "./utility.js";
 /* -------------------------------------------- */
 
 Hooks.once("init", async function() {
-  console.log(`Initializing Powered by the Apocalypse!`);
-
   game.pbta = {
     ActorPbta,
     ItemPbta,
@@ -51,21 +49,25 @@ Hooks.once("init", async function() {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("pbta", PbtaActorSheet, {
     types: ['character'],
-    makeDefault: true
+    makeDefault: true,
+    label: "PBTA.SheetClassCharacter"
   });
   Actors.registerSheet("pbta", PbtaActorOtherSheet, {
     types: ['other'],
-    makeDefault: true
+    makeDefault: true,
+    label: "PBTA.SheetClassOther"
   });
   Actors.registerSheet("pbta", PbtaActorNpcSheet, {
     types: ['npc'],
-    makeDefault: true
+    makeDefault: true,
+    label: "PBTA.SheetClassNPC"
   });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("pbta", PbtaItemSheet, { makeDefault: false });
   Items.registerSheet("pbta", PbtaPlaybookItemSheet, {
     types: ['playbook'],
-    makeDefault: true
+    makeDefault: true,
+    label: "PBTA.SheetClassItem"
   });
 
   PbtaRegisterHelpers.init();
