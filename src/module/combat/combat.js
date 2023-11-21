@@ -339,13 +339,6 @@ export class CombatSidebarPbta {
         // in the combat tracker HTML template.
         combatant.editable = isOwner || game.user.isGM;
 
-        // // Build the radial progress circle settings for the template.
-        // combatant.healthSvg = PbtaUtility.getProgressCircle({
-        //   current: combatant.actor.system.attributes.hp.value,
-        //   max: combatant.actor.system.attributes.hp.max,
-        //   radius: 16
-        // });
-
         // If this is the GM or the owner, push to the combatants list.
         // Otherwise, only push if the token isn't hidden in the scene.
         if (game.user.isGM || isOwner || !combatant.token.hidden) {
