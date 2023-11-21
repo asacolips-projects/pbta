@@ -5,23 +5,22 @@
  */
 
 // Import Modules
-import { PBTA } from "./config.js";
-import { PbtaPlaybooks } from "./config.js";
-import { ActorPbta } from "./actor/actor.js";
-import { ItemPbta } from "./item/item.js";
-import { PbtaItemSheet } from "./item/item-sheet.js";
-import { PbtaActorSheet } from "./actor/actor-sheet.js";
-import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
 import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
-import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
-import { PbtaRegisterHelpers } from "./handlebars.js";
-import { PbtaUtility } from "./utility.js";
-import { PbtaRolls } from "./rolls.js";
+import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
+import { PbtaActorSheet } from "./actor/actor-sheet.js";
+import { ActorPbta } from "./actor/actor.js";
 import { CombatSidebarPbta } from "./combat/combat.js";
+import { PBTA, PbtaPlaybooks } from "./config.js";
+import { PbtaRegisterHelpers } from "./handlebars.js";
+import { PbtaItemSheet } from "./item/item-sheet.js";
+import { ItemPbta } from "./item/item.js";
+import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
 import { MigratePbta } from "./migrate/migrate.js";
-import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 import { PbtaActorTemplates } from "./pbta/pbta-actors.js";
+import { PbtaRolls } from "./rolls.js";
+import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
+import { PbtaUtility } from "./utility.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
