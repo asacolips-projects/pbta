@@ -65,16 +65,19 @@
             </label>
           {{/each}}
         </ul>
-      {{!-- TODO: Add ListOne type. --}}
-      {{!-- {{else if (eq attr.type "ListOne") }}
-        <ul class="cell__checkboxes flexcol">
+        {{else if (eq attr.type "ListOne") }}
+        <ul class="cell__radio flexcol">
           {{#each attr.options as |option optionKey|}}
-            <label>
-              <input type="radio" class="attr-list" data-name="system.{{../../group}}.{{key}}.value" value="{{optionKey}}" {{checked ../attr.value}}>
-              {{option}}
+          <label class="flexrow">
+            <input type="radio" class="attr-list" value="{{@index}}" name="system.{{../../group}}.{{key}}.value" {{#ifEquals attr.value @index}}checked{{/ifEquals}} />
+            {{#if (eq option.label "[Text]")}}
+              <input type="text" class="input input-title" id="system.{{../../group}}.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
+            {{else}}
+              {{option.label}}
+            {{/if}}
             </label>
           {{/each}}
-        </ul> --}}
+        </ul>
       {{else if (eq attr.type "Roll")}}
         <div class="cell__roll">
           <span class="attr-icon attr-rollable rollable" data-roll="{{attr.value}}" data-label="{{attr.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>

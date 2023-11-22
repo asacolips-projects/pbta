@@ -202,6 +202,24 @@
   }
 }
 
+.cell__radio {
+  input[type="radio"] {
+    margin-top: 2px;
+    flex: 0 0 20px;
+  }
+
+  padding-left: 0;
+
+  label.flexrow {
+    align-items: center;
+    justify-content: flex-start;
+
+    .input-title {
+      text-align: left;
+    }
+  }
+}
+
 .cell__description--attr {
   font-size: 12px;
   margin-top: -4px;

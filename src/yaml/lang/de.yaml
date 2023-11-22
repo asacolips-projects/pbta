@@ -148,6 +148,7 @@ PBTA:
         FÃ¼r Fragen und Hilfestellung steht auÃŸerdem der #powered-by-the-apocalypse
         Kanal im offiziellen Foundry VTT Discord zur VerfÃ¼gung.'
       options: 'Listenoptionen geÃ¤ndert (Werte werden beibehalten):'
+      values: "Value in radio list removed (value will be reset to first element):"
       resetDefaults: Standardeinstellungen zurÃ¼cksetzen
       saveConfiguration: Speichern
       title: Charakterbogen konfigurieren

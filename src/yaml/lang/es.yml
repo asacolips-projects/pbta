@@ -125,6 +125,7 @@ PBTA:
       notes2: "Con el tiempo crearemos una interfaz gráfica de usuario (GUI) para crear hojas de personaje, pero por ahora tendrás que introducir los datos de la hoja de personaje en formato TOML. Escribir TOML es similar a trabajar con archivos .ini habituales en la configuración de mods para juegos de PC."
       notes3: "Lee la documentación enlazada a continuación antes de configurar tu ficha. También puedes dirigirte al canal #powered-by-the-apocalypse del Discord principal de Foundry Virtual Tabletop para resolver dudas y obtener ayuda."
       options: "List options changed (values will be preserved):"
+      values: "Value in radio list removed (value will be reset to first element):"
       resetDefaults: "Restablecer a predeterminados"
       saveConfiguration: "Guardar configuración"
       title: "Configurar hojas de personaje"
