@@ -71,10 +71,10 @@ export class PbtaActorTemplates {
     // Apply updates to actors.
     if (updates.length > 0) {
       try {
-        await Actor.updateDocuments(updates, options);
+        await Actor.updateDocuments(updates);
         success = true;
       } catch (error) {
-        console.log(error);
+        console.error(error);
         success = false
       }
     }
@@ -115,7 +115,7 @@ export class PbtaActorTemplates {
         try {
           await s.updateEmbeddedDocuments('Token', tokenUpdates);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     });

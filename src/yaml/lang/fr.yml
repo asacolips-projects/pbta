@@ -125,6 +125,7 @@ PBTA:
       notes2: "Nous auront éventuellement une interface utilisateur graphique (GUI) pour créer les fiches de personnages mais pour l'instant, vous devez copier les fiches de personnages au format TOML. Créer vos fichiers TOML est similaire à la création de fichiers .ini, commun dans la configuration des jeux PC."
       notes3: "Lisez la documentation liée ci-dessous avant de configurer vos fiches. Vous pouvez également vous rendre sur le canal #powered-by-the-apocalypse du Discord principal de Foundry Virtual Tabletop Discord si vous avez des questions ou besoin d'assistance."
       options: "Liste des options modifiées (les valeurs seront conservées) :"
+      values: "Valeur sélectionnée dans la liste radio supprimée (La valeur sera réinitilisée à la première option):"
       resetDefaults: "Reéinitialiser les valeurs par défaut"
       saveConfiguration: "Sauvegarder la Configuration"
       title: "Configurer les fiches de personnages"

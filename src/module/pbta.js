@@ -188,7 +188,6 @@ Hooks.once("init", async function() {
 });
 
 Hooks.once("ready", async function() {
-
   // Override sheet config.
   if (game.user.isGM) {
     // Store default actor types for later.
@@ -396,14 +395,14 @@ function rollItemMacro(itemData) {
 /*  Document Creation Override                    */
 /* -------------------------------------------- */
 
-async function _onCreateDocument(event) {
+async function _onCreateEntry(event) {
   event.preventDefault();
   event.stopPropagation();
   return _pbtaDirectoryTemplates(this, event);
 }
 
-if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
-  ActorDirectory.prototype._onCreateDocument = _onCreateDocument; // For 0.8.x+
+if (typeof ActorDirectory.prototype._onCreateEntry !== 'undefined') {
+  ActorDirectory.prototype._onCreateEntry = _onCreateEntry; // For 0.8.x+
 }
 
 /**

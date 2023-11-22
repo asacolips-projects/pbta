@@ -27,8 +27,7 @@ PBTA.attrTypes = [
   "LongText",
   "Checkbox",
   "ListMany",
-  // TODO: Add ListOne type.
-  // "ListOne",
+  "ListOne",
   "Roll"
 ];
 

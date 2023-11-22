@@ -1,6 +1,5 @@
 import { PbtaActorTemplates } from '../pbta/pbta-actors.js';
 import { PbtaUtility } from '../utility.js';
-import { PbtaActorNpcSheet } from './actor-npc-sheet.js';
 
 /**
  * Extends the basic Actor class for Powered by the Apocalypse.
@@ -12,11 +11,7 @@ export class ActorPbta extends Actor {
    */
   prepareData() {
     super.prepareData();
-
     const actorData = this;
-    const data = actorData.system;
-    const flags = actorData.flags;
-
     if (actorData.type === 'character') this._prepareCharacterData(actorData);
   }
 
@@ -32,7 +27,7 @@ export class ActorPbta extends Actor {
     for (let group of groups) {
       for (let [attrKey, attrValue] of Object.entries(actorData.system[group])) {
         // ListMany field handling.
-        if (attrValue.type == 'ListMany') {
+        if (attrValue.type == 'ListMany' || attrValue.type == 'ListOne') {
           // Iterate over options.
           for (let [optK, optV] of Object.entries(attrValue.options)) {
             // If there's a multi-value field, we need to propagate its value up
@@ -83,7 +78,6 @@ export class ActorPbta extends Actor {
 
     const a = event.currentTarget;
     const data = a.dataset;
-    const actorData = actor.system;
     const itemId = $(a).parents('.item').attr('data-item-id');
     const item = actor.items.get(itemId);
     let formula = null;
