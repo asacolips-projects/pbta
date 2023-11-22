@@ -49,7 +49,7 @@
       {{else if (eq attr.type "ListMany") }}
         <ul class="cell__checkboxes flexcol">
           {{#each attr.options as |option optionKey|}}
-            <label class="flexrow">
+            <label class="flexrow" title="{{#if (eq option.label '[Text]')}}{{option.userLabel}}{{else}}{{option.label}}{{/if}}">
               {{#if option.values}}
                 {{#each option.values as |suboption suboptionKey|}}
                   <input type="checkbox" class="attr-list" name="system.{{../../../group}}.{{key}}.options.{{optionKey}}.values.{{suboptionKey}}.value" {{checked suboption.value}}/>
@@ -68,7 +68,7 @@
         {{else if (eq attr.type "ListOne") }}
         <ul class="cell__radio flexcol">
           {{#each attr.options as |option optionKey|}}
-          <label class="flexrow">
+          <label class="flexrow" class="flexrow" title="{{#if (eq option.label '[Text]')}}{{option.userLabel}}{{else}}{{option.label}}{{/if}}">
             <input type="radio" class="attr-list" value="{{@index}}" name="system.{{../../group}}.{{key}}.value" {{#ifEquals attr.value @index}}checked{{/ifEquals}} />
             {{#if (eq option.label "[Text]")}}
               <input type="text" class="input input-title" id="system.{{../../group}}.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
