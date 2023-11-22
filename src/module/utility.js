@@ -308,8 +308,11 @@ export class PbtaUtility {
 
 
       // Actors.
-      else if (v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
+      else if (v.label || v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
         let actorType = {};
+        if (v.label) {
+          actorType.label = game.i18n.localize(v.label);
+        }
         if (v.stats) {
           actorType.stats = {};
           for (let [statKey, statLabel] of Object.entries(v.stats)) {
@@ -567,54 +570,5 @@ export class PbtaUtility {
     game.pbta.equipment = items;
 
     return items;
-  }
-
-  static getAbilityMod(abilityScore) {
-    let abilityMod = 0;
-
-    if (abilityScore >= 18) {
-      abilityMod = 3;
-    }
-    else if (abilityScore > 15) {
-      abilityMod = 2;
-    }
-    else if (abilityScore > 12) {
-      abilityMod = 1;
-    }
-    else if (abilityScore > 8) {
-      abilityMod = 0;
-    }
-    else if (abilityScore > 5) {
-      abilityMod = -1;
-    }
-    else if (abilityScore > 3) {
-      abilityMod = -2;
-    }
-    else {
-      abilityMod = -3;
-    }
-
-    return abilityMod;
-  }
-
-  static getProgressCircle({ current = 100, max = 100, radius = 16 }) {
-    let circumference = radius * 2 * Math.PI;
-    let percent = current < max ? current / max : 1;
-    let percentNumber = percent * 100;
-    let offset = circumference - (percent * circumference);
-    let strokeWidth = 4;
-    let diameter = (radius * 2) + strokeWidth;
-    let colorClass = Math.round((percent * 100) / 10) * 10;
-
-    return {
-      radius: radius,
-      diameter: diameter,
-      strokeWidth: strokeWidth,
-      circumference: circumference,
-      offset: offset,
-      position: diameter / 2,
-      color: 'red',
-      class: colorClass,
-    };
   }
 }

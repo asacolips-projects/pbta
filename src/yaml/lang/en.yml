@@ -1,4 +1,14 @@
 Powered by the Apocalypse: "Powered by the Apocalypse"
+TYPES:
+  Actor:
+    character: "Character"
+    npc: "NPC"
+  Item:
+    move: "Move"
+    npcMove: "NPC Move"
+    equipment: "Equipment"
+    playbook: "Playbook"
+    tag: "Tag"
 PBTA:
   Advantage: "Advantage"
   Ask: "Ask"
@@ -38,6 +48,10 @@ PBTA:
   RollFOrmulaHardCap: "Original modifier ({value}) was hard-capped."
   RollMove: "Roll Move"
   RollMode: "Roll Mode"
+  SheetClassCharacter: "Default PbtA Character Sheet"
+  SheetClassNPC: "Default PbtA NPC Sheet"
+  SheetClassOther: "Default PbtA Other Sheet"
+  SheetClassItem: "Default PbtA Item Sheet"
   success: "Success"
   Tags: "Tags"
   TagsHelp: "(Use tab to autocomplete, commas to create new tags, and double click a tag to edit it)"

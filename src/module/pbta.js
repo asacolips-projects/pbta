@@ -5,31 +5,28 @@
  */
 
 // Import Modules
-import { PBTA } from "./config.js";
-import { PbtaPlaybooks } from "./config.js";
-import { ActorPbta } from "./actor/actor.js";
-import { ItemPbta } from "./item/item.js";
-import { PbtaItemSheet } from "./item/item-sheet.js";
-import { PbtaActorSheet } from "./actor/actor-sheet.js";
-import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
 import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
-import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
-import { PbtaRegisterHelpers } from "./handlebars.js";
-import { PbtaUtility } from "./utility.js";
-import { PbtaRolls } from "./rolls.js";
+import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
+import { PbtaActorSheet } from "./actor/actor-sheet.js";
+import { ActorPbta } from "./actor/actor.js";
 import { CombatSidebarPbta } from "./combat/combat.js";
+import { PBTA, PbtaPlaybooks } from "./config.js";
+import { PbtaRegisterHelpers } from "./handlebars.js";
+import { PbtaItemSheet } from "./item/item-sheet.js";
+import { ItemPbta } from "./item/item.js";
+import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
 import { MigratePbta } from "./migrate/migrate.js";
-import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 import { PbtaActorTemplates } from "./pbta/pbta-actors.js";
+import { PbtaRolls } from "./rolls.js";
+import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
+import { PbtaUtility } from "./utility.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
 Hooks.once("init", async function() {
-  console.log(`Initializing Powered by the Apocalypse!`);
-
   game.pbta = {
     ActorPbta,
     ItemPbta,
@@ -52,21 +49,25 @@ Hooks.once("init", async function() {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("pbta", PbtaActorSheet, {
     types: ['character'],
-    makeDefault: true
+    makeDefault: true,
+    label: "PBTA.SheetClassCharacter"
   });
   Actors.registerSheet("pbta", PbtaActorOtherSheet, {
     types: ['other'],
-    makeDefault: true
+    makeDefault: true,
+    label: "PBTA.SheetClassOther"
   });
   Actors.registerSheet("pbta", PbtaActorNpcSheet, {
     types: ['npc'],
-    makeDefault: true
+    makeDefault: true,
+    label: "PBTA.SheetClassNPC"
   });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("pbta", PbtaItemSheet, { makeDefault: false });
   Items.registerSheet("pbta", PbtaPlaybookItemSheet, {
     types: ['playbook'],
-    makeDefault: true
+    makeDefault: true,
+    label: "PBTA.SheetClassItem"
   });
 
   PbtaRegisterHelpers.init();
@@ -187,18 +188,18 @@ Hooks.once("init", async function() {
 });
 
 Hooks.once("ready", async function() {
-  
+
   // Override sheet config.
   if (game.user.isGM) {
     // Store default actor types for later.
     game.pbta.defaultModel = game.system.model;
-    
+
     // Force sheet config override off, unless a module changes it.
     await game.settings.set('pbta', 'sheetConfigOverride', false);
-    
+
     // Allow modules to override the sheet config.
     Hooks.callAll('pbtaSheetConfig');
-    
+
     // @todo find something better than this timeout hack.
     const timeout = 1000;
     setTimeout(() => {
@@ -429,10 +430,14 @@ if (typeof ActorDirectory.prototype._onCreateDocument !== 'undefined') {
   // Build an array of types for the form, including an empty default.
   let types = actorTypes.map(a => {
     // TODO: Make these values different.
+    let label = game.pbta.sheetConfig.actorTypes[a].label ?? game.i18n.localize(`TYPES.Actor.${a}`);
+    if (label === `TYPES.Actor.${a}`) {
+      label = a;
+    }
     return {
       value: a,
       type: a == 'character' || a == 'npc' ? a : 'other',
-      label: a
+      label
     }
   });
 

@@ -20,6 +20,8 @@ export class PbtaActorSheet extends ActorSheet {
     });
   }
 
+  static unsupportedItemTypes = new Set(["npcMove", "tag"]);
+
   /* -------------------------------------------- */
 
   /** @override */
@@ -404,7 +406,7 @@ export class PbtaActorSheet extends ActorSheet {
     html.find('.item-meta .tag--uses').on('contextmenu', this._onUsagesControl.bind(this, 'system.uses', -1));
 
     // Resources.
-    html.find('.resource-control').click(this._onResouceControl.bind(this));
+    html.find('.resource-control').on('click', this._onResouceControl.bind(this));
 
     let isOwner = this.actor.isOwner;
 
@@ -464,7 +466,7 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Retrieve the attribute.
     let prop = $self.data('name');
-    let attr = getProperty(this.actor, prop);
+    let attr = deepclone(getProperty(this.actor, prop));
 
     // Step is offset by 1 (0 index). Adjust and fix.
     step++;
@@ -673,6 +675,22 @@ export class PbtaActorSheet extends ActorSheet {
 
   /* -------------------------------------------- */
 
+  async _onDropItemCreate(itemData) {
+    let items = itemData instanceof Array ? itemData : [itemData];
+    const toCreate = [];
+    for ( const item of items ) {
+      if ( this.constructor.unsupportedItemTypes.has(item.type) ) {
+        continue;
+      }
+      toCreate.push(item);
+    }
+
+    // Create the owned items as normal
+    return this.actor.createEmbeddedDocuments("Item", toCreate);
+  }
+
+  /* -------------------------------------------- */
+
   /**
    * Handle deleting an existing Owned Item for the Actor
    * @param {Event} event   The originating click event
@@ -703,7 +721,9 @@ export class PbtaActorSheet extends ActorSheet {
 
   async _activateTagging(html) {
     // Build the tags list.
-    let tags = game.items.filter(item => item.type == 'tag');
+    let tags = game.items.filter(item => item.type == 'tag').map(item => {
+      return item.name;
+    });;
     for (let c of game.packs) {
       if (c.metadata.type && c.metadata.type == 'Item' && c.metadata.name == 'tags') {
         let items = c?.index ? c.index.map(indexedItem => {
