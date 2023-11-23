@@ -23,7 +23,7 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
     let sheetType = this.actor.system?.customType ?? null;
     let baseType = game.pbta.sheetConfig.actorTypes[sheetType]?.baseType ?? 'character';
     // Returns a format such as `character-sheet.html` or `other-character-sheet.html`.
-    return `${path}/other-${baseType}-sheet.html`;
+    return `${path}/${baseType}-sheet.html`;
   }
 
   /** @override */
