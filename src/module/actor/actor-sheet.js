@@ -1,7 +1,7 @@
 import { PbtaPlaybooks } from "../config.js";
-import { PbtaUtility } from "../utility.js";
-import { PbtaRolls } from "../rolls.js";
 import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
+import { PbtaRolls } from "../rolls.js";
+import { PbtaUtility } from "../utility.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -228,17 +228,17 @@ export class PbtaActorSheet extends ActorSheet {
       }
       // Grab the keys of the group on the actor.
       let newData = Object.keys(actorData.system[group])
-      // Sort them based on the sorting array.
-      .sort((a,b) => {
-        return sortingArray.indexOf(a) - sortingArray.indexOf(b);
-      })
-      // Build a new object from the sorted keys.
-      .reduce(
-        (obj, key) => {
-          obj[key] = actorData.system[group][key];
-          return obj;
-        }, {}
-      );
+        // Sort them based on the sorting array.
+        .sort((a,b) => {
+          return sortingArray.indexOf(a) - sortingArray.indexOf(b);
+        })
+        // Build a new object from the sorted keys.
+        .reduce(
+          (obj, key) => {
+            obj[key] = actorData.system[group][key];
+            return obj;
+          }, {}
+        );
 
       // Replace the data object handed over to the sheet.
       actorData.system[group] = newData;
