@@ -548,7 +548,7 @@ export class PbtaRolls {
     }
 
     // Update the combat flags.
-    if (game.combat && game.combat.combatants) {
+    if (game.combat && game.combat.combatants && !PbtaUtility.isEmpty(roll)) {
       let combatant = game.combat.combatants.find(c => c.actor.id == this.actor.id);
       if (combatant) {
         let flags = combatant.flags;
