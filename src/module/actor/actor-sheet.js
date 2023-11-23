@@ -12,7 +12,7 @@ export class PbtaActorSheet extends ActorSheet {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["pbta", "sheet", "actor"],
+      classes: ["pbta", "sheet", "actor", "character"],
       width: 840,
       height: 780,
       scrollY: [".window-content"],
@@ -369,8 +369,7 @@ export class PbtaActorSheet extends ActorSheet {
     super.activateListeners(html);
 
     // Rollables.
-    html.find('.rollable').on('click', this._onRollable.bind(this));
-    html.find('.showable').on('click', this._onRollable.bind(this));
+    html.find('.rollable, .showable').on('click', this._onRollable.bind(this));
 
     // // View playbook.
     html.find('.view-playbook').on('click', this._onViewPlaybook.bind(this));
