@@ -201,9 +201,62 @@ export class ActorPbta extends Actor {
   async _preCreate(data, options, userId) {
     await super._preCreate(data, options, userId);
 
-    let actor = this;
-    let templateData = PbtaActorTemplates.applyActorTemplate(actor, options, null);
-    // @todo v10
-    this.updateSource({system: templateData});
+  static async createDialog(data={}, {parent=null, pack=null, ...options}={}) {
+    const documentName = this.metadata.name;
+    const types = Object.keys(game.pbta.sheetConfig.actorTypes);
+    let collection;
+    if ( !parent ) {
+      if ( pack ) collection = game.packs.get(pack);
+      else collection = game.collections.get(documentName);
+    }
+    const folders = collection?._formatFolderSelectOptions() ?? [];
+    const label = game.i18n.localize(this.metadata.label);
+    const title = game.i18n.format("DOCUMENT.Create", {type: label});
+    // Render the document creation form
+    const html = await renderTemplate("templates/sidebar/document-create.html", {
+      folders,
+      name: data.name || game.i18n.format("DOCUMENT.New", {type: label}),
+      folder: data.folder,
+      hasFolders: folders.length >= 1,
+      type: data.type || CONFIG[documentName]?.defaultType || types[0],
+      types: types.reduce((obj, t) => {
+        const pbtaLabel = game.pbta.sheetConfig.actorTypes[t].label;
+        const label = CONFIG[documentName]?.typeLabels?.[t] ?? t;
+        if (pbtaLabel) {
+          obj[t] = pbtaLabel;
+        } else {
+          obj[t] = game.i18n.has(label) ? game.i18n.localize(label) : t;
+        }
+        return obj;
+      }, {}),
+      hasTypes: types.length > 1
+    });
+
+    // Render the confirmation dialog window
+    return Dialog.prompt({
+      title: title,
+      content: html,
+      label: title,
+      callback: html => {
+        const form = html[0].querySelector("form");
+        const fd = new FormDataExtended(form);
+        foundry.utils.mergeObject(data, fd.object, {inplace: true});
+        if ( !data.folder ) delete data.folder;
+        if ( types.length === 1 ) data.type = types[0];
+        if ( !data.name?.trim() ) data.name = this.defaultName();
+
+        // First we need to find the base actor type to model this after.
+        if (!['character', 'npc'].includes(data.type)) {
+          data.system = {
+            customType: data.type
+          }
+          data.type = 'other';
+        }
+
+        return this.create(data, {parent, pack, renderSheet: true});
+      },
+      rejectClose: false,
+      options
+    });
   }
 }
