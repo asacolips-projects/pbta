@@ -9,7 +9,7 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["pbta", "sheet", "actor", "other"],
+      classes: ["pbta", "sheet", "actor"],
       width: 840,
       height: 780,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "moves" }],
@@ -19,21 +19,14 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
   /** @override */
   get template() {
     const path = "systems/pbta/templates/sheet";
-    // Handle actor types.
-    let sheetType = this.actor.system?.customType ?? null;
-    let baseType = game.pbta.sheetConfig.actorTypes[sheetType]?.baseType ?? 'character';
-    // Returns a format such as `character-sheet.html` or `other-character-sheet.html`.
-    return `${path}/${baseType}-sheet.html`;
+    return `${path}/${this.actor.baseType}-sheet.html`;
   }
 
   /** @override */
   constructor(...args) {
     super(...args);
 
-    let sheetType = this.actor.system?.customType ?? null;
-    let baseType = game.pbta.sheetConfig.actorTypes[sheetType]?.baseType ?? 'character';
-
-    if (baseType == 'npc') {
+    if (this.actor.baseType == 'npc') {
       this.options.classes.push('npc');
       this.options.tabs[0].contentSelector = '.sheet-tabs-content';
 
@@ -42,8 +35,7 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
 
       this.position.width = 720;
       this.position.height = 640;
-    }
-    else {
+    } else {
       this.options.classes.push('character');
     }
   }
