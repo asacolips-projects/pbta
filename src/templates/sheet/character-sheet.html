@@ -51,13 +51,16 @@
 
         </section>
 
+        {{#if (objLen system.attrTop)}}
         <section class="sheet-attributes-top">
           {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=system.attrTop group="attrTop" class="attributes-top" owner=owner editable=editable}}
         </section>
+        {{/if}}
       </section>
 
       <section class="sheet-bottom">
         {{!-- Sidebar --}}
+        {{#if (objLen system.attrLeft)}}
         <section class="sheet-look">
           <div class="cell cell--aesthetics">
             {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=system.attrLeft group="attrLeft" class="attributes-left" owner=owner editable=editable}}
@@ -66,6 +69,7 @@
           {{!-- TODO: Re-enable the look toggle later --}}
           {{!-- <button type="button" class="toggle toggle--look"><i class="fas fa-chevron-left"></i></button> --}}
         </section>
+        {{/if}}
 
         {{!-- Main --}}
         <section class="sheet-main">
