@@ -154,11 +154,9 @@ export class ActorPbta extends Actor {
         if (formula.includes(dice)) {
           if (roll.total < 7) {
             templateData.result = 'failure';
-          }
-          else if (roll.total > 6 && roll.total < 10) {
+          } else if (roll.total > 6 && roll.total < 10) {
             templateData.result = 'partial';
-          }
-          else {
+          } else {
             templateData.result = 'success';
           }
         }
