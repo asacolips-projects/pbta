@@ -11,50 +11,40 @@ export class ActorPbta extends Actor {
    */
   prepareData() {
     super.prepareData();
-    const actorData = this;
-    if (actorData.type === 'character') this._prepareCharacterData(actorData);
+    // Handle actor types.
+    if (this.baseType === 'character') this._prepareCharacterData();
+  }
+
+  get sheetType() {
+    return this.system?.customType ?? null;
+  }
+
+  get baseType() {
+    const sheetType = this.sheetType
+    return game.pbta.sheetConfig.actorTypes[sheetType]?.baseType
+      ?? this.type === 'other' ? 'character' : this.type;
   }
 
   /**
    * Prepare Character type specific data
    */
-  _prepareCharacterData(actorData) {
+  _prepareCharacterData() {
     // Handle special attributes.
     let groups = [
       'attrTop',
       'attrLeft'
     ];
     for (let group of groups) {
-      for (let [attrKey, attrValue] of Object.entries(actorData.system[group])) {
+      for (let [attrKey, attrValue] of Object.entries(this.system[group])) {
         // ListMany field handling.
-        if (attrValue.type == 'ListMany' || attrValue.type == 'ListOne') {
+        if (['ListOne', 'ListMany'].includes(attrValue.type) && attrValue.options) {
           // Iterate over options.
-          for (let [optK, optV] of Object.entries(attrValue.options)) {
+          for (let optV of Object.values(attrValue.options)) {
             // If there's a multi-value field, we need to propagate its value up
             // to the parent `value` property.
             if (optV.values) {
-              // Set up some tracking variables for the loop.
-              let loopFinished = false;
-              let loopStep = 0;
-              let optArray = Object.values(optV.values);
-              // Iterate over suboptions.
-              for (let subOpt of optArray) {
-                // If any option is true, set the value and exit.
-                if (subOpt.value) {
-                  optV.value = true;
-                  break;
-                }
-                // On the last step, mark that we finished.
-                if (loopStep == optArray.length - 1) {
-                  loopFinished = true;
-                }
-                loopStep++;
-              }
-              // If the loop finished, all possible values were false. Mark this
-              // attribute as false as well.
-              if (loopFinished) {
-                optV.value = false;
-              }
+              const optArray = Object.values(optV.values);
+              optV.value = optArray.some(subOpt => subOpt.value);
             }
           }
         }
@@ -198,8 +188,22 @@ export class ActorPbta extends Actor {
 
 
   /** @inheritdoc */
-  async _preCreate(data, options, userId) {
-    await super._preCreate(data, options, userId);
+  async _preCreate(data, options, user) {
+    await super._preCreate(data, options, user);
+    const sourceId = this.getFlag("core", "sourceId");
+    if (sourceId?.startsWith("Compendium.")) return;
+
+    const changes = {
+      system: PbtaActorTemplates.applyActorTemplate(this, options, null)
+    }
+    if (this.baseType === "character") {
+      changes.prototypeToken = {
+        actorLink: true,
+        disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+      };
+    }
+    this.updateSource(changes);
+  }
 
   static async createDialog(data={}, {parent=null, pack=null, ...options}={}) {
     const documentName = this.metadata.name;

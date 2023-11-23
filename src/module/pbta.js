@@ -83,8 +83,8 @@ Hooks.once("init", async function() {
     name: "System Migration Version",
     scope: "world",
     config: false,
-    type: Number,
-    default: 0
+    type: String,
+    default: game.system.version
   });
 
   game.settings.register("pbta", "advForward", {
@@ -250,7 +250,7 @@ Hooks.once("ready", async function() {
   $('html').addClass(`lang-${lang}`);
 
   // Run migrations.
-  MigratePbta.runMigration();
+  await MigratePbta.runMigration();
 });
 
 Hooks.on('renderChatMessage', (data, html, options) => {
