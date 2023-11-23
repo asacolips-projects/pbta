@@ -217,7 +217,7 @@ export class PbtaRolls {
           options.formula = 'prompt';
         }
         // Otherwise, grab the data from the move and pass it along.
-        else if (!this.actor?.system?.resources?.rollFormula?.value) {
+        else {
           options.formula = data.roll;
           templateData.stat = data.roll;
         }
