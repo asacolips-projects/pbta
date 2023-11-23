@@ -1,8 +1,19 @@
 import { PbtaActorTemplates } from '../pbta/pbta-actors.js';
-import { PbtaUtility } from "../utility.js";
 import { PbtaRolls } from "../rolls.js";
+import { PbtaUtility } from "../utility.js";
 
 export class ItemPbta extends Item {
+  static getDefaultArtwork(itemData) {
+		if (itemData.type === "move" || itemData.type === "npcMove") {
+			return { img: "icons/svg/upgrade.svg" };
+		} else if (itemData.type === "playbook") {
+			return { img: "icons/svg/book.svg" };
+		} else if (itemData.type === "tag") {
+			return { img: "systems/pbta/assets/icons/svg/tag.svg" };
+		}
+		return { img: this.DEFAULT_ICON };
+	}
+
   /**
    * Augment the basic Item data model with additional dynamic data.
    */
