@@ -147,4 +147,8 @@ PBTA:
       type: "Type changed:"
       typeReset: "Type changed (attribute will be reset):"
       sheetConfigDisabledModule: "Sheet configuration has been disabled due to a module that is providing it."
+  Warnings:
+    UnlinkedToken:
+      Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
+      Moves: "Moves cannot be rearranged while this token is not linked to an actor."
 PBTA_OTHER: "Other"
