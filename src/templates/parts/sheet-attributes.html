@@ -1,3 +1,4 @@
+{{#if (objLen attrs)}}
 <div class="cell cell--{{class}}">
   {{#each attrs as |attr key|}}
     <div class="cell cell--{{key}} cell--attr-{{key}} cell--{{attr.type}}">
@@ -102,3 +103,4 @@
     </div>
   {{/each}}
 </div>
+{{/if}}

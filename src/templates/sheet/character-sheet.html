@@ -51,11 +51,9 @@
 
         </section>
 
-        {{#if (objLen system.attrTop)}}
         <section class="sheet-attributes-top">
-          {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=system.attrTop group="attrTop" class="attributes-top" owner=owner editable=editable}}
+          {{~> "systems/pbta/templates/parts/sheet-attributes.html" attrs=system.attrTop group="attrTop" class="attributes-top" owner=owner editable=editable~}}
         </section>
-        {{/if}}
       </section>
 
       <section class="sheet-bottom">
