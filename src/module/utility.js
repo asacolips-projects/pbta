@@ -449,15 +449,13 @@ export class PbtaUtility {
 
         case 'ListMany':
           attr.type = attrValue.type;
-          let optionsMany = PbtaUtility.getListOptionsCheckboxes(attrValue);
           attr.condition = attrValue.condition ?? false;
-          attr.options = optionsMany;
+          attr.options = PbtaUtility.getListOptions(attrValue);
           break;
 
         case 'ListOne':
           attr.type = attrValue.type;
-          let optionsOne = PbtaUtility.getListOptionsRadio(attrValue);
-          attr.options = optionsOne;
+          attr.options = PbtaUtility.getListOptions(attrValue, true);
           attr.value = attrValue.default ?? '0';
           break;
 
@@ -534,28 +532,44 @@ export class PbtaUtility {
     return items;
   }
 
-  static getListOptionsCheckboxes(attrValue) {
+  static getListOptions(attrValue, isRadio = false) {
     let options = {};
     if (attrValue.options) {
       // Handle options if provided as an array.
       if (Array.isArray(attrValue.options)) {
-        let i = 0;
-        for (let optV of attrValue.options) {
-          options[i] = {
-            label: optV,
-            value: false
-          };
-          i++;
-        }
+        attrValue.options.forEach((optV, index) => {
+          if (typeof optV == 'object') {
+            const { label, tooltip } = optV;
+            options[index] = {
+              label,
+              tooltip,
+              value: isRadio ? optV : false
+            };
+          } else {
+            options[index] = {
+              label: optV,
+              value: isRadio ? optV : false
+            };
+          }
+        });
       }
       // Handle options if provided as an object (keyed array).
       else if (typeof attrValue.options == 'object') {
-        for (let [optK, optV] of Object.entries(attrValue.options)) {
-          options[optK] = {
-            label: optV,
-            value: false
-          };
-        }
+        Object.entries(attrValue.options).forEach(([optK, optV]) => {
+          if (typeof optV == 'object') {
+            const { label, tooltip } = optV;
+            options[optK] = {
+              label,
+              tooltip,
+              value: isRadio ? optV : false
+            };
+          } else {
+            options[optK] = {
+              label: optV,
+              value: isRadio ? optV : false
+            };
+          }
+        });
       }
       // Handle special options.
       for (let [optK, optV] of Object.entries(options)) {
@@ -564,52 +578,11 @@ export class PbtaUtility {
           let subOptV = {};
           for (let subOptK = 0; subOptK < optCount[2]; subOptK++) {
             subOptV[subOptK] = {
-              value: false
+              value: isRadio ? optV.label.split('|')[0] : false
             };
           }
           options[optK]['values'] = subOptV;
           options[optK]['label'] = optV.label.split('|')[0];
-        }
-      }
-    }
-    return options;
-  }
-
-  static getListOptionsRadio(attrValue) {
-    let options = {};
-    if (attrValue.options) {
-      // Handle options if provided as an array.
-      if (Array.isArray(attrValue.options)) {
-        let i = 0;
-        for (let optV of attrValue.options) {
-          options[i] = {
-            label: optV,
-            value: optV
-          };
-          i++;
-        }
-      }
-      // Handle options if provided as an object (keyed array).
-      else if (typeof attrValue.options == 'object') {
-        for (let [optK, optV] of Object.entries(attrValue.options)) {
-          options[optK] = {
-            label: optV,
-            value: optV
-          };
-        }
-      }
-      // Handle special options.
-      for (let [optK, optV] of Object.entries(options)) {
-        let optCount = optV.label.match(/(\|)(\d)/);
-        if (optCount && optCount[2] && Number.isNumeric(optCount[2])) {
-          let subOptV = {};
-          for (let subOptK = 0; subOptK < optCount[2]; subOptK++) {
-            subOptV[subOptK] = {
-              value: optV.label.split('|')[0]
-            };
-          }
-          options[optK]['label'] = optV.label.split('|')[0];
-          options[optK]['values'] = subOptV;
         }
       }
     }
