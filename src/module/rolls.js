@@ -168,8 +168,7 @@ export class PbtaRolls {
         if (item.type == 'npcMove' || item.system?.rollType == 'formula') {
           data.roll = item.system.rollFormula;
           data.rollType = item.system.rollType ? item.system.rollType.toLowerCase() : 'npc';
-        }
-        else {
+        } else {
           data.roll = item.system.rollType.toLowerCase();
           data.rollType = item.system.rollType.toLowerCase();
         }
@@ -218,7 +217,7 @@ export class PbtaRolls {
           options.formula = 'prompt';
         }
         // Otherwise, grab the data from the move and pass it along.
-        else {
+        else if (!this.actor?.system?.resources?.rollFormula?.value) {
           options.formula = data.roll;
           templateData.stat = data.roll;
         }
