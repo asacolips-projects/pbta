@@ -84,7 +84,7 @@ Hooks.once("init", async function() {
     scope: "world",
     config: false,
     type: String,
-    default: game.system.version
+    default: ""
   });
 
   game.settings.register("pbta", "advForward", {
@@ -250,6 +250,12 @@ Hooks.once("ready", async function() {
   $('html').addClass(`lang-${lang}`);
 
   // Run migrations.
+  if ( !game.user.isGM ) return;
+  const cv = game.settings.get("pbta", "systemMigrationVersion");
+  const totalDocuments = game.actors.size + game.scenes.size + game.items.size;
+  if ( !cv && totalDocuments === 0 ) return game.settings.set("pbta", "systemMigrationVersion", game.system.version);
+
+  // Perform the migration
   await MigratePbta.runMigration();
 });
 
