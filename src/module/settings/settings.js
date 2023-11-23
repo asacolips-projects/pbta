@@ -267,11 +267,13 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                   updatesDiff[actorType][`system.${attrGroup}.${attr}`] = newGroup[attr];
                 }
               }
-              else if (newType == 'ListMany') {
-                // Handle diffing condition changes.
-                if ((newGroup[attr]?.condition || oldGroup[attr]?.condition) && (newGroup[attr]?.condition != oldGroup[attr]?.condition)) {
-                  configDiff.softType.push(`${actorType}.${attrGroup}.${attr}`);
-                  updatesDiff[actorType][`system.${attrGroup}.${attr}.condition`] = newGroup[attr]?.condition ?? false;
+              else if (['ListOne', 'ListMany'].includes(newType)) {
+                if (newType == 'ListMany') {
+                  // Handle diffing condition changes.
+                  if ((newGroup[attr]?.condition || oldGroup[attr]?.condition) && (newGroup[attr]?.condition != oldGroup[attr]?.condition)) {
+                    configDiff.softType.push(`${actorType}.${attrGroup}.${attr}`);
+                    updatesDiff[actorType][`system.${attrGroup}.${attr}.condition`] = newGroup[attr]?.condition ?? false;
+                  }
                 }
 
                 // Handle diffing options.
@@ -286,22 +288,15 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                     // Create the options diff.
                     configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
                     updatesDiff[actorType][`system.${attrGroup}.${attr}.options`] = newGroup[attr]?.options ?? [];
-                  }
-                }
-              }
-              else if (newType == 'ListOne') {
-                // Handle diffing options.
-                if (newGroup[attr]?.options || oldGroup[attr]?.options) {
-                  if (this.optionsAreDifferent(newGroup[attr]?.options, oldGroup[attr]?.options)) {
-                    // Remove values from options so that they're not unset on existing actors.
-                    if (newGroup[attr]?.options) {
-                      for (let [optK, optV] of Object.entries(newGroup[attr].options)) {
-                        if (typeof optV.value !== 'undefined') delete optV.value;
-                      }
+
+                    const oldClone = duplicate(oldGroup);
+                    for (let optK of Object.keys(newGroup[attr].options)) {
+                      delete oldClone[attr]?.options[optK];
                     }
-                    // Create the options diff.
-                    configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
-                    updatesDiff[actorType][`system.${attrGroup}.${attr}.options`] = newGroup[attr]?.options ?? [];
+                    for (let optK of Object.keys(oldClone[attr]?.options)) {
+                      configDiff.del.push(`${actorType}.${attrGroup}.${attr}.options.${optK}`)
+                      updatesDiff[actorType][`system.${attrGroup}.${attr}.options`][`-=${optK}`] = null;
+                    }
                   }
                 }
               }
