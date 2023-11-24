@@ -66,11 +66,17 @@
     }
   }
 
+  &.sidebar-popout {
+    button,
+    .button {
+      color: #fff;
+    }
+  }
+
   button,
   .button {
     font-family: $font-stack-base;
     background: rgba(0, 0, 0, 0.1);
-    color: #fff;
     border: 1px solid #999;
     border-radius: 3px;
     box-shadow: 0 0 2px #fff inset;
