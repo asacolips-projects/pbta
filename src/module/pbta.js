@@ -145,7 +145,7 @@ Hooks.once("init", async function() {
     name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
     label: game.i18n.localize("PBTA.Settings.sheetConfig.label"),
     hint: game.i18n.localize("PBTA.Settings.sheetConfig.hint"),
-    icon: "fas fa-bars",               // A Font Awesome icon used in the submenu button
+    icon: "fas fa-file-alt",               // A Font Awesome icon used in the submenu button
     type: PbtaSettingsConfigDialog,   // A FormApplication subclass which should be created
     restricted: true,                   // Restrict this submenu to gamemaster only?
     scope: 'world'
