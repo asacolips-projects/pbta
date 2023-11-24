@@ -22,10 +22,6 @@ export class PbtaUtility {
     );
   }
 
-  static isEmpty(arg) {
-    return [null, false, undefined, 0, ''].includes(arg);
-  }
-
   /**
    * Validate sheetConfig settings and return errors.
    * @param {object} sheetConfig Computed sheetConfig settings.
@@ -187,8 +183,7 @@ export class PbtaUtility {
       }
 
       // If the TOML was parsed successfully, check it for validation errors.
-      // @todo foundry.utils.isEmpty() is throwing an error here in v10. Bug?
-      if (computed && Object.keys(computed).length > 0) {
+      if (!isEmpty(computed)) {
         errors = PbtaUtility.validateSheetConfig(computed);
       }
     }

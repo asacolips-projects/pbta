@@ -302,7 +302,7 @@ export class PbtaRolls {
     if (rollMode === "blindroll") chatData["blind"] = true;
 
     // Handle dice rolls.
-    if (!PbtaUtility.isEmpty(roll)) {
+    if (!isEmpty(roll)) {
       // Test if the roll is a formula.
       let validRoll = false;
       try {
@@ -548,7 +548,7 @@ export class PbtaRolls {
     }
 
     // Update the combat flags.
-    if (game.combat && game.combat.combatants && !PbtaUtility.isEmpty(roll)) {
+    if (game.combat && game.combat.combatants && !isEmpty(roll)) {
       let combatant = game.combat.combatants.find(c => c.actor.id == this.actor.id);
       if (combatant) {
         let flags = combatant.flags;

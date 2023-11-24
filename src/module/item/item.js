@@ -30,7 +30,7 @@ export class ItemPbta extends Item {
       if (itemData.system.equipment) {
         for (let [group_key, group] of Object.entries(itemData.system.equipment)) {
           if (group) {
-            if (PbtaUtility.isEmpty(group['items'])) {
+            if (isEmpty(group['items'])) {
               group['items'] = [];
               group['objects'] = [];
             }

@@ -1,5 +1,5 @@
-import { PbtaItemSheet } from './item-sheet.js';
 import { PbtaUtility } from "../utility.js";
+import { PbtaItemSheet } from './item-sheet.js';
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -115,7 +115,7 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
     // Filter items.
     let existing_items = [];
 
-    if (!PbtaUtility.isEmpty(itemData.system.equipment[groupId]['items'])) {
+    if (!isEmpty(itemData.system.equipment[groupId]['items'])) {
       existing_items = itemData.system.equipment[groupId]['items'];
     }
     else {
