@@ -26,15 +26,6 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
     return `${path}/${this.item.type}-sheet.html`;
   }
 
-  async getData() {
-    const context = await super.getData();
-    let equipmentObjects = await this.item._getEquipmentObjects();
-    for (let [group, group_items] of Object.entries(equipmentObjects)) {
-      context.system.equipment[group]['objects'] = group_items;
-    }
-    return context;
-  }
-
   async activateListeners(html) {
     super.activateListeners(html);
 
