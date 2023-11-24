@@ -39,7 +39,23 @@ export class ItemPbta extends Item {
     await super._preCreate(data, options, userId);
 
     if (this.type == 'move' || this.type == 'npcMove') {
-      const templateData = PbtaActorTemplates.applyItemTemplate(this, options, null);
+      const templateData = duplicate(this)
+      if (!templateData.system) templateData.system = {};
+
+      let resultRanges = game.pbta.sheetConfig.rollResults;
+      if (!templateData.system.moveResults) {
+        templateData.system.moveResults = {};
+      }
+
+      for (let [key, value] of Object.entries(resultRanges)) {
+        if (!templateData.system.moveResults[key]) {
+          templateData.system.moveResults[key] = {
+            key: `system.moveResults.${key}.value`,
+            label: value.label,
+            value: ''
+          };
+        }
+      }
       this.updateSource({
         system: mergeObject(templateData.system, this.toObject(false).system)
       });

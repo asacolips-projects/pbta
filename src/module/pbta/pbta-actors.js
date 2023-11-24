@@ -124,24 +124,4 @@ export class PbtaActorTemplates {
     // the dialog to proceed or fail).
     return success;
   }
-
-  static applyItemTemplate(actor, itemData, options, id) {
-    let newItemData = duplicate(itemData);
-    if (!newItemData.system) newItemData.system = {};
-
-    let resultRanges = game.pbta.sheetConfig.rollResults;
-    if (!newItemData.system.moveResults) newItemData.system.moveResults = {};
-
-    for (let [key, value] of Object.entries(resultRanges)) {
-      if (!newItemData.system.moveResults[key]) {
-        newItemData.system.moveResults[key] = {
-          key: `system.moveResults.${key}.value`,
-          label: value.label,
-          value: ''
-        };
-      }
-    }
-
-    return newItemData;
-  }
 }
