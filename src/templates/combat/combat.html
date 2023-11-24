@@ -3,12 +3,12 @@
     {{!-- Render the group label. --}}
     <li class="directory-item flexrow directory-item--group {{group}}">
       <div class="ct-label ct-label--name">{{group}}</div>
-      {{#ifEquals group "character"}}
+      {{#if (eq group "character")}}
       <div class="ct-label ct-label--moves">{{../moveTotal}}</div>
-      {{/ifEquals}}
+      {{/if}}
     </li>
     {{!-- Render the column labels. --}}
-    <li class="directory-item grid {{#ifEquals group "character"}}grid-3col{{else}}grid-3col{{/ifEquals}} directory-item--labels {{group}}">
+    <li class="directory-item grid {{#if (eq group 'character')}}grid-3col{{else}}grid-3col{{/if}} directory-item--labels {{group}}">
       <div class="ct-item ct-item--img"></div>
       <div class="ct-item ct-item--name">{{localize "PBTA.Common.Name"}}</div>
       {{!-- <div class="ct-item ct-item--hp">{{localize "PBTA.HP"}}</div>
@@ -16,19 +16,18 @@
       {{#if c.actor.system.attributes.damage.value}}
         <div class="ct-item ct-item--damage">{{localize "PBTA.Dmg"}}</div>
       {{/if}}
-      {{#ifEquals group "character"}}
+      {{#if (eq group "character")}}
       <div class="ct-item ct-item--moves">{{localize "PBTA.Moves"}}</div>
-      {{/ifEquals}}
+      {{/if}}
     </li>
     {{!-- Render the combatants for this actor type. --}}
     <ol class="directory-list--pbta {{group}}">
       {{#each combatantGroup as |c index|}}
-        <li class="directory-item actor-elem {{#if c.token.hidden}}hidden{{/if}} grid {{#ifEquals group "character"}}grid-3col{{else}}grid-3col{{/ifEquals}}" data-actor-id="{{c.actor.id}}" data-token-id="{{c.token.id}}" data-combatant-id="{{c.id}}" data-actor-type="{{c.actor.type}}">
+        <li class="directory-item actor-elem {{#if c.token.hidden}}hidden{{/if}} grid {{#if (eq group 'character')}}grid-3col{{else}}grid-3col{{/if}}" data-actor-id="{{c.actor.id}}" data-token-id="{{c.token.id}}" data-combatant-id="{{c.id}}" data-actor-type="{{c.actor.type}}">
           {{!-- Token image with a progress circle. --}}
           <div class="ct-item ct-item--img">
             <div class="image-wrapper">
               <img src="{{c.img}}" alt="Thumbnail image for {{c.name}}">
-              {{!-- {{#if c.displayHealth}}{{{progressCircle c.healthSvg}}}{{/if}} --}}
             </div>
           </div>
           {{!-- Name. --}}
@@ -47,12 +46,12 @@
           {{!-- <div class="ct-item ct-item--ac">{{#if c.displayHealth}}{{c.actor.system.attributes.ac.value}}{{else}}???{{/if}}</div> --}}
           {{!-- Damage, rolable. --}}
           {{#if c.actor.system.attributes.damage.value}}
-            <div class="ct-item ct-item--damage"><button type="button" class="pbta-rollable damage-rollable" data-roll="{{c.actor.system.attributes.damage.value}}" data-label="{{localize "PBTA.DamageRoll"}}" title="{{c.actor.system.attributes.damage.value}}">{{c.actor.system.attributes.damage.value}}</button></div>
+            <div class="ct-item ct-item--damage"><button type="button" class="pbta-rollable damage-rollable" data-roll="{{c.actor.system.attributes.damage.value}}" data-label="{{localize 'PBTA.DamageRoll'}}" title="{{c.actor.system.attributes.damage.value}}">{{c.actor.system.attributes.damage.value}}</button></div>
           {{/if}}
           {{!-- Move count, if this is a player character. --}}
-          {{#ifEquals group "character"}}
+          {{#if (eq group "character")}}
           <div class="ct-item ct-item--moves">{{#if c.flags.pbta}}{{c.flags.pbta.moveCount}}{{/if}}</div>
-          {{/ifEquals}}
+          {{/if}}
         </li>
       {{/each}}
     </ol>
