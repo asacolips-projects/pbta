@@ -281,11 +281,8 @@ Hooks.on('renderChatMessage', (data, html, options) => {
  * This function runs after game data has been requested and loaded from the servers, so documents exist
  */
 Hooks.once("setup", function() {
-
   // Localize CONFIG objects once up-front
-  const toLocalize = [
-    "abilities", "debilities"
-  ];
+  const toLocalize = [];
   for (let o of toLocalize) {
     CONFIG.PBTA[o] = Object.entries(CONFIG.PBTA[o]).reduce((obj, e) => {
       obj[e[0]] = game.i18n.localize(e[1]);
