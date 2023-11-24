@@ -45,7 +45,7 @@ PBTA:
   Roll: "Roll"
   RollFormula: "Roll Formula"
   RollFormulaOverride: "Roll Formula Override"
-  RollFOrmulaHardCap: "Original modifier ({value}) was hard-capped."
+  RollFormulaHardCap: "Original modifier ({value}) was hard-capped."
   RollMove: "Roll Move"
   RollMode: "Roll Mode"
   SheetClassCharacter: "Default PbtA Character Sheet"
