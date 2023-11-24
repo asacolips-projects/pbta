@@ -21,19 +21,6 @@ export class ItemPbta extends Item {
     super.prepareData();
   }
 
-  async _getEquipmentObjects(force_reload = false) {
-    let obj = null;
-    let itemData = this;
-
-    let items = await PbtaUtility.getEquipment(force_reload);
-    let equipment = [];
-
-    if (itemData.system.equipment) {
-      for (let [group, group_items] of Object.entries(itemData.system.equipment)) {
-        if (group_items) {
-          equipment[group] = items.filter(i => group_items['items'].includes(i._id));
-        }
-      }
     }
 
     return equipment;

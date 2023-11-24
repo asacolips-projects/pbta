@@ -157,7 +157,6 @@ export class PbtaRolls {
         templateData = {
           image: item.img,
           title: item.name,
-          trigger: null,
           details: item.system.description,
           moveResults: item.system.moveResults,
           choices: item.system?.choices,
@@ -227,7 +226,6 @@ export class PbtaRolls {
         templateData = {
           image: item.img,
           title: item.name,
-          trigger: null,
           details: item.system.description,
           tags: item.system.tags
         }
