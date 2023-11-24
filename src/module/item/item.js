@@ -19,25 +19,6 @@ export class ItemPbta extends Item {
    */
   prepareData() {
     super.prepareData();
-
-    // Get the Item's data
-    const itemData = this;
-    const actorData = this.actor ? this.actor : {};
-    const data = itemData.system;
-
-    // Clean up broken groups.
-    if (itemData.type == 'class') {
-      if (itemData.system.equipment) {
-        for (let [group_key, group] of Object.entries(itemData.system.equipment)) {
-          if (group) {
-            if (isEmpty(group['items'])) {
-              group['items'] = [];
-              group['objects'] = [];
-            }
-          }
-        }
-      }
-    }
   }
 
   async _getEquipmentObjects(force_reload = false) {
