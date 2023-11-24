@@ -5,7 +5,6 @@ import { PbtaPlaybooks } from "../config.js";
  * @extends {ItemSheet}
  */
 export class PbtaItemSheet extends ItemSheet {
-
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
