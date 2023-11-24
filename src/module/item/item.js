@@ -39,9 +39,7 @@ export class ItemPbta extends Item {
     await super._preCreate(data, options, userId);
 
     if (this.type == 'move' || this.type == 'npcMove') {
-      // TODO: This needs to load the appropriate stats per class.
-      let item = this;
-      let templateData = PbtaActorTemplates.applyItemTemplate(item, options, null);
+      const templateData = PbtaActorTemplates.applyItemTemplate(this, options, null);
       this.updateSource({
         system: mergeObject(templateData.system, this.toObject(false).system)
       });
