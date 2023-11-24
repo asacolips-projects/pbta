@@ -213,9 +213,9 @@ export class PbtaUtility {
 
     for (let [k,v] of Object.entries(sheetConfig)) {
       if (k == 'rollFormula') {
-        let rollFormula = v;
-        let validRoll = new Roll(rollFormula.trim()).evaluate({async: false});
-        newConfig.rollFormula = validRoll ? rollFormula.trim() : '';
+        let rollFormula = v.trim();
+        let validRoll = Roll.validate(rollFormula);
+        newConfig.rollFormula = validRoll ? rollFormula : '';
       }
 
       else if (k == 'statToggle') {
