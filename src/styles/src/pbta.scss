@@ -91,20 +91,3 @@
 .dialog {
   @import 'global/base/cell';
 }
-
-// Language overrides.
-.lang-de {
-  .ability {
-    .cell__title {
-      font-size: 12px;
-    }
-  }
-
-  .vtt {
-    .sidebar-tab {
-      .directory-item--labels {
-        font-size: 10px;
-      }
-    }
-  }
-}

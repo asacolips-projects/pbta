@@ -245,10 +245,6 @@ Hooks.once("ready", async function() {
   // Apply structure to actor types.
   PbtaUtility.applyActorTemplates();
 
-  // Add a lang class to the body.
-  const lang = game.settings.get('core', 'language');
-  $('html').addClass(`lang-${lang}`);
-
   // Run migrations.
   if ( !game.user.isGM ) return;
   const cv = game.settings.get("pbta", "systemMigrationVersion");
