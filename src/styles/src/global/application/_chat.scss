@@ -38,6 +38,10 @@
 
     &.whisper {
       background: #e0ecff;
+
+      .result-label {
+        background: #d0dbed;
+      }
     }
 
     .result {

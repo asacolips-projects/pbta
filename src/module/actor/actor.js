@@ -1,4 +1,5 @@
 import { PbtaActorTemplates } from '../pbta/pbta-actors.js';
+import { RollPbtA } from "../rolls.js";
 import { PbtaUtility } from '../utility.js';
 
 /**
@@ -52,56 +53,117 @@ export class ActorPbta extends Actor {
   }
 
   /**
+   * Override getRollData() that's supplied to rolls.
+   */
+  getRollData() {
+    const data = super.getRollData();
+    data.formula = this.getRollFormula();
+    return data;
+  }
+
+  getRollFormula(defaultFormula = '2d6') {
+    const rollFormula = this.system?.resources?.rollFormula?.value;
+    if (rollFormula && Roll.validate(rollFormula)) {
+      return rollFormula.trim()
+    }
+    return game.pbta.sheetConfig.rollFormula ?? defaultFormula;
+  }
+
+  async clearForwardAdv() {
+    const forwardUsed = this.system?.resources?.forward?.value;
+    const rollModeUsed = this.getFlag("pbta", "rollMode") !== 'def';
+    if (forwardUsed || rollModeUsed) {
+      const updates = {};
+      if (forwardUsed) {
+        updates['system.resources.forward.value'] = 0;
+      }
+      if (rollModeUsed && game.settings.get('pbta', 'advForward')) {
+        updates['flags.pbta.rollMode'] = 'def';
+      }
+      await this.update(updates);
+    }
+  }
+
+  async updateCombatMoveCount() {
+    if (game.combat && game.combat.combatants) {
+      let combatant = game.combat.combatants.find((c) => c.actor.id == this.id);
+      if (combatant) {
+        let moveCount = combatant.getFlag("pbta", "moveCount") ?? 0;
+        moveCount = moveCount ? Number(moveCount) + 1 : 1;
+        let combatantUpdate = {
+          _id: combatant.id,
+          'flags.pbta.moveCount': moveCount
+        };
+        // Emit a socket for the GM client.
+        if (!game.user.isGM) {
+          game.socket.emit('system.pbta', {
+            combatantUpdate: combatantUpdate
+          });
+        }
+        else {
+          let combatantUpdates = [];
+          combatantUpdates.push(combatantUpdate);
+          await game.combat.updateEmbeddedDocuments('Combatant', combatantUpdates);
+          ui.combat.render();
+        }
+      }
+    }
+  }
+
+  /**
    * Listen for click events on rollables.
    * @param {MouseEvent} event
    */
-  async _onRoll(event, actor = null) {
-    actor = !actor ? this.actor : actor;
-
-    // Initialize variables.
-    event.preventDefault();
-
-    if (!actor) {
-      return;
-    }
-
+  async _onRoll(event) {
+    const { label, roll } = event.currentTarget.dataset;
     const a = event.currentTarget;
-    const data = a.dataset;
     const itemId = $(a).parents('.item').attr('data-item-id');
-    const item = actor.items.get(itemId);
-    let formula = null;
-    let titleText = null;
-    let flavorText = null;
-    let templateData = {};
-    let dice = PbtaUtility.getRollFormula('2d6');
+    const options = {
+      forward: this.system?.resources?.forward?.value,
+      ongoing: this.system?.resources?.ongoing?.value,
+      rollMode: this.flags?.pbta?.rollMode
+    }
 
     // Handle rolls coming directly from the ability score.
-    if ($(a).hasClass('ability-rollable') && data.mod) {
-      formula = `${dice}+${data.mod}`;
-      flavorText = data.label;
-      if (data.debility) {
-        flavorText += ` (${data.debility})`;
+    if ($(a).hasClass('stat-rollable')) {
+      let formula = "@formula";
+      const stat = $(a).parents('.stat').data('stat') ?? null;
+      if (stat) {
+        if (this.system.stats[stat].toggle) {
+          formula += "+ 0"
+        } else {
+          formula += `+ @stats.${stat}.value`;
+        }
       }
 
-      templateData = {
-        title: flavorText
-      };
-
-      this.rollMove(formula, actor, data, templateData);
-    }
-    else if ($(a).hasClass('damage-rollable') && data.roll) {
-      formula = data.roll;
-      titleText = data.label;
-      flavorText = data.flavor;
-      templateData = {
-        title: titleText,
-        flavor: flavorText
-      };
-
-      this.rollMove(formula, actor, data, templateData, null, true);
-    }
-    else if (itemId != undefined) {
-      item.roll();
+      const roll = new RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
+        resultRangeNeeded: true,
+        rollType: 'stat',
+        sheetType: this.baseType,
+        stat
+      }));
+      const choice = await roll.configureDialog({
+        title: game.i18n.format("PBTA.RollLabel", { label }),
+      });
+      if (choice === null) return;
+      await roll.toMessage({
+        title: label ?? ""
+      });
+      await this.clearForwardAdv();
+      await this.updateCombatMoveCount();
+    } else if ($(a).hasClass('attr-rollable') && roll) {
+      const r = new RollPbtA(roll, this.getRollData(), foundry.utils.mergeObject(options, {
+        rollType: 'flat'
+      }));
+      const choice = await r.configureDialog({
+        title: label,
+      });
+      if (choice === null) return;
+      await r.toMessage();
+    } else if (itemId) {
+      const item = this.items.get(itemId);
+      const descriptionOnly = a.getAttribute("data-show") === 'description'
+      item.roll({ descriptionOnly }, options);
     }
   }
 

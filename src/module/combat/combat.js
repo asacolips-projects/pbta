@@ -11,21 +11,6 @@ export class CombatSidebarPbta {
 
     // Add support for damage rolls via event delegation.
     Hooks.on('ready', () => {
-      // Damage rolls from the combat tracker.
-      $('body').on('click', '.pbta-rollable', (event) => {
-        let $self = $(event.currentTarget);
-        let $actorElem = $self.parents('.actor-elem');
-        let combatant_id = $actorElem.length > 0 ? $actorElem.attr('data-combatant-id') : null;
-        if (combatant_id) {
-          let combatants = game.combat.combatants;
-          let combatant = combatants.find(c => c.id == combatant_id);
-          let actor = combatant.actor ? combatant.actor : null;
-          if (actor) {
-            actor._onRoll(event, actor);
-          }
-        }
-      });
-
       // Add drag events.
       if (game.user.isGM) {
         $('body')

@@ -12,7 +12,7 @@ TYPES:
 PBTA:
   Advantage: "Advantage"
   Ask: "Ask"
-  AskTitle: "Choose a stat"
+  AskTitle: "{name}: Choose a Stat"
   Biography: "Biography"
   Choices: "Choices"
   ConditionsApplied: "Conditions Applied:"
@@ -38,7 +38,7 @@ PBTA:
   partial: "Partial Success"
   Playbook: "Playbook"
   Prompt: "Prompt"
-  PromptTitle: "Enter your modifier"
+  PromptTitle: "{name}: Enter a Modifier"
   Qty: "Qty"
   Quantity: "Quantity"
   RequiresMove: "Requires Move"
@@ -46,6 +46,7 @@ PBTA:
   RollFormula: "Roll Formula"
   RollFormulaOverride: "Roll Formula Override"
   RollFormulaHardCap: "Original modifier ({value}) was hard-capped."
+  RollLabel: "Roll {label}"
   RollMove: "Roll Move"
   RollMode: "Roll Mode"
   SheetClassCharacter: "Default PbtA Character Sheet"
@@ -66,11 +67,9 @@ PBTA:
     Details: "Details"
     Name: "Name"
   Dialog:
-    Ask1: "Choose a stat for this"
-    Ask2: "move."
+    Ask1: "Choose a stat for this move."
     ChooseConditions: "Choose all conditional modifiers that apply:"
-    Prompt1: "Choose the modifier for this"
-    Prompt2: "move."
+    Prompt1: "Choose the modifier for this move."
   Messages:
     sheetConfig:
       actorTypeRequired: "actor type is required."

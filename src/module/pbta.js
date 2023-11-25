@@ -17,7 +17,7 @@ import { ItemPbta } from "./item/item.js";
 import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
 import { MigratePbta } from "./migrate/migrate.js";
 import { PbtaActorTemplates } from "./pbta/pbta-actors.js";
-import { PbtaRolls } from "./rolls.js";
+import { RollPbtA } from "./rolls.js";
 import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { PbtaUtility } from "./utility.js";
@@ -34,12 +34,14 @@ Hooks.once("init", async function() {
     PbtaUtility,
     PbtaActorTemplates,
     MigratePbta,
-    PbtaSettingsConfigDialog,
-    PbtaRolls
+    PbtaSettingsConfigDialog
   };
 
   // TODO: Extend the combat class.
   // CONFIG.Combat.documentClass = CombatPbta;
+
+  CONFIG.Dice.RollPbtA = RollPbtA;
+  CONFIG.Dice.rolls.push(RollPbtA);
 
   CONFIG.PBTA = PBTA;
   CONFIG.Actor.documentClass = ActorPbta;

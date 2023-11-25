@@ -1,7 +1,4 @@
 import { PbtaPlaybooks } from "../config.js";
-import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
-import { PbtaRolls } from "../rolls.js";
-import { PbtaUtility } from "../utility.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -559,43 +556,8 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {MouseEvent} event
    */
   async _onRollable(event) {
-    // Initialize variables.
     event.preventDefault();
-    const a = event.currentTarget;
-    const data = a.dataset;
-    const itemId = $(a).parents('.item').attr('data-item-id');
-    let item = null;
-    let flavorText = null;
-    let templateData = {};
-    const descriptionOnly = a.getAttribute("data-show") === 'description';
-
-    // Retrieve the item.
-    if (itemId) {
-      item = this.actor.items.get(itemId);
-    }
-
-    // Handle rolls coming directly from the ability score.
-    if ($(a).hasClass('stat-rollable') && data.mod) {
-      let stat = $(a).parents('.stat').data('stat') ?? null;
-      flavorText = data.label;
-      templateData = {
-        title: flavorText,
-        resultRangeNeeded: true
-      };
-
-      PbtaRolls.rollMove({actor: this.actor, data: null, formula: stat, templateData: templateData});
-    }
-    else if ($(a).hasClass('attr-rollable') && data.roll) {
-      templateData = {
-        title: data.label,
-        rollType: 'flat'
-      };
-
-      PbtaRolls.rollMove({actor: this.actor, data: null, formula: data.roll, templateData: templateData});
-    }
-    else if (itemId != undefined) {
-      item.roll({configureDialog: true, descriptionOnly});
-    }
+    this.actor._onRoll(event);
   }
 
   /**
