@@ -7,6 +7,10 @@
     }
   }
 
+  .combat-tracker-header {
+    border: none;
+  }
+
   .directory-item--group,
   .combat-control[data-control="endCombat"],
   .combat-control[data-control="startCombat"] {
@@ -38,6 +42,7 @@
 
   .directory-list--pbta {
     padding: 0;
+    margin: 0;
 
     .directory-item {
       border-bottom: 1px solid rgba($c-black, 0.25);
@@ -67,8 +72,13 @@
       }
 
       &.grid-3col {
-        grid-template-columns: 14% 68% 18%;
-        gap: 0%;
+        grid-template-columns: 14% 38% 18%;
+        gap: 4%;
+      }
+
+      &.grid-4col {
+        grid-template-columns: 14% 38% 18% 18%;
+        gap: 4%;
       }
 
       &.grid-6col {
@@ -169,8 +179,8 @@
 
     .image-wrapper {
       position: relative;
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       overflow: hidden;
     }
@@ -218,6 +228,9 @@
   }
 
   .actor-elem {
+    height: 54px;
+    margin: 0;
+
     .ct-item--moves {
       font-family: $font-stack-secondary;
       font-size: 14px;
@@ -241,7 +254,6 @@
 
 // Hide unused controls.
 .combat-control[data-control="resetAll"],
-.combat-settings[data-control="trackerSettings"],
 .combat-control[data-control="rollNPC"],
 .combat-control[data-control="rollAll"],
 .combat-control[data-control="previousTurn"],

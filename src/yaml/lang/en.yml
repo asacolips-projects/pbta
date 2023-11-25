@@ -41,6 +41,7 @@ PBTA:
   PromptTitle: "{name}: Enter a Modifier"
   Qty: "Qty"
   Quantity: "Quantity"
+  Resource: "Resource"
   RequiresMove: "Requires Move"
   Roll: "Roll"
   RollFormula: "Roll Formula"

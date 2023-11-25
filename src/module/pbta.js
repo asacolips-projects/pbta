@@ -9,7 +9,9 @@ import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
 import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
 import { PbtaActorSheet } from "./actor/actor-sheet.js";
 import { ActorPbta } from "./actor/actor.js";
+import { PbtACombatTracker } from "./combat/combat-tracker.js";
 import { CombatSidebarPbta } from "./combat/combat.js";
+import { PbtACombatant } from "./combat/combatant.js";
 import { PBTA, PbtaPlaybooks } from "./config.js";
 import { PbtaRegisterHelpers } from "./handlebars.js";
 import { PbtaItemSheet } from "./item/item-sheet.js";
@@ -39,6 +41,15 @@ Hooks.once("init", async function() {
 
   // TODO: Extend the combat class.
   // CONFIG.Combat.documentClass = CombatPbta;
+  CONFIG.ui.combat = PbtACombatTracker;
+  CONFIG.Combatant.documentClass = PbtACombatant;
+
+  game.socket.on('system.pbta', (data) => {
+    if (game.user.isGM && data.combatantUpdate) {
+      game.combat.updateEmbeddedDocuments('Combatant', Array.isArray(data.combatantUpdate) ? data.combatantUpdate : [data.combatantUpdate]);
+      ui.combat.render();
+    }
+  });
 
   CONFIG.Dice.RollPbtA = RollPbtA;
   CONFIG.Dice.rolls.push(RollPbtA);
@@ -73,10 +84,6 @@ Hooks.once("init", async function() {
   });
 
   PbtaRegisterHelpers.init();
-
-  // Combat tracker.
-  let combatPbta = new CombatSidebarPbta();
-  combatPbta.startup();
 
   /**
    * Track the system version upon which point a migration was last applied
