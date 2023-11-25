@@ -64,6 +64,7 @@ export class RollPbtA extends Roll {
       sound: CONFIG.sounds.dice,
 
       conditions: this.options.conditions,
+      choices: this.data.choices,
       details: this.data.description,
       originalMod: this.options.originalMod,
       result: resultType,
