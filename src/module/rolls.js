@@ -65,6 +65,7 @@ export class RollPbtA extends Roll {
 
       conditions: this.options.conditions,
       details: this.data.description,
+      originalMod: this.options.originalMod,
       result: resultType,
       resultDetails,
       resultLabel,
@@ -111,21 +112,22 @@ export class RollPbtA extends Roll {
       this.options.conditions.push(game.i18n.localize("PBTA.Disadvantage"));
     }
 
-    if (this.options.forward) {
-      const forward = new Roll(`${this.options.forward}`, this.data);
-      if ( !(forward.terms[0] instanceof OperatorTerm) ) {
+    let { forward, ongoing } = this.data?.resources;
+    if (forward?.value) {
+      const fRoll = new Roll(`${forward.value}`, this.data);
+      if ( !(fRoll.terms[0] instanceof OperatorTerm) ) {
         this.terms.push(new OperatorTerm({operator: "+"}));
       }
-      this.terms = this.terms.concat(forward.terms);
-      this.options.conditions.push(`${game.i18n.localize('PBTA.Forward')} (${forward >= 0 ? '+' + forward : forward})`);
+      this.terms = this.terms.concat(fRoll.terms);
+      this.options.conditions.push(`${game.i18n.localize('PBTA.Forward')} (${forward.value >= 0 ? '+' : ''} ${forward.value})`);
     }
-    if (this.options.ongoing) {
-      const ongoing = new Roll(`${this.options.ongoing}`, this.data);
-      if ( !(ongoing.terms[0] instanceof OperatorTerm) ) {
+    if (ongoing?.value) {
+      const oRoll = new Roll(`${ongoing.value}`, this.data);
+      if ( !(oRoll.terms[0] instanceof OperatorTerm) ) {
         this.terms.push(new OperatorTerm({operator: "+"}));
       }
-      this.terms = this.terms.concat(ongoing.terms);
-      this.options.conditions.push(`${game.i18n.localize('PBTA.Ongoing')} (${ongoing >= 0 ? '+' + ongoing : ongoing})`);
+      this.terms = this.terms.concat(oRoll.terms);
+      this.options.conditions.push(`${game.i18n.localize('PBTA.Ongoing')} (${ongoing.value >= 0 ? '+' : ''} ${ongoing.value})`);
     }
 
     // Re-compile the underlying formula

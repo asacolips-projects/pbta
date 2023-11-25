@@ -119,8 +119,6 @@ export class ActorPbta extends Actor {
     const a = event.currentTarget;
     const itemId = $(a).parents('.item').attr('data-item-id');
     const options = {
-      forward: this.system?.resources?.forward?.value,
-      ongoing: this.system?.resources?.ongoing?.value,
       rollMode: this.flags?.pbta?.rollMode
     }
 
