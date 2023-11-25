@@ -33,9 +33,11 @@ export class ItemPbta extends Item {
   }
 
   getRollFormula(defaultFormula = '2d6') {
-    const rollFormula = this.system.rollFormula;
-    if (rollFormula && Roll.validate(rollFormula)) {
-      return rollFormula.trim()
+    if (this.system.rollType === 'formula') {
+      const rollFormula = this.system.rollFormula;
+      if (rollFormula && Roll.validate(rollFormula)) {
+        return rollFormula.trim()
+      }
     }
     return this.actor?.getRollFormula(defaultFormula) ?? game.pbta.sheetConfig.rollFormula ?? defaultFormula;
   }
