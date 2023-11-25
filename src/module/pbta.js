@@ -10,7 +10,6 @@ import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
 import { PbtaActorSheet } from "./actor/actor-sheet.js";
 import { ActorPbta } from "./actor/actor.js";
 import { PbtACombatTracker } from "./combat/combat-tracker.js";
-import { CombatSidebarPbta } from "./combat/combat.js";
 import { PbtACombatant } from "./combat/combatant.js";
 import { PBTA, PbtaPlaybooks } from "./config.js";
 import { PbtaRegisterHelpers } from "./handlebars.js";
