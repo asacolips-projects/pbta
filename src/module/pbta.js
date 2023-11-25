@@ -95,6 +95,24 @@ Hooks.once("init", async function() {
     default: ""
   });
 
+  game.settings.register("pbta", "autoCollapseItemCards", {
+    name: "PBTA.Settings.AutoCollapseCard.name",
+    hint: "PBTA.Settings.AutoCollapseCard.hint",
+    scope: "client",
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register("pbta", "autoCollapseItemCardsResult", {
+    name: "PBTA.Settings.AutoCollapseCardResult.name",
+    hint: "PBTA.Settings.AutoCollapseCardResult.hint",
+    scope: "client",
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
   game.settings.register("pbta", "advForward", {
     name: game.i18n.localize("PBTA.Settings.advForward.name"),
     hint: game.i18n.localize("PBTA.Settings.advForward.hint"),
@@ -264,18 +282,21 @@ Hooks.once("ready", async function() {
 });
 
 Hooks.on('renderChatMessage', (data, html, options) => {
-  // Determine visibility.
-  // @todo v10
-  let chatData = data;
-  const whisper = chatData.whisper || [];
-  const isBlind = whisper.length && chatData.blind;
-  const isVisible = (whisper.length) ? game.user.isGM || whisper.includes(game.user.id) || (!isBlind) : true;
-  if (!isVisible) {
-    html.find('.dice-formula').text('???');
-    html.find('.dice-total').text('?');
-    html.find('.dice-tooltip').remove();
+  if (game.settings.get("pbta", "autoCollapseItemCards")) {
+    html.find(".card-content").hide();
+  }
+  if (game.settings.get("pbta", "autoCollapseItemCardsResult")) {
+    html.find(".result-details").hide();
   }
 });
+
+Hooks.on("renderChatLog", renderChatLog);
+Hooks.on("renderChatPopout", renderChatLog);
+
+function renderChatLog(app, html, data) {
+  html.on("click", ".cell__title", ItemPbta._onChatCardToggleContent.bind(this));
+  html.on("click", ".result-label", ItemPbta._onChatCardResultToggleContent.bind(this));
+}
 
 /* -------------------------------------------- */
 /*  Foundry VTT Setup                           */

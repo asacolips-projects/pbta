@@ -100,6 +100,12 @@ PBTA:
     stats:
       name: "Stats"
       hint: "Enter a comma-separated list of stats/abilities, such as \"Str,Dex,Con,Int,Wis,Cha\""
+    AutoCollapseCard:
+      name: "Collapse Item Cards' Descriptions in Chat"
+      hint: "Automatically collapse Item Card descriptions in the Chat Log"
+    AutoCollapseCardResult:
+      name: "Collapse Item Cards' Results in Chat"
+      hint: "Automatically collapse Item Card results in the Chat Log"
     advForward:
       name: "Clear ADV/DIS After Rolls"
       hint: "If enabled, advantage and disadvantage choices on the character sheet will be reset to normal after each roll (similar to Forward)."
