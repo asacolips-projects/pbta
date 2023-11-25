@@ -8,7 +8,7 @@
     <div class="card-content">
       {{!-- Stat label. --}}
       {{#if stat}}
-        <div class="row"><em>{{localize "PBTA.RolledStat" stat=stat}}{{#if statMod}} ({{numberFormat statMod decimals=0 sign=true}}){{/if}}</em></div>
+        <div class="row"><em>{{localize "PBTA.RolledStat" stat=stat}}{{#if statMod includeZero=true}} ({{numberFormat statMod decimals=0 sign=true}}){{/if}}</em></div>
       {{/if}}
       {{#if originalMod includeZero=true}}
         <div class="row"><em>{{localize "PBTA.RollFormulaHardCap" value=(numberFormat originalMod decimals=0 sign=true)}}</em></div>
