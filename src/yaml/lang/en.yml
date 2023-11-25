@@ -50,6 +50,7 @@ PBTA:
   RollLabel: "Roll {label}"
   RollMove: "Roll Move"
   RollMode: "Roll Mode"
+  RolledStat: "Stat: {stat}"
   SheetClassCharacter: "Default PbtA Character Sheet"
   SheetClassNPC: "Default PbtA NPC Sheet"
   SheetClassOther: "Default PbtA Other Sheet"

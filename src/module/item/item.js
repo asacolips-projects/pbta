@@ -144,4 +144,22 @@ export class ItemPbta extends Item {
       });
     }
   }
+
+  static _onChatCardToggleContent(event) {
+    event.preventDefault();
+    const header = event.currentTarget;
+    const card = header.closest(".cell");
+    const content = card.querySelector(".card-content");
+    content.style.display = content.style.display === "none" ? "" : "none";
+  }
+
+  static _onChatCardResultToggleContent(event) {
+    event.preventDefault();
+    const header = event.currentTarget;
+    const card = header.closest(".row");
+    const content = card.querySelector(".result-details");
+    if (content) {
+      content.style.display = content.style.display === "none" ? "" : "none";
+    }
+  }
 }
