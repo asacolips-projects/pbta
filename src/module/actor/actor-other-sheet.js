@@ -16,6 +16,8 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
     });
   }
 
+  static unsupportedItemTypes = new Set(["tag"]);
+
   /** @override */
   get template() {
     const path = "systems/pbta/templates/sheet";
