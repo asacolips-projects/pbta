@@ -259,18 +259,18 @@ export class PbtACombatTracker extends CombatTracker {
 				icon: '<i class="fas fa-edit"></i>',
 				callback: this._onConfigureCombatant.bind(this)
 			},
-			// {
-			// 	name: "COMBAT.CombatantClear",
-			// 	icon: '<i class="fas fa-undo"></i>',
-			// 	condition: li => {
-			// 		const combatant = this.viewed.combatants.get(li.data("combatant-id"));
-			// 		return Number.isNumeric(combatant?.initiative);
-			// 	},
-			// 	callback: li => {
-			// 		const combatant = this.viewed.combatants.get(li.data("combatant-id"));
-			// 		if ( combatant ) return combatant.update({initiative: null});
-			// 	}
-			// },
+			{
+				name: "PBTA.ClearMoves",
+				icon: '<i class="fas fa-undo"></i>',
+				condition: li => {
+					const combatant = this.viewed.combatants.get(li.data("combatant-id"));
+					return Number.isNumeric(combatant?.getFlag("pbta", "moveCount"));
+				},
+				callback: li => {
+					const combatant = this.viewed.combatants.get(li.data("combatant-id"));
+					if ( combatant ) combatant.unsetFlag("pbta", "moveCount", 0)
+				}
+			},
 			// {
 			// 	name: "COMBAT.CombatantReroll",
 			// 	icon: '<i class="fas fa-dice-d20"></i>',
