@@ -64,6 +64,7 @@ export class ItemPbta extends Item {
       let formula = "@formula";
       let stat = "";
       const templateData = {
+        title: this.name,
         details: this.system.description,
         moveResults: this.system.moveResults,
         choices: this.system?.choices,
