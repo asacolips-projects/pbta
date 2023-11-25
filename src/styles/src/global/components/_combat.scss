@@ -72,13 +72,13 @@
       }
 
       &.grid-3col {
-        grid-template-columns: 14% 38% 18%;
-        gap: 4%;
+        grid-template-columns: 14% 42% 18%;
+        gap: 2%;
       }
 
       &.grid-4col {
-        grid-template-columns: 14% 38% 18% 18%;
-        gap: 4%;
+        grid-template-columns: 14% 42% 18% 18%;
+        gap: 2%;
       }
 
       &.grid-6col {
@@ -119,6 +119,33 @@
     > button {
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    &.ct-item--name {
+      align-self: center;
+      align-items: baseline;
+
+      > span {
+        font-size: var(--font-size-16);
+      }
+
+      .combatant-controls {
+        flex: 0 0 20px;
+        font-size: var(--font-size-14);
+        line-height: 20px;
+        width: 100%;
+      }
+
+      .combatant-control {
+        flex: 0 0 20px;
+        height: 20px;
+        float: left;
+        color: var(--color-text-dark-5);
+
+        &.active {
+          color: var(--color-text-light-1);
+        }
+      }
     }
 
     button {
@@ -231,6 +258,7 @@
     height: 54px;
     margin: 0;
 
+    .ct-item--resource,
     .ct-item--moves {
       font-family: $font-stack-secondary;
       font-size: 14px;

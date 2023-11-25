@@ -84,7 +84,7 @@
 		  <ol class="directory-list--pbta {{group}}">
 			{{#each combatantGroup as |c index|}}
 			  <li
-			  	class="combatant directory-item actor-elem {{#if c.token.hidden}}hidden{{/if}} grid {{#if (eq group 'character')}}grid-4col{{else}}grid-3col{{/if}}"
+			  	class="combatant directory-item actor-elem {{#if (or c.token.hidden hidden)}}hidden{{/if}} grid {{#if (eq group 'character')}}grid-4col{{else}}grid-3col{{/if}}"
 			  	data-actor-id="{{c.actor.id}}"
 				data-token-id="{{c.token.id}}"
 				data-combatant-id="{{c.id}}"
@@ -98,7 +98,29 @@
 				  </div>
 				</div>
 				{{!-- Name. --}}
-				<div class="ct-item ct-item--name"><span>{{c.name}}</span></div>
+				<div class="ct-item ct-item--name flexcol">
+					<span>{{c.name}}</span>
+					<div class="combatant-controls flexrow">
+						{{#if @root.user.isGM}}
+						<a class="combatant-control {{#if this.hidden}}active{{/if}}" aria-label="{{localize 'COMBAT.ToggleVis'}}" role="button" data-tooltip="COMBAT.ToggleVis" data-control="toggleHidden">
+							<i class="fas fa-eye-slash"></i>
+						</a>
+						<a class="combatant-control {{#if this.defeated}}active{{/if}}" aria-label="{{localize 'COMBAT.ToggleDead'}}" role="button" data-tooltip="COMBAT.ToggleDead" data-control="toggleDefeated">
+							<i class="fas fa-skull"></i>
+						</a>
+						{{/if}}
+						{{#if this.canPing}}
+						<a class="combatant-control" aria-label="{{localize 'COMBAT.PingCombatant'}}" role="button" data-tooltip="COMBAT.PingCombatant" data-control="pingCombatant">
+							<i class="fa-solid fa-bullseye-arrow"></i>
+						</a>
+						{{/if}}
+						<div class="token-effects">
+							{{#each this.effects}}
+							<img class="token-effect" src="{{this}}"/>
+							{{/each}}
+						</div>
+					</div>
+				</div>
 
 				<div class="ct-item ct-item--resource">
 					{{#if this.hasResource}}

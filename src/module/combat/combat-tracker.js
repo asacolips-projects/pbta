@@ -52,6 +52,9 @@ export class PbtACombatTracker extends CombatTracker {
 			if (!combatant.actor) {
 				game.combat.deleteEmbeddedDocuments('Combatant', [combatant.id]);
 			}
+			else if ( !combatant.visible ) {
+				return groups;
+			}
 			// Append valid actors to the appropriate group.
 			else {
 				// Initialize the group if it doesn't exist.
@@ -76,6 +79,7 @@ export class PbtACombatTracker extends CombatTracker {
 					combatant.resource = resource;
 					combatant.hasResource = resource !== null;
 				}
+				combatant.canPing = (combatant.sceneId === canvas.scene?.id) && game.user.hasPermission("PING_CANVAS");
 
 				// If this is the GM or the owner, push to the combatants list.
 				// Otherwise, only push if the token isn't hidden in the scene.
