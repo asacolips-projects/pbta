@@ -260,6 +260,7 @@ export class RollPbtA extends Roll {
 
     // Append a situational bonus term
     if (stat) {
+      this.options.stat = stat;
       addToFormula(`@stats.${stat}.value`);
     }
 
