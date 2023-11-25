@@ -542,12 +542,11 @@ export class PbtaActorSheet extends ActorSheet {
     const item = this.actor.items.get(itemId);
 
     if (item) {
-      let originalAmount = getProperty(item.toObject(), property) ?? 0;
-      let update = {}
-      update[property] = Number(originalAmount) + delta;
-      await item.update(update);
-
-      this.render();
+      const originalAmount = Number(getProperty(item.toObject(), property)) || 0;
+      if (originalAmount + delta >= 0) {
+        await item.update({ [property]: originalAmount + delta});
+        this.render();
+      }
     }
   }
 
