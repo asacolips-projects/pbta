@@ -1,18 +1,9 @@
 export class PbtaActorTemplates {
   static applyActorTemplate(actor, options, id) {
-    let origSystemData = {};
-    let systemData = {};
-
-    // Copy the base actor data.
-    origSystemData = actor.toObject(false).system;
-    systemData = foundry.utils.deepClone(origSystemData);
+    let systemData = foundry.utils.deepClone(actor.toObject(false).system);
 
     // Determine the actor type.
-    let actorType = actor.type ?? 'character';
-    let sheetType = actorType;
-    if (sheetType == 'other') {
-      sheetType = systemData?.customType ?? 'character';
-    }
+    const sheetType = actor.type === 'other' ? (systemData?.customType ?? 'character') : actor.type;
 
     // Merge it with the model for that for that actor type to include missing attributes.
     let origModel = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
