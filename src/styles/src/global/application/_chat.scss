@@ -58,7 +58,8 @@
       padding: 10px;
       background: #efefef;
 
-      &:has(+ .result-details):hover {
+      &:has(+ .result-details):hover,
+      &:has(+ .result-choices):hover {
         cursor: pointer;
       }
     }

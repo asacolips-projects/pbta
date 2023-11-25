@@ -158,8 +158,12 @@ export class ItemPbta extends Item {
     const header = event.currentTarget;
     const card = header.closest(".row");
     const content = card.querySelector(".result-details");
+    const choices = card.querySelector(".result-choices");
     if (content) {
       content.style.display = content.style.display === "none" ? "" : "none";
+    }
+    if (choices) {
+      choices.style.display = choices.style.display === "none" ? "" : "none";
     }
   }
 }

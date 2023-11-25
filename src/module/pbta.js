@@ -287,6 +287,7 @@ Hooks.on('renderChatMessage', (data, html, options) => {
   }
   if (game.settings.get("pbta", "autoCollapseItemCardsResult")) {
     html.find(".result-details").hide();
+    html.find(".result-choices").hide();
   }
 });
 
