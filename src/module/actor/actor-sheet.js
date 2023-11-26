@@ -283,39 +283,38 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Iterate through items, allocating to containers
     // let totalWeight = 0;
-    for (let i of items) {
-      let item = i;
-      i.img = i.img || DEFAULT_TOKEN;
+    for (let item of items) {
+      item.img = item.img || DEFAULT_TOKEN;
       // Enrich text fields.
-      if (i.system?.description) {
-        i.system.description = await TextEditor.enrichHTML(i.system.description, actorData.enrichmentOptions);
+      if (item.system?.description) {
+        item.system.description = await TextEditor.enrichHTML(item.system.description, actorData.enrichmentOptions);
       }
-      if (i.system?.choices) {
-        i.system.choices = await TextEditor.enrichHTML(i.system.choices, actorData.enrichmentOptions);
+      if (item.system?.choices) {
+        item.system.choices = await TextEditor.enrichHTML(item.system.choices, actorData.enrichmentOptions);
       }
-      if (i.system?.moveResults) {
-        for (let [mK, mV] of Object.entries(i.system.moveResults)) {
+      if (item.system?.moveResults) {
+        for (let [mK, mV] of Object.entries(item.system.moveResults)) {
           if (mV.value) {
-            i.system.moveResults[mK].value = await TextEditor.enrichHTML(mV.value, actorData.enrichmentOptions);
+            item.system.moveResults[mK].value = await TextEditor.enrichHTML(mV.value, actorData.enrichmentOptions);
           }
         }
       }
       // If this is a move, sort into various arrays.
-      if (i.type === moveType) {
-        if (actorData.moves[i.system.moveType]) {
-          actorData.moves[i.system.moveType].push(i);
+      if (item.type === moveType) {
+        if (actorData.moves[item.system.moveType]) {
+          actorData.moves[item.system.moveType].push(item);
         }
         else {
-          actorData.moves['PBTA_OTHER'].push(i);
+          actorData.moves['PBTA_OTHER'].push(item);
         }
       }
       // If this is equipment, we currently lump it together.
-      else if (i.type === 'equipment') {
-        if (actorData.equipment[i.system.equipmentType]) {
-          actorData.equipment[i.system.equipmentType].push(i);
+      else if (item.type === 'equipment') {
+        if (actorData.equipment[item.system.equipmentType]) {
+          actorData.equipment[item.system.equipmentType].push(item);
         }
         else {
-          actorData.equipment['PBTA_OTHER'].push(i);
+          actorData.equipment['PBTA_OTHER'].push(item);
         }
       }
     }
