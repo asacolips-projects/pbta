@@ -1,3 +1,12 @@
+# 0.7.4
+
+- Fixed typos and incorrect terms in the French translation
+- Added labels to sheets
+- Removed legacy Dungeon World code that was unused in PbtA
+- Fixed an issue where clocks weren't working after PbtA 0.7.3
+
+Thanks to @tsukyu and @mclemente for their contributions in this release!
+
 # 0.7.3
 
 ## Bug Fixes
