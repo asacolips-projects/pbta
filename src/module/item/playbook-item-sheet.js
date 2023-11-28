@@ -11,7 +11,7 @@ export class PbtaPlaybookItemSheet extends PbtaItemSheet {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["pbta", "sheet", "item", "class"],
-      width: 520,
+      width: 780,
       height: 480,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "equipment" }],
       submitOnChange: true,
