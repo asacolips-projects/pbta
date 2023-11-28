@@ -1,23 +1,5 @@
 export const PBTA = {};
 
-PBTA.abilities = {
-  "str": "PBTA.AbilityStr",
-  "dex": "PBTA.AbilityDex",
-  "con": "PBTA.AbilityCon",
-  "int": "PBTA.AbilityInt",
-  "wis": "PBTA.AbilityWis",
-  "cha": "PBTA.AbilityCha"
-};
-
-PBTA.debilities = {
-  "str": "PBTA.DebilityStr",
-  "dex": "PBTA.DebilityDex",
-  "con": "PBTA.DebilityCon",
-  "int": "PBTA.DebilityInt",
-  "wis": "PBTA.DebilityWis",
-  "cha": "PBTA.DebilityCha"
-};
-
 PBTA.attrTypes = [
   "Number",
   "Clock",

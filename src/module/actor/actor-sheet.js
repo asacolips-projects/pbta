@@ -1,7 +1,4 @@
 import { PbtaPlaybooks } from "../config.js";
-import { PbtaUtility } from "../utility.js";
-import { PbtaRolls } from "../rolls.js";
-import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -12,7 +9,7 @@ export class PbtaActorSheet extends ActorSheet {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["pbta", "sheet", "actor"],
+      classes: ["pbta", "sheet", "actor", "character"],
       width: 840,
       height: 780,
       scrollY: [".window-content"],
@@ -98,7 +95,7 @@ export class PbtaActorSheet extends ActorSheet {
     if (context.pbtaSheetType == 'character' || context.pbtaBaseType == 'character') {
       context.system.playbooks = await PbtaPlaybooks.getPlaybooks();
       context.system.statToggle = sheetConfig?.statToggle ?? false;
-      context.system.statSettings = sheetConfig.actorTypes[context.pbtaSheetType].stats ?? {};
+      context.system.statSettings = sheetConfig.actorTypes[context.pbtaSheetType]?.stats ?? {};
 
       if (context.system.statSettings) {
         context.system.statSettings['ask'] = {label: game.i18n.localize('PBTA.Ask'), value: 0};
@@ -218,7 +215,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Iterate through the groups that need to be sorted.
     for (let group of groups) {
       // Confirm the keys exist, and assign them to a sorting array if so.
-      let sortKeys = game.pbta.sheetConfig.actorTypes[sheetData.pbtaSheetType][group];
+      let sortKeys = game.pbta.sheetConfig.actorTypes?.[sheetData.pbtaSheetType]?.[group];
       let sortingArray = [];
       if (sortKeys) {
         sortingArray = Object.keys(sortKeys);
@@ -228,17 +225,17 @@ export class PbtaActorSheet extends ActorSheet {
       }
       // Grab the keys of the group on the actor.
       let newData = Object.keys(actorData.system[group])
-      // Sort them based on the sorting array.
-      .sort((a,b) => {
-        return sortingArray.indexOf(a) - sortingArray.indexOf(b);
-      })
-      // Build a new object from the sorted keys.
-      .reduce(
-        (obj, key) => {
-          obj[key] = actorData.system[group][key];
-          return obj;
-        }, {}
-      );
+        // Sort them based on the sorting array.
+        .sort((a,b) => {
+          return sortingArray.indexOf(a) - sortingArray.indexOf(b);
+        })
+        // Build a new object from the sorted keys.
+        .reduce(
+          (obj, key) => {
+            obj[key] = actorData.system[group][key];
+            return obj;
+          }, {}
+        );
 
       // Replace the data object handed over to the sheet.
       actorData.system[group] = newData;
@@ -286,39 +283,38 @@ export class PbtaActorSheet extends ActorSheet {
 
     // Iterate through items, allocating to containers
     // let totalWeight = 0;
-    for (let i of items) {
-      let item = i;
-      i.img = i.img || DEFAULT_TOKEN;
+    for (let item of items) {
+      item.img = item.img || DEFAULT_TOKEN;
       // Enrich text fields.
-      if (i.system?.description) {
-        i.system.description = await TextEditor.enrichHTML(i.system.description, actorData.enrichmentOptions);
+      if (item.system?.description) {
+        item.system.description = await TextEditor.enrichHTML(item.system.description, actorData.enrichmentOptions);
       }
-      if (i.system?.choices) {
-        i.system.choices = await TextEditor.enrichHTML(i.system.choices, actorData.enrichmentOptions);
+      if (item.system?.choices) {
+        item.system.choices = await TextEditor.enrichHTML(item.system.choices, actorData.enrichmentOptions);
       }
-      if (i.system?.moveResults) {
-        for (let [mK, mV] of Object.entries(i.system.moveResults)) {
+      if (item.system?.moveResults) {
+        for (let [mK, mV] of Object.entries(item.system.moveResults)) {
           if (mV.value) {
-            i.system.moveResults[mK].value = await TextEditor.enrichHTML(mV.value, actorData.enrichmentOptions);
+            item.system.moveResults[mK].value = await TextEditor.enrichHTML(mV.value, actorData.enrichmentOptions);
           }
         }
       }
       // If this is a move, sort into various arrays.
-      if (i.type === moveType) {
-        if (actorData.moves[i.system.moveType]) {
-          actorData.moves[i.system.moveType].push(i);
+      if (item.type === moveType) {
+        if (actorData.moves[item.system.moveType]) {
+          actorData.moves[item.system.moveType].push(item);
         }
         else {
-          actorData.moves['PBTA_OTHER'].push(i);
+          actorData.moves['PBTA_OTHER'].push(item);
         }
       }
       // If this is equipment, we currently lump it together.
-      else if (i.type === 'equipment') {
-        if (actorData.equipment[i.system.equipmentType]) {
-          actorData.equipment[i.system.equipmentType].push(i);
+      else if (item.type === 'equipment') {
+        if (actorData.equipment[item.system.equipmentType]) {
+          actorData.equipment[item.system.equipmentType].push(item);
         }
         else {
-          actorData.equipment['PBTA_OTHER'].push(i);
+          actorData.equipment['PBTA_OTHER'].push(item);
         }
       }
     }
@@ -369,8 +365,7 @@ export class PbtaActorSheet extends ActorSheet {
     super.activateListeners(html);
 
     // Rollables.
-    html.find('.rollable').on('click', this._onRollable.bind(this));
-    html.find('.showable').on('click', this._onRollable.bind(this));
+    html.find('.rollable, .showable').on('click', this._onRollable.bind(this));
 
     // // View playbook.
     html.find('.view-playbook').on('click', this._onViewPlaybook.bind(this));
@@ -546,12 +541,11 @@ export class PbtaActorSheet extends ActorSheet {
     const item = this.actor.items.get(itemId);
 
     if (item) {
-      let originalAmount = getProperty(item.toObject(), property) ?? 0;
-      let update = {}
-      update[property] = Number(originalAmount) + delta;
-      await item.update(update);
-
-      this.render();
+      const originalAmount = Number(getProperty(item.toObject(), property)) || 0;
+      if (originalAmount + delta >= 0) {
+        await item.update({ [property]: originalAmount + delta});
+        this.render();
+      }
     }
   }
 
@@ -560,43 +554,8 @@ export class PbtaActorSheet extends ActorSheet {
    * @param {MouseEvent} event
    */
   async _onRollable(event) {
-    // Initialize variables.
     event.preventDefault();
-    const a = event.currentTarget;
-    const data = a.dataset;
-    const itemId = $(a).parents('.item').attr('data-item-id');
-    let item = null;
-    let flavorText = null;
-    let templateData = {};
-    const descriptionOnly = a.getAttribute("data-show") === 'description';
-
-    // Retrieve the item.
-    if (itemId) {
-      item = this.actor.items.get(itemId);
-    }
-
-    // Handle rolls coming directly from the ability score.
-    if ($(a).hasClass('stat-rollable') && data.mod) {
-      let stat = $(a).parents('.stat').data('stat') ?? null;
-      flavorText = data.label;
-      templateData = {
-        title: flavorText,
-        resultRangeNeeded: true
-      };
-
-      PbtaRolls.rollMove({actor: this.actor, data: null, formula: stat, templateData: templateData});
-    }
-    else if ($(a).hasClass('attr-rollable') && data.roll) {
-      templateData = {
-        title: data.label,
-        rollType: 'flat'
-      };
-
-      PbtaRolls.rollMove({actor: this.actor, data: null, formula: data.roll, templateData: templateData});
-    }
-    else if (itemId != undefined) {
-      item.roll({configureDialog: true, descriptionOnly});
-    }
+    this.actor._onRoll(event);
   }
 
   /**

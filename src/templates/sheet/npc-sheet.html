@@ -15,13 +15,13 @@
     {{!-- Main --}}
     <section class="sheet-main sheet-main--npc">
 
-      {{#if system.attrTop}}
+      {{#if (objLen system.attrTop)}}
         <section class="sheet-attributes-top">
           {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=system.attrTop group="attrTop" class="attributes-top"}}
         </section>
       {{/if}}
 
-      {{#if system.attrLeft}}
+      {{#if (objLen system.attrLeft)}}
         <section class="sheet-attributes-left">
           <div class="cell cell--aesthetics">
             {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=system.attrLeft group="attrLeft" class="attributes-left"}}
@@ -44,7 +44,6 @@
           <div class="tab description" data-group="primary" data-tab="description">
             <div class="sheet-tab">
               <div class="cell cell--bio">
-                <label class="cell__title">{{localize "PBTA.Biography"}}</label>
                 {{!-- We're avoiding WYSIWYGs... for now... --}}
                 {{editor system.details.biography target="system.details.biography" button=true owner=owner editable=editable}}
               </div>
@@ -73,7 +72,7 @@
                               {{#if item.system.rollFormula}}
                                 <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
                               {{else}}
-                                <i class="fas fa-book"></i>
+                                <i class="fas fa-comments"></i>
                               {{/if}}
                             </span>
                             <img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>
@@ -110,7 +109,7 @@
           <div class="tab equipment" data-group="primary" data-tab="equipment">
               <section class="sheet-notifications" style="margin-top:10px;">
                 {{#if system.isToken}}
-                <div class="cell__title warning small-text">Equipment cannot be rearranged while this token is not linked to an actor.</div>
+                <div class="cell__title warning small-text">{{localize "PBTA.Warnings.UnlinkedToken.Equipment"}}</div>
                 {{/if}}
               </section>
 

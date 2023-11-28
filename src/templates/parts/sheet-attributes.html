@@ -1,3 +1,4 @@
+{{#if (objLen attrs)}}
 <div class="cell cell--{{class}}">
   {{#each attrs as |attr key|}}
     <div class="cell cell--{{key}} cell--attr-{{key}} cell--{{attr.type}}">
@@ -49,7 +50,13 @@
       {{else if (eq attr.type "ListMany") }}
         <ul class="cell__checkboxes flexcol">
           {{#each attr.options as |option optionKey|}}
-            <label class="flexrow" title="{{#if (eq option.label '[Text]')}}{{option.userLabel}}{{else}}{{option.label}}{{/if}}">
+            <label
+              class="flexrow"
+              {{#if option.tooltip}}
+              data-tooltip="{{option.tooltip}}"
+              data-tooltip-direction="UP"
+              {{/if}}
+            >
               {{#if option.values}}
                 {{#each option.values as |suboption suboptionKey|}}
                   <input type="checkbox" class="attr-list" name="system.{{../../../group}}.{{key}}.options.{{optionKey}}.values.{{suboptionKey}}.value" {{checked suboption.value}}/>
@@ -65,17 +72,23 @@
             </label>
           {{/each}}
         </ul>
-        {{else if (eq attr.type "ListOne") }}
+      {{else if (eq attr.type "ListOne") }}
         <ul class="cell__radio flexcol">
           {{#each attr.options as |option optionKey|}}
-          <label class="flexrow" class="flexrow" title="{{#if (eq option.label '[Text]')}}{{option.userLabel}}{{else}}{{option.label}}{{/if}}">
-            <input type="radio" class="attr-list" value="{{@index}}" name="system.{{../../group}}.{{key}}.value" {{#ifEquals attr.value @index}}checked{{/ifEquals}} />
+          <label
+            class="flexrow"
+            {{#if option.tooltip}}
+            data-tooltip="{{option.tooltip}}"
+            data-tooltip-direction="UP"
+            {{/if}}
+          >
+            <input type="radio" class="attr-list" value="{{@index}}" name="system.{{../../group}}.{{key}}.value" {{checked (softEq attr.value @index)}} />
             {{#if (eq option.label "[Text]")}}
               <input type="text" class="input input-title" id="system.{{../../group}}.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
             {{else}}
               {{option.label}}
             {{/if}}
-            </label>
+          </label>
           {{/each}}
         </ul>
       {{else if (eq attr.type "Roll")}}
@@ -90,3 +103,4 @@
     </div>
   {{/each}}
 </div>
+{{/if}}

@@ -9,7 +9,8 @@ import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
 import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
 import { PbtaActorSheet } from "./actor/actor-sheet.js";
 import { ActorPbta } from "./actor/actor.js";
-import { CombatSidebarPbta } from "./combat/combat.js";
+import { PbtACombatTracker } from "./combat/combat-tracker.js";
+import { PbtACombatant } from "./combat/combatant.js";
 import { PBTA, PbtaPlaybooks } from "./config.js";
 import { PbtaRegisterHelpers } from "./handlebars.js";
 import { PbtaItemSheet } from "./item/item-sheet.js";
@@ -17,7 +18,7 @@ import { ItemPbta } from "./item/item.js";
 import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
 import { MigratePbta } from "./migrate/migrate.js";
 import { PbtaActorTemplates } from "./pbta/pbta-actors.js";
-import { PbtaRolls } from "./rolls.js";
+import { RollPbtA } from "./rolls.js";
 import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { PbtaUtility } from "./utility.js";
@@ -34,12 +35,23 @@ Hooks.once("init", async function() {
     PbtaUtility,
     PbtaActorTemplates,
     MigratePbta,
-    PbtaSettingsConfigDialog,
-    PbtaRolls
+    PbtaSettingsConfigDialog
   };
 
   // TODO: Extend the combat class.
   // CONFIG.Combat.documentClass = CombatPbta;
+  CONFIG.ui.combat = PbtACombatTracker;
+  CONFIG.Combatant.documentClass = PbtACombatant;
+
+  game.socket.on('system.pbta', (data) => {
+    if (game.user.isGM && data.combatantUpdate) {
+      game.combat.updateEmbeddedDocuments('Combatant', Array.isArray(data.combatantUpdate) ? data.combatantUpdate : [data.combatantUpdate]);
+      ui.combat.render();
+    }
+  });
+
+  CONFIG.Dice.RollPbtA = RollPbtA;
+  CONFIG.Dice.rolls.push(RollPbtA);
 
   CONFIG.PBTA = PBTA;
   CONFIG.Actor.documentClass = ActorPbta;
@@ -72,10 +84,6 @@ Hooks.once("init", async function() {
 
   PbtaRegisterHelpers.init();
 
-  // Combat tracker.
-  let combatPbta = new CombatSidebarPbta();
-  combatPbta.startup();
-
   /**
    * Track the system version upon which point a migration was last applied
    */
@@ -83,8 +91,26 @@ Hooks.once("init", async function() {
     name: "System Migration Version",
     scope: "world",
     config: false,
-    type: Number,
-    default: 0
+    type: String,
+    default: ""
+  });
+
+  game.settings.register("pbta", "autoCollapseItemCards", {
+    name: "PBTA.Settings.AutoCollapseCard.name",
+    hint: "PBTA.Settings.AutoCollapseCard.hint",
+    scope: "client",
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register("pbta", "autoCollapseItemCardsResult", {
+    name: "PBTA.Settings.AutoCollapseCardResult.name",
+    hint: "PBTA.Settings.AutoCollapseCardResult.hint",
+    scope: "client",
+    config: true,
+    default: false,
+    type: Boolean
   });
 
   game.settings.register("pbta", "advForward", {
@@ -145,7 +171,7 @@ Hooks.once("init", async function() {
     name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
     label: game.i18n.localize("PBTA.Settings.sheetConfig.label"),
     hint: game.i18n.localize("PBTA.Settings.sheetConfig.hint"),
-    icon: "fas fa-bars",               // A Font Awesome icon used in the submenu button
+    icon: "fas fa-file-alt",               // A Font Awesome icon used in the submenu button
     type: PbtaSettingsConfigDialog,   // A FormApplication subclass which should be created
     restricted: true,                   // Restrict this submenu to gamemaster only?
     scope: 'world'
@@ -245,27 +271,33 @@ Hooks.once("ready", async function() {
   // Apply structure to actor types.
   PbtaUtility.applyActorTemplates();
 
-  // Add a lang class to the body.
-  const lang = game.settings.get('core', 'language');
-  $('html').addClass(`lang-${lang}`);
-
   // Run migrations.
-  MigratePbta.runMigration();
+  if ( !game.user.isGM ) return;
+  const cv = game.settings.get("pbta", "systemMigrationVersion");
+  const totalDocuments = game.actors.size + game.scenes.size + game.items.size;
+  if ( !cv && totalDocuments === 0 ) return game.settings.set("pbta", "systemMigrationVersion", game.system.version);
+
+  // Perform the migration
+  await MigratePbta.runMigration();
 });
 
 Hooks.on('renderChatMessage', (data, html, options) => {
-  // Determine visibility.
-  // @todo v10
-  let chatData = data;
-  const whisper = chatData.whisper || [];
-  const isBlind = whisper.length && chatData.blind;
-  const isVisible = (whisper.length) ? game.user.isGM || whisper.includes(game.user.id) || (!isBlind) : true;
-  if (!isVisible) {
-    html.find('.dice-formula').text('???');
-    html.find('.dice-total').text('?');
-    html.find('.dice-tooltip').remove();
+  if (game.settings.get("pbta", "autoCollapseItemCards")) {
+    html.find(".card-content").hide();
+  }
+  if (game.settings.get("pbta", "autoCollapseItemCardsResult")) {
+    html.find(".result-details").hide();
+    html.find(".result-choices").hide();
   }
 });
+
+Hooks.on("renderChatLog", renderChatLog);
+Hooks.on("renderChatPopout", renderChatLog);
+
+function renderChatLog(app, html, data) {
+  html.on("click", ".cell__title", ItemPbta._onChatCardToggleContent.bind(this));
+  html.on("click", ".result-label", ItemPbta._onChatCardResultToggleContent.bind(this));
+}
 
 /* -------------------------------------------- */
 /*  Foundry VTT Setup                           */
@@ -275,11 +307,8 @@ Hooks.on('renderChatMessage', (data, html, options) => {
  * This function runs after game data has been requested and loaded from the servers, so documents exist
  */
 Hooks.once("setup", function() {
-
   // Localize CONFIG objects once up-front
-  const toLocalize = [
-    "abilities", "debilities"
-  ];
+  const toLocalize = [];
   for (let o of toLocalize) {
     CONFIG.PBTA[o] = Object.entries(CONFIG.PBTA[o]).reduce((obj, e) => {
       obj[e[0]] = game.i18n.localize(e[1]);
@@ -389,101 +418,4 @@ function rollItemMacro(itemData) {
     // Trigger the item roll
     return item.roll();
   }
-}
-
-/* -------------------------------------------- */
-/*  Document Creation Override                    */
-/* -------------------------------------------- */
-
-async function _onCreateEntry(event) {
-  event.preventDefault();
-  event.stopPropagation();
-  return _pbtaDirectoryTemplates(this, event);
-}
-
-if (typeof ActorDirectory.prototype._onCreateEntry !== 'undefined') {
-  ActorDirectory.prototype._onCreateEntry = _onCreateEntry; // For 0.8.x+
-}
-
-/**
- * Display the document template dialog.
- *
- * Helper function to display a dialog if there are multiple template types defined for the document type.
- * TODO: Refactor in 0.7.x to play more nicely with the Document.createDialog method
- *1
- * @param {DocumentCollection} documentType - The sidebar tab
- * @param {MouseEvent} event - Triggering event
- */
- async function _pbtaDirectoryTemplates(collection, event) {
-  // Retrieve the collection and find any available templates
-  const documentCollection = collection.tabName === "actors" ? game.actors : game.items;
-  const cls = collection.tabName === "actors" ? Actor : Item;
-  let ent = game.i18n.localize(cls.metadata.label);
-
-  let actorTypes = Object.keys(game.pbta.sheetConfig.actorTypes);
-
-  // Setup default creation data
-  let type = collection.tabName === "actors" ? 'character' : 'item';
-  let defaultName = game.i18n.format("DOCUMENT.New", {type: ent});
-
-  // Build an array of types for the form, including an empty default.
-  let types = actorTypes.map(a => {
-    // TODO: Make these values different.
-    let label = game.pbta.sheetConfig.actorTypes[a].label ?? game.i18n.localize(`TYPES.Actor.${a}`);
-    if (label === `TYPES.Actor.${a}`) {
-      label = a;
-    }
-    return {
-      value: a,
-      type: a == 'character' || a == 'npc' ? a : 'other',
-      label
-    }
-  });
-
-  // Render the confirmation dialog window
-  const templateData = {
-    name: game.i18n.format('DOCUMENT.Create', {type: ent}),
-    upper: ent,
-    lower: ent.toLowerCase(),
-    types: types
-  };
-  const dlg = await renderTemplate(`systems/pbta/templates/sidebar/document-create.html`, templateData);
-  return Dialog.confirm({
-    title: game.i18n.format("DOCUMENT.Create", {type: ent}),
-    content: dlg,
-    yes: html => {
-      const form = html[0].querySelector("form");
-      // First we need to find the base actor type to model this after.
-      let actorType = form.type.value;
-      let baseType = actorType == 'character' || actorType == 'npc' ? actorType : 'other';
-      let tplBase = {};
-      // Set the custom type.
-      if (baseType == 'other') {
-        tplBase.customType = actorType;
-      }
-      // Initialize create data on the object.
-      if (!form.name.value) {
-        const count = game.collections.get(cls.documentName)?.size;
-        if ( count > 0 ) defaultName += ` (${count + 1})`;
-      }
-      let createData = {
-        name: form.name.value || defaultName,
-        type: baseType,
-        system: foundry.utils.deepClone(tplBase),
-        folder: event.currentTarget.dataset.folder
-      };
-      // Create the actor.
-      return cls.create(createData, {renderSheet: true});
-    },
-    no: () => {},
-    defaultYes: false,
-    render: html => {
-      html.on('keydown', function(event) {
-        if (event.key == 'Enter') {
-          event.preventDefault();
-          html.find('button.yes').trigger('click');
-        }
-      });
-    }
-  });
 }

@@ -4,17 +4,20 @@
       {{#if image}}<img class="item-icon" src="{{image}}" alt="{{title}}"/>{{/if}}
       <h2 class="cell__title">{{title}}</h2>
     </div>
-    {{!-- Stat label. --}}
-    {{#if stat}}
-      <div class="row"><em>{{stat}}{{#if statMod}} ({{numberFormat statMod decimals=0 sign=true}}){{/if}}</em></div>
-    {{/if}}
-    {{#if originalMod includeZero=true}}
-      <div class="row"><em>{{localize "PBTA.RollFOrmulaHardCap" value=(numberFormat originalMod decimals=0 sign=true)}}</em></div>
-    {{/if}}
-    {{!-- Flavor, trigger, and details. --}}
-    {{#if flavor}}<div class="row"><em>{{flavor}}</em></div>{{/if}}
-    {{#if trigger}}<div class="row"><strong>Trigger:</strong> {{trigger}}</div>{{/if}}
-    {{#if details}}<div class="row">{{{details}}}</div>{{/if}}
+
+    <div class="card-content">
+      {{!-- Stat label. --}}
+      {{#if stat}}
+        <div class="row"><em>{{localize "PBTA.RolledStat" stat=stat}}{{#if statMod includeZero=true}} ({{numberFormat statMod decimals=0 sign=true}}){{/if}}</em></div>
+      {{/if}}
+      {{#if originalMod includeZero=true}}
+        <div class="row"><em>{{localize "PBTA.RollFormulaHardCap" value=(numberFormat originalMod decimals=0 sign=true)}}</em></div>
+      {{/if}}
+
+      {{!-- Flavor, trigger, and details. --}}
+      {{#if flavor}}<div class="row"><em>{{flavor}}</em></div>{{/if}}
+      {{#if details}}<div class="row">{{{details}}}</div>{{/if}}
+    </div>
     {{!-- Result type label. --}}
     {{#if resultLabel}}
       <div class="row result{{#if result}} {{result}}{{/if}}">
@@ -27,8 +30,10 @@
         {{/if}}
       </div>
     {{/if}}
+
     {{!-- Roll results, color coded to match the result type label. --}}
     {{#if rollPbta}}<div class="roll{{#if result}} {{result}}{{/if}}">{{{rollPbta}}}</div>{{/if}}
+
     {{!-- Conditions --}}
     {{#if conditions}}
       <div class="row row--border conditions">
@@ -40,6 +45,7 @@
         </ul>
       </div>
     {{/if}}
+
     {{!-- Tags --}}
     {{#if tags}}
       <div class="row row--border">

@@ -16,7 +16,7 @@ export class PbtaActorNpcSheet extends PbtaActorSheet {
     });
   }
 
-  static unsupportedItemTypes = new Set(["move", "playbook"]);
+  static unsupportedItemTypes = new Set(["move", "playbook", "tag"]);
 
   async _onDropItemCreate(itemData) {
     let items = itemData instanceof Array ? itemData : [itemData];

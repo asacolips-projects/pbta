@@ -55,10 +55,10 @@ Item:
     resource:
       uses: 0
     move:
-      requiresMove: ''
+      # requiresMove: ''
       moveType: null
       rollFormula: ''
-      moveGroup: ''
+      # moveGroup: ''
       moveResults: {}
   move:
     templates:

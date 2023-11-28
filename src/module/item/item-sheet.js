@@ -5,7 +5,6 @@ import { PbtaPlaybooks } from "../config.js";
  * @extends {ItemSheet}
  */
 export class PbtaItemSheet extends ItemSheet {
-
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
@@ -82,7 +81,9 @@ export class PbtaItemSheet extends ItemSheet {
     if (itemType == 'move') {
       context.system.stats = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats ? duplicate(game.pbta.sheetConfig.actorTypes[pbtaSheetType].stats) : {};
       context.system.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
-      context.system.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
+      if (Object.keys(context.system.stats).length > 1) {
+        context.system.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
+      }
       context.system.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
     }
 
@@ -177,9 +178,6 @@ export class PbtaItemSheet extends ItemSheet {
 
     this.html = html;
 
-    // Add or Remove Attribute
-    html.find(".class-fields").on("click", ".class-control", this._onClickClassControl.bind(this));
-
     // TODO: Create tags that don't already exist on focus out. This is a
     // nice-to-have, but it's high risk due to how easy it will make it to
     // create extra tags unintentionally.
@@ -243,92 +241,6 @@ export class PbtaItemSheet extends ItemSheet {
           closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
         }
       });
-    }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Listen for click events on an attribute control to modify the composition of attributes in the sheet
-   * @param {MouseEvent} event    The originating left click event
-   * @private
-   */
-  async _onClickClassControl(event) {
-    event.preventDefault();
-    const a = event.currentTarget;
-    const action = a.dataset.action;
-    const field_type = a.dataset.type;
-    const form = this.form;
-
-    let field_types = {
-      'races': 'race',
-      'alignments': 'alignment'
-    };
-
-    // // Add new attribute
-    if (action === "create") {
-      if (Object.keys(field_types).includes(field_type)) {
-        const field_values = this.object.system[field_type];
-        const nk = Object.keys(field_values).length + 1;
-        let newKey = document.createElement("div");
-        newKey.innerHTML = `<li class="item ${field_types[field_type]}" data-index="${nk}">
-    <div class="flexrow">
-      <input type="text" class="input input--title" name="system.${field_type}.${nk}.label" value="" data-dtype="string"/>
-      <a class="class-control" data-action="delete" data-type="${field_type}"><i class="fas fa-trash"></i></a>
-    </div>
-    <textarea class="${field_types[field_type]}" name="system.${field_type}.${nk}.description" rows="5" title="What's your ${field_types[field_type]}?" data-dtype="String"></textarea>
-  </li>`;
-        newKey = newKey.children[0];
-        form.appendChild(newKey);
-        await this._onSubmit(event);
-      }
-      else if (field_type == 'equipment-groups') {
-        const field_values = this.object.system.equipment;
-        const nk = Object.keys(field_values).length + 1;
-        let template = '/systems/pbta/templates/items/_class-sheet--equipment-group.html';
-        let templateData = {
-          group: nk
-        };
-        let newKey = document.createElement('div');
-        newKey.innerHTML = await renderTemplate(template, templateData);
-        newKey = newKey.children[0];
-
-        let update = duplicate(this.object);
-        update.system.equipment[nk] = {
-          label: '',
-          mode: 'radio',
-          items: [],
-          objects: []
-        };
-
-        await this.object.update(update);
-
-        form.appendChild(newKey);
-        await this._onSubmit(event);
-      }
-    }
-
-    // Remove existing attribute
-    else if (action === "delete") {
-      const field_type = a.dataset.type;
-      if (field_type == 'equipment-groups') {
-        let elem = a.closest('.equipment-group');
-        const nk = elem.dataset.index;
-        elem.parentElement.removeChild(elem);
-        let update = {};
-        update[`system.equipment.-=${nk}`] = null;
-        await this.object.update(update);
-        await this._onSubmit(event);
-      }
-      else {
-        const li = a.closest(".item");
-        const nk = li.dataset.index;
-        li.parentElement.removeChild(li);
-        let update = {};
-        update[`system.${field_type}.-=${nk}`] = null;
-        await this.object.update(update);
-        await this._onSubmit(event);
-      }
     }
   }
 

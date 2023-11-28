@@ -1,18 +1,9 @@
 export class PbtaActorTemplates {
   static applyActorTemplate(actor, options, id) {
-    let origSystemData = {};
-    let systemData = {};
-
-    // Copy the base actor data.
-    origSystemData = actor.toObject(false).system;
-    systemData = foundry.utils.deepClone(origSystemData);
+    let systemData = foundry.utils.deepClone(actor.toObject(false).system);
 
     // Determine the actor type.
-    let actorType = actor.type ?? 'character';
-    let sheetType = actorType;
-    if (sheetType == 'other') {
-      sheetType = systemData?.customType ?? 'character';
-    }
+    const sheetType = actor.type === 'other' ? (systemData?.customType ?? 'character') : actor.type;
 
     // Merge it with the model for that for that actor type to include missing attributes.
     let origModel = game.system.model.Actor[sheetType] ?? game.pbta.sheetConfig.actorTypes[sheetType];
@@ -123,25 +114,5 @@ export class PbtaActorTemplates {
     // Return whether or not the function was successful (which will allow
     // the dialog to proceed or fail).
     return success;
-  }
-
-  static applyItemTemplate(actor, itemData, options, id) {
-    let newItemData = duplicate(itemData);
-    if (!newItemData.system) newItemData.system = {};
-
-    let resultRanges = game.pbta.sheetConfig.rollResults;
-    if (!newItemData.system.moveResults) newItemData.system.moveResults = {};
-
-    for (let [key, value] of Object.entries(resultRanges)) {
-      if (!newItemData.system.moveResults[key]) {
-        newItemData.system.moveResults[key] = {
-          key: `system.moveResults.${key}.value`,
-          label: value.label,
-          value: ''
-        };
-      }
-    }
-
-    return newItemData;
   }
 }

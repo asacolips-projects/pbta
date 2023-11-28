@@ -12,8 +12,9 @@ TYPES:
 PBTA:
   Advantage: "Advantage"
   Ask: "Ask"
-  AskTitle: "Choose a stat"
+  AskTitle: "{name}: Choose a Stat"
   Biography: "Biography"
+  ClearMoves: "Clear Moves"
   Choices: "Choices"
   ConditionsApplied: "Conditions Applied:"
   Create: "Create"
@@ -38,16 +39,19 @@ PBTA:
   partial: "Partial Success"
   Playbook: "Playbook"
   Prompt: "Prompt"
-  PromptTitle: "Enter your modifier"
+  PromptTitle: "{name}: Enter a Modifier"
   Qty: "Qty"
   Quantity: "Quantity"
+  Resource: "Resource"
   RequiresMove: "Requires Move"
   Roll: "Roll"
   RollFormula: "Roll Formula"
   RollFormulaOverride: "Roll Formula Override"
-  RollFOrmulaHardCap: "Original modifier ({value}) was hard-capped."
+  RollFormulaHardCap: "Original modifier, {value}, was hard-capped."
+  RollLabel: "Roll {label}"
   RollMove: "Roll Move"
   RollMode: "Roll Mode"
+  RolledStat: "Stat: {stat}"
   SheetClassCharacter: "Default PbtA Character Sheet"
   SheetClassNPC: "Default PbtA NPC Sheet"
   SheetClassOther: "Default PbtA Other Sheet"
@@ -66,11 +70,9 @@ PBTA:
     Details: "Details"
     Name: "Name"
   Dialog:
-    Ask1: "Choose a stat for this"
-    Ask2: "move."
+    Ask1: "Choose a stat for this move."
     ChooseConditions: "Choose all conditional modifiers that apply:"
-    Prompt1: "Choose the modifier for this"
-    Prompt2: "move."
+    Prompt1: "Choose the modifier for this move."
   Messages:
     sheetConfig:
       actorTypeRequired: "actor type is required."
@@ -99,6 +101,12 @@ PBTA:
     stats:
       name: "Stats"
       hint: "Enter a comma-separated list of stats/abilities, such as \"Str,Dex,Con,Int,Wis,Cha\""
+    AutoCollapseCard:
+      name: "Collapse Item Cards' Descriptions in Chat"
+      hint: "Automatically collapse Item Card descriptions in the Chat Log"
+    AutoCollapseCardResult:
+      name: "Collapse Item Cards' Results in Chat"
+      hint: "Automatically collapse Item Card results in the Chat Log"
     advForward:
       name: "Clear ADV/DIS After Rolls"
       hint: "If enabled, advantage and disadvantage choices on the character sheet will be reset to normal after each roll (similar to Forward)."
@@ -147,4 +155,8 @@ PBTA:
       type: "Type changed:"
       typeReset: "Type changed (attribute will be reset):"
       sheetConfigDisabledModule: "Sheet configuration has been disabled due to a module that is providing it."
+  Warnings:
+    UnlinkedToken:
+      Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
+      Moves: "Moves cannot be rearranged while this token is not linked to an actor."
 PBTA_OTHER: "Other"

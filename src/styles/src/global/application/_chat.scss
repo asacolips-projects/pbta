@@ -20,6 +20,7 @@
       width: 40px;
       height: 40px;
       margin-right: 8px;
+      background: rgba(0,0,0,.5);
     }
 
     .cell__title {
@@ -38,30 +39,34 @@
 
     &.whisper {
       background: #e0ecff;
+
+      .result-label {
+        background: #d0dbed;
+      }
     }
 
     .result {
-      padding: 0;
-      margin: 25px 0;
-      border: 2px solid;
-      border-left: 0;
-      border-right: 0;
+      margin-bottom: 10px;
     }
 
     .result-label {
       text-align: center;
       font-size: 18px;
       font-weight: bold;
-      border-bottom: 1px solid #ccc;
+      border: 1px solid #ccc;
       margin: 0;
       padding: 10px;
       background: #efefef;
+
+      &:has(+ .result-details):hover,
+      &:has(+ .result-choices):hover {
+        cursor: pointer;
+      }
     }
 
     .result-details,
     .result-choices {
-      padding: 10px 10px 0;
-      margin-bottom: 10px;
+      padding: 0px 10px;
     }
 
     .failure {
@@ -91,6 +96,10 @@
     font-size: 16px;
     border-bottom: 2px solid $c-black;
     margin-bottom: 15px;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   h1,
@@ -108,8 +117,6 @@
 
   .row--border {
     margin-top: 10px;
-    padding-top: 10px;
-    border-top: 2px solid $c-black;
   }
 
   .dice-roll {

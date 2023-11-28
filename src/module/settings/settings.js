@@ -46,7 +46,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       if (!CodeMirror.modes.toml) {
         codeMirrorAddToml();
       }
-  
+
       // Enable the CodeMirror code editor.
       this.codeEditor = CodeMirror.fromTextArea(html.find(".pbta-sheet-config")[0], {
         mode: "toml",
@@ -142,7 +142,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       'softType': [],
       'hardType': [],
       'safe': [],
-      'options': [] ,
+      'options': [],
       'values': []
     };
     let updatesDiff = {
@@ -206,7 +206,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
             if (newGroup[attr].description && newGroup[attr].description != oldGroup[attr].description) {
               configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.description`);
               updatesDiff[actorType][`system.${attrGroup}.${attr}.description`] = newGroup[attr].description;
-            } 
+            }
             // Handle updating ListOne values.
             if (newGroup[attr].value && newGroup[attr].value != oldGroup[attr].value) {
               configDiff.values.push(`${actorType}.${attrGroup}.${attr}.value`);
@@ -267,11 +267,13 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                   updatesDiff[actorType][`system.${attrGroup}.${attr}`] = newGroup[attr];
                 }
               }
-              else if (newType == 'ListMany') {
-                // Handle diffing condition changes.
-                if ((newGroup[attr]?.condition || oldGroup[attr]?.condition) && (newGroup[attr]?.condition != oldGroup[attr]?.condition)) {
-                  configDiff.softType.push(`${actorType}.${attrGroup}.${attr}`);
-                  updatesDiff[actorType][`system.${attrGroup}.${attr}.condition`] = newGroup[attr]?.condition ?? false;
+              else if (['ListOne', 'ListMany'].includes(newType)) {
+                if (newType == 'ListMany') {
+                  // Handle diffing condition changes.
+                  if ((newGroup[attr]?.condition || oldGroup[attr]?.condition) && (newGroup[attr]?.condition != oldGroup[attr]?.condition)) {
+                    configDiff.softType.push(`${actorType}.${attrGroup}.${attr}`);
+                    updatesDiff[actorType][`system.${attrGroup}.${attr}.condition`] = newGroup[attr]?.condition ?? false;
+                  }
                 }
 
                 // Handle diffing options.
@@ -286,22 +288,15 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                     // Create the options diff.
                     configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
                     updatesDiff[actorType][`system.${attrGroup}.${attr}.options`] = newGroup[attr]?.options ?? [];
-                  }
-                }
-              }
-              else if (newType == 'ListOne') {
-                // Handle diffing options.
-                if (newGroup[attr]?.options || oldGroup[attr]?.options) {
-                  if (this.optionsAreDifferent(newGroup[attr]?.options, oldGroup[attr]?.options)) {
-                    // Remove values from options so that they're not unset on existing actors.
-                    if (newGroup[attr]?.options) {
-                      for (let [optK, optV] of Object.entries(newGroup[attr].options)) {
-                        if (typeof optV.value !== 'undefined') delete optV.value;
-                      }
+
+                    const oldClone = duplicate(oldGroup);
+                    for (let optK of Object.keys(newGroup[attr].options)) {
+                      delete oldClone[attr]?.options[optK];
                     }
-                    // Create the options diff.
-                    configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
-                    updatesDiff[actorType][`system.${attrGroup}.${attr}.options`] = newGroup[attr]?.options ?? [];
+                    for (let optK of Object.keys(oldClone[attr]?.options)) {
+                      configDiff.del.push(`${actorType}.${attrGroup}.${attr}.options.${optK}`)
+                      updatesDiff[actorType][`system.${attrGroup}.${attr}.options`][`-=${optK}`] = null;
+                    }
                   }
                 }
               }
@@ -318,7 +313,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
     let hasSoftType = configDiff.softType.length > 0;
     let hasHardType = configDiff.hardType.length > 0;
     let hasSafe = configDiff.safe.length > 0;
-    let hasOptions = configDiff.options.length > 0; 
+    let hasOptions = configDiff.options.length > 0;
     let hasDeletedValues = configDiff.values.length > 0;
 
     const t = {
@@ -337,7 +332,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
       'noteConfirm': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirm'),
       'noteConfirmUpdate': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirmUpdate'),
       'noteConfirmUpdateBold': game.i18n.localize('PBTA.Settings.sheetConfig.noteConfirmUpdateBold'),
-      'noteCancel': game.i18n.localize('PBTA.Settings.sheetConfig.noteCancel'), 
+      'noteCancel': game.i18n.localize('PBTA.Settings.sheetConfig.noteCancel'),
       'values': game.i18n.localize('PBTA.Settings.sheetConfig.values'),
     };
 
