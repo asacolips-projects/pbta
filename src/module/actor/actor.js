@@ -168,17 +168,18 @@ export class ActorPbta extends Actor {
   /** @inheritdoc */
   async _preCreate(data, options, user) {
     await super._preCreate(data, options, user);
-    const sourceId = this.getFlag("core", "sourceId");
-    if (sourceId?.startsWith("Compendium.")) return;
 
     const changes = {
       system: PbtaActorTemplates.applyActorTemplate(this, options, null)
     }
-    if (this.baseType === "character") {
-      changes.prototypeToken = {
-        actorLink: true,
-        disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
-      };
+    const sourceId = this.getFlag("core", "sourceId");
+    if (!sourceId?.startsWith("Compendium.")) {
+      if (this.baseType === "character") {
+        changes.prototypeToken = {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+        };
+      }
     }
     this.updateSource(changes);
   }
