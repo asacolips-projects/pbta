@@ -95,7 +95,7 @@ export class PbtaActorSheet extends ActorSheet {
     if (context.pbtaSheetType == 'character' || context.pbtaBaseType == 'character') {
       context.system.playbooks = await PbtaPlaybooks.getPlaybooks();
       context.system.statToggle = sheetConfig?.statToggle ?? false;
-      context.system.statSettings = sheetConfig.actorTypes[context.pbtaSheetType].stats ?? {};
+      context.system.statSettings = sheetConfig.actorTypes[context.pbtaSheetType]?.stats ?? {};
 
       if (context.system.statSettings) {
         context.system.statSettings['ask'] = {label: game.i18n.localize('PBTA.Ask'), value: 0};
@@ -215,7 +215,7 @@ export class PbtaActorSheet extends ActorSheet {
     // Iterate through the groups that need to be sorted.
     for (let group of groups) {
       // Confirm the keys exist, and assign them to a sorting array if so.
-      let sortKeys = game.pbta.sheetConfig.actorTypes[sheetData.pbtaSheetType][group];
+      let sortKeys = game.pbta.sheetConfig.actorTypes?.[sheetData.pbtaSheetType]?.[group];
       let sortingArray = [];
       if (sortKeys) {
         sortingArray = Object.keys(sortKeys);

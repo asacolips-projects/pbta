@@ -81,7 +81,9 @@ export class PbtaItemSheet extends ItemSheet {
     if (itemType == 'move') {
       context.system.stats = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats ? duplicate(game.pbta.sheetConfig.actorTypes[pbtaSheetType].stats) : {};
       context.system.stats['prompt'] = {label: game.i18n.localize('PBTA.Prompt')};
-      context.system.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
+      if (Object.keys(context.system.stats).length > 1) {
+        context.system.stats['ask'] = {label: game.i18n.localize('PBTA.Ask')};
+      }
       context.system.stats['formula'] = {label: game.i18n.localize('PBTA.Formula')};
     }
 
