@@ -86,6 +86,8 @@ PBTA:
       groupAttributes: "must be a group of attributes."
       moveTypes: "is required and must have at least one move type."
       noConfig: "No sheet config has been entered."
+      overrideRemoved: "Removed PbtA module sheet overrides."
+      previousSettingRestored: "Restored previous PbtA sheet settings."
       reset: "Reset sheet config."
       rollFormulaRequired: "'rollFormula' is required."
       rollResultsIncorrect: "'rollResults' entered incorrectly."
