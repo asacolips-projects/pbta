@@ -595,32 +595,6 @@ export class PbtaUtility {
     return game.pbta.sheetConfig.rollFormula ?? defaultFormula;
   }
 
-  static async getEquipment(update = false) {
-    if (typeof game.items == 'undefined') {
-      return false;
-    }
-
-    // Cache results.
-    if (game.pbta.equipment && !update) {
-      return game.pbta.equipment;
-    }
-
-    // Load new results.
-    let items = game.items.filter(i => i.type == 'equipment');
-    for (let pack of game.packs) {
-      if (pack.metadata.name.includes('equipment')) {
-        if (pack) {
-          let packItems = await pack.getDocuments;
-          items = items.concat(packItems);
-        }
-      }
-    }
-
-    game.pbta.equipment = items;
-
-    return items;
-  }
-
   static getListOptions(attrValue, isRadio = false) {
     let options = {};
     if (attrValue.options) {
