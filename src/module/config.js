@@ -10,7 +10,8 @@ PBTA.attrTypes = [
   "Checkbox",
   "ListMany",
   "ListOne",
-  "Roll"
+  "Roll",
+  "Track"
 ];
 
 export class PbtaPlaybooks {

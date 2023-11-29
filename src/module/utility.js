@@ -203,6 +203,45 @@ export class PbtaUtility {
     return computed;
   }
 
+  static parseRange(rangeString) {
+    // Split the result range into an array.
+    let range = rangeString.split(/[\-\+]/g);
+
+    // If the array is invalid, exit early.
+    if (range.length != 2 || range[0] === "") {
+      return null;
+    }
+
+    // Get the start and end numbers. Start should always be numeric,
+    // e.g. 6- rather than -6.
+    let start = Number(range[0]);
+    let end = range[1] !== "" ? Number(range[1]) : null;
+
+    // If there's only one digit, assume it's N+ or N-.
+    if (end === null) {
+      // If it's minus, set the start to null (less than or equal).
+      if (range.includes('-')) {
+        return {
+          start: null,
+          end: start
+        };
+      }
+
+      // If it's plus, set the end to null (greater than or equal).
+      if (range.includes('+')) {
+        return {
+          start: start,
+          end: null
+        };
+      }
+    }
+    // Otherwise, set the full range.
+    return {
+      start: start,
+      end: end
+    };
+  }
+
   static convertSheetConfig(sheetConfig) {
     const newConfig = {};
 
@@ -366,6 +405,20 @@ export class PbtaUtility {
     return newConfig;
   }
 
+  static updateAttrCellTrackDisplay(attr) {
+    for (let s of attr.steps) {
+      if (s.isValue) {
+        s.checked = s.value == attr.value;
+        continue;
+      }
+      if (s.value > 0) {
+        s.checked = attr.positive.steps * (s.value - 1) + s.step + 1 <= attr.positive.value;
+      } else {
+        s.checked = attr.negative.steps * -(s.value + 1) + s.step + 1 <= attr.negative.value;
+      }
+    }
+  }
+
   static convertAttr(attrGroup) {
     let attrs = {};
     for (let [attrKey, attrValue] of Object.entries(attrGroup)) {
@@ -457,6 +510,47 @@ export class PbtaUtility {
         case 'Roll':
           attr.type = attrValue.type;
           attr.value = attrValue.default ?? '';
+          break;
+
+        case 'Track':
+          // based on Faction Reputation of Root RPG
+          attr.type = attrValue.type;
+          attr.value = attrValue.default ?? 0;
+
+          attr.negative = {
+            value: attrValue.negative?.default ?? 0,
+            steps: attrValue.negative?.steps ?? 3,
+            max: attrValue.negative?.max ?? 3,
+            label: attrValue.negative?.label,
+          };
+          attr.positive = {
+            value: attrValue.positive?.default ?? 0,
+            steps: attrValue.positive?.steps ?? 5,
+            max: attrValue.positive?.max ?? 5,
+            label: attrValue.positive?.label,
+          };
+
+          // Rendering helper for Track
+          attr.steps = [];
+          for (let i = attr.negative.max - 1; i >= 0; i--) {
+            attr.steps.push({ isValue: true, label: `-${i + 1}`, value: -(i + 1) });
+            for (let j = attr.negative.steps - 1; j >= 0; j--) {
+              attr.steps.push({ isValue: false, step: j, value: -(i + 1) });
+            }
+          }
+          attr.steps.push({ isValue: true, label: "+0", value: 0 });
+          for (let i = 0; i < attr.positive.max; i++) {
+            for (let j = 0; j < attr.positive.steps; j++) {
+              attr.steps.push({ isValue: false, step: j, value: i + 1 });
+            }
+            attr.steps.push({ isValue: true, label: `+${i + 1}`, value: i + 1 });
+          }
+            // used to display the label
+          attr.stepsNegative = attr.negative.max * attr.negative.steps + attr.negative.max;
+          attr.stepsPositive = attr.positive.max * attr.positive.steps + attr.positive.max;
+
+          this.updateAttrCellTrackDisplay(attr);
+
           break;
 
         default:
