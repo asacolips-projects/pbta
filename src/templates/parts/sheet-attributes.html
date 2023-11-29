@@ -96,6 +96,22 @@
           <span class="attr-icon attr-rollable rollable" data-roll="{{attr.value}}" data-label="{{attr.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
           <input type="text" class="input input--roll" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}"/>
         </div>
+      {{else if (eq attr.type "Track")}}
+        <div class="cell__track">
+          {{#each attr.steps as |step stepKey|}}
+            {{#if step.isValue}}
+              <span class="cell__track__element attr-track-value" role="checkbox" data-name="system.{{../../group}}.{{key}}" data-value="{{step.value}}" aria-checked="{{step.checked}}">{{step.label}}</span>
+            {{else}}
+              <input class="cell__track__element attr-track-step" type="checkbox" data-name="system.{{../../group}}.{{key}}" data-step="{{step.step}}" data-value="{{step.value}}" {{checked step.checked}}>
+            {{/if}}
+          {{/each}}
+          {{#if (and attr.positive.label attr.negative.label) }}
+            <span style="grid-column-end: span {{attr.stepsNegative}}" class="cell__track__label">{{attr.negative.label}}</span>
+            <span style="grid-column-end: span 1; grid-row: 2"></span>
+            <span style="grid-column-end: span {{attr.stepsPositive}}" class="cell__track__label">{{attr.positive.label}}</span>
+          {{/if}}
+        </div>
+
       {{!-- Fallback to a text field. --}}
       {{else}}
         <input type="text" class="input input--title" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}"/>

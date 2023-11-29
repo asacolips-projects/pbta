@@ -300,6 +300,36 @@ export class PbtaSettingsConfigDialog extends FormApplication {
                   }
                 }
               }
+              else if (newType == 'Track') {
+                const { positive: oldPositive, negative: oldNegative } = oldGroup[attr];
+                const { positive: newPositive, negative: newNegative } = newGroup[attr];
+                if (newPositive?.label && newPositive.label != oldPositive?.label) {
+                  configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.positive.label`);
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.positive.label`] = newPositive.label;
+                }
+
+                if (newNegative?.label && newNegative.label != oldNegative?.label) {
+                  configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.negative.label`);
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.negative.label`] = newNegative.label;
+                }
+
+                if ((newPositive.max !== oldPositive?.max)
+                || (newPositive.steps !== oldPositive?.steps)
+                || (newNegative.max !== oldNegative?.max)
+                || (newNegative.steps !== oldNegative?.steps)) {
+
+                  configDiff.max.push(`${actorType}.${attrGroup}.${attr}`);
+
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.negative.max`] = newNegative.max;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.negative.steps`] = newNegative.steps;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.negative.value`] = newNegative.value;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.positive.max`] = newPositive.max;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.positive.steps`] = newPositive.steps;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.positive.value`] = newPositive.value;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].value ?? 0;
+                  updatesDiff[actorType][`system.${attrGroup}.${attr}.steps`] = newGroup[attr].steps;
+                }
+              }
             }
           }
         }
