@@ -61,6 +61,7 @@
 
     .cell--attributes-top {
       display: flex;
+      flex-flow: row wrap;
       // display: grid;
       // grid-column: span 16;
       // grid-template-columns: repeat(16, minmax(0, 1fr));
