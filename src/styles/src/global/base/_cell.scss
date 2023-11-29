@@ -72,6 +72,10 @@
   }
 }
 
+.cell--Track .cell__title:empty {
+  display: none;
+}
+
 .cell__title {
   display: flex;
   // text-transform: uppercase;
