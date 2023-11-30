@@ -240,10 +240,10 @@ Hooks.once("ready", async function() {
       }
       // Otherwise, delete the override config.
       else if (existingConfig?.overridden) {
-        ui.notifications.warn('Removed PbtA module sheet overrides.');
         // If not tomlString exists, delete the config outright to prevent
         // it from being malformed.
         if (!existingConfig?.tomlString) {
+          ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.overrideRemoved"));
           existingConfig = null;
         }
         // Otherwise, restore the previous config.
@@ -255,7 +255,7 @@ Hooks.once("ready", async function() {
           existingConfig.computed = PbtaUtility.parseTomlString(existingConfig.tomlString);
           game.pbta.sheetConfig = PbtaUtility.convertSheetConfig(existingConfig.computed);
           PbtaUtility.applyActorTemplates(true);
-          ui.notifications.info('Restored previous PbtA sheet settings.');
+          ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.previousSettingRestored"));
         }
         game.settings.set('pbta', 'sheetConfig', existingConfig);
       }
