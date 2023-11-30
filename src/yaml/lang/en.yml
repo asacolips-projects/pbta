@@ -3,6 +3,7 @@ TYPES:
   Actor:
     character: "Character"
     npc: "NPC"
+    other: "Other"
   Item:
     move: "Move"
     npcMove: "NPC Move"
