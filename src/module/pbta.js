@@ -8,7 +8,7 @@
 import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
 import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
 import { PbtaActorSheet } from "./actor/actor-sheet.js";
-import { ActorPbta } from "./actor/actor.js";
+import { ActorPbta, } from "./actor/actor.js";
 import { PbtACombatTracker } from "./combat/combat-tracker.js";
 import { PbtACombatant } from "./combat/combatant.js";
 import { PBTA, PbtaPlaybooks } from "./config.js";
@@ -23,25 +23,41 @@ import { PbtaSettingsConfigDialog } from "./settings/settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { PbtaUtility } from "./utility.js";
 
+import * as dataModels from "./data/_module.js";
+
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
+globalThis.pbta = {
+  ActorPbta,
+  dataModels,
+  ItemPbta,
+  rollItemMacro,
+  PbtaUtility,
+  PbtaActorTemplates,
+  MigratePbta,
+  PbtaSettingsConfigDialog
+};
+
 Hooks.once("init", async function() {
-  game.pbta = {
-    ActorPbta,
-    ItemPbta,
-    rollItemMacro,
-    PbtaUtility,
-    PbtaActorTemplates,
-    MigratePbta,
-    PbtaSettingsConfigDialog
-  };
+  globalThis.pbta = game.pbta = Object.assign(game.system, globalThis.pbta);
 
   // TODO: Extend the combat class.
   // CONFIG.Combat.documentClass = CombatPbta;
   CONFIG.ui.combat = PbtACombatTracker;
   CONFIG.Combatant.documentClass = PbtACombatant;
+
+  // Define DataModels
+  CONFIG.Actor.dataModels.character = dataModels.CharacterData;
+  CONFIG.Actor.dataModels.npc = dataModels.NpcData;
+  CONFIG.Actor.dataModels.other = dataModels.OtherData;
+
+  CONFIG.Item.dataModels.equipment = dataModels.CharacterData;
+  CONFIG.Item.dataModels.move = dataModels.NpcMoveData;
+  CONFIG.Item.dataModels.npcMove = dataModels.NpcMoveData;
+  CONFIG.Item.dataModels.playbook = dataModels.ItemData;
+  CONFIG.Item.dataModels.tag = dataModels.ItemData;
 
   game.socket.on('system.pbta', (data) => {
     if (game.user.isGM && data.combatantUpdate) {
