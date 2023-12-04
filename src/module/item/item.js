@@ -87,10 +87,10 @@ export class ItemPbta extends Item {
 
         if (!['ask', 'prompt', 'formula'].includes(this.system.rollType)) {
           stat = this.system.rollType;
-          if (this.actor.system.stats[this.system.rollType].toggle) {
+          if (this.actor.system.stats[stat].toggle) {
             formula += " + 0";
           } else {
-            formula += ` + @stats.${this.system.rollType}.value`;
+            formula += ` + @stats.${stat}.value`;
           }
         }
         if (this.system?.rollMod) {
