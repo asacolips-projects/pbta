@@ -11,9 +11,7 @@ export class PbtaItemSheet extends ItemSheet {
       classes: ["pbta", "sheet", "item"],
       width: 520,
       height: 480,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details" }],
-      submitOnChange: true,
-      baseApplication: "ItemSheet"
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details" }]
     });
   }
 
@@ -242,13 +240,5 @@ export class PbtaItemSheet extends ItemSheet {
         }
       });
     }
-  }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  _updateObject(event, formData) {
-    // Update the Item
-    return this.object.update(formData);
   }
 }
