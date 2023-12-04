@@ -54,7 +54,7 @@ Hooks.once("init", async function() {
   CONFIG.Actor.dataModels.other = dataModels.OtherData;
 
   CONFIG.Item.dataModels.equipment = dataModels.CharacterData;
-  CONFIG.Item.dataModels.move = dataModels.NpcMoveData;
+  CONFIG.Item.dataModels.move = dataModels.MoveData;
   CONFIG.Item.dataModels.npcMove = dataModels.NpcMoveData;
   CONFIG.Item.dataModels.playbook = dataModels.ItemData;
   CONFIG.Item.dataModels.tag = dataModels.ItemData;
