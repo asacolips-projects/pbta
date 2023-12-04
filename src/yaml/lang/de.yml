@@ -1,0 +1,156 @@
+---
+Powered by the Apocalypse: Powered by the Apocalypse
+PBTA:
+  Advantage: Vorteil
+  Ask: Wähle
+  AskTitle: Wähle ein Attribut
+  Biography: Biographie
+  Choices: Auswahl
+  ConditionsApplied: 'Aktive Zustände:'
+  Create: Erstelle
+  Description: Beschreibung
+  description: Leite Spiele für jedes PbtA System mit FoundryVTT!
+  Disadvantage: Nachteil
+  Equipment: Ausrüstung
+  EquipmentType: Ausrüstungsart
+  failure: Schwierigkeiten (markiere XP)
+  Formula: Maßgeschneiderter Würfelwurf
+  Forward: Einmalig
+  Modifier: Modifikator
+  MoveGroup: Spielzuggruppe
+  MoveGroupHelp: Mehrere Spielzüge aus der gleichen Spielzuggruppe werden, bei der
+    erstellung neuer Charaktere, als entweder/oder Auswahl bei der Charaktererstellung
+    angeboten.
+  Moves: Spielzug
+  MoveType: Spielzugart
+  Name: "Name"
+  New: Neu
+  Normal: Normal
+  NoTemplate: Ohne Vorlage
+  Ongoing: Dauerhaft
+  partial: Teilerfolg
+  Playbook: Charakterbuch
+  Prompt: Prompt
+  PromptTitle: Bitte Modifikatoren eingeben
+  Qty: Anz
+  Quantity: Anzahl
+  RequiresMove: Benötigt Spielzug
+  Roll: Würfle
+  RollFormula: Würfelmodus
+  RollFormulaOverride: Überschreibung des Würfelmodus
+  RollMove: Führe einen Spielzug aus
+  RollMode: "Würfelmodus"
+  success: Erfolg
+  Tags: Tags
+  TagsHelp: "(Nutze Tab zur Autovervollständigung, Kommas um neue Tags zu erstellen
+    und Doppelklick um einen Tag zu editieren.)"
+  title: Powered by the Apocalypse
+  Type: "Typ"
+  Uses: Nutzungen
+  ViewPlaybook: "View playbook"
+  Weight: Gewicht
+  Wt: Wt
+  Common:
+    Description: Beschreibung
+    Details: Details
+    Name: Name
+  Dialog:
+    Ask1: 'Wähle ein Attribut aus für den: '
+    Ask2: Spielzug.
+    ChooseConditions: 'Wähle alle sizuationsbedingten Modifikatoren, die anzuwenden
+      sind:'
+    Prompt1: 'Wähle den Modifikator für den: '
+    Prompt2: Spielzug.
+  Messages:
+    sheetConfig:
+      actorTypeRequired: Akteurstyp erforderlich.
+      attribute: Attribut
+      attributeMax: muss einen Maximalwert enthalten.
+      attributeOptions: muss eine Gruppe "Optionen" enthalten
+      attributeOptionsEmpty: muss mindestens eine Option aus der Gruppe "Optionen"
+        enthalten.
+      attributeType: 'muss eine der folgenden sein:'
+      attributeTypeNull: kein Typ ausgewählt (Übergeordnete Option wurde evtl. umbenannt).
+      equipmentTypes: ist erforderlich und muss mindestens einen Gerätetyp haben.
+      groupAttributes: muss eine Attributsgruppe sein.
+      moveTypes: ist erforderlich und muss mindestens einen Spielzugtyp haben.
+      noConfig: Es wurde keine Konfiguration eingegeben.
+      reset: Konfiguration zurücksetzen.
+      rollFormulaRequired: "'Würfelmodus' ist erforderlich."
+      rollResultsIncorrect: "'rollResults' entered incorrectly."
+      rollResultsRequired: "'rollResults' is required"
+      statsRequired1: "'stats' are required for"
+      statsRequired2: group.
+      statString1: Attribut
+      statString2: muss eine Buchstabenfolge sein, z.B. "Schneid"
+      tomlError: Es gibt einen Syntaxfehler in Ihrer TOML-Konfiguration in Zeile {line}
+        in Spalte {column}. Siehe Konsole für weitere Details.
+  Settings:
+    button:
+      help: PbtA System Hilfe & Tutorial
+    stats:
+      name: Attribute
+      hint: Geben Sie eine durch Komma getrennte Liste von Attributen/Fähigkeiten
+        ein, z. B. "St,Ges,Kon,Int,Weis,Cha"
+    advForward:
+      name: Vorteil/Nachteil nach Wurf zurücksetzen
+      hint: Wenn diese Funktion aktiviert ist, werden die Vor- und Nachteile auf dem
+        Charakterbogen nach jedem Wurf auf den normalen Wert zurückgesetzt (ähnlich
+        wie bei Einmalig).
+    hideRollFormula:
+      name: Verbirg benutzerdefinierten Würfelformeln
+      hint: Verbirgt die Eingabe von benutzerdefinierten Würfelformeln auf Charakterbögen.
+    hideForward:
+      name: Verbirg Einmalig
+      hint: Verbirgt die Einmalig-Eingabe auf Charakterbögen.
+    hideOngoing:
+      name: Verbirg Dauerhaft
+      hint: Verbirgt die Dauerhaft-Eingabe auf Charakterbögen.
+    hideRollMode:
+      name: Würfelmodus verbergen
+      hint: Versteckt die Überschreibung des Würfelmodus (normal/vorteil/nachteil)
+        auf Charakterbögen.
+    hideUses:
+      name: Verbleibende Nutzung verbergen
+      hint: Verbirgt die verbleibende Nutzung für jeden Zug in der Zugübersicht
+        für Charaktere und NPCs.
+    itemIcons:
+      name: Enable Item Icons
+      hint: Aktiviere visuelle Symbole für Bewegungen, Zauber und Ausrüstung in
+        Charakterbögen (erfordert einen Neustart des Browsers).
+    sheetConfig:
+      label: PbtA Charakterbogen Konfiguration
+      name: Charakterbogen konfigurieren
+      hint: Wählen Sie die Datenstruktur für Charakterbögen, wie z.B. Werte, Fähigkeiten
+        und Details.
+      additions: 'Additions:'
+      confirm: Bestätigen
+      confirmChanges: Änderungen bestätigen
+      confirmUpdate: Bestätigen und Aktualisieren
+      cosmetic: 'Kosmetische Änderungen (Label oder Beschreibung):'
+      deletions: 'Gelöscht:'
+      maxValue: 'Max Wert geändert:'
+      noteCancel: Abbrechen ohne Speichern
+      noteChangesDetected: 'Es wurden Änderungen an einem oder mehreren Ihrer Akteurstypen
+        festgestellt. Überprüfen Sie die Änderungen unten und wählen Sie dann
+        eine der folgenden Möglichkeiten:'
+      noteConfirm: Bestätigen, ohne bestehende Akteure zu aktualisieren
+      noteConfirmUpdate: Bestätigung und Aktualisierung der vorhandenen Akteure
+      noteConfirmUpdateBold: 'HINWEIS: Existierende Einträge in gelöschten Attributen
+        werden dauerhaft gelöscht.'
+      notes1: Willkommen zur Alpha Version des PbtA System!
+      notes2: Zu einem späteren Zeitpunkt werden wir eine grafische Benutzeroberfläche
+        (GUI) für die Erstellung von Charakterbögen einrichten, aber im Moment müssen
+        Sie die Charakterbogen-Daten im TOML-Format eingeben. Das Schreiben von TOML
+        ist vergleichbar mit der Arbeit mit .ini-Dateien, die in Modding-Einstellungen
+        für PC-Spiele üblich sind.
+      notes3: 'Lese die unten verlinkte Dokumentation, vor der Konfiguration des Charakterbogens.
+        Für Fragen und Hilfestellung steht außerdem der #powered-by-the-apocalypse
+        Kanal im offiziellen Foundry VTT Discord zur Verfügung.'
+      options: 'Listenoptionen geändert (Werte werden beibehalten):'
+      resetDefaults: Standardeinstellungen zurücksetzen
+      saveConfiguration: Speichern
+      title: Charakterbogen konfigurieren
+      type: 'Typ geändert:'
+      typeReset: 'Typ geändert (Attribute werden zurückgesetzt):'
+PBTA_OTHER: Andere
