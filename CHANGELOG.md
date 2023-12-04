@@ -1,5 +1,6 @@
 # 0.8.0
 
+- Removed support for Foundry v10. Version 0.8.0 and above will be for Foundry v11+
 - Added Tracks (@n1xx1)
 - Added image to items based on their types.
 - Added tooltips to Lists.
