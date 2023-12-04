@@ -1,3 +1,15 @@
+# 0.8.0
+
+- Added Tracks (@n1xx1)
+- Added image to items based on their types.
+- Added tooltips to Lists.
+- Added support for the ListOne type (@s.paquay1).
+- Improvements on the Combat tab, such as core Foundry features and some visual changes.
+- Fixed Rolls failing when a condition is checked (@s.paquay1).
+- Fixed removing an option from a ListOne/ListMany wouldn't remove it from actors.
+
+Thanks to @mclemente, @n1xx1, and @s.paquay1 for their contributions in this release!
+
 # 0.7.4
 
 - Fixed typos and incorrect terms in the French translation
