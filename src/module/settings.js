@@ -1,4 +1,4 @@
-import { PbtaSettingsConfigDialog } from "./forms/config-application.js";
+import { PbtaSettingsConfigDialog } from "./forms/sheet-config.js";
 
 export function registerSettings() {
 	game.settings.registerMenu("pbta", "sheetConfigMenu", {

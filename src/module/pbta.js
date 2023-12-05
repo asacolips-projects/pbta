@@ -12,7 +12,7 @@ import { ActorPbta } from "./actor/actor.js";
 import { PbtACombatTracker } from "./combat/combat-tracker.js";
 import { PbtACombatant } from "./combat/combatant.js";
 import { PBTA, PbtaPlaybooks } from "./config.js";
-import { PbtaSettingsConfigDialog } from "./forms/config-application.js";
+import { PbtaSettingsConfigDialog } from "./forms/sheet-config.js";
 import { PbtaRegisterHelpers } from "./handlebars.js";
 import { PbtaItemSheet } from "./item/item-sheet.js";
 import { ItemPbta } from "./item/item.js";
