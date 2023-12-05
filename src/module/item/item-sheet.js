@@ -5,6 +5,15 @@ import { PbtaPlaybooks } from "../config.js";
  * @extends {ItemSheet}
  */
 export class PbtaItemSheet extends ItemSheet {
+  constructor(...args) {
+    super(...args);
+    if (this.object.type === 'playbook') {
+      this.options.classes.push('class');
+      this.options.width = this.position.width = 780;
+      this.options.tabs[0].initial = "description";
+    }
+  }
+
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {

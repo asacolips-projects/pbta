@@ -15,7 +15,6 @@ import { PBTA, PbtaPlaybooks } from "./config.js";
 import { PbtaRegisterHelpers } from "./handlebars.js";
 import { PbtaItemSheet } from "./item/item-sheet.js";
 import { ItemPbta } from "./item/item.js";
-import { PbtaPlaybookItemSheet } from "./item/playbook-item-sheet.js";
 import { MigratePbta } from "./migrate/migrate.js";
 import { PbtaActorTemplates } from "./pbta/pbta-actors.js";
 import { RollPbtA } from "./rolls.js";
@@ -75,9 +74,7 @@ Hooks.once("init", async function() {
     label: "PBTA.SheetClassNPC"
   });
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("pbta", PbtaItemSheet, { makeDefault: false });
-  Items.registerSheet("pbta", PbtaPlaybookItemSheet, {
-    types: ['playbook'],
+  Items.registerSheet("pbta", PbtaItemSheet, {
     makeDefault: true,
     label: "PBTA.SheetClassItem"
   });

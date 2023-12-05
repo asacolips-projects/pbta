@@ -65,6 +65,11 @@
     }
   }
 
+  &.item {
+    min-height: 400px;
+    min-width: 450px;
+  }
+
   // Import components, scoped within the sheet.
   &.sheet {
     // Generic.
