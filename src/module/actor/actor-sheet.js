@@ -88,7 +88,8 @@ export class PbtaActorSheet extends ActorSheet {
 		await this._prepareAttrs(context);
 
 		if (context.system?.details?.biography) {
-			context.system.details.biography = await TextEditor.enrichHTML(context.system.details.biography, enrichmentOptions);
+			context.system.details.biography =
+				await TextEditor.enrichHTML(context.system.details.biography, enrichmentOptions);
 		}
 
 		// Add playbooks.
@@ -184,7 +185,8 @@ export class PbtaActorSheet extends ActorSheet {
 			for (let [attrKey, attrValue] of Object.entries(actorData.system[group])) {
 				if (attrValue.type === "LongText") {
 					actorData.system[group][attrKey].attrName = `system.${group}.${attrKey}.value`;
-					actorData.system[group][attrKey].value = await TextEditor.enrichHTML(attrValue.value, actorData.enrichmentOptions);
+					actorData.system[group][attrKey].value =
+						await TextEditor.enrichHTML(attrValue.value, actorData.enrichmentOptions);
 				}
 			}
 		}
@@ -286,7 +288,8 @@ export class PbtaActorSheet extends ActorSheet {
 			item.img = item.img || Item.DEFAULT_ICON;
 			// Enrich text fields.
 			if (item.system?.description) {
-				item.system.description = await TextEditor.enrichHTML(item.system.description, actorData.enrichmentOptions);
+				item.system.description =
+					await TextEditor.enrichHTML(item.system.description, actorData.enrichmentOptions);
 			}
 			if (item.system?.choices) {
 				item.system.choices = await TextEditor.enrichHTML(item.system.choices, actorData.enrichmentOptions);
@@ -294,7 +297,8 @@ export class PbtaActorSheet extends ActorSheet {
 			if (item.system?.moveResults) {
 				for (let [mK, mV] of Object.entries(item.system.moveResults)) {
 					if (mV.value) {
-						item.system.moveResults[mK].value = await TextEditor.enrichHTML(mV.value, actorData.enrichmentOptions);
+						item.system.moveResults[mK].value =
+							await TextEditor.enrichHTML(mV.value, actorData.enrichmentOptions);
 					}
 				}
 			}
@@ -305,9 +309,8 @@ export class PbtaActorSheet extends ActorSheet {
 				} else {
 					actorData.moves.PBTA_OTHER.push(item);
 				}
-			}
-			// If this is equipment, we currently lump it together.
-			else if (item.type === "equipment") {
+			} else if (item.type === "equipment") {
+				// If this is equipment, we currently lump it together.
 				if (actorData.equipment[item.system.equipmentType]) {
 					actorData.equipment[item.system.equipmentType].push(item);
 				} else {
@@ -336,23 +339,11 @@ export class PbtaActorSheet extends ActorSheet {
 				context.system.tagsString = tagArray.map((item) => {
 					return item.value;
 				}).join(", ");
-			}
-			// Otherwise, set tags equal to the string.
-			else {
+			} else {
+				// Otherwise, set tags equal to the string.
 				context.system.tags = context.system.tagsString;
 			}
 		}
-	}
-
-	/**
-   * Prepare clock attribute types.
-   *
-   * @param {Object} context The actor to prepare.
-   *
-   * @return {undefined}
-   */
-	_prepareStatClocks(context) {
-		const actorData = context;
 	}
 
 	/* -------------------------------------------- */
@@ -440,9 +431,8 @@ export class PbtaActorSheet extends ActorSheet {
 			if (action === "decrease") {
 				system[attr] -= 1;
 				changed = true;
-			}
-			// Increase the value.
-			else if (action === "increase") {
+			} else if (action === "increase") {
+				// Increase the value.
 				system[attr] += 1;
 				changed = true;
 			}
@@ -547,14 +537,14 @@ export class PbtaActorSheet extends ActorSheet {
 
 		let attr = getProperty(this.actor, prop);
 		if (value > 0) {
-			let newValue = (value - 1) * attr.positive.steps + step + 1;
+			let newValue = ((value - 1) * attr.positive.steps) + step + 1;
 			if (attr.positive.value === newValue && newValue === 1) {
 				attr.positive.value = 0;
 			} else {
 				attr.positive.value = newValue;
 			}
 		} else {
-			let newValue = -(value + 1) * attr.negative.steps + step + 1;
+			let newValue = -((value + 1) * attr.negative.steps) + step + 1;
 			if (attr.negative.value === newValue && newValue === 1) {
 				attr.negative.value = 0;
 			} else {
@@ -573,7 +563,6 @@ export class PbtaActorSheet extends ActorSheet {
 	_hideMoveGroup(event) {
 		event.preventDefault();
 		const toggler = $(event.currentTarget);
-		const toggleIcon = toggler.find("i");
 		const group = toggler.parents(".cell--group");
 		const description = group.find(".items-list");
 
@@ -584,7 +573,6 @@ export class PbtaActorSheet extends ActorSheet {
 	_showItemDetails(event) {
 		event.preventDefault();
 		const toggler = $(event.currentTarget);
-		const toggleIcon = toggler.find("i");
 		const item = toggler.parents(".item");
 		const description = item.find(".item-description");
 
@@ -676,7 +664,6 @@ export class PbtaActorSheet extends ActorSheet {
 		const type = header.dataset.type;
 		const dataset = duplicate(header.dataset);
 		const system = {};
-		const actor = this.actor;
 		if (dataset.movetype) {
 			system.moveType = dataset.movetype;
 		}
@@ -793,7 +780,7 @@ export class PbtaActorSheet extends ActorSheet {
 		let $input = html.find('input[name="system.tags"]');
 		if ($input.length > 0) {
 			// init Tagify script on the above inputs
-			let tagify = new Tagify($input[0], {
+			new Tagify($input[0], {
 				whitelist: tagNames,
 				maxTags: "Infinity",
 				dropdown: {

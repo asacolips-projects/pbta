@@ -62,11 +62,9 @@ const manifestTask = gulp.series(compileManifest);
 /* ----------------------------------------- */
 /* Delete files
 /* ----------------------------------------- */
-const SYSTEM_DELETE = ["dist"];
 function deleteFiles() {
 	return del("dist/**", {force: true});
 }
-const deleteTask = gulp.series(deleteFiles);
 
 /* ----------------------------------------- */
 /* Copy files
@@ -149,9 +147,8 @@ function inc(importance) {
 			.pipe(replace("jobs/artifacts/master", `jobs/artifacts/${newVersion}`))
 		// Overwrite system.yml.
 			.pipe(gulp.dest("./src/yaml"));
-	} else {
-		return gulp.src(["./src/yaml/system.yml"]);
 	}
+	return gulp.src(["./src/yaml/system.yml"]);
 }
 
 /* ----------------------------------------- */
@@ -163,9 +160,8 @@ function commitTag() {
 		return gulp.src(["./system.json"])
 			.pipe(git.commit(`Release ${version}`))
 			.pipe(tagVersion({ prefix: "" }));
-	} else {
-		return gulp.src(["./system.json"]);
 	}
+	return gulp.src(["./system.json"]);
 }
 
 /* ----------------------------------------- */

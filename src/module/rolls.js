@@ -1,5 +1,3 @@
-import { PbtaUtility } from "./utility.js";
-
 export class RollPbtA extends Roll {
 	static EVALUATION_TEMPLATE = "systems/pbta/templates/chat/roll-dialog.html";
 
@@ -89,12 +87,10 @@ export class RollPbtA extends Roll {
 		// Either create or return the data
 		if ( create ) {
 			return cls.create(msg.toObject(), { rollMode });
-		} else {
-			if ( rollMode ) {
-				msg.applyRollMode(rollMode);
-			}
-			return msg.toObject();
+		} else if ( rollMode ) {
+			msg.applyRollMode(rollMode);
 		}
+		return msg.toObject();
 	}
 
 	/**
@@ -118,7 +114,7 @@ export class RollPbtA extends Roll {
 			this.options.conditions.push(game.i18n.localize("PBTA.Disadvantage"));
 		}
 
-		let { forward, ongoing } = this.data?.resources;
+		let { forward, ongoing } = this.data.resources;
 		if (forward?.value) {
 			const fRoll = new Roll(`${forward.value}`, this.data);
 			if ( !(fRoll.terms[0] instanceof OperatorTerm) ) {
@@ -148,7 +144,7 @@ export class RollPbtA extends Roll {
 			let originalMod = eval(modifierString);
 			if (originalMod < minMod || originalMod > maxMod) {
 				let totalMod = Math.clamped(originalMod, minMod, maxMod);
-				const newFormula = `${baseFormula}+${totalMod}`.replace(/\+\s*\-/g, "-");
+				const newFormula = `${baseFormula}+${totalMod}`.replace(/\+\s*-/g, "-");
 				const newTerms = new Roll(newFormula).terms;
 				this.terms = newTerms;
 				this.options.originalMod = originalMod;
@@ -181,7 +177,7 @@ export class RollPbtA extends Roll {
 					conditions: Object.values(condition[1].options).filter((v) => v.value && (v.userLabel ?? v.label).match(/\d/))
 						.map((v) => {
 							let conditionLabel = v.userLabel ?? v.label;
-							const mod = Roll.safeEval(conditionLabel.match(/[\d\+\-]/g).join(""));
+							const mod = Roll.safeEval(conditionLabel.match(/[\d+-]/g).join(""));
 							return {
 								label: conditionLabel,
 								mod

@@ -1,6 +1,5 @@
 import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
 import { RollPbtA } from "../rolls.js";
-import { PbtaUtility } from "../utility.js";
 
 /**
  * Extends the basic Actor class for Powered by the Apocalypse.
@@ -37,7 +36,7 @@ export class ActorPbta extends Actor {
 			"attrLeft"
 		];
 		for (let group of groups) {
-			for (let [attrKey, attrValue] of Object.entries(this.system[group])) {
+			for (let attrValue of Object.values(this.system[group])) {
 				// ListMany field handling.
 				if (["ListOne", "ListMany"].includes(attrValue.type) && attrValue.options) {
 					// Iterate over options.

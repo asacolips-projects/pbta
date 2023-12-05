@@ -53,24 +53,20 @@ export class PbtaPlaybooks {
 				}
 				return 0;
 			});
-
 			return charPlaybookNames;
 		}
-		// Sort the playbook objects list.
-		else {
-			playbooks.sort((a, b) => {
-				const aSort = a.name.toLowerCase();
-				const bSort = b.name.toLowerCase();
-				if (aSort < bSort) {
-					return -1;
-				}
-				if (aSort > bSort) {
-					return 1;
-				}
-				return 0;
-			});
-
-			return playbooks;
-		}
+		// Otherwise, sort the playbook objects list.
+		playbooks.sort((a, b) => {
+			const aSort = a.name.toLowerCase();
+			const bSort = b.name.toLowerCase();
+			if (aSort < bSort) {
+				return -1;
+			}
+			if (aSort > bSort) {
+				return 1;
+			}
+			return 0;
+		});
+		return playbooks;
 	}
 }

@@ -134,8 +134,6 @@ export class PbtACombatTracker extends CombatTracker {
 			// Store the combatant type for reference. We have to do this
 			// because dragover doesn't have access to the drag data, so we
 			// store it as a new type entry that can be split later.
-			let combatants = game.combat.combatants;
-			let newCombatant = combatants.find((c) => c.id === dragData.combatantId);
 			event.originalEvent.dataTransfer.setData(`newtype--${dragData.actorType}`, "");
 		});
 		// Add a class on hover, if the actor types match.

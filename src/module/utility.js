@@ -7,9 +7,9 @@ export class PbtaUtility {
 		// Make alphanumeric (removes all other characters)
 		string = string.replace(/[^a-z0-9\s]/g, "");
 		// Convert whitespaces and underscore to dash
-		string = string.replace(/[\s\_]/g, replace);
+		string = string.replace(/[\s_]/g, replace);
 		// Clean up multiple dashes or whitespaces
-		string = string.replace(/[\s\-]+/g, replace);
+		string = string.replace(/[\s-]+/g, replace);
 		return string;
 	}
 
@@ -96,9 +96,8 @@ export class PbtaUtility {
 						}
 					}
 				}
-			}
-			// Stats are required for characters (but not for NPCs).
-			else if (actorType === "character" || actorConfig[actorType]?.baseType === "character") {
+			} else if (actorType === "character" || actorConfig[actorType]?.baseType === "character") {
+				// Stats are required for characters (but not for NPCs).
 				errors.push(`${t.statsRequired1} '${actorType}' ${t.statsRequired2}.`);
 			}
 
@@ -172,9 +171,8 @@ export class PbtaUtility {
 			// Get the parsed value.
 			try {
 				computed = toml.parse(tomlString);
-			}
-			// Catch and report parser errors.
-			catch(error) {
+			} catch(error) {
+				// Catch and report parser errors.
 				console.error(error);
 				errors = [game.i18n.format("PBTA.Messages.sheetConfig.tomlError", {
 					line: error.line,
@@ -186,9 +184,8 @@ export class PbtaUtility {
 			if (!foundry.utils.isEmpty(computed)) {
 				errors = PbtaUtility.validateSheetConfig(computed);
 			}
-		}
-		// If there's no TOML string, report an error.
-		else {
+		} else {
+			// If there's no TOML string, report an error.
 			errors = [game.i18n.localize("PBTA.Messages.sheetConfig.noConfig")];
 		}
 
@@ -205,7 +202,7 @@ export class PbtaUtility {
 
 	static parseRange(rangeString) {
 		// Split the result range into an array.
-		let range = rangeString.split(/[\-\+]/g);
+		let range = rangeString.split(/[-+]/g);
 
 		// If the array is invalid, exit early.
 		if (range.length !== 2 || range[0] === "") {
@@ -275,7 +272,7 @@ export class PbtaUtility {
 						}
 
 						// Split the result range into an array.
-						let range = rollSetting.range.split(/[\-\+]/g);
+						let range = rollSetting.range.split(/[-+]/g);
 						let rollResult = {};
 
 						// If the array is invalid, exit early.
@@ -307,9 +304,8 @@ export class PbtaUtility {
 									label: rollSetting.label
 								};
 							}
-						}
-						// Otherwise, set the full range.
-						else {
+						} else {
+							// Otherwise, set the full range.
 							rollResult = {
 								start: start,
 								end: end,
@@ -326,10 +322,8 @@ export class PbtaUtility {
 
 			} else if (k === "maxMod") {
 				newConfig.maxMod = v;
-			}
-
-			// Actors.
-			else if (v.label || v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
+			} else if (v.label || v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
+				// Actors
 				let actorType = {};
 				if (v.label) {
 					actorType.label = game.i18n.localize(v.label);
@@ -406,9 +400,9 @@ export class PbtaUtility {
 				continue;
 			}
 			if (s.value > 0) {
-				s.checked = attr.positive.steps * (s.value - 1) + s.step + 1 <= attr.positive.value;
+				s.checked = (attr.positive.steps * (s.value - 1)) + s.step + 1 <= attr.positive.value;
 			} else {
-				s.checked = attr.negative.steps * -(s.value + 1) + s.step + 1 <= attr.negative.value;
+				s.checked = (attr.negative.steps * -(s.value + 1)) + s.step + 1 <= attr.negative.value;
 			}
 		}
 	}
@@ -540,8 +534,8 @@ export class PbtaUtility {
 					attr.steps.push({ isValue: true, label: `+${i + 1}`, value: i + 1 });
 				}
 				// used to display the label
-				attr.stepsNegative = attr.negative.max * attr.negative.steps + attr.negative.max;
-				attr.stepsPositive = attr.positive.max * attr.positive.steps + attr.positive.max;
+				attr.stepsNegative = (attr.negative.max * attr.negative.steps) + attr.negative.max;
+				attr.stepsPositive = (attr.positive.max * attr.positive.steps) + attr.positive.max;
 
 				this.updateAttrCellTrackDisplay(attr);
 
@@ -617,9 +611,8 @@ export class PbtaUtility {
 						};
 					}
 				});
-			}
-			// Handle options if provided as an object (keyed array).
-			else if (typeof attrValue.options === "object") {
+			} else if (typeof attrValue.options === "object") {
+				// Handle options if provided as an object (keyed array).
 				Object.entries(attrValue.options).forEach(([optK, optV]) => {
 					if (typeof optV === "object") {
 						const { label, tooltip } = optV;
