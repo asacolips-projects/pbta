@@ -3,34 +3,39 @@
   "version": "1.0.0",
   "description": "CSS compiler for the Powered by the Apocalypse system",
   "scripts": {
-    "build": "gulp build",
-    "compile": "gulp css",
-    "watch": "gulp",
-    "gulp": "gulp",
-    "yaml": "gulp yaml",
-    "patch": "gulp patch",
-    "minor": "gulp minor",
-    "major": "gulp major"
+	"build": "gulp build",
+	"compile": "gulp css",
+	"watch": "gulp",
+	"gulp": "gulp",
+	"yaml": "gulp yaml",
+	"patch": "gulp patch",
+	"minor": "gulp minor",
+	"major": "gulp major",
+	"lint": "eslint --ext .js,.cjs,.mjs .",
+	"lint:fix": "eslint --ext .js,.cjs,.mjs --fix ."
   },
   "browserslist": [
-    "last 3 versions"
+	"last 3 versions"
   ],
   "author": "Asacolips",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "del": "^6.0.0",
-    "fs": "^0.0.1-security",
-    "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^8.0.0",
-    "gulp-git": "^2.10.1",
-    "gulp-replace": "^1.1.3",
-    "gulp-sass": "^5.0.0",
-    "gulp-tag-version": "^1.3.1",
-    "gulp-webp": "^4.0.1",
-    "gulp-yaml": "^2.0.4",
-    "js-yaml": "^4.1.0",
-    "sass": "^1.45.1",
-    "yargs": "^17.3.0"
+	"@babel/eslint-parser": "^7.22.9",
+	"@typhonjs-fvtt/eslint-config-foundry.js": "^0.8.0",
+	"del": "^6.0.0",
+	"eslint": "^8.44.0",
+	"fs": "^0.0.1-security",
+	"gulp": "^4.0.2",
+	"gulp-autoprefixer": "^8.0.0",
+	"gulp-git": "^2.10.1",
+	"gulp-replace": "^1.1.3",
+	"gulp-sass": "^5.0.0",
+	"gulp-tag-version": "^1.3.1",
+	"gulp-webp": "^4.0.1",
+	"gulp-yaml": "^2.0.4",
+	"js-yaml": "^4.1.0",
+	"sass": "^1.45.1",
+	"yargs": "^17.3.0"
   }
 }

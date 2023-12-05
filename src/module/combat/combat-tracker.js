@@ -10,21 +10,21 @@ export class PbtACombatTracker extends CombatTracker {
 		let data = await super.getData(options);
 		const combatantGroups = this.getCombatantGroups();
 		let moveTotal = 0;
-		combatantGroups.character?.forEach(c => {
+		combatantGroups.character?.forEach((c) => {
 			moveTotal += c.getFlag("pbta", "moveCount") ?? 0;
 		});
 		const labels = Object.keys(game.pbta?.sheetConfig?.actorTypes).reduce((obj, key) => {
 			obj[key] = game.i18n.localize(game.pbta.sheetConfig.actorTypes[key]?.label)
 				?? game.i18n.localize(`TYPES.Actor.${key}`);
 			return obj;
-		}, {})
+		}, {});
 		return {
 			...data,
 			labels,
 			combatants: combatantGroups,
 			moveTotal
-		}
-	};
+		};
+	}
 
 	/**
 	 * Retrieve a list of combatants for the current combat.
@@ -47,13 +47,12 @@ export class PbtACombatTracker extends CombatTracker {
 			// If this is for a combatant that has had its token/actor deleted,
 			// remove it from the combat.
 			if (!combatant.actor) {
-				game.combat.deleteEmbeddedDocuments('Combatant', [combatant.id]);
-			}
-			else if ( !combatant.visible ) {
+				game.combat.deleteEmbeddedDocuments("Combatant", [combatant.id]);
+			} else if ( !combatant.visible ) {
 				return groups;
-			}
-			// Append valid actors to the appropriate group.
-			else {
+			} else {
+				// Append valid actors to the appropriate group.
+
 				// Initialize the group if it doesn't exist.
 				let group = combatant.actor.type;
 				if (!groups[group]) {
@@ -62,7 +61,7 @@ export class PbtACombatTracker extends CombatTracker {
 
 				// If the updateInitiative flag was set to true, recalculate the
 				// initiative for each actor while we're looping through them.
-				if (group != 'character' && updateInitiative) {
+				if (group !== "character" && updateInitiative) {
 					combatant.initiative = currentInitiative;
 					currentInitiative = currentInitiative + 10;
 				}
@@ -71,7 +70,8 @@ export class PbtACombatTracker extends CombatTracker {
 				// whether editabel fields like HP will be shown as an input or a div
 				// in the combat tracker HTML template.
 				combatant.editable = isOwner || game.user.isGM;
-				const resource = combatant.permission >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER ? combatant.resource : null;
+				const resource =
+					combatant.permission >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER ? combatant.resource : null;
 				if (resource) {
 					combatant.resource = resource;
 					combatant.hasResource = resource !== null;
@@ -79,13 +79,18 @@ export class PbtACombatTracker extends CombatTracker {
 				combatant.canPing = (combatant.sceneId === canvas.scene?.id) && game.user.hasPermission("PING_CANVAS");
 				combatant.effects = new Set();
 				if (combatant.token) {
-					combatant.token.effects.forEach(e => combatant.effects.add(e));
-					if ( combatant.token.overlayEffect ) combatant.effects.add(combatant.token.overlayEffect);
+					combatant.token.effects.forEach((e) => combatant.effects.add(e));
+					if ( combatant.token.overlayEffect ) {
+						combatant.effects.add(combatant.token.overlayEffect);
+					}
 				}
 				if (combatant.actor) {
 					for ( const effect of combatant.actor.temporaryEffects ) {
-					if ( effect.statuses.has(CONFIG.specialStatusEffects.DEFEATED) ) combatant.defeated = true;
-					else if ( effect.icon ) combatant.effects.add(effect.icon);
+						if ( effect.statuses.has(CONFIG.specialStatusEffects.DEFEATED) ) {
+							combatant.defeated = true;
+						} else if ( effect.icon ) {
+							combatant.effects.add(effect.icon);
+						}
 					}
 				}
 
@@ -101,9 +106,9 @@ export class PbtACombatTracker extends CombatTracker {
 		}, {});
 
 		// Sort the combatants in each group by initiative.
-		for (let [groupKey, group] of Object.entries(combatants)) {
+		for (let groupKey of Object.keys(combatants)) {
 			combatants[groupKey].sort((a, b) => {
-				return Number(a.initiative) - Number(b.initiative)
+				return Number(a.initiative) - Number(b.initiative);
 			});
 		}
 
@@ -117,71 +122,72 @@ export class PbtACombatTracker extends CombatTracker {
 		const tracker = html.find("#combat-tracker");
 		const combatants = tracker.find(".combatant");
 
-		if (!game.user.isGM) return;
+		if (!game.user.isGM) {
+			return;
+		}
 
-		combatants.on('dragstart', (event) => {
+		combatants.on("dragstart", (event) => {
 			// Set the drag data for later usage.
 			let dragData = event.currentTarget.dataset;
-			event.originalEvent.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+			event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
 
 			// Store the combatant type for reference. We have to do this
 			// because dragover doesn't have access to the drag data, so we
 			// store it as a new type entry that can be split later.
 			let combatants = game.combat.combatants;
-			let newCombatant = combatants.find(c => c.id == dragData.combatantId);
-			event.originalEvent.dataTransfer.setData(`newtype--${dragData.actorType}`, '');
-        })
+			let newCombatant = combatants.find((c) => c.id === dragData.combatantId);
+			event.originalEvent.dataTransfer.setData(`newtype--${dragData.actorType}`, "");
+		});
 		// Add a class on hover, if the actor types match.
-		combatants.on('dragover', (event) => {
-            // Get the drop target.
-            let $self = $(event.originalEvent.target);
-            let $dropTarget = $self.parents('.directory-item');
+		combatants.on("dragover", (event) => {
+			// Get the drop target.
+			let $self = $(event.originalEvent.target);
+			let $dropTarget = $self.parents(".directory-item");
 
-            // Exit early if we don't need to make any changes.
-            if ($dropTarget.hasClass('drop-hover')) {
-              return;
-            }
+			// Exit early if we don't need to make any changes.
+			if ($dropTarget.hasClass("drop-hover")) {
+				return;
+			}
 
-            if (!$dropTarget.data('combatant-id')) {
-              return;
-            }
+			if (!$dropTarget.data("combatant-id")) {
+				return;
+			}
 
-            // Retrieve the actor type for the drop target, exit early if
-            // it doesn't exist.
-            let oldType = $dropTarget.data('actor-type');
-            let newType = null;
+			// Retrieve the actor type for the drop target, exit early if
+			// it doesn't exist.
+			let oldType = $dropTarget.data("actor-type");
+			let newType = null;
 
-            if (!oldType) {
-              return;
-            }
+			if (!oldType) {
+				return;
+			}
 
-            // Retrieve the actor type for the actor being dragged.
-            newType = event.originalEvent.dataTransfer.types.find(t => t.includes('newtype'));
-            newType = newType ? newType.split('--')[1] : null;
+			// Retrieve the actor type for the actor being dragged.
+			newType = event.originalEvent.dataTransfer.types.find((t) => t.includes("newtype"));
+			newType = newType ? newType.split("--")[1] : null;
 
-            // If the type matches, add a css class to let the user know this
-            // is a valid drop target.
-            if (newType == oldType) {
-              $dropTarget.addClass('drop-hover');
-            }
-            // Otherwise, we should exit.
-            else {
-              return false;
-            }
+			// If the type matches, add a css class to let the user know this
+			// is a valid drop target.
+			if (newType === oldType) {
+				$dropTarget.addClass("drop-hover");
+			} else {
+				// Otherwise, we should exit.
+				return false;
+			}
 
-            return false;
-		})
+			return false;
+		});
 		// Remove the class on drag leave.
-		combatants.on('dragleave', (event) => {
+		combatants.on("dragleave", (event) => {
 			// Get the drop target and remove any hover classes on it when
 			// the mouse leaves it.
 			let $self = $(event.originalEvent.target);
-			let $dropTarget = $self.parents('.directory-item');
-			$dropTarget.removeClass('drop-hover');
+			let $dropTarget = $self.parents(".directory-item");
+			$dropTarget.removeClass("drop-hover");
 			return false;
-		})
+		});
 		// Update initiative on drop.
-		combatants.on('drop', async (event) => {
+		combatants.on("drop", async (event) => {
 			// Retrieve the default encounter.
 			let combat = game.combat;
 
@@ -195,26 +201,26 @@ export class PbtACombatTracker extends CombatTracker {
 
 			// Retreive the drop target, remove any hover classes.
 			let $self = $(event.originalEvent.target);
-			let $dropTarget = $self.parents('.directory-item');
-			$dropTarget.removeClass('drop-hover');
+			let $dropTarget = $self.parents(".directory-item");
+			$dropTarget.removeClass("drop-hover");
 
 			// Attempt to retrieve and parse the data transfer from the drag.
 			let data;
 			try {
-				data = JSON.parse(event.originalEvent.dataTransfer.getData('text/plain'));
+				data = JSON.parse(event.originalEvent.dataTransfer.getData("text/plain"));
 				// if (data.type !== "Item") return;
-			} catch (err) {
+			} catch(err) {
 				return false;
 			}
 
 			// Retrieve the combatant being dropped.
-			let newCombatant = combat.combatants.find(c => c.id == data.combatantId);
+			let newCombatant = combat.combatants.find((c) => c.id === data.combatantId);
 
 			// Retrieve the combatants grouped by type.
 			let combatants = this.getCombatantGroups(false);
 			// Retrieve the combatant being dropped onto.
-			let originalCombatant = combatants[newCombatant.actor.type].find(c => {
-				return c.id == $dropTarget.data('combatant-id');
+			let originalCombatant = combatants[newCombatant.actor.type].find((c) => {
+				return c.id === $dropTarget.data("combatant-id");
 			});
 
 			// Set the initiative equal to the drop target's initiative.
@@ -225,25 +231,27 @@ export class PbtACombatTracker extends CombatTracker {
 			if (oldInit !== null) {
 				// Set the initiative of the actor being draged to the drop
 				// target's +1. This will later be adjusted increments of 10.
-				let updatedCombatant = combatants[newCombatant.actor.type].find(c => c.id == newCombatant.id);
+				let updatedCombatant = combatants[newCombatant.actor.type].find((c) => c.id === newCombatant.id);
 				updatedCombatant.initiative = Number(oldInit) + 1;
 
 				// Loop through all combatants in initiative order, and assign
 				// a new initiative in increments of 10. The "updates" variable
 				// will be an array of objects iwth _id and initiative keys.
 				let updatedInit = 0;
-				let updates = combatants[newCombatant.actor.type].sort((a, b) => a.initiative - b.initiative).map(c => {
-				let result = {
-					_id: c.id,
-					initiative: updatedInit
-				};
-				updatedInit = updatedInit + 10;
-					return result;
-				});
+				let updates = combatants[newCombatant.actor.type]
+					.sort((a, b) => a.initiative - b.initiative)
+					.map((c) => {
+						let result = {
+							_id: c.id,
+							initiative: updatedInit
+						};
+						updatedInit = updatedInit + 10;
+						return result;
+					});
 
 				// If there are updates, update the combatants at once.
 				if (updates) {
-					await combat.updateEmbeddedDocuments('Combatant', updates, {});
+					await combat.updateEmbeddedDocuments("Combatant", updates, {});
 				}
 			}
 		});
@@ -259,13 +267,15 @@ export class PbtACombatTracker extends CombatTracker {
 			{
 				name: "PBTA.ClearMoves",
 				icon: '<i class="fas fa-undo"></i>',
-				condition: li => {
+				condition: (li) => {
 					const combatant = this.viewed.combatants.get(li.data("combatant-id"));
 					return Number.isNumeric(combatant?.getFlag("pbta", "moveCount"));
 				},
-				callback: li => {
+				callback: (li) => {
 					const combatant = this.viewed.combatants.get(li.data("combatant-id"));
-					if ( combatant ) combatant.unsetFlag("pbta", "moveCount", 0)
+					if ( combatant ) {
+						combatant.unsetFlag("pbta", "moveCount", 0);
+					}
 				}
 			},
 			// {
@@ -279,9 +289,11 @@ export class PbtACombatTracker extends CombatTracker {
 			{
 				name: "COMBAT.CombatantRemove",
 				icon: '<i class="fas fa-trash"></i>',
-				callback: li => {
+				callback: (li) => {
 					const combatant = this.viewed.combatants.get(li.data("combatant-id"));
-					if ( combatant ) return combatant.delete();
+					if ( combatant ) {
+						return combatant.delete();
+					}
 				}
 			}
 		];
