@@ -1,5 +1,8 @@
 import { PbtaSettingsConfigDialog } from "./forms/sheet-config.js";
 
+/**
+ * Register all of the system's settings.
+ */
 export function registerSettings() {
 	game.settings.registerMenu("pbta", "sheetConfigMenu", {
 		name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),

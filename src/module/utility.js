@@ -23,10 +23,10 @@ export class PbtaUtility {
 	}
 
 	/**
-   * Validate sheetConfig settings and return errors.
-   * @param {object} sheetConfig Computed sheetConfig settings.
-   * @returns array
-   */
+	 * Validate sheetConfig settings and return errors.
+	 * @param {object} sheetConfig Computed sheetConfig settings.
+	 * @returns {Array}
+	 */
 	static validateSheetConfig(sheetConfig) {
 		let errors = [];
 		const t = {

@@ -197,6 +197,8 @@ export class PbtaItemSheet extends ItemSheet {
 
 	/**
 	 * Add tagging widget.
+	 * @param {HTMLElement} html
+	 * @param {boolean} editable
 	 */
 	async _tagify(html, editable) {
 		// Build the tags list.

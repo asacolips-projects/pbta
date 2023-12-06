@@ -31,7 +31,8 @@ export class PbtACombatTracker extends CombatTracker {
 	 *
 	 * Combatants will be sorted into groups by actor type. Set the
 	 * updateInitiative argument to true to reassign init numbers.
-	 * @param {Boolean} updateInitiative
+	 * @param {boolean} updateInitiative
+	 * @returns {object}
 	 */
 	getCombatantGroups(updateInitiative = false) {
 		// If there isn't a combat, exit and return an empty array.

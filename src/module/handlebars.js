@@ -8,16 +8,16 @@ export class PbtaRegisterHelpers {
 		});
 
 		/**
-     * Similar to Foundry's eq, except "1" == 1 is truthy.
-     */
+		 * Similar to Foundry's eq, except "1" == 1 is truthy.
+		 */
 		Handlebars.registerHelper("softEq", function (arg1, arg2, options) {
 			// eslint-disable-next-line eqeqeq
 			return (arg1 == arg2);
 		});
 
 		/**
-     * Returns length of Object's keys.
-     */
+		 * Returns length of Object's keys.
+		 */
 		Handlebars.registerHelper("objLen", function (json) {
 			return Object.keys(json).length;
 		});

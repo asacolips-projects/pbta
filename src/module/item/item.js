@@ -12,16 +12,7 @@ export class ItemPbta extends Item {
 		return { img: this.DEFAULT_ICON };
 	}
 
-	/**
-   * Augment the basic Item data model with additional dynamic data.
-   */
-	prepareData() {
-		super.prepareData();
-	}
-
-	/**
-   * Override getRollData() that's supplied to rolls.
-   */
+	/** @override */
 	getRollData() {
 		let data = super.getRollData();
 		data.type = this.type;
@@ -43,10 +34,11 @@ export class ItemPbta extends Item {
 	}
 
 	/**
-   * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
-   * @return {Promise}
-   */
-	async roll({ configureDialog = true, descriptionOnly = false } = {}, options = {}) {
+	 * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
+	 * @param {boolean} descriptionOnly
+	 * @param {object} options
+	 */
+	async roll({ descriptionOnly = false } = {}, options = {}) {
 		if (!descriptionOnly && (this.type === "equipment" || !this.system.rollType)) {
 			descriptionOnly = true;
 		}
@@ -147,6 +139,16 @@ export class ItemPbta extends Item {
 				system: mergeObject(templateData.system, this.toObject(false).system)
 			});
 		}
+	}
+
+
+	/**
+	 * Apply listeners to chat messages.
+	 * @param {HTML} html  Rendered chat message.
+	 */
+	static chatListeners(html) {
+		html.on("click", ".cell__title", this._onChatCardToggleContent.bind(this));
+		html.on("click", ".result-label", this._onChatCardResultToggleContent.bind(this));
 	}
 
 	static _onChatCardToggleContent(event) {

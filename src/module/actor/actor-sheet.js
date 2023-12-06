@@ -167,14 +167,14 @@ export class PbtaActorSheet extends ActorSheet {
 	}
 
 	/**
-   * Prepare attributes for templates.
-   *
-   * The editor helper for TinyMCE editors is unable to handle dynamic props,
-   * so this helper adds a string that we'll use later for the name attribute
-   * on the HTML element.
-   *
-   * @param {object} sheetData Data prop on actor.
-   */
+	 * Prepare attributes for templates.
+	 *
+	 * The editor helper for TinyMCE editors is unable to handle dynamic props,
+	 * so this helper adds a string that we'll use later for the name attribute
+	 * on the HTML element.
+	 *
+	 * @param {object} sheetData Data prop on actor.
+	 */
 	async _prepareAttrs(sheetData) {
 		const actorData = sheetData;
 		let groups = [
@@ -193,16 +193,16 @@ export class PbtaActorSheet extends ActorSheet {
 	}
 
 	/**
-   * Resort attributes based on config.
-   *
-   * Currently, the way that stats and attributes are applied as updates to
-   * actors can cause their keys to become improperly ordered. In a future
-   * version we'll need to TODO and fix the order at write time, but currently,
-   * this solves the immediate problem and reorders them at render time for the
-   * sheet.
-   *
-   * @param {object} sheetData Data prop on actor.
-   */
+	 * Resort attributes based on config.
+	 *
+	 * Currently, the way that stats and attributes are applied as updates to
+	 * actors can cause their keys to become improperly ordered. In a future
+	 * version we'll need to TODO and fix the order at write time, but currently,
+	 * this solves the immediate problem and reorders them at render time for the
+	 * sheet.
+	 *
+	 * @param {object} sheetData Data prop on actor.
+	 */
 	_sortAttrs(sheetData) {
 		const actorData = sheetData;
 		let groups = [
@@ -240,12 +240,10 @@ export class PbtaActorSheet extends ActorSheet {
 	}
 
 	/**
-   * Organize and classify Items for Character sheets.
-   *
-   * @param {Object} context The actor to prepare.
-   *
-   * @return {undefined}
-   */
+	 * Organize and classify Items for Character sheets.
+	 * @param {object} context The actor to prepare.
+	 * @returns {undefined}
+	 */
 	async _prepareCharacterItems(context) {
 		const actorData = context;
 		const actorType = context.pbtaSheetType ?? "character";
@@ -321,10 +319,10 @@ export class PbtaActorSheet extends ActorSheet {
 	}
 
 	/**
-   * Prepare tagging.
-   *
-   * @param {Object} context The actor to prepare.
-   */
+	 * Prepare tagging.
+	 *
+	 * @param {object} context The actor to prepare.
+	 */
 	async _prepareNpcItems(context) {
 		// Handle preprocessing for tagify data.
 		if (context.pbtaSheetType === "npc") {
@@ -593,11 +591,11 @@ export class PbtaActorSheet extends ActorSheet {
 	}
 
 	/**
-   * Adjust a numerical field on click.
-   * @param string property
-   * @param int delta
-   * @param {MouseEvent} event
-   */
+	 * Adjust a numerical field on click.
+	 * @param {string} property
+	 * @param {int} delta
+	 * @param {MouseEvent} event
+	 */
 	async _onUsagesControl(property, delta, event) {
 		event.preventDefault();
 		const a = event.currentTarget;
@@ -615,18 +613,18 @@ export class PbtaActorSheet extends ActorSheet {
 	}
 
 	/**
-   * Listen for click events on rollables.
-   * @param {MouseEvent} event
-   */
+	 * Listen for click events on rollables.
+	 * @param {MouseEvent} event
+	 */
 	async _onRollable(event) {
 		event.preventDefault();
 		this.actor._onRoll(event);
 	}
 
 	/**
- * Listen for click events on view playbook.
- * @param {MouseEvent} event
- */
+	 * Listen for click events on view playbook.
+	 * @param {MouseEvent} event
+	 */
 	async _onViewPlaybook(event) {
 		// Initialize variables.
 		event.preventDefault();
@@ -640,9 +638,10 @@ export class PbtaActorSheet extends ActorSheet {
 	}
 
 	/**
-   * Listen for toggling the look column.
-   * @param {MouseEvent} event
-   */
+	 * Listen for toggling the look column.
+	 * @param {HTMLElement} html
+	 * @param {MouseEvent} event
+	 */
 	_toggleLook(html, event) {
 		// Add a class to the sidebar.
 		html.find(".sheet-look").toggleClass("closed");
@@ -654,10 +653,10 @@ export class PbtaActorSheet extends ActorSheet {
 
 	/* -------------------------------------------- */
 	/**
-   * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
-   * @param {Event} event   The originating click event
-   * @private
-   */
+	 * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
+	 * @param {Event} event   The originating click event
+	 * @private
+	 */
 	async _onItemCreate(event) {
 		event.preventDefault();
 		const header = event.currentTarget;
@@ -685,10 +684,10 @@ export class PbtaActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	/**
-   * Handle editing an existing Owned Item for the Actor
-   * @param {Event} event   The originating click event
-   * @private
-   */
+	 * Handle editing an existing Owned Item for the Actor
+	 * @param {Event} event   The originating click event
+	 * @private
+	 */
 	_onItemEdit(event) {
 		event.preventDefault();
 		const li = event.currentTarget.closest(".item");
@@ -715,10 +714,10 @@ export class PbtaActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	/**
-   * Handle deleting an existing Owned Item for the Actor
-   * @param {Event} event   The originating click event
-   * @private
-   */
+	 * Handle deleting an existing Owned Item for the Actor
+	 * @param {Event} event   The originating click event
+	 * @private
+	 */
 	async _onItemDelete(event) {
 		event.preventDefault();
 		const li = event.currentTarget.closest(".item");
@@ -727,10 +726,10 @@ export class PbtaActorSheet extends ActorSheet {
 	}
 
 	/**
-   * Equivalent to this.actor.update(), but handle tokens automatically.
-   * @param {object} updateData Updates to apply.
-   * @param {object} options Options for the update.
-   */
+	 * Equivalent to this.actor.update(), but handle tokens automatically.
+	 * @param {object} updateData Updates to apply.
+	 * @param {object} options Options for the update.
+	 */
 	async _updateActorOrToken(updateData, options = {}) {
 		if (this.token && !this.token.actorLink) {
 			this.actor.update(updateData, mergeObject(options, { diff: false }));

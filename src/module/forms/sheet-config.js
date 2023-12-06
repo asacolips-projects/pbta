@@ -83,14 +83,14 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 	}
 
 	/**
-   * Handles retrieving data from the form.
-   *
-   * @override Save the code editor instance before retrieving data to ensure the data is synchronised.
-   *
-   * @param {array} args - All arguments passed to this method, which will be forwarded to super
-   * @return {object} The form data
-   * @memberof SettingsForm
-   */
+	 * Handles retrieving data from the form.
+	 *
+	 * @override
+	 *
+	 * @param {Array} args All arguments passed to this method, which will be forwarded to super
+	 * @returns {object} The form data
+	 * @memberof SettingsForm
+	 */
 	_getSubmitData(...args) {
 		this.codeEditor.save();
 		return super._getSubmitData(...args);
@@ -99,15 +99,14 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 	/* -------------------------------------------- */
 
 	/**
-   * Handle button click to reset default settings
-   * @param event {Event}   The initial button click event
-   * @private
-   */
+	 * Handle button click to reset default settings
+	 * @param {event} event   The initial button click event
+	 */
 	async _onResetDefaults(event) {
 		event.preventDefault();
 		await game.settings.set("pbta", "sheetConfig", {});
 		ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.reset"));
-		return this.render();
+		this.render();
 	}
 
 	async close(options) {

@@ -186,13 +186,8 @@ Hooks.on("renderChatMessage", (data, html, options) => {
 	}
 });
 
-Hooks.on("renderChatLog", renderChatLog);
-Hooks.on("renderChatPopout", renderChatLog);
-
-function renderChatLog(app, html, data) {
-	html.on("click", ".cell__title", ItemPbta._onChatCardToggleContent.bind(this));
-	html.on("click", ".result-label", ItemPbta._onChatCardResultToggleContent.bind(this));
-}
+Hooks.on("renderChatLog", (app, html, data) => ItemPbta.chatListeners(html));
+Hooks.on("renderChatPopout", (app, html, data) => ItemPbta.chatListeners(html));
 
 /* -------------------------------------------- */
 /*  Foundry VTT Setup                           */
@@ -243,7 +238,7 @@ Hooks.on("renderSettings", (app, html) => {
 /**
  * Create a Macro from an Item drop.
  * Get an existing item macro if one exists, otherwise create a new one.
- * @param {Object} data     The dropped data
+ * @param {object} data     The dropped data
  * @param {number} slot     The hotbar slot to use
  * @returns {Promise}
  */
@@ -282,7 +277,7 @@ async function createPbtaMacro(data, slot) {
  * Create a Macro from an Item drop.
  * Get an existing item macro if one exists, otherwise create a new one.
  * @param {string} itemData
- * @return {Promise}
+ * @returns {Promise}
  */
 function rollItemMacro(itemData) {
 	// Reconstruct the drop data so that we can load the item.
@@ -317,6 +312,6 @@ function rollItemMacro(itemData) {
 		}
 
 		// Trigger the item roll
-		return item.roll();
+		item.roll();
 	}
 }

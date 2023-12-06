@@ -7,8 +7,8 @@ import { RollPbtA } from "../rolls.js";
  */
 export class ActorPbta extends Actor {
 	/**
-   * Augment the basic actor data with additional dynamic data.
-   */
+	 * Augment the basic actor data with additional dynamic data.
+	 */
 	prepareData() {
 		super.prepareData();
 		// Handle actor types.
@@ -27,8 +27,8 @@ export class ActorPbta extends Actor {
 	}
 
 	/**
-   * Prepare Character type specific data
-   */
+	 * Prepare Character type specific data
+	 */
 	_prepareCharacterData() {
 		// Handle special attributes.
 		let groups = [
@@ -53,9 +53,7 @@ export class ActorPbta extends Actor {
 		}
 	}
 
-	/**
-   * Override getRollData() that's supplied to rolls.
-   */
+	/** @override */
 	getRollData() {
 		const data = super.getRollData();
 		data.formula = this.getRollFormula();
@@ -111,9 +109,9 @@ export class ActorPbta extends Actor {
 	}
 
 	/**
-   * Listen for click events on rollables.
-   * @param {MouseEvent} event
-   */
+	 * Listen for click events on rollables.
+	 * @param {MouseEvent} event
+	 */
 	async _onRoll(event) {
 		const { label, roll } = event.currentTarget.dataset;
 		const a = event.currentTarget;

@@ -21,9 +21,11 @@ module.exports = {
 
 	extends: ["eslint:recommended", "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0"],
 
-	plugins: [],
+	plugins: [
+		"jsdoc"
+	],
 
-	ignorePatterns: ["gulpfile.mjs"],
+	ignorePatterns: ["gulpfile.js"],
 
 	rules: {
 		"array-bracket-spacing": ["warn", "never"],
@@ -178,6 +180,48 @@ module.exports = {
 			},
 		],
 		"spaced-comment": "warn",
+
+		"jsdoc/check-access": "warn",
+		"jsdoc/check-alignment": "warn",
+		"jsdoc/check-examples": "off",
+		"jsdoc/check-indentation": "off",
+		"jsdoc/check-line-alignment": "off",
+		"jsdoc/check-param-names": "warn",
+		"jsdoc/check-property-names": "warn",
+		"jsdoc/check-syntax": "off",
+		"jsdoc/check-tag-names": "warn",
+		"jsdoc/check-types": "warn",
+		"jsdoc/check-values": "warn",
+		"jsdoc/empty-tags": "warn",
+		"jsdoc/implements-on-classes": "warn",
+		"jsdoc/match-description": "off",
+		"jsdoc/newline-after-description": "off",
+		"jsdoc/no-bad-blocks": "warn",
+		"jsdoc/no-defaults": "off",
+		"jsdoc/no-types": "off",
+		"jsdoc/no-undefined-types": "off",
+		"jsdoc/require-description": "warn",
+		"jsdoc/require-description-complete-sentence": "off",
+		"jsdoc/require-example": "off",
+		"jsdoc/require-file-overview": "off",
+		"jsdoc/require-hyphen-before-param-description": ["warn", "never"],
+		"jsdoc/require-jsdoc": "warn",
+		"jsdoc/require-param": "warn",
+		"jsdoc/require-param-description": "off",
+		"jsdoc/require-param-name": "warn",
+		"jsdoc/require-param-type": "warn",
+		"jsdoc/require-property": "warn",
+		"jsdoc/require-property-description": "off",
+		"jsdoc/require-property-name": "warn",
+		"jsdoc/require-property-type": "warn",
+		"jsdoc/require-returns": "warn",
+		"jsdoc/require-returns-check": "warn",
+		"jsdoc/require-returns-description": "off",
+		"jsdoc/require-returns-type": "warn",
+		"jsdoc/require-throws": "off",
+		"jsdoc/require-yields": "warn",
+		"jsdoc/require-yields-check": "warn",
+		"jsdoc/valid-types": "off"
 	},
 
 	globals: {
@@ -196,4 +240,17 @@ module.exports = {
 			},
 		},
 	],
+
+	settings: {
+		jsdoc: {
+			mode: "typescript",
+			preferredTypes: {
+				".<>": "<>",
+				Object: "object"
+			},
+			tagNamePreference: {
+				augments: "extends"
+			}
+		}
+	}
 };

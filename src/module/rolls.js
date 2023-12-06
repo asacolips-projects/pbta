@@ -2,9 +2,9 @@ export class RollPbtA extends Roll {
 	static EVALUATION_TEMPLATE = "systems/pbta/templates/chat/roll-dialog.html";
 
 	/**
-   * A convenience reference for whether this RollPbtA has advantage
-   * @type {boolean}
-   */
+	 * A convenience reference for whether this RollPbtA has advantage
+	 * @type {boolean}
+	 */
 	get hasAdvantage() {
 		return this.options.rollMode === "adv";
 	}
@@ -12,9 +12,9 @@ export class RollPbtA extends Roll {
 	/* -------------------------------------------- */
 
 	/**
-   * A convenience reference for whether this RollPbtA has disadvantage
-   * @type {boolean}
-   */
+	 * A convenience reference for whether this RollPbtA has disadvantage
+	 * @type {boolean}
+	 */
 	get hasDisadvantage() {
 		return this.options.rollMode === "dis";
 	}
@@ -94,9 +94,9 @@ export class RollPbtA extends Roll {
 	}
 
 	/**
-   * Apply optional modifiers which customize the behavior of the d20term
-   * @private
-   */
+	 * Apply optional modifiers which customize the behavior of the d20term
+	 * @private
+	 */
 	configureModifiers() {
 		const r = this.terms[0];
 		r.modifiers = [];
@@ -157,14 +157,14 @@ export class RollPbtA extends Roll {
 	}
 
 	/**
-   * Create a Dialog prompt used to configure evaluation of an existing D20Roll instance.
-   * @param {object} data                     Dialog configuration data
-   * @param {string} [data.template]            A custom path to an HTML template to use instead of the default
-   * @param {string} [data.title]               The title of the shown dialog window
-   * @param {object} options                  Additional Dialog customization options
-   * @returns {Promise<Roll|null>}         A resulting Roll object constructed with the dialog, or null if the
-   *                                          dialog was closed
-   */
+	 * Create a Dialog prompt used to configure evaluation of an existing D20Roll instance.
+	 * @param {object} data                     Dialog configuration data
+	 * @param {string} [data.template]            A custom path to an HTML template to use instead of the default
+	 * @param {string} [data.title]               The title of the shown dialog window
+	 * @param {object} options                  Additional Dialog customization options
+	 * @returns {Promise<Roll|null>}         A resulting Roll object constructed with the dialog, or null if the
+	 *                                          dialog was closed
+	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
 		let needsDialog = false;
 		const attrs = Object.entries(this.data.attrLeft).concat(Object.entries(this.data.attrTop));
@@ -244,12 +244,12 @@ export class RollPbtA extends Roll {
 	}
 
 	/**
-   * Handle submission of the Roll evaluation configuration Dialog
-   * @param {jQuery} html            The submitted dialog content
-   * @param {number} stat   The chosen advantage mode
-   * @returns {D20Roll}              This damage roll.
-   * @private
-   */
+	 * Handle submission of the Roll evaluation configuration Dialog
+	 * @param {jQuery} html            The submitted dialog content
+	 * @param {number} stat   The chosen advantage mode
+	 * @returns {D20Roll}              This damage roll.
+	 * @private
+	 */
 	_onDialogSubmit(html, stat) {
 		const form = html[0].querySelector("form");
 
