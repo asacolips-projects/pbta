@@ -66,6 +66,7 @@ PBTA:
       typeReset: 'Tipo alterado (atributos serão resetados):'
       cosmetic: 'Mudanças Cosméticas (nomes ou descrições):'
       options: 'Opções da Lista alteradas (valores serão preservados):'
+      values: 'Value in radio list removed (value will be reset to first element):'
       noteChangesDetected: 'Mudanças foram detectadas em um ou
         mais dos seus tipos de atores. Reveja as alterações abaixo e escolha uma das seguintes
         opções:'

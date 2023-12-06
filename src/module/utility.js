@@ -137,7 +137,7 @@ export class PbtaUtility {
               }
 
               // Handle list types.
-              if (attrType == 'ListMany') {
+              if (attrType == 'ListMany' || attrType == 'ListOne') {
                 if (!attrValue.options) {
                   errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeOptions}`);
                 }
@@ -449,55 +449,17 @@ export class PbtaUtility {
 
         case 'ListMany':
           attr.type = attrValue.type;
-
-          let options = {};
-          if (attrValue.options) {
-            // Handle options if provided as an array.
-            if (Array.isArray(attrValue.options)) {
-              let i = 0;
-              for (let optV of attrValue.options) {
-                options[i] = {
-                  label: optV,
-                  value: false
-                };
-                i++;
-              }
-            }
-            // Handle options if provided as an object (keyed array).
-            else if (typeof attrValue.options == 'object') {
-              for (let [optK, optV] of Object.entries(attrValue.options)) {
-                options[optK] = {
-                  label: optV,
-                  value: false
-                };
-              }
-            }
-            // Handle special options.
-            for (let [optK, optV] of Object.entries(options)) {
-              let optCount = optV.label.match(/(\|)(\d)/);
-              if (optCount && optCount[2] && Number.isNumeric(optCount[2])) {
-                let subOptV = {};
-                for (let subOptK = 0; subOptK < optCount[2]; subOptK++) {
-                  subOptV[subOptK] = {
-                    value: false
-                  };
-                }
-                options[optK]['values'] = subOptV;
-                options[optK]['label'] = optV.label.split('|')[0];
-              }
-            }
-          }
-
+          let optionsMany = PbtaUtility.getListOptionsCheckboxes(attrValue);
           attr.condition = attrValue.condition ?? false;
-          attr.options = options;
+          attr.options = optionsMany;
           break;
 
-        // TODO: Add ListOne type.
-        // case 'ListOne':
-        //   attr.type = attrValue.type;
-        //   attr.options = attrValue.options && typeof attrValue.options == 'object' ? attrValue.options : {};
-        //   attr.value = null;
-        //   break;
+        case 'ListOne':
+          attr.type = attrValue.type;
+          let optionsOne = PbtaUtility.getListOptionsRadio(attrValue);
+          attr.options = optionsOne;
+          attr.value = attrValue.default ?? '0';
+          break;
 
         case 'Roll':
           attr.type = attrValue.type;
@@ -570,5 +532,87 @@ export class PbtaUtility {
     game.pbta.equipment = items;
 
     return items;
+  }
+
+  static getListOptionsCheckboxes(attrValue) {
+    let options = {};
+    if (attrValue.options) {
+      // Handle options if provided as an array.
+      if (Array.isArray(attrValue.options)) {
+        let i = 0;
+        for (let optV of attrValue.options) {
+          options[i] = {
+            label: optV,
+            value: false
+          };
+          i++;
+        }
+      }
+      // Handle options if provided as an object (keyed array).
+      else if (typeof attrValue.options == 'object') {
+        for (let [optK, optV] of Object.entries(attrValue.options)) {
+          options[optK] = {
+            label: optV,
+            value: false
+          };
+        }
+      }
+      // Handle special options.
+      for (let [optK, optV] of Object.entries(options)) {
+        let optCount = optV.label.match(/(\|)(\d)/);
+        if (optCount && optCount[2] && Number.isNumeric(optCount[2])) {
+          let subOptV = {};
+          for (let subOptK = 0; subOptK < optCount[2]; subOptK++) {
+            subOptV[subOptK] = {
+              value: false
+            };
+          }
+          options[optK]['values'] = subOptV;
+          options[optK]['label'] = optV.label.split('|')[0];
+        }
+      }
+    }
+    return options;
+  }
+
+  static getListOptionsRadio(attrValue) {
+    let options = {};
+    if (attrValue.options) {
+      // Handle options if provided as an array.
+      if (Array.isArray(attrValue.options)) {
+        let i = 0;
+        for (let optV of attrValue.options) {
+          options[i] = {
+            label: optV,
+            value: optV
+          };
+          i++;
+        }
+      }
+      // Handle options if provided as an object (keyed array).
+      else if (typeof attrValue.options == 'object') {
+        for (let [optK, optV] of Object.entries(attrValue.options)) {
+          options[optK] = {
+            label: optV,
+            value: optV
+          };
+        }
+      }
+      // Handle special options.
+      for (let [optK, optV] of Object.entries(options)) {
+        let optCount = optV.label.match(/(\|)(\d)/);
+        if (optCount && optCount[2] && Number.isNumeric(optCount[2])) {
+          let subOptV = {};
+          for (let subOptK = 0; subOptK < optCount[2]; subOptK++) {
+            subOptV[subOptK] = {
+              value: optV.label.split('|')[0]
+            };
+          }
+          options[optK]['label'] = optV.label.split('|')[0];
+          options[optK]['values'] = subOptV;
+        }
+      }
+    }
+    return options;
   }
 }
