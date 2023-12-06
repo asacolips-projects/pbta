@@ -1,4 +1,4 @@
-Compatible with FoundryVTT 0.7.x.
+Compatible with FoundryVTT v11.
 
 ![Screenshot of the PbtA system](https://mattsmithin-files.s3.amazonaws.com/pbta-system.png)
 
