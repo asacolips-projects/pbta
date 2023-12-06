@@ -1,3 +1,7 @@
+# 0.7.5
+
+- Corrected encoding issue with German translation
+
 # 0.7.4
 
 - Fixed typos and incorrect terms in the French translation
