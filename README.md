@@ -275,7 +275,7 @@ Hooks.once('pbtaSheetConfig', () => {
 
 # Contributing
 
-This project is accepting issue reports and code merge requests! See the [CONTRIBUTING.MD](https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/blob/beta/CONTRIBUTING.md) page for details. Community code contributes will bypass the Patreon release structure and go directly to the public beta version once they're approved and merged.
+This project is accepting issue reports and code merge requests! See the [CONTRIBUTING.MD](https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/blob/master/CONTRIBUTING.md) page for details.
 
 ## Translations
 
