@@ -11,6 +11,10 @@
 
 Thanks to @mclemente, @n1xx1, and @s.paquay1 for their contributions in this release!
 
+# 0.7.5
+
+- Corrected encoding issue with German translation
+
 # 0.7.4
 
 - Fixed typos and incorrect terms in the French translation
