@@ -1,9 +1,13 @@
-<form autocomplete="off" onsubmit="event.preventDefault();" class="pbta-sheet-config-form">
+<form autocomplete="off" class="pbta-sheet-config-form">
 
-  <h2 class="cell__title">{{{localize 'PBTA.Settings.sheetConfig.notes1'}}}</h2>
-  <p class="sheet-config-notes">{{{localize 'PBTA.Settings.sheetConfig.notes2'}}}</p>
-  <p class="sheet-config-notes">{{{localize 'PBTA.Settings.sheetConfig.notes3'}}}</p>
-  <p class="sheet-config-notes"><button type="button" class="button" style="max-width:250px;margin:5px auto 20px;display:block;" onclick="event.preventDefault();window.open('https://asacolips.gitbook.io/pbta-system/', 'pbtaHelp', 'width=1032,height=720');"><i class="fas fa-question-circle"></i> {{localize "PBTA.Settings.button.help"}}</button></p>
+  <p class="sheet-config-notes">
+    {{{localize 'PBTA.Settings.sheetConfig.notes2'}}}
+    <br />
+    {{{localize 'PBTA.Settings.sheetConfig.notes3'}}}
+  </p>
+  <button type="button" name="help">
+    <i class="fas fa-question-circle"></i> {{localize "PBTA.Settings.button.help"}}
+  </button>
 
   {{#if sheetConfigOverride}}
   <div class="notification error">{{localize "PBTA.Settings.sheetConfig.sheetConfigDisabledModule"}}</div>

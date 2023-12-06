@@ -3,6 +3,15 @@ import { PbtaUtility } from "../utility.js";
 import { codeMirrorAddToml } from "./codemirror.toml.js";
 
 export class PbtaSettingsConfigDialog extends FormApplication {
+	constructor(...args) {
+		super(...args);
+		if (this.sheetOverriden) {
+			this.options.classes.push("sheetOverriden");
+			this.options.width = this.position.height = "auto";
+			this.options.resizable = false;
+		}
+	}
+
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
@@ -19,6 +28,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 	/* -------------------------------------------- */
 
+	get sheetOverriden() {
+		return game.settings.get("pbta", "sheetConfigOverride");
+	}
+
+	/* -------------------------------------------- */
+
 	/** @override */
 	async getData(options) {
 		let data = game.settings.get("pbta", "sheetConfig") ?? {};
@@ -26,7 +41,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 		if (typeof data !== "object") {
 			data = {};
 		}
-		data.sheetConfigOverride = game.settings.get("pbta", "sheetConfigOverride") ?? {};
+		data.sheetConfigOverride = this.sheetOverriden;
 		if (!data.tomlString) {
 			data.tomlString = "";
 		}
@@ -40,8 +55,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 	/** @override */
 	activateListeners(html) {
 		super.activateListeners(html);
+		html.find('button[name="help"]').click((ev) => {
+			event.preventDefault();
+			window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
+		});
 		html.find('button[name="reset"]').click(this._onResetDefaults.bind(this));
-		if (!game.settings.get("pbta", "sheetConfigOverride")) {
+		if (!this.sheetOverriden) {
 			// Load toml syntax. This is a failsafe in case other modules that use
 			// CodeMirror (such as Custom CSS Rules) are enabled.
 			if (!CodeMirror.modes.toml) {
@@ -96,15 +115,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 		if (typeof this._submitting !== "undefined") {
 			window.location.reload();
 		}
-	}
-
-	/* -------------------------------------------- */
-
-	/** @override */
-	async _onSubmit(event, options) {
-		super._onSubmit(event, options);
-		// TODO: Uncomment before committing.
-		// window.location.reload();
 	}
 
 	/* -------------------------------------------- */

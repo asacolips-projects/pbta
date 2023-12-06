@@ -20,6 +20,12 @@
   .notes {
     flex: 0;
   }
+
+  button[name="help"] {
+    max-width: 250px;
+    margin: 5px auto 20px;
+    display: block;
+  }
 }
 
 .pbta-sheet-config-editor {
@@ -38,8 +44,12 @@
 }
 
 .pbta-sheet-config {
-  font-family: 'Courier New', Courier, monospace;
-  height: 100%;
+  min-width: 720px;
+  min-height: 700px;
+
+  &.sheetOverriden {
+    min-height: 230px;
+  }
 }
 
 .pbta-confirm {
