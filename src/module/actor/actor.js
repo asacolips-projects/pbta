@@ -128,7 +128,8 @@ export class ActorPbta extends Actor {
 				.data("stat") ?? null;
 			if (stat) {
 				if (this.system.stats[stat].toggle) {
-					formula += "+ 0";
+					const { modifier } = game.pbta.sheetConfig.statToggle;
+					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
 				} else {
 					formula += `+ @stats.${stat}.value`;
 				}
