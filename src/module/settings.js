@@ -1,4 +1,5 @@
 import { PbtaSettingsConfigDialog } from "./forms/sheet-config.js";
+import { PbtaTagConfigDialog } from "./forms/tag-config.js";
 
 /**
  * Register all of the system's settings.
@@ -6,10 +7,20 @@ import { PbtaSettingsConfigDialog } from "./forms/sheet-config.js";
 export function registerSettings() {
 	game.settings.registerMenu("pbta", "sheetConfigMenu", {
 		name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
-		label: game.i18n.localize("PBTA.Settings.sheetConfig.label"),
+		label: game.i18n.localize("PBTA.Settings.sheetConfig.title"),
 		hint: game.i18n.localize("PBTA.Settings.sheetConfig.hint"),
 		icon: "fas fa-file-alt",               // A Font Awesome icon used in the submenu button
 		type: PbtaSettingsConfigDialog,   // A FormApplication subclass which should be created
+		restricted: true,                   // Restrict this submenu to gamemaster only?
+		scope: "world"
+	});
+
+	game.settings.registerMenu("pbta", "tagConfigMenu", {
+		name: game.i18n.localize("PBTA.Settings.tagConfig.name"),
+		label: game.i18n.localize("PBTA.Settings.tagConfig.label"),
+		hint: game.i18n.localize("PBTA.Settings.tagConfig.hint"),
+		icon: "fas fa-tag",               // A Font Awesome icon used in the submenu button
+		type: PbtaTagConfigDialog,   // A FormApplication subclass which should be created
 		restricted: true,                   // Restrict this submenu to gamemaster only?
 		scope: "world"
 	});
@@ -111,5 +122,22 @@ export function registerSettings() {
 		config: false,
 		type: Boolean,
 		default: false,
+	});
+
+	game.settings.register("pbta", "tagConfig", {
+		name: "PBTA Tag Config",
+		scope: "world",
+		config: false,
+		type: Object,
+		default: {
+			general: "",
+			actor: {
+				all: ""
+			},
+			item: {
+				all: "",
+				equipment: ""
+			}
+		}
 	});
 }

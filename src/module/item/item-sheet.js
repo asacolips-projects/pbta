@@ -1,4 +1,5 @@
 import { PbtaPlaybooks } from "../config.js";
+import { PbtaUtility } from "../utility.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -7,7 +8,9 @@ import { PbtaPlaybooks } from "../config.js";
 export class PbtaItemSheet extends ItemSheet {
 	constructor(...args) {
 		super(...args);
-		if (this.object.type === "playbook") {
+		if (this.item.type === "equipment") {
+			this.options.height = this.position.height = 555;
+		} else if (this.item.type === "playbook") {
 			this.options.classes.push("class");
 			this.options.width = this.position.width = 780;
 			this.options.tabs[0].initial = "description";
@@ -116,82 +119,26 @@ export class PbtaItemSheet extends ItemSheet {
 	/** @override */
 	async activateListeners(html) {
 		super.activateListeners(html);
-
-		// Activate tabs
-		let tabs = html.find(".tabs");
-		let initial = this._sheetTab;
-		new TabsV2(tabs, {
-			initial: initial,
-			callback: (clicked) => this._sheetTab = clicked.data("tab")
-		});
-
-		this._tagify(html, this.options.editable);
-
-		// Everything below here is only needed if the sheet is editable
-		if (!this.options.editable) {
-			return;
+		if (this.item.type === "equipment") {
+			this._tagify(html);
 		}
-
-		this.html = html;
-
-		// TODO: Create tags that don't already exist on focus out. This is a
-		// nice-to-have, but it's high risk due to how easy it will make it to
-		// create extra tags unintentionally.
 	}
 
 	/**
 	 * Add tagging widget.
 	 * @param {HTMLElement} html
-	 * @param {boolean} editable
 	 */
-	async _tagify(html, editable) {
-		// Build the tags list.
-		let tags = game.items.filter((item) => item.type === "tag").map((item) => {
-			return item.name;
-		});
-		for (let c of game.packs) {
-			if (c.metadata.type && c.metadata.type === "Item" && c.metadata.name === "tags") {
-				let items = c?.index ? c.index.map((indexedItem) => {
-					return indexedItem.name;
-				}) : [];
-				tags = tags.concat(items);
-			}
-		}
-		// Reduce duplicates.
-		let tagNames = [];
-		for (let tag of tags) {
-			if (typeof tag === "string") {
-				let tagName = tag.toLowerCase();
-				if (tagNames.includes(tagName) === false) {
-					tagNames.push(tagName);
-				}
-			}
-		}
-
-		// Sort the tagnames list.
-		tagNames.sort((a, b) => {
-			const aSort = a.toLowerCase();
-			const bSort = b.toLowerCase();
-			if (aSort < bSort) {
-				return -1;
-			}
-			if (aSort > bSort) {
-				return 1;
-			}
-			return 0;
-		});
-
-		// Tagify!
+	async _tagify(html) {
 		let $input = html.find('input[name="system.tags"]');
 		if ($input.length > 0) {
-			if (!editable) {
+			if (!this.options.editable) {
 				$input.attr("readonly", true);
 			}
+			const whitelist = PbtaUtility.getTagList(this.item, "item");
 
 			// init Tagify script on the above inputs
 			new Tagify($input[0], {
-				whitelist: tagNames,
-				maxTags: "Infinity",
+				whitelist,
 				dropdown: {
 					maxItems: 20,           // <- mixumum allowed rendered suggestions
 					classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted

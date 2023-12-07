@@ -646,4 +646,48 @@ export class PbtaUtility {
 		}
 		return options;
 	}
+
+	static getTagList(document, type) {
+		const { general = "[]", actor: actorTags = {}, item: itemTags = {} } = game.settings.get("pbta", "tagConfig") ?? {};
+		const { general: moduleGeneral = "[]", actor: moduleActorTags = {}, item: moduleItemTags = {} } = game.pbta.tagConfigOverride ?? {};
+		const generalTags = this.parseTags(general);
+		const generalModuleTags = this.parseTags(moduleGeneral);
+		const tagNames = [...generalTags, ...generalModuleTags];
+		if (type === "actor") {
+			const allActorTags = this.parseTags(actorTags.all);
+			const typeTags = this.parseTags(actorTags?.[document.type]);
+
+			const allModuleActorTags = this.parseTags(moduleActorTags.all);
+			const moduleTypeTags = this.parseTags(moduleActorTags?.[document.type]);
+
+			tagNames.push(...allActorTags, ...typeTags, ...allModuleActorTags, ...moduleTypeTags);
+		} else if (type === "item") {
+			const allItemTags = this.parseTags(itemTags.all);
+			const typeTags = this.parseTags(itemTags?.[document.type]);
+
+			const allModuleItemTags = this.parseTags(moduleItemTags.all);
+			const moduleTypeTags = this.parseTags(moduleItemTags?.[document.type]);
+
+			tagNames.push(...allItemTags, ...typeTags, ...allModuleItemTags, ...moduleTypeTags);
+		}
+		tagNames.sort((a, b) => {
+			const aSort = a.value.toLowerCase();
+			const bSort = b.value.toLowerCase();
+			if (aSort < bSort) {
+				return -1;
+			}
+			if (aSort > bSort) {
+				return 1;
+			}
+			return 0;
+		});
+		return tagNames;
+	}
+
+	static parseTags(tagString) {
+		if (tagString) {
+			return JSON.parse(tagString);
+		}
+		return [];
+	}
 }

@@ -323,26 +323,7 @@ export class PbtaActorSheet extends ActorSheet {
 	 *
 	 * @param {object} context The actor to prepare.
 	 */
-	async _prepareNpcItems(context) {
-		// Handle preprocessing for tagify data.
-		if (context.pbtaSheetType === "npc") {
-			// If there are tags, convert it into a string.
-			if (context.system.tags !== undefined && context.system.tags !== "") {
-				let tagArray = [];
-				try {
-					tagArray = JSON.parse(context.system.tags);
-				} catch(e) {
-					tagArray = [context.system.tags];
-				}
-				context.system.tagsString = tagArray.map((item) => {
-					return item.value;
-				}).join(", ");
-			} else {
-				// Otherwise, set tags equal to the string.
-				context.system.tags = context.system.tagsString;
-			}
-		}
-	}
+	async _prepareNpcItems(context) {}
 
 	/* -------------------------------------------- */
 
@@ -406,10 +387,6 @@ export class PbtaActorSheet extends ActorSheet {
 				li.setAttribute("draggable", true);
 				li.addEventListener("dragstart", handler, false);
 			});
-		}
-
-		if (this.actor.type === "npc") {
-			this._activateTagging(html);
 		}
 	}
 
