@@ -34,26 +34,25 @@ export class RollPbtA extends Roll {
 		let stat = this.options.stat;
 		let statMod;
 
-		if (this.options.resultRangeNeeded && ["move", "stat"].includes(this.options.rollType)) {
-			// Iterate through each result range until we find a match.
-			for (let [resultKey, resultRange] of Object.entries(resultRanges)) {
-				let { start, end } = resultRange;
-				if ((!start || this.total >= start) && (!end || this.total <= end)) {
-					resultType = resultKey;
-					break;
-				}
+		// Iterate through each result range until we find a match.
+		for (let [resultKey, resultRange] of Object.entries(resultRanges)) {
+			let { start, end } = resultRange;
+			if ((!start || this.total >= start) && (!end || this.total <= end)) {
+				resultType = resultKey;
+				break;
 			}
+		}
 
-			// Update the templateData.
-			resultLabel = resultRanges[resultType]?.label ?? resultType;
-			if (this.data?.moveResults && this.data?.moveResults[resultType]?.value) {
-				resultDetails = this.data?.moveResults[resultType].value;
-			}
-			// Add the stat label.
-			if (stat && this.data.stats[stat]) {
-				statMod = this.data.stats[stat].value;
-				stat = game.pbta.sheetConfig.actorTypes[this.options.sheetType]?.stats[stat]?.label ?? stat;
-			}
+		this.options.resultType = resultType;
+		// Update the templateData.
+		resultLabel = resultRanges[resultType]?.label ?? resultType;
+		if (this.data?.moveResults && this.data?.moveResults[resultType]?.value) {
+			resultDetails = this.data?.moveResults[resultType].value;
+		}
+		// Add the stat label.
+		if (stat && this.data.stats[stat]) {
+			statMod = this.data.stats[stat].value;
+			stat = game.pbta.sheetConfig.actorTypes[this.options.sheetType]?.stats[stat]?.label ?? stat;
 		}
 
 		// Prepare chat data
@@ -114,7 +113,7 @@ export class RollPbtA extends Roll {
 			this.options.conditions.push(game.i18n.localize("PBTA.Disadvantage"));
 		}
 
-		let { forward, ongoing } = this.data.resources;
+		let { forward, ongoing } = this.data?.resources ?? {};
 		if (forward?.value) {
 			const fRoll = new Roll(`${forward.value}`, this.data);
 			if ( !(fRoll.terms[0] instanceof OperatorTerm) ) {

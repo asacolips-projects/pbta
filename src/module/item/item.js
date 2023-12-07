@@ -39,7 +39,7 @@ export class ItemPbta extends Item {
 	 * @param {object} options
 	 */
 	async roll({ descriptionOnly = false } = {}, options = {}) {
-		if (!descriptionOnly && (this.type === "equipment" || !this.system.rollType)) {
+		if (!descriptionOnly && (this.type === "equipment" || (this.type !== "npcMove" && !this.system.rollType))) {
 			descriptionOnly = true;
 		}
 		if (descriptionOnly) {
@@ -57,40 +57,29 @@ export class ItemPbta extends Item {
 		} else {
 			let formula = "@formula";
 			let stat = "";
+			let { rollFormula, rollMod, rollType = "move" } = this.system;
+			if (this.type === "npcMove" || rollType === "formula") {
+				formula = rollFormula;
+			} else if (!["ask", "prompt", "formula"].includes(rollType)) {
+				stat = rollType;
+				if (this.actor.system.stats[stat].toggle) {
+					formula += " + 0";
+				} else {
+					formula += ` + @stats.${stat}.value`;
+				}
+			}
+			if (rollMod) {
+				formula += " + @rollMod";
+			}
 			const templateData = {
 				title: this.name,
 				details: this.system.description,
 				moveResults: this.system.moveResults,
 				choices: this.system?.choices,
 				sheetType: this.actor?.baseType,
-				resultRangeNeeded: this.type === "move",
-				rollType: this.system.rollType.toLowerCase(),
+				rollType,
 			};
-			if ((this.type === "move" || this.type === "npcMove")) {
-				// Get the roll stat for moves.
-				if (this.type === "npcMove" || this.system?.rollType === "formula") {
-					formula = this.system.rollFormula;
-					templateData.rollType = this.system.rollType ? this.system.rollType.toLowerCase() : "npc";
-				}
-				// Add result ranges for moves.
-				if (this.type === "move") {
-					templateData.rollType = "move";
-				}
-
-				if (!["ask", "prompt", "formula"].includes(this.system.rollType)) {
-					stat = this.system.rollType;
-					if (this.actor.system.stats[this.system.rollType].toggle) {
-						formula += " + 0";
-					} else {
-						formula += ` + @stats.${this.system.rollType}.value`;
-					}
-				}
-				if (this.system?.rollMod) {
-					formula += " + @rollMod";
-				}
-			}
 			const r = new RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
-				resultRangeNeeded: this.type === "move",
 				rollType: this.type,
 				sheetType: this.actor?.baseType,
 				stat

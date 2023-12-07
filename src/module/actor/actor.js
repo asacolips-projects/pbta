@@ -135,7 +135,6 @@ export class ActorPbta extends Actor {
 			}
 
 			const roll = new RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
-				resultRangeNeeded: true,
 				rollType: "stat",
 				sheetType: this.baseType,
 				stat
