@@ -36,11 +36,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 	/** @override */
 	async getData(options) {
-		let data = game.settings.get("pbta", "sheetConfig") ?? {};
-		// @todo hack to fix the old the default value. Remove in a future update.
-		if (typeof data !== "object") {
-			data = {};
-		}
+		let data = foundry.utils.deepClone(game.settings.get("pbta", "sheetConfig")) ?? {};
 		data.sheetConfigOverride = this.sheetOverriden;
 		if (!data.tomlString) {
 			data.tomlString = "";
