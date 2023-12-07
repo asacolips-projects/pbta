@@ -38,72 +38,21 @@ export class PbtaItemSheet extends ItemSheet {
 	async getData() {
 		let isOwner = false;
 		let isEditable = this.isEditable;
-		let context = this.object.toObject(false);
+		let context = this.item.toObject(false);
 		let effects = {};
-		let actor = null;
+		const actor = this.actor;
 
 		this.options.title = this.document.name;
 		isOwner = this.document.isOwner;
 		isEditable = this.isEditable;
-		// context = foundry.utils.deepClone(this.object.data);
 
 		// Copy Active Effects
-		effects = this.object.effects.map((e) => foundry.utils.deepClone(e));
+		effects = this.item.effects.map((e) => foundry.utils.deepClone(e));
 		context.effects = effects;
-
-		// Grab the parent actor, if any.
-		actor = this.object?.parent;
 
 		context.dtypes = ["String", "Number", "Boolean"];
 		// Add playbooks.
 		context.system.playbooks = await PbtaPlaybooks.getPlaybooks();
-
-		// Add move types.
-		let actorType = null;
-		let itemType = this?.object?.type ?? "move";
-
-		if (itemType === "move") {
-			actorType = "character";
-		} else if (itemType === "npcMove") {
-			actorType = "npc";
-		} else {
-			actorType = "character";
-		}
-
-		// Handle actor types.
-		let pbtaActorType = actorType;
-		let pbtaSheetType = actorType;
-
-		// Override with the parent actor if possible.
-		if (actor) {
-			pbtaActorType = actor.type;
-			if (pbtaActorType === "other") {
-				pbtaSheetType = actor.system?.customType ?? "character";
-			} else {
-				pbtaSheetType = pbtaActorType;
-			}
-		}
-
-		if (itemType === "move") {
-			if (game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.stats) {
-				context.system.stats = duplicate(game.pbta.sheetConfig.actorTypes[pbtaSheetType].stats);
-			} else {
-				context.system.stats = {};
-			}
-			context.system.stats.prompt = {label: game.i18n.localize("PBTA.Prompt")};
-			if (Object.keys(context.system.stats).length > 1) {
-				context.system.stats.ask = {label: game.i18n.localize("PBTA.Ask")};
-			}
-			context.system.stats.formula = {label: game.i18n.localize("PBTA.Formula")};
-		}
-
-		context.system.moveTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.moveTypes ?? {};
-		context.system.equipmentTypes = game.pbta.sheetConfig?.actorTypes[pbtaSheetType]?.equipmentTypes ?? null;
-
-		// Add roll example.
-		if (itemType === "npcMove") {
-			context.system.rollExample = game.pbta.sheetConfig?.rollFormula ?? "2d6";
-		}
 
 		// Handle rich text fields.
 		const enrichmentOptions = {
@@ -120,51 +69,46 @@ export class PbtaItemSheet extends ItemSheet {
 			context.system.description = await TextEditor.enrichHTML(context.system.description, enrichmentOptions);
 		}
 
-		if (itemType === "move" || itemType === "npcMove") {
+		if (this.item.type === "move" || this.item.type === "npcMove") {
+			if (this.item.type === "move") {
+				if (game.pbta.sheetConfig?.actorTypes[actor?.baseType]?.stats) {
+					context.system.stats = duplicate(game.pbta.sheetConfig.actorTypes[actor?.baseType].stats);
+				} else {
+					context.system.stats = {};
+				}
+				context.system.stats.prompt = {label: game.i18n.localize("PBTA.Prompt")};
+				if (Object.keys(context.system.stats).length > 1) {
+					context.system.stats.ask = {label: game.i18n.localize("PBTA.Ask")};
+				}
+				context.system.stats.formula = {label: game.i18n.localize("PBTA.Formula")};
+
+				if (context.system?.choices) {
+					context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
+				}
+			} else if (this.item.type === "npcMove") {
+				context.system.rollExample = game.pbta.sheetConfig?.rollFormula ?? "2d6";
+			}
+			context.system.moveTypes = game.pbta.sheetConfig?.actorTypes[actor?.baseType]?.moveTypes ?? {};
 			for (let [key, moveResult] of Object.entries(context.system.moveResults)) {
 				context.system.moveResults[key].rangeName = `system.moveResults.${key}.value`;
 				context.system.moveResults[key].value =
 					await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
 			}
+		} else if (this.item.type === "equipment") {
+			context.system.equipmentTypes = game.pbta.sheetConfig?.actorTypes[actor?.baseType]?.equipmentTypes ?? null;
 		}
 
-		if (context.system?.choices) {
-			context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
-		}
-
-		// Handle preprocessing for tagify data.
-		if (itemType === "equipment") {
-			// If there are tags, convert it into a string.
-			if (context.system.tags !== undefined && context.system.tags !== "") {
-				let tagArray = [];
-				try {
-					tagArray = JSON.parse(context.system.tags);
-				} catch(e) {
-					tagArray = [context.system.tags];
-				}
-				context.system.tagsString = tagArray.map((item) => {
-					return item.value;
-				}).join(", ");
-			} else {
-				// Otherwise, set tags equal to the string.
-				context.system.tags = context.system.tagsString;
-			}
-		}
-
-		let returnData = {};
-		returnData = {
-			item: this.object,
+		return {
+			item: this.item,
 			cssClass: isEditable ? "editable" : "locked",
 			editable: isEditable,
 			system: context.system,
 			effects: effects,
-			limited: this.object.limited,
+			limited: this.item.limited,
 			options: this.options,
 			owner: isOwner,
 			title: context.name
 		};
-
-		return returnData;
 	}
 
 	/* -------------------------------------------- */
