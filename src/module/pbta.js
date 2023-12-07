@@ -38,8 +38,6 @@ Hooks.once("init", async function () {
 		PbtaSettingsConfigDialog
 	};
 
-	// TODO: Extend the combat class.
-	// CONFIG.Combat.documentClass = CombatPbta;
 	CONFIG.ui.combat = PbtACombatTracker;
 	CONFIG.Combatant.documentClass = PbtACombatant;
 
