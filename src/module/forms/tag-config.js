@@ -46,7 +46,7 @@ export class PbtaTagConfigDialog extends FormApplication {
 				};
 				return obj;
 			}, {});
-		}
+		};
 
 		return {
 			userTags: {
