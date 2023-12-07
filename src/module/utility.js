@@ -247,6 +247,8 @@ export class PbtaUtility {
 				let rollFormula = v.trim();
 				let validRoll = Roll.validate(rollFormula);
 				newConfig.rollFormula = validRoll ? rollFormula : "";
+			} else if (k === "rollShifting") {
+				newConfig.rollShifting = v;
 			} else if (k === "statToggle") {
 				if (!v) {
 					newConfig.statToggle = false;

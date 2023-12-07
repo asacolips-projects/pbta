@@ -16,6 +16,9 @@ PBTA:
   AskTitle: "{name}: Choose a Stat"
   Biography: "Biography"
   ClearMoves: "Clear Moves"
+  ChatMessage:
+    ShiftUp: "Shift Up"
+    ShiftDown: "Shift Down"
   Choices: "Choices"
   ConditionsApplied: "Conditions Applied:"
   Create: "Create"

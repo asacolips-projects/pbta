@@ -212,6 +212,17 @@ Hooks.on("renderChatMessage", (data, html, options) => {
 		html.find(".result-details").hide();
 		html.find(".result-choices").hide();
 	}
+	const cardButtons = html.find(".pbta-chat-card .card-buttons");
+	if (!game.user.isGM) {
+		cardButtons.hide();
+	} else if ( cardButtons.length > 0 ) {
+		const buttons = cardButtons.find("button[data-action]");
+		buttons.each((i, btn) => {
+			if (!game.pbta.sheetConfig.rollShifting) {
+				btn.style.display = "none";
+			}
+		});
+	}
 });
 
 Hooks.on("renderChatLog", (app, html, data) => ItemPbta.chatListeners(html));
