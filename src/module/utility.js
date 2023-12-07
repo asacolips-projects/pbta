@@ -633,16 +633,21 @@ export class PbtaUtility {
 			}
 			// Handle special options.
 			for (let [optK, optV] of Object.entries(options)) {
-				let optCount = optV.label.match(/(\|)(\d)/);
-				if (optCount && optCount[2] && Number.isNumeric(optCount[2])) {
-					let subOptV = {};
+				const separatorRe = /(\|)\s*(\d)/;
+				if (separatorRe.test(optV.label)) {
+					const optCount = optV.label.match(separatorRe);
+					const label = optV.label.split("|")[0].trim();
+
+					const subOptV = {};
 					for (let subOptK = 0; subOptK < optCount[2]; subOptK++) {
 						subOptV[subOptK] = {
-							value: isRadio ? optV.label.split("|")[0] : false
+							value: isRadio ? label : false
 						};
 					}
-					options[optK].values = subOptV;
-					options[optK].label = optV.label.split("|")[0];
+					options[optK] = {
+						values: subOptV,
+						label
+					};
 				}
 			}
 		}
