@@ -102,6 +102,9 @@ PBTA:
   Settings:
     button:
       help: "PbtA System Help & Tutorial"
+    hideSidebarButtons:
+      name: "Hide Game Settings Sidebar Buttons"
+      hint: "Removes the {button1} and {button2} from the Game Settings sidebar."
     stats:
       name: "Stats"
       hint: "Enter a comma-separated list of stats/abilities, such as \"Str,Dex,Con,Int,Wis,Cha\""

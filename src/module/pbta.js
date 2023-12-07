@@ -82,7 +82,38 @@ Hooks.once("init", async function () {
 
 	PbtaRegisterHelpers.init();
 
+	// Preload template partials.
+	preloadHandlebarsTemplates();
+});
+
+Hooks.on("i18nInit", () => {
 	registerSettings();
+	if (!game.settings.get("pbta", "hideSidebarButtons")) {
+		Hooks.on("renderSettings", (app, html) => {
+			let settingsButton = $(`<button id="pbta-settings-btn" data-action="pbta-settings">
+				<i class="fas fa-file-alt"></i> ${game.i18n.localize("PBTA.Settings.sheetConfig.label")}
+			</button>`);
+			html.find('button[data-action="configure"]').before(settingsButton);
+
+			let helpButton = $(`<button id="pbta-help-btn" data-action="pbta-help">
+				<i class="fas fa-question-circle"></i> ${game.i18n.localize("PBTA.Settings.button.help")}
+			</button>`);
+			html.find('button[data-action="controls"]').after(helpButton);
+
+			settingsButton.on("click", (ev) => {
+				ev.preventDefault();
+				let menu = game.settings.menus.get("pbta.sheetConfigMenu");
+				let app = new menu.type();
+				app.render(true);
+			});
+
+			helpButton.on("click", (ev) => {
+				ev.preventDefault();
+				window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
+			});
+		});
+
+	}
 
 	// Build out character data structures.
 	const pbtaSettings = game.settings.get("pbta", "sheetConfig");
@@ -97,9 +128,6 @@ Hooks.once("init", async function () {
 		// Fallback to empty config.
 		game.pbta.sheetConfig = pbtaSettings;
 	}
-
-	// Preload template partials.
-	preloadHandlebarsTemplates();
 });
 
 Hooks.once("ready", async function () {
@@ -208,30 +236,6 @@ Hooks.once("setup", function () {
 });
 
 /* -------------------------------------------- */
-/*  Help Button                                 */
-/* -------------------------------------------- */
-
-Hooks.on("renderSettings", (app, html) => {
-	let settingsButton = $(`<button id="pbta-settings-btn" data-action="pbta-settings"><i class="fas fa-file-alt"></i> ${game.i18n.localize("PBTA.Settings.sheetConfig.label")}</button>`);
-	html.find('button[data-action="configure"]').before(settingsButton);
-
-	let helpButton = $(`<button id="pbta-help-btn" data-action="pbta-help"><i class="fas fa-question-circle"></i> ${game.i18n.localize("PBTA.Settings.button.help")}</button>`);
-	html.find('button[data-action="controls"]').after(helpButton);
-
-	settingsButton.on("click", (ev) => {
-		ev.preventDefault();
-		let menu = game.settings.menus.get("pbta.sheetConfigMenu");
-		let app = new menu.type();
-		app.render(true);
-	});
-
-	helpButton.on("click", (ev) => {
-		ev.preventDefault();
-		window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
-	});
-});
-
-/* -------------------------------------------- */
 /*  Hotbar Macros                               */
 /* -------------------------------------------- */
 
@@ -273,6 +277,7 @@ async function createPbtaMacro(data, slot) {
 	return false;
 }
 
+// eslint-disable-next-line jsdoc/require-returns-check
 /**
  * Create a Macro from an Item drop.
  * Get an existing item macro if one exists, otherwise create a new one.
