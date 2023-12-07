@@ -172,7 +172,6 @@ PBTA:
         Module: "Module Tags"
         all: "All {documentType}"
       title: "Configure Tags"
-
   Warnings:
     UnlinkedToken:
       Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
