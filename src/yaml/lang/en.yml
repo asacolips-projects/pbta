@@ -173,6 +173,7 @@ PBTA:
         Items: "Item Tags"
         General: "General Tags"
         Module: "Module Tags"
+        World: "World Tags"
         all: "All {documentType}"
       title: "Configure Tags"
   Warnings:

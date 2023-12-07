@@ -74,14 +74,21 @@ export class PbtaTagConfigDialog extends FormApplication {
 	 * @param {HTMLElement} html
 	 */
 	async _tagify(html) {
-		const { userTags, moduleTags } = await this.getData();
+		const data = foundry.utils.deepClone(await this.getData());
+		const { userTags, moduleTags } = data;
 
 		new Tagify(html.find('input[name="userTags.general"]')[0], {
 			dropdown: {
 				enabled: false,
 			},
 		});
+		new Tagify(html.find('input[name="moduleTags.general"]')[0], {
+			dropdown: {
+				enabled: false,
+			},
+		});
 		delete userTags.general;
+		delete moduleTags.general;
 
 		const initializeTagify = (tags, path) => {
 			for (let tag in tags) {
