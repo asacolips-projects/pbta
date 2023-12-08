@@ -186,9 +186,7 @@ export class RollPbtA extends Roll {
 			})
 			.filter((c) => c.conditions.length > 0);
 
-		if (conditionGroups.length) {
-			this.options.conditions = [];
-		}
+		this.options.conditions = [];
 
 		// Prepare the base set of options used for the roll dialog.
 		if (!needsDialog && (this.data.rollType === "ask" || this.data.rollType === "prompt" || conditionGroups.length)) {
