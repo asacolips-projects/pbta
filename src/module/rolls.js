@@ -165,6 +165,7 @@ export class RollPbtA extends Roll {
 	 *                                          dialog was closed
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
+		this.options.conditions = [];
 		let needsDialog = false;
 		const attrs = Object.entries(this.data.attrLeft).concat(Object.entries(this.data.attrTop));
 		const conditionGroups = attrs
@@ -185,8 +186,6 @@ export class RollPbtA extends Roll {
 				};
 			})
 			.filter((c) => c.conditions.length > 0);
-
-		this.options.conditions = [];
 
 		// Prepare the base set of options used for the roll dialog.
 		if (!needsDialog && (this.data.rollType === "ask" || this.data.rollType === "prompt" || conditionGroups.length)) {
