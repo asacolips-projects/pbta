@@ -147,7 +147,9 @@ export class ActorPbta extends Actor {
 				return;
 			}
 			await roll.toMessage({
-				title: label ?? ""
+				speaker: ChatMessage.getSpeaker({actor: this}),
+				title: label ?? "",
+				rollMode: game.settings.get("core", "rollMode"),
 			});
 			await this.clearForwardAdv();
 			await this.updateCombatMoveCount();
@@ -161,7 +163,10 @@ export class ActorPbta extends Actor {
 			if (choice === null) {
 				return;
 			}
-			await r.toMessage();
+			await r.toMessage({
+				speaker: ChatMessage.getSpeaker({actor: this}),
+				rollMode: game.settings.get("core", "rollMode"),
+			});
 		} else if (itemId) {
 			const item = this.items.get(itemId);
 			const descriptionOnly = a.getAttribute("data-show") === "description";

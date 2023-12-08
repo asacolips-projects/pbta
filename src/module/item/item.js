@@ -93,8 +93,10 @@ export class ItemPbta extends Item {
 				return;
 			}
 			await r.toMessage({
+				speaker: ChatMessage.getSpeaker({actor: this.actor}),
 				image: this.img,
 				title: this.name,
+				rollMode: game.settings.get("core", "rollMode"),
 				flags: {
 					pbta: {
 						itemUuid: this.uuid
