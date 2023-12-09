@@ -161,21 +161,12 @@
 
               {{!-- Owned Equipment Tab --}}
               <div class="tab equipment" data-group="primary" data-tab="equipment">
-                {{!-- <div class="cell cell--equipment cell--group"> --}}
                   <section class="sheet-notifications" style="margin-top:10px;">
                     {{#if system.isToken}}
                     <div class="cell__title warning small-text">{{localize "PBTA.Warnings.UnlinkedToken.Equipment"}}</div>
                     {{/if}}
                   </section>
 
-                  {{!-- <h2 class="cell__title">
-                    <label>{{localize "PBTA.Equipment"}}</label>
-                    <div class="item-controls">
-                      <button type="button" class="item-control item-create" title='{{localize "PBTA.Equipment"}}' data-type="equipment">
-                        <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </h2> --}}
                   {{#each equipment as |equipmentGroup equipmentKey|}}
                     <div class="cell cell--equipment cell--group cell--{{equipmentKey}}">
                       <h2 class="cell__title">
@@ -215,7 +206,6 @@
                       </ol>
                     </div>
                   {{/each}}
-                {{!-- </div> --}}
               </div>
 
           </section>
