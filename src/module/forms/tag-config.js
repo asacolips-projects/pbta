@@ -82,11 +82,13 @@ export class PbtaTagConfigDialog extends FormApplication {
 				enabled: false,
 			},
 		});
-		new Tagify(html.find('input[name="moduleTags.general"]')[0], {
-			dropdown: {
-				enabled: false,
-			},
-		});
+		if (html.find('input[name="moduleTags.general"]').length) {
+			new Tagify(html.find('input[name="moduleTags.general"]')[0], {
+				dropdown: {
+					enabled: false,
+				},
+			});
+		}
 		delete userTags.general;
 		delete moduleTags.general;
 
