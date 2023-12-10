@@ -4,7 +4,14 @@
       margin: 0;
     }
 
+    .tags {
+      margin-bottom: 12px;
+    }
+
     .tag-category {
+      + .tag-category {
+        border-top: 1px solid #ccc;
+      }
       h3 {
         margin-top: 0.5rem;
         border: none;
