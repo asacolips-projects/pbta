@@ -211,7 +211,7 @@ Hooks.on("renderChatMessage", (data, html, options) => {
 		html.find(".result-choices").hide();
 	}
 	const cardButtons = html.find(".pbta-chat-card .card-buttons");
-	if (!game.user.isGM || !game.pbta.sheetConfig.rollShifting) {
+	if (!game.user.isGM || !game.pbta.sheetConfig?.rollShifting) {
 		cardButtons.hide();
 	}
 });

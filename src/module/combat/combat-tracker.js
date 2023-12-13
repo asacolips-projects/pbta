@@ -13,11 +13,14 @@ export class PbtACombatTracker extends CombatTracker {
 		combatantGroups.character?.forEach((c) => {
 			moveTotal += c.getFlag("pbta", "moveCount") ?? 0;
 		});
-		const labels = Object.keys(game.pbta?.sheetConfig?.actorTypes).reduce((obj, key) => {
-			obj[key] = game.i18n.localize(game.pbta.sheetConfig.actorTypes[key]?.label)
-				?? game.i18n.localize(`TYPES.Actor.${key}`);
-			return obj;
-		}, {});
+		let labels = {};
+		if (game.pbta?.sheetConfig?.actorTypes) {
+			labels = Object.keys(game.pbta?.sheetConfig?.actorTypes).reduce((obj, key) => {
+				obj[key] = game.i18n.localize(game.pbta.sheetConfig.actorTypes[key]?.label)
+					?? game.i18n.localize(`TYPES.Actor.${key}`);
+				return obj;
+			}, {});
+		}
 		return {
 			...data,
 			labels,
