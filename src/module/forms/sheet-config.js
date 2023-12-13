@@ -14,7 +14,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 	/** @override */
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			title: game.i18n.localize("PBTA.Settings.sheetConfig.title"),
 			id: "pbta-sheet-config",
 			classes: ["pbta", "pbta-sheet-config"],
@@ -140,7 +140,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 		}
 
 		let currentConfig = game.pbta.sheetConfig;
-		let duplicateConfig = duplicate(sheetConfig);
+		let duplicateConfig = foundry.utils.duplicate(sheetConfig);
 		let newConfig = PbtaUtility.convertSheetConfig(duplicateConfig);
 
 		let configDiff = {
@@ -303,7 +303,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 										configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
 										updatesDiff[actorType][`system.${attrGroup}.${attr}.options`] = newGroup[attr]?.options ?? [];
 
-										const oldClone = duplicate(oldGroup);
+										const oldClone = foundry.utils.duplicate(oldGroup);
 										for (let optK of Object.keys(newGroup[attr].options)) {
 											delete oldClone[attr]?.options[optK];
 										}

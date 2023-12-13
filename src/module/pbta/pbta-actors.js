@@ -57,7 +57,7 @@ export class PbtaActorTemplates {
 
 			// Build the updates array for actors.
 			for (let actor of actors) {
-				let update = duplicate(newConfig[actorType]);
+				let update = foundry.utils.duplicate(newConfig[actorType]);
 				update._id = actor.id;
 				updates.push(update);
 			}
@@ -99,7 +99,7 @@ export class PbtaActorTemplates {
 								sheetType = "character";
 							}
 							// Build the update and append to the scene's update array.
-							let tokenUpdate = duplicate(newTokenConfig[sheetType]);
+							let tokenUpdate = foundry.utils.duplicate(newTokenConfig[sheetType]);
 							tokenUpdate._id = t.id;
 							tokenUpdates.push(tokenUpdate);
 						}

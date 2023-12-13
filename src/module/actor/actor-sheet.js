@@ -9,7 +9,7 @@ export class PbtaActorSheet extends ActorSheet {
 
 	/** @override */
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "actor", "character"],
 			width: 840,
 			height: 780,
@@ -638,7 +638,7 @@ export class PbtaActorSheet extends ActorSheet {
 		event.preventDefault();
 		const header = event.currentTarget;
 		const type = header.dataset.type;
-		const dataset = duplicate(header.dataset);
+		const dataset = foundry.utils.duplicate(header.dataset);
 		const system = {};
 		if (dataset.movetype) {
 			system.moveType = dataset.movetype;
@@ -709,7 +709,7 @@ export class PbtaActorSheet extends ActorSheet {
 	 */
 	async _updateActorOrToken(updateData, options = {}) {
 		if (this.token && !this.token.actorLink) {
-			this.actor.update(updateData, mergeObject(options, { diff: false }));
+			this.actor.update(updateData, foundry.utils.mergeObject(options, { diff: false }));
 		} else {
 			this.actor.update(updateData, options);
 		}

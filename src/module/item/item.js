@@ -113,7 +113,7 @@ export class ItemPbta extends Item {
 		await super._preCreate(data, options, userId);
 
 		if (this.type === "move" || this.type === "npcMove") {
-			const templateData = duplicate(this);
+			const templateData = foundry.utils.duplicate(this);
 			if (!templateData.system) {
 				templateData.system = {};
 			}
@@ -133,7 +133,7 @@ export class ItemPbta extends Item {
 				}
 			}
 			this.updateSource({
-				system: mergeObject(templateData.system, this.toObject(false).system)
+				system: foundry.utils.mergeObject(templateData.system, this.toObject(false).system)
 			});
 		}
 	}

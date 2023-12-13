@@ -19,7 +19,7 @@ export class PbtaItemSheet extends ItemSheet {
 
 	/** @override */
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "item"],
 			width: 520,
 			height: 480,
@@ -75,7 +75,8 @@ export class PbtaItemSheet extends ItemSheet {
 		if (this.item.type === "move" || this.item.type === "npcMove") {
 			if (this.item.type === "move") {
 				if (game.pbta.sheetConfig?.actorTypes[actor?.baseType]?.stats) {
-					context.system.stats = duplicate(game.pbta.sheetConfig.actorTypes[actor?.baseType].stats);
+					const stats = foundry.utils.duplicate(game.pbta.sheetConfig.actorTypes[actor.baseType].stats);
+					context.system.stats = stats;
 				} else {
 					context.system.stats = {};
 				}

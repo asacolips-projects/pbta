@@ -584,7 +584,7 @@ export class PbtaUtility {
 				}
 
 				let orig = !clear ? foundry.utils.duplicate(templates[type]) : {};
-				templates[type] = mergeObject(orig, template);
+				templates[type] = foundry.utils.mergeObject(orig, template);
 			}
 		}
 	}

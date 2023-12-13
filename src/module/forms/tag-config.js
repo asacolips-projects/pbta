@@ -1,6 +1,6 @@
 export class PbtaTagConfigDialog extends FormApplication {
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			title: game.i18n.localize("PBTA.Settings.tagConfig.label"),
 			id: "pbta-tag-config",
 			classes: ["pbta", "pbta-tag-config"],

@@ -8,7 +8,7 @@ export class PbtaActorNpcSheet extends PbtaActorSheet {
 
 	/** @override */
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "actor", "npc"],
 			width: 720,
 			height: 640,
