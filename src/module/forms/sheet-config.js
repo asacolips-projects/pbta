@@ -327,9 +327,9 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 								}
 
 								if ((newPositive.max !== oldPositive?.max)
-                || (newPositive.steps !== oldPositive?.steps)
-                || (newNegative.max !== oldNegative?.max)
-                || (newNegative.steps !== oldNegative?.steps)) {
+									|| (newPositive.steps !== oldPositive?.steps)
+									|| (newNegative.max !== oldNegative?.max)
+									|| (newNegative.steps !== oldNegative?.steps)) {
 
 									configDiff.max.push(`${actorType}.${attrGroup}.${attr}`);
 
