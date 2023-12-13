@@ -1,0 +1,81 @@
+<form autocomplete="off" class="pbta-sheet-config-form">
+
+  <div>
+    {{#if (objLen moduleTags)}}
+    <h2>{{localize "PBTA.Settings.tagConfig.Labels.World"}}</h2>
+    {{/if}}
+    <div class="tag-category">
+      <h3>{{localize "PBTA.Settings.tagConfig.Labels.General"}}</h3>
+      <div class="subcategory">
+        <input name='userTags.general' class='tags' placeholder='{{localize "PBTA.TagsPlaceholder"}}' value='{{ userTags.general }}'/>
+      </div>
+    </div>
+
+    <div class="tag-category">
+      <h3>{{localize "PBTA.Settings.tagConfig.Labels.Actors"}}</h3>
+      {{#each userTags.actor as |data actorType|}}
+      <div class="subcategory">
+        <label for="tag" class="control-label">{{data.label}}</label>
+        <input name='userTags.actor.{{actorType}}' class='tags' placeholder='{{localize "PBTA.TagsPlaceholder"}}' value='{{ data.value }}'/>
+      </div>
+      {{/each}}
+    </div>
+
+    <div class="tag-category">
+    <h3>{{localize "PBTA.Settings.tagConfig.Labels.Items"}}</h3>
+      {{#each userTags.item as |data itemType|}}
+      <div class="subcategory">
+        <label for="tag" class="control-label">{{data.label}}</label>
+        <input name='userTags.item.{{itemType}}' class='tags' placeholder='{{localize "PBTA.TagsPlaceholder"}}' value='{{ data.value }}'/>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  {{#if (objLen moduleTags)}}
+  <div>
+    <h2>{{localize "PBTA.Settings.tagConfig.Labels.Module"}}</h2>
+    {{#if moduleTags.general}}
+    <div class="tag-category">
+      <h3>{{localize "PBTA.Settings.tagConfig.Labels.General"}}</h3>
+      <div class="subcategory">
+        <input name='moduleTags.general' class='tags' placeholder='{{localize "PBTA.TagsPlaceholder"}}' value='{{ moduleTags.general }}' readonly />
+      </div>
+    </div>
+    {{/if}}
+    {{#if moduleTags.actor}}
+    <div class="tag-category">
+      <h3>{{localize "PBTA.Settings.tagConfig.Labels.Actors"}}</h3>
+      {{#each moduleTags.actor as |data actorType|}}
+        <div class="subcategory">
+          <label for="tag" class="control-label">{{actorType}}</label>
+          <input name='moduleTags.actor.{{actorType}}' class='tags' placeholder='{{localize "PBTA.TagsPlaceholder"}}' value='{{ data }}' readonly />
+        </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if moduleTags.item}}
+    <div class="tag-category">
+      <h3>{{localize "PBTA.Settings.tagConfig.Labels.Items"}}</h3>
+      {{#each moduleTags.item as |data itemType|}}
+        <div class="subcategory">
+          <label for="tag" class="control-label">{{itemType}}</label>
+          <input name='moduleTags.item.{{itemType}}' class='tags' placeholder='{{localize "PBTA.TagsPlaceholder"}}' value='{{ data }}' readonly />
+        </div>
+      {{/each}}
+    </div>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  <div class="form-group">
+    <button type="submit" name="submit">
+      <i class="fas fa-save"></i> {{localize 'PERMISSION.Submit'}}
+    </button>
+
+    <button type="button" name="reset">
+      <i class="fas fa-sync"></i> {{localize 'PERMISSION.Reset'}}
+    </button>
+  </div>
+</form>

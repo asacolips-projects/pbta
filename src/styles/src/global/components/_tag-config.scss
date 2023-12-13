@@ -1,0 +1,29 @@
+.pbta-tag-config {
+  .window-content {
+    h2 {
+      margin: 0;
+    }
+
+    .tags {
+      margin-bottom: 12px;
+    }
+
+    .tag-category {
+      + .tag-category {
+        border-top: 1px solid #ccc;
+      }
+      h3 {
+        margin-top: 0.5rem;
+        border: none;
+      }
+    }
+
+    .subcategory {
+      padding-left: 25px;
+
+      label {
+        font-size: var(--font-size-16);
+      }
+    }
+  }
+}

@@ -10,10 +10,7 @@
       {{#if attr.description}}<p class="cell__description cell__description--attr">{{attr.description}}</p>{{/if}}
       {{!-- Text area --}}
       {{#if (eq attr.type "LongText")}}
-        {{!-- <textarea class="textarea textarea--title" name="system.{{../group}}.{{key}}.value" rows="5">{{attr.value}}</textarea> --}}
-        {{!-- <div style="display: block; height: 100%; min-height: 100px;"> --}}
-          {{editor attr.value target=attr.attrName button=true owner=../owner editable=../editable}}
-        {{!-- </div> --}}
+        {{editor attr.value target=attr.attrName button=true owner=../owner editable=../editable}}
       {{!-- Checkbox --}}
       {{else if (eq attr.type "Checkbox")}}
         {{#if attr.checkboxLabel}}<label>{{/if}}
