@@ -64,7 +64,7 @@ export class PbtaUtility {
 
 		// Handle actor config.
 		let actorTypes = ["character", "npc"];
-		if (game.pbta.sheetConfig.actorTypes) {
+		if (game.pbta.sheetConfig?.actorTypes) {
 			for (let actorType of Object.keys(game.pbta.sheetConfig.actorTypes)) {
 				if (!actorTypes.includes(actorType)) {
 					actorTypes.push(actorType);
@@ -583,7 +583,7 @@ export class PbtaUtility {
 					template.attrLeft = v.attrLeft;
 				}
 
-				let orig = !clear ? duplicate(templates[type]) : {};
+				let orig = !clear ? foundry.utils.duplicate(templates[type]) : {};
 				templates[type] = mergeObject(orig, template);
 			}
 		}

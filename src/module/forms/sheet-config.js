@@ -158,7 +158,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			npc: {}
 		};
 		let actorTypes = ["character", "npc"];
-		if (game.pbta.sheetConfig.actorTypes) {
+		if (game.pbta.sheetConfig?.actorTypes) {
 			for (let actorType of Object.keys(game.pbta.sheetConfig.actorTypes)) {
 				if (!actorTypes.includes(actorType)) {
 					actorTypes.push(actorType);
