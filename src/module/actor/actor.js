@@ -23,7 +23,7 @@ export class ActorPbta extends Actor {
 
 	get baseType() {
 		return game.pbta.sheetConfig.actorTypes[this.sheetType]?.baseType
-      ?? (this.type === "other" ? "character" : this.type);
+			?? (this.type === "other" ? "character" : this.type);
 	}
 
 	/**

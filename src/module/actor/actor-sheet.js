@@ -6,7 +6,6 @@ import { PbtaUtility } from "../utility.js";
  * @extends {ActorSheet}
  */
 export class PbtaActorSheet extends ActorSheet {
-
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
