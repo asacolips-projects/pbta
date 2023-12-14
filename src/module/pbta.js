@@ -54,7 +54,7 @@ Hooks.once("init", async function () {
 	CONFIG.Item.dataModels.equipment = dataModels.EquipmentData;
 	CONFIG.Item.dataModels.move = dataModels.MoveData;
 	CONFIG.Item.dataModels.npcMove = dataModels.NpcMoveData;
-	CONFIG.Item.dataModels.playbook = dataModels.ItemData;
+	CONFIG.Item.dataModels.playbook = dataModels.PlaybookData;
 	CONFIG.Item.dataModels.tag = dataModels.ItemData;
 
 	game.socket.on("system.pbta", (data) => {
@@ -198,7 +198,9 @@ Hooks.once("ready", async function () {
 	// Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
 	Hooks.on("hotbarDrop", (bar, data, slot) => createPbtaMacro(data, slot));
 
-	PBTA.playbooks = await PbtaPlaybooks.getPlaybooks();
+	PBTA.playbooks = (await PbtaPlaybooks.getPlaybooks(false)).map((p) => {
+		return { name: p.name, slug: p?.slug || p.name.slugify(), uuid: p.uuid };
+	});
 	CONFIG.PBTA = PBTA;
 
 	// Apply structure to actor types.

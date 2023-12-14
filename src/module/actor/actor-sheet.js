@@ -105,7 +105,9 @@ export class PbtaActorSheet extends ActorSheet {
 
 		// Add playbooks.
 		if (context.pbtaSheetType === "character" || context.pbtaBaseType === "character") {
-			context.system.playbooks = await PbtaPlaybooks.getPlaybooks();
+			context.system.playbooks = CONFIG.PBTA.playbooks.map((p) => {
+				return { name: p.name, uuid: p.uuid };
+			});
 			context.system.statToggle = sheetConfig?.statToggle ?? false;
 			context.system.statSettings = sheetConfig.actorTypes[context.pbtaSheetType]?.stats ?? {};
 
@@ -351,6 +353,13 @@ export class PbtaActorSheet extends ActorSheet {
 			if (currPlaybook) {
 				this.options.classes = this.options.classes.filter((c) => c !== currPlaybook);
 			}
+
+			const selected = CONFIG.PBTA.playbooks.find((p) => p.uuid === event.target.value);
+			this.actor.update({"system.playbook": {
+				name: selected?.name ?? "",
+				slug: selected?.slug ?? selected?.name.slugify() ?? "",
+				uuid: selected?.uuid ?? "",
+			} });
 		});
 		html.find(".view-playbook").on("click", this._onViewPlaybook.bind(this));
 
@@ -473,7 +482,7 @@ export class PbtaActorSheet extends ActorSheet {
 		update[prop] = attr;
 
 		// Update the actor/token.
-		this._updateActorOrToken(update);
+		this.actor.update(update);
 	}
 
 	async updateTrackThreshold(attr) {
@@ -516,7 +525,7 @@ export class PbtaActorSheet extends ActorSheet {
 		let update = {};
 		update[prop] = attr;
 
-		this._updateActorOrToken(update);
+		this.actor.update(update);
 	}
 
 	async _onTrackStepClick(event) {
@@ -549,7 +558,7 @@ export class PbtaActorSheet extends ActorSheet {
 		let update = {};
 		update[prop] = attr;
 
-		this._updateActorOrToken(update);
+		this.actor.update(update);
 	}
 
 	_hideMoveGroup(event) {
@@ -623,11 +632,10 @@ export class PbtaActorSheet extends ActorSheet {
 		// Initialize variables.
 		event.preventDefault();
 		const a = event.currentTarget;
-		const selectedPlaybook = a.getAttribute("data-playbook");
-		const playbooks = await PbtaPlaybooks.getPlaybooks(false);
-		const foundPlaybook = playbooks.find((playbook) => playbook.name === selectedPlaybook);
-		if (foundPlaybook) {
-			foundPlaybook.sheet.render(true);
+		const playbookUuid = a.getAttribute("data-playbook");
+		const playbook = await fromUuid(playbookUuid);
+		if (playbook) {
+			playbook.sheet.render(true);
 		}
 	}
 
@@ -697,7 +705,11 @@ export class PbtaActorSheet extends ActorSheet {
 		for ( const item of items ) {
 			if (!this.unsupportedItemTypes.has(item.type)) {
 				if (item.type === "playbook") {
-					this.actor.update({ "system.details.playbook": item.name });
+					this.actor.update({ "system.playbook": {
+						name: item.name,
+						slug: item.slug ?? item.name.slugify(),
+						uuid: item.uuid
+					} });
 				} else {
 					toCreate.push(item);
 				}
@@ -720,19 +732,6 @@ export class PbtaActorSheet extends ActorSheet {
 		const li = event.currentTarget.closest(".item");
 		let item = this.actor.items.get(li.dataset.itemId);
 		item.delete();
-	}
-
-	/**
-	 * Equivalent to this.actor.update(), but handle tokens automatically.
-	 * @param {object} updateData Updates to apply.
-	 * @param {object} options Options for the update.
-	 */
-	async _updateActorOrToken(updateData, options = {}) {
-		if (this.token && !this.token.actorLink) {
-			this.actor.update(updateData, foundry.utils.mergeObject(options, { diff: false }));
-		} else {
-			this.actor.update(updateData, options);
-		}
 	}
 
 	/* -------------------------------------------- */

@@ -7,15 +7,12 @@
           <div class="sheet-header__fields">
               <input class="input--title" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
               <span class="sheet-playbook">
-                <span class="view-playbook" data-playbook="{{system.details.playbook}}" title="{{localize 'PBTA.ViewPlaybook'}}"">
+                <span class="view-playbook" data-playbook="{{system.playbook.uuid}}" title="{{localize 'PBTA.ViewPlaybook'}}">
                   <i class="fas fa-eye"></i>
                 </span>
-                <input class="input--title charplaybook" name="system.details.playbook" type="text" value="{{system.details.playbook}}" placeholder="Playbook" list="playbooks"/>
-                <datalist id="playbooks">
-                  {{#each system.playbooks as |playbook id|}}
-                  <option value="{{playbook}}">
-                  {{/each}}
-                </datalist>
+                <select class="input--title charplaybook">
+                  {{selectOptions system.playbooks selected=system.playbook.uuid nameAttr="uuid" labelAttr="name" blank=""}}
+                </select>
               </span>
           </div>
       </header>
