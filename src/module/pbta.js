@@ -20,6 +20,7 @@ import * as utils from "./utils.js";
 
 globalThis.pbta = {
 	applications,
+	config: PBTA,
 	dataModels,
 	dice,
 	documents,
