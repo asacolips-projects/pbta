@@ -14,8 +14,7 @@ export default class OtherData extends ActorDataTemplate {
 			customType: new foundry.data.fields.StringField({ initial: "" }),
 
 			// NPC Data
-			tags: new foundry.data.fields.ArrayField(new foundry.data.fields.StringField()),
-			tagsString: new foundry.data.fields.StringField({ initial: "" })
+			tags: new foundry.data.fields.ArrayField(new foundry.data.fields.StringField())
 		};
 	}
 }
