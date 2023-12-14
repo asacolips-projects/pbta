@@ -17,14 +17,26 @@ export class PbtaActorSheet extends ActorSheet {
 		});
 	}
 
-	static unsupportedItemTypes = new Set(["npcMove", "tag"]);
-
 	/* -------------------------------------------- */
 
 	/** @override */
 	get template() {
 		const path = "systems/pbta/templates/sheet";
 		return `${path}/${this.actor.type}-sheet.html`;
+	}
+
+	get unsupportedItemTypes() {
+		return new Set(["npcMove", "tag"]);
+	}
+
+	/* -------------------------------------------- */
+
+	render(force=false, options={}) {
+		const playbook = this.actor.playbook.slugify();
+		if (playbook && !(this.options.classes.includes(playbook))) {
+			this.options.classes.push(playbook);
+		}
+		return super.render(force, options);
 	}
 
 	/* -------------------------------------------- */
@@ -334,6 +346,12 @@ export class PbtaActorSheet extends ActorSheet {
 		html.find(".rollable, .showable").on("click", this._onRollable.bind(this));
 
 		// // View playbook.
+		html.find(".charplaybook").on("change", (event) => {
+			const currPlaybook = this.actor.playbook.slugify();
+			if (currPlaybook) {
+				this.options.classes = this.options.classes.filter((c) => c !== currPlaybook);
+			}
+		});
 		html.find(".view-playbook").on("click", this._onViewPlaybook.bind(this));
 
 		// // Toggle look.
@@ -674,13 +692,16 @@ export class PbtaActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	async _onDropItemCreate(itemData) {
-		let items = itemData instanceof Array ? itemData : [itemData];
+		const items = Array.isArray(itemData) ? itemData : [itemData];
 		const toCreate = [];
 		for ( const item of items ) {
-			if ( this.constructor.unsupportedItemTypes.has(item.type) ) {
-				continue;
+			if (!this.unsupportedItemTypes.has(item.type)) {
+				if (item.type === "playbook") {
+					this.actor.update({ "system.details.playbook": item.name });
+				} else {
+					toCreate.push(item);
+				}
 			}
-			toCreate.push(item);
 		}
 
 		// Create the owned items as normal

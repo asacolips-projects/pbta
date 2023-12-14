@@ -16,12 +16,17 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
 		});
 	}
 
-	static unsupportedItemTypes = new Set(["tag"]);
-
 	/** @override */
 	get template() {
 		const path = "systems/pbta/templates/sheet";
 		return `${path}/${this.actor.baseType}-sheet.html`;
+	}
+
+	get unsupportedItemTypes() {
+		if (this.actor.baseType === "character") {
+			return new Set(["npcMove", "tag"]);
+		}
+		return new Set(["move", "playbook", "tag"]);
 	}
 
 	/** @override */
@@ -40,22 +45,5 @@ export class PbtaActorOtherSheet extends PbtaActorSheet {
 		} else {
 			this.options.classes.push("character");
 		}
-	}
-
-	async _onDropItemCreate(itemData) {
-		let items = itemData instanceof Array ? itemData : [itemData];
-		const toCreate = [];
-		const unsupportedItemTypes = new Set([
-			...(this.actor.baseType === "character" ? ["npcMove", "tag"] : ["move", "playbook", "tag"])
-		]);
-		for ( const item of items ) {
-			if (unsupportedItemTypes.has(item.type)) {
-				continue;
-			}
-			toCreate.push(item);
-		}
-
-		// Create the owned items as normal
-		return this.actor.createEmbeddedDocuments("Item", toCreate);
 	}
 }

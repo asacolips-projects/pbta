@@ -26,6 +26,13 @@ export class ActorPbta extends Actor {
 			?? (this.type === "other" ? "character" : this.type);
 	}
 
+	get playbook() {
+		if (this.system?.details?.playbook) {
+			return this.system?.details?.playbook;
+		}
+		return "";
+	}
+
 	/**
 	 * Prepare Character type specific data
 	 */
