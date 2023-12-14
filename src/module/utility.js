@@ -654,12 +654,51 @@ export class PbtaUtility {
 		return options;
 	}
 
+	/**
+	 * Retrieve deprecated item/compendium tags.
+	 *
+	 * Retrieves an array of tags created as items or compendium entries.
+	 * This will be used to aid as a deprecation period for item/compendium
+	 * tags until they're migrated to the new tags setting.
+	 *
+	 * @returns {Array}
+	 *   Array of item tags.
+	 */
+	static getDeprecatedTagList() {
+		// Build the tags list.
+		let tags = game.items.filter((item) => item.type === "tag").map((item) => {
+			return item.name;
+		});
+		for (let c of game.packs) {
+			if (c.metadata.type && c.metadata.type === "Item" && c.metadata.name === "tags") {
+				let items = c?.index ? c.index.map((indexedItem) => {
+					return indexedItem.name;
+				}) : [];
+				tags = tags.concat(items);
+			}
+		}
+		// Reduce duplicates.
+		let tagNames = [];
+		for (let tag of tags) {
+			if (typeof tag === "string") {
+				let tagName = tag.toLowerCase();
+				if (tagNames.includes(tagName) === false) {
+					tagNames.push({value: tagName});
+				}
+			}
+		}
+
+		return tagNames;
+	}
+
 	static getTagList(document, type) {
 		const { general = "[]", actor: actorTags = {}, item: itemTags = {} } = game.settings.get("pbta", "tagConfig") ?? {};
 		const { general: moduleGeneral = "[]", actor: moduleActorTags = {}, item: moduleItemTags = {} } = game.pbta.tagConfigOverride ?? {};
 		const generalTags = this.parseTags(general);
 		const generalModuleTags = this.parseTags(moduleGeneral);
-		const tagNames = [...generalTags, ...generalModuleTags];
+		// @todo remove deprecated tags in a future version.
+		const deprecatedTags = this.getDeprecatedTagList();
+		const tagNames = [...generalTags, ...generalModuleTags, ...deprecatedTags];
 		if (type === "actor") {
 			const allActorTags = this.parseTags(actorTags.all);
 			const typeTags = this.parseTags(actorTags?.[document.type]);
