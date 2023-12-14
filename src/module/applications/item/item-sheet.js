@@ -1,11 +1,8 @@
-import { PbtaPlaybooks } from "../config.js";
-import { PbtaUtility } from "../utility.js";
-
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class PbtaItemSheet extends ItemSheet {
+export default class PbtaItemSheet extends ItemSheet {
 	constructor(...args) {
 		super(...args);
 		if (this.item.type === "equipment") {
@@ -55,7 +52,7 @@ export class PbtaItemSheet extends ItemSheet {
 
 		context.dtypes = ["String", "Number", "Boolean"];
 		// Add playbooks.
-		context.system.playbooks = await PbtaPlaybooks.getPlaybooks();
+		context.system.playbooks = await game.pbta.utils.getPlaybooks();
 
 		// Handle rich text fields.
 		const enrichmentOptions = {
@@ -135,7 +132,7 @@ export class PbtaItemSheet extends ItemSheet {
 			if (!this.options.editable) {
 				$input.attr("readonly", true);
 			}
-			const whitelist = PbtaUtility.getTagList(this.item, "item");
+			const whitelist = game.pbta.utils.getTagList(this.item, "item");
 
 			// init Tagify script on the above inputs
 			new Tagify($input[0], {

@@ -1,6 +1,4 @@
-import { RollPbtA } from "../rolls.js";
-
-export class ItemPbta extends Item {
+export default class ItemPbta extends Item {
 	static getDefaultArtwork(itemData) {
 		if (itemData.type === "move" || itemData.type === "npcMove") {
 			return { img: "icons/svg/upgrade.svg" };
@@ -80,7 +78,7 @@ export class ItemPbta extends Item {
 				sheetType: this.actor?.baseType,
 				rollType,
 			};
-			const r = new RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
+			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 				rollType: this.type,
 				sheetType: this.actor?.baseType,
 				stat

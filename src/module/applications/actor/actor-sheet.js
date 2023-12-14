@@ -1,11 +1,8 @@
-import { PbtaPlaybooks } from "../config.js";
-import { PbtaUtility } from "../utility.js";
-
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class PbtaActorSheet extends ActorSheet {
+export default class PbtaActorSheet extends ActorSheet {
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
@@ -520,7 +517,7 @@ export class PbtaActorSheet extends ActorSheet {
 		} else {
 			this.updateTrackThreshold(attr);
 		}
-		PbtaUtility.updateAttrCellTrackDisplay(attr);
+		game.pbta.utils.updateAttrCellTrackDisplay(attr);
 
 		let update = {};
 		update[prop] = attr;
@@ -553,7 +550,7 @@ export class PbtaActorSheet extends ActorSheet {
 			}
 		}
 		this.updateTrackThreshold(attr);
-		PbtaUtility.updateAttrCellTrackDisplay(attr);
+		game.pbta.utils.updateAttrCellTrackDisplay(attr);
 
 		let update = {};
 		update[prop] = attr;

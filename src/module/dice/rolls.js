@@ -1,4 +1,4 @@
-export class RollPbtA extends Roll {
+export default class RollPbtA extends Roll {
 	static EVALUATION_TEMPLATE = "systems/pbta/templates/chat/roll-dialog.html";
 
 	/**

@@ -1,5 +1,3 @@
-import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
-import { PbtaUtility } from "../utility.js";
 import { codeMirrorAddToml } from "./codemirror.toml.js";
 
 export class PbtaSettingsConfigDialog extends FormApplication {
@@ -118,7 +116,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 	async _updateObject(event, formData) {
 		let computed = {};
 
-		computed = PbtaUtility.parseTomlString(formData.tomlString) ?? null;
+		computed = game.pbta.utils.parseTomlString(formData.tomlString) ?? null;
 		if (computed) {
 			let confirm = true;
 			if (game.pbta.sheetConfig?.actorTypes?.character && game.pbta.sheetConfig?.actorTypes?.npc) {
@@ -141,7 +139,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 		let currentConfig = game.pbta.sheetConfig;
 		let duplicateConfig = foundry.utils.duplicate(sheetConfig);
-		let newConfig = PbtaUtility.convertSheetConfig(duplicateConfig);
+		let newConfig = game.pbta.utils.convertSheetConfig(duplicateConfig);
 
 		let configDiff = {
 			add: [],
@@ -378,6 +376,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			values: game.i18n.localize("PBTA.Settings.sheetConfig.values"),
 		};
 
+		// eslint-disable-next-line max-len
 		if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType || hasSafe || hasOptions || hasDeletedValues) {
 			let content = `<p>${t.noteChangesDetected}</p><ul><li>${t.noteConfirm}</li><li>${t.noteConfirmUpdate}<strong> (${t.noteConfirmUpdateBold})</strong></li><li>${t.noteCancel}</li></ul>`;
 
@@ -429,7 +428,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 						icon: '<i class="fas fa-user-check"></i>',
 						label: game.i18n.localize("PBTA.Settings.sheetConfig.confirmUpdate"),
 						callback: async () => {
-							let result = await PbtaActorTemplates.updateActors(updatesDiff);
+							let result = await game.pbta.utils.updateActors(updatesDiff);
 							return result;
 						},
 					},

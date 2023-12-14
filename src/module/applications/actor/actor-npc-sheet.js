@@ -1,10 +1,10 @@
-import { PbtaActorSheet } from "./actor-sheet.js";
+import PbtaActorSheet from "./actor-sheet.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class PbtaActorNpcSheet extends PbtaActorSheet {
+export default class PbtaActorNpcSheet extends PbtaActorSheet {
 
 	/** @override */
 	static get defaultOptions() {

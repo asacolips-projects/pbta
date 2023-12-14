@@ -1,4 +1,4 @@
-export class PbtACombatant extends Combatant {
+export default class CombatantPbtA extends Combatant {
 	async _preCreate(data, options, user) {
 		if (!data.initiative) {
 			let highestInit = 0;

@@ -1,4 +1,4 @@
-export class PbtACombatTracker extends CombatTracker {
+export default class PbtACombatTracker extends CombatTracker {
 	/** @inheritdoc */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {

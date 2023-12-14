@@ -112,7 +112,8 @@ export class MappingField extends foundry.data.fields.ObjectField {
 			return value;
 		}
 		const obj = {};
-		const initialKeys = (this.initialKeys instanceof Array) ? this.initialKeys : Object.keys(this.initialKeys ?? {});
+		const initialKeys = (this.initialKeys instanceof Array)
+			? this.initialKeys : Object.keys(this.initialKeys ?? {});
 		const keys = this.initialKeysOnly ? initialKeys : Object.keys(value);
 		for ( const key of keys ) {
 			const data = value[key] ?? this._getInitialValueForKey(key, value);
@@ -135,9 +136,9 @@ export class MappingField extends foundry.data.fields.ObjectField {
 	}
 }
 
-// Actor Resources
 /**
- *
+ * Creates the base actor resources.
+ * @returns {*}
  */
 export function createActorResources() {
 	return new foundry.data.fields.SchemaField({
@@ -160,9 +161,9 @@ export function createActorResources() {
 	});
 }
 
-// Item Resources
 /**
- *
+ * Creates the base item resources.
+ * @returns {*}
  */
 export function createItemResources() {
 	return {
@@ -173,9 +174,9 @@ export function createItemResources() {
 	};
 }
 
-// Moves and NPC Moves shared data
 /**
- *
+ * Creates the base move data that is shared between Moves and NPC Moves.
+ * @returns {*}
  */
 export function createMoveData() {
 	return {

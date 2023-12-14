@@ -1,11 +1,8 @@
-import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
-import { RollPbtA } from "../rolls.js";
-
 /**
  * Extends the basic Actor class for Powered by the Apocalypse.
  * @extends {Actor}
  */
-export class ActorPbta extends Actor {
+export default class ActorPbta extends Actor {
 	/**
 	 * Augment the basic actor data with additional dynamic data.
 	 */
@@ -142,7 +139,7 @@ export class ActorPbta extends Actor {
 				}
 			}
 
-			const roll = new RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
+			const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 				rollType: "stat",
 				sheetType: this.baseType,
 				stat
@@ -161,7 +158,7 @@ export class ActorPbta extends Actor {
 			await this.clearForwardAdv();
 			await this.updateCombatMoveCount();
 		} else if ($(a).hasClass("attr-rollable") && roll) {
-			const r = new RollPbtA(roll, this.getRollData(), foundry.utils.mergeObject(options, {
+			const r = new CONFIG.Dice.RollPbtA(roll, this.getRollData(), foundry.utils.mergeObject(options, {
 				rollType: "flat"
 			}));
 			const choice = await r.configureDialog({
@@ -186,7 +183,7 @@ export class ActorPbta extends Actor {
 		await super._preCreate(data, options, user);
 
 		const changes = {
-			system: PbtaActorTemplates.applyActorTemplate(this, options, null)
+			system: this.applyBaseTemplate()
 		};
 		const sourceId = this.getFlag("core", "sourceId");
 		if (!sourceId?.startsWith("Compendium.")) {
@@ -198,6 +195,32 @@ export class ActorPbta extends Actor {
 			}
 		}
 		this.updateSource(changes);
+	}
+
+	/**
+	 * Applies the actor's model to its data, such as
+	 * the Sheet Config's Stats and Attributes.
+	 * @returns {object}
+	 */
+	applyBaseTemplate() {
+		let systemData = foundry.utils.deepClone(this.toObject(false).system);
+
+		// Determine the actor type.
+		let sheetType = this.type;
+		if (this.type === "other") {
+			sheetType = systemData?.customType ?? "character";
+		}
+
+		// Merge it with the model for that for that actor type to include missing attributes.
+		const model = foundry.utils.deepClone(game.system.model.Actor[sheetType]
+			?? game.pbta.sheetConfig.actorTypes[sheetType]);
+
+		// Prepare and return the systemData.
+		systemData = foundry.utils.mergeObject(model, systemData);
+		delete systemData.templates;
+		delete systemData._id;
+
+		return systemData;
 	}
 
 	static async createDialog(data={}, {parent=null, pack=null, ...options}={}) {
