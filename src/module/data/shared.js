@@ -11,7 +11,7 @@
 export class MappingField extends foundry.data.fields.ObjectField {
 	constructor(model, options) {
 		if ( !(model instanceof foundry.data.fields.DataField) ) {
-		throw new Error("MappingField must have a DataField as its contained element");
+			throw new Error("MappingField must have a DataField as its contained element");
 		}
 		super(options);
 
@@ -27,9 +27,9 @@ export class MappingField extends foundry.data.fields.ObjectField {
 	/** @inheritdoc */
 	static get _defaults() {
 		return foundry.utils.mergeObject(super._defaults, {
-		initialKeys: null,
-		initialValue: null,
-		initialKeysOnly: false
+			initialKeys: null,
+			initialValue: null,
+			initialKeysOnly: false
 		});
 	}
 
@@ -47,9 +47,15 @@ export class MappingField extends foundry.data.fields.ObjectField {
 	getInitialValue(data) {
 		let keys = this.initialKeys;
 		const initial = super.getInitialValue(data);
-		if ( !keys || !foundry.utils.isEmpty(initial) ) return initial;
-		if ( !(keys instanceof Array) ) keys = Object.keys(keys);
-		for ( const key of keys ) initial[key] = this._getInitialValueForKey(key);
+		if ( !keys || !foundry.utils.isEmpty(initial) ) {
+			return initial;
+		}
+		if ( !(keys instanceof Array) ) {
+			keys = Object.keys(keys);
+		}
+		for ( const key of keys ) {
+			initial[key] = this._getInitialValueForKey(key);
+		}
 		return initial;
 	}
 
@@ -70,9 +76,13 @@ export class MappingField extends foundry.data.fields.ObjectField {
 
 	/** @override */
 	_validateType(value, options={}) {
-		if ( foundry.utils.getType(value) !== "Object" ) throw new Error("must be an Object");
+		if ( foundry.utils.getType(value) !== "Object" ) {
+			throw new Error("must be an Object");
+		}
 		const errors = this._validateValues(value, options);
-		if ( !foundry.utils.isEmpty(errors) ) throw new foundry.data.fields.ModelValidationError(errors);
+		if ( !foundry.utils.isEmpty(errors) ) {
+			throw new foundry.data.fields.ModelValidationError(errors);
+		}
 	}
 
 	/* -------------------------------------------- */
@@ -86,8 +96,10 @@ export class MappingField extends foundry.data.fields.ObjectField {
 	_validateValues(value, options) {
 		const errors = {};
 		for ( const [k, v] of Object.entries(value) ) {
-		const error = this.model.validate(v, options);
-		if ( error ) errors[k] = error;
+			const error = this.model.validate(v, options);
+			if ( error ) {
+				errors[k] = error;
+			}
 		}
 		return errors;
 	}
@@ -96,13 +108,15 @@ export class MappingField extends foundry.data.fields.ObjectField {
 
 	/** @override */
 	initialize(value, model, options={}) {
-		if ( !value ) return value;
+		if ( !value ) {
+			return value;
+		}
 		const obj = {};
 		const initialKeys = (this.initialKeys instanceof Array) ? this.initialKeys : Object.keys(this.initialKeys ?? {});
 		const keys = this.initialKeysOnly ? initialKeys : Object.keys(value);
 		for ( const key of keys ) {
-		const data = value[key] ?? this._getInitialValueForKey(key, value);
-		obj[key] = this.model.initialize(data, model, options);
+			const data = value[key] ?? this._getInitialValueForKey(key, value);
+			obj[key] = this.model.initialize(data, model, options);
 		}
 		return obj;
 	}
@@ -111,14 +125,20 @@ export class MappingField extends foundry.data.fields.ObjectField {
 
 	/** @inheritdoc */
 	_getField(path) {
-		if ( path.length === 0 ) return this;
-		else if ( path.length === 1 ) return this.model;
+		if ( path.length === 0 ) {
+			return this;
+		} else if ( path.length === 1 ) {
+			return this.model;
+		}
 		path.shift();
 		return this.model._getField(path);
 	}
 }
 
 // Actor Resources
+/**
+ *
+ */
 export function createActorResources() {
 	return new foundry.data.fields.SchemaField({
 		forward: new foundry.data.fields.SchemaField({
@@ -134,13 +154,16 @@ export function createActorResources() {
 			})
 		}),
 		rollFormula: new foundry.data.fields.SchemaField({
-			stat: new foundry.data.fields.StringField({ initial: '' }),
-			value: new foundry.data.fields.StringField({ initial: '' })
+			stat: new foundry.data.fields.StringField({ initial: "" }),
+			value: new foundry.data.fields.StringField({ initial: "" })
 		})
 	});
 }
 
 // Item Resources
+/**
+ *
+ */
 export function createItemResources() {
 	return {
 		use: new foundry.data.fields.NumberField({
@@ -151,14 +174,17 @@ export function createItemResources() {
 }
 
 // Moves and NPC Moves shared data
+/**
+ *
+ */
 export function createMoveData() {
 	return {
 		moveType: new foundry.data.fields.StringField(),
-        rollFormula: new foundry.data.fields.StringField({ initial: '' }),
-        moveResults: new MappingField(
+		rollFormula: new foundry.data.fields.StringField({ initial: "" }),
+		moveResults: new MappingField(
 			new foundry.data.fields.SchemaField({
-				key: new foundry.data.fields.StringField({ initial: '' }),
-				label: new foundry.data.fields.StringField({ initial: '' }),
+				key: new foundry.data.fields.StringField({ initial: "" }),
+				label: new foundry.data.fields.StringField({ initial: "" }),
 				value: new foundry.data.fields.HTMLField(),
 			}), {
 				initialKeys: {}

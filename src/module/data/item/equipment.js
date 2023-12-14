@@ -7,7 +7,7 @@ export default class EquipmentData extends ItemTemplateData {
 		return {
 			...superFields,
 			...createItemResources(),
-			playbook: new foundry.data.fields.StringField({ initial: '' }),
+			playbook: new foundry.data.fields.StringField({ initial: "" }),
 			quantity: new foundry.data.fields.NumberField({
 				initial: 1,
 				integer: true
@@ -17,7 +17,7 @@ export default class EquipmentData extends ItemTemplateData {
 				integer: true
 			}),
 			tags: new foundry.data.fields.ArrayField(new foundry.data.fields.StringField()),
-			tagsString: new foundry.data.fields.StringField({ initial: '' }),
+			tagsString: new foundry.data.fields.StringField({ initial: "" }),
 			itemType: new foundry.data.fields.StringField(),
 			equipmentType: new foundry.data.fields.StringField()
 		};

@@ -7,6 +7,3 @@ export { default as MoveData } from "./item/move.js";
 export { default as NpcMoveData } from "./item/npcMove.js";
 export { ItemTemplateData as ItemData } from "./item/templates/item.js";
 
-
-
-
