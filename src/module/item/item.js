@@ -117,7 +117,7 @@ export class ItemPbta extends Item {
 			if (!templateData.system) {
 				templateData.system = {};
 			}
-			
+
 			let resultRanges = game.pbta.sheetConfig.rollResults;
 			if (!templateData.system.moveResults) {
 				templateData.system.moveResults = {};
