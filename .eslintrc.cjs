@@ -25,7 +25,7 @@ module.exports = {
 		"jsdoc"
 	],
 
-	ignorePatterns: ["gulpfile.js"],
+	ignorePatterns: ["gulpfile.js", "update-build-tags.js"],
 
 	rules: {
 		"array-bracket-spacing": ["warn", "never"],
