@@ -7,6 +7,7 @@
 // Tags.
 @import 'global/base/tags';
 @import 'global/components/sheet-config';
+@import 'global/components/tag-config';
 
 // Theme overrides.
 .vtt {
@@ -63,6 +64,11 @@
           0 228px;
       }
     }
+  }
+
+  &.item {
+    min-height: 400px;
+    min-width: 450px;
   }
 
   // Import components, scoped within the sheet.

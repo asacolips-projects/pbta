@@ -25,6 +25,13 @@
   }
 }
 
+.tagify {
+  .tagify__tag,
+  .tagify__input {
+    height: 24px;
+  }
+}
+
 // Tagging widget.
 .tagging {
   padding: 5px 10px 8px;

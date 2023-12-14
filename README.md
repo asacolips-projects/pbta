@@ -26,6 +26,25 @@ If you would like to create a module that supplies its own sheet out of the box 
 Hooks.once('pbtaSheetConfig', () => {
   // Disable the sheet config form.
   game.settings.set('pbta', 'sheetConfigOverride', true);
+  // Define custom tags.
+  game.pbta.tagConfigOverride = {
+    // Tags available to any actor and item
+    general: '[{"value":"fire"}]',
+    actor: {
+      // Tags available to all actors
+      all: '[{"value":"person"}]',
+        
+      // Tags available to a specific actor type set up on game.pbta.sheetConfig.actorTypes (e.g. "character", "npc")
+      character: '[{"value":"mook"}]'
+    },
+    item: {
+      // Tags available to all actors
+      all: '[{"value":"consumable"}]',
+        
+      // Tags available to a specific item type (e.g. "equipment", "move")
+      npc: '[{"value":"sword"}]'
+    }
+  }
   // Replace the game.pbta.sheetConfig with your own version.
   game.pbta.sheetConfig = {
     "rollFormula": "2d6",

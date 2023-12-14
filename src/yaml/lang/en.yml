@@ -16,6 +16,9 @@ PBTA:
   AskTitle: "{name}: Choose a Stat"
   Biography: "Biography"
   ClearMoves: "Clear Moves"
+  ChatMessage:
+    ShiftUp: "Shift Up"
+    ShiftDown: "Shift Down"
   Choices: "Choices"
   ConditionsApplied: "Conditions Applied:"
   Create: "Create"
@@ -60,6 +63,7 @@ PBTA:
   success: "Success"
   Tags: "Tags"
   TagsHelp: "(Use tab to autocomplete, commas to create new tags, and double click a tag to edit it)"
+  TagsPlaceholder: "Write some tags"
   title: "Powered by the Apocalypse"
   Type: "Type"
   Uses: "Uses"
@@ -101,6 +105,9 @@ PBTA:
   Settings:
     button:
       help: "PbtA System Help & Tutorial"
+    hideSidebarButtons:
+      name: "Hide Game Settings Sidebar Buttons"
+      hint: "Removes the {button1} and {button2} from the Game Settings sidebar."
     stats:
       name: "Stats"
       hint: "Enter a comma-separated list of stats/abilities, such as \"Str,Dex,Con,Int,Wis,Cha\""
@@ -147,19 +154,31 @@ PBTA:
       noteConfirm: "Confirm without updating existing actors"
       noteConfirmUpdate: "Confirm and update existing actors"
       noteConfirmUpdateBold: "NOTE: Existing data in deleted attributes will be deleted permanently"
-      notes1: "Welcome to the alpha version of the PbtA system!"
-      notes2: "We will eventually have a graphical user interface (GUI) to build character sheets, but for now you'll need to enter character sheet data in TOML format. Writing TOML is similar to working with .ini files common in modding settings for PC games."
+      notes2: "You need to enter character sheet data in TOML format. Writing TOML is similar to working with .ini files common in modding settings for PC games."
       notes3: "Read through the documentation linked below before configuring your sheet. You can also head over to the #powered-by-the-apocalypse channel of the main Foundry Virtual Tabletop Discord for questions and assistance."
       options: "List options changed (values will be preserved):"
       values: "Value in radio list removed (value will be reset to first element):"
       resetDefaults: "Reset Defaults"
       saveConfiguration: "Save Configuration"
-      title: "Configure character sheets"
+      title: "Sheet Configuration"
       type: "Type changed:"
       typeReset: "Type changed (attribute will be reset):"
       sheetConfigDisabledModule: "Sheet configuration has been disabled due to a module that is providing it."
+    tagConfig:
+      label: "Tag Configuration"
+      name: "Configure Tags"
+      hint: "Choose the tags for character and items."
+      Labels:
+        Actors: "Actor Tags"
+        Items: "Item Tags"
+        General: "General Tags"
+        Module: "Module Tags"
+        World: "World Tags"
+        all: "All {documentType}"
+      title: "Configure Tags"
   Warnings:
     UnlinkedToken:
       Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
       Moves: "Moves cannot be rearranged while this token is not linked to an actor."
+    TagDeprecation: "Tags as items have been deprecated, use the Tag Configuration menu on the game settings to create your tags."
 PBTA_OTHER: "Other"

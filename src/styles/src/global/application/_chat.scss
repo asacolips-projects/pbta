@@ -84,6 +84,16 @@
     .critical {
       color: $c-critical;
     }
+
+    .card-buttons {
+      display: flex;
+      margin-bottom: 10px;
+
+      button {
+        background: rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--color-border-light-2);
+      }
+    }
   }
 
   .message-sender {
