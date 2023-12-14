@@ -67,6 +67,7 @@ export class PbtaTagConfigDialog extends FormApplication {
 	async _updateObject(event, formData) {
 		const { userTags = {} } = foundry.utils.expandObject(formData);
 		await game.settings.set("pbta", "tagConfig", userTags);
+		game.pbta.tagList = null;
 	}
 
 	/**
