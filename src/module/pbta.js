@@ -23,30 +23,46 @@ import { registerSettings } from "./settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { PbtaUtility } from "./utility.js";
 
+import * as dataModels from "./data/_module.js";
+
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
-Hooks.once("init", async function () {
-	game.pbta = {
-		ActorPbta,
-		ItemPbta,
-		rollItemMacro,
-		PbtaUtility,
-		PbtaActorTemplates,
-		MigratePbta,
-		PbtaSettingsConfigDialog
-	};
+globalThis.pbta = {
+  ActorPbta,
+  dataModels,
+  ItemPbta,
+  rollItemMacro,
+  PbtaUtility,
+  PbtaActorTemplates,
+  MigratePbta,
+  PbtaSettingsConfigDialog
+};
+
+Hooks.once("init", async function() {
+  globalThis.pbta = game.pbta = Object.assign(game.system, globalThis.pbta);
 
 	CONFIG.ui.combat = PbtACombatTracker;
 	CONFIG.Combatant.documentClass = PbtACombatant;
 
-	game.socket.on("system.pbta", (data) => {
-		if (game.user.isGM && data.combatantUpdate) {
-			game.combat.updateEmbeddedDocuments("Combatant", Array.isArray(data.combatantUpdate) ? data.combatantUpdate : [data.combatantUpdate]);
-			ui.combat.render();
-		}
-	});
+  // Define DataModels
+  CONFIG.Actor.dataModels.character = dataModels.CharacterData;
+  CONFIG.Actor.dataModels.npc = dataModels.NpcData;
+  CONFIG.Actor.dataModels.other = dataModels.OtherData;
+
+  CONFIG.Item.dataModels.equipment = dataModels.CharacterData;
+  CONFIG.Item.dataModels.move = dataModels.MoveData;
+  CONFIG.Item.dataModels.npcMove = dataModels.NpcMoveData;
+  CONFIG.Item.dataModels.playbook = dataModels.ItemData;
+  CONFIG.Item.dataModels.tag = dataModels.ItemData;
+
+  game.socket.on('system.pbta', (data) => {
+    if (game.user.isGM && data.combatantUpdate) {
+      game.combat.updateEmbeddedDocuments('Combatant', Array.isArray(data.combatantUpdate) ? data.combatantUpdate : [data.combatantUpdate]);
+      ui.combat.render();
+    }
+  });
 
 	CONFIG.Dice.RollPbtA = RollPbtA;
 	CONFIG.Dice.rolls.push(RollPbtA);
