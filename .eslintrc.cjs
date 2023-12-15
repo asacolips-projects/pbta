@@ -22,6 +22,7 @@ module.exports = {
 	extends: ["eslint:recommended", "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0"],
 
 	plugins: [
+		"@stylistic/js",
 		"jsdoc"
 	],
 
@@ -179,6 +180,8 @@ module.exports = {
 			},
 		],
 		"spaced-comment": "warn",
+
+		"@stylistic/js/space-in-parens": "warn",
 
 		"jsdoc/check-access": "warn",
 		"jsdoc/check-alignment": "warn",

@@ -23,7 +23,7 @@ export default class RollPbtA extends Roll {
 	async toMessage(messageData={}, {rollMode, create=true}={}) {
 
 		// Perform the roll, if it has not yet been rolled
-		if ( !this._evaluated ) {
+		if (!this._evaluated) {
 			await this.evaluate({async: true});
 		}
 
@@ -84,9 +84,9 @@ export default class RollPbtA extends Roll {
 		const msg = new cls(messageData);
 
 		// Either create or return the data
-		if ( create ) {
+		if (create) {
 			return cls.create(msg.toObject(), { rollMode });
-		} else if ( rollMode ) {
+		} else if (rollMode) {
 			msg.applyRollMode(rollMode);
 		}
 		return msg.toObject();
@@ -116,7 +116,7 @@ export default class RollPbtA extends Roll {
 		let { forward, ongoing } = this.data?.resources ?? {};
 		if (forward?.value) {
 			const fRoll = new Roll(`${forward.value}`, this.data);
-			if ( !(fRoll.terms[0] instanceof OperatorTerm) ) {
+			if (!(fRoll.terms[0] instanceof OperatorTerm)) {
 				this.terms.push(new OperatorTerm({operator: "+"}));
 			}
 			this.terms = this.terms.concat(fRoll.terms);
@@ -124,7 +124,7 @@ export default class RollPbtA extends Roll {
 		}
 		if (ongoing?.value) {
 			const oRoll = new Roll(`${ongoing.value}`, this.data);
-			if ( !(oRoll.terms[0] instanceof OperatorTerm) ) {
+			if (!(oRoll.terms[0] instanceof OperatorTerm)) {
 				this.terms.push(new OperatorTerm({operator: "+"}));
 			}
 			this.terms = this.terms.concat(oRoll.terms);
@@ -251,7 +251,7 @@ export default class RollPbtA extends Roll {
 
 		const addToFormula = (val) => {
 			const statBonus = new Roll(val, this.data);
-			if ( !(statBonus.terms[0] instanceof OperatorTerm) ) {
+			if (!(statBonus.terms[0] instanceof OperatorTerm)) {
 				this.terms.push(new OperatorTerm({operator: "+"}));
 			}
 			this.terms = this.terms.concat(statBonus.terms);

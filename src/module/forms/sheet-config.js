@@ -476,7 +476,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 				default: defaultButton ?? Object.keys(resolveButtons)[0],
 				render: render,
 				close: () => {
-					if ( rejectClose ) {
+					if (rejectClose) {
 						reject("The confirmation Dialog was closed without a choice being made");
 					} else {
 						resolve(null);

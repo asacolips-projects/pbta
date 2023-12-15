@@ -227,8 +227,8 @@ export default class ActorPbta extends Actor {
 		const documentName = this.metadata.name;
 		const types = Object.keys(game.pbta.sheetConfig.actorTypes);
 		let collection;
-		if ( !parent ) {
-			if ( pack ) {
+		if (!parent) {
+			if (pack) {
 				collection = game.packs.get(pack);
 			} else {
 				collection = game.collections.get(documentName);
@@ -266,13 +266,13 @@ export default class ActorPbta extends Actor {
 				const form = html[0].querySelector("form");
 				const fd = new FormDataExtended(form);
 				foundry.utils.mergeObject(data, fd.object, {inplace: true});
-				if ( !data.folder ) {
+				if (!data.folder) {
 					delete data.folder;
 				}
-				if ( types.length === 1 ) {
+				if (types.length === 1) {
 					data.type = types[0];
 				}
-				if ( !data.name?.trim() ) {
+				if (!data.name?.trim()) {
 					data.name = this.defaultName();
 				}
 

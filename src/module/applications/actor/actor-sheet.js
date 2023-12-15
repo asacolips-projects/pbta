@@ -58,7 +58,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Owned Items
 		context.items = actorData.items;
-		for ( let i of context.items ) {
+		for (let i of context.items) {
 			const item = this.actor.items.get(i._id);
 			i.labels = item.labels;
 		}
@@ -695,7 +695,7 @@ export default class PbtaActorSheet extends ActorSheet {
 	async _onDropItemCreate(itemData) {
 		const items = Array.isArray(itemData) ? itemData : [itemData];
 		const toCreate = [];
-		for ( const item of items ) {
+		for (const item of items) {
 			if (!this.unsupportedItemTypes.has(item.type)) {
 				if (item.type === "playbook") {
 					this.actor.update({ "system.playbook": {

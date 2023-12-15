@@ -21,9 +21,9 @@ export class FormulaField extends foundry.data.fields.StringField {
 
 	/** @inheritdoc */
 	_validateType(value) {
-		if ( this.options.deterministic ) {
+		if (this.options.deterministic) {
 			const roll = new Roll(value);
-			if ( !roll.isDeterministic ) {
+			if (!roll.isDeterministic) {
 				throw new Error("must not contain dice terms");
 			}
 			Roll.safeEval(roll.formula);

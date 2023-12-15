@@ -193,12 +193,12 @@ Hooks.once("ready", async function () {
 	utils.applyActorTemplates();
 
 	// Run migrations.
-	if ( !game.user.isGM ) {
+	if (!game.user.isGM) {
 		return;
 	}
 	const cv = game.settings.get("pbta", "systemMigrationVersion");
 	const totalDocuments = game.actors.size + game.scenes.size + game.items.size;
-	if ( !cv && totalDocuments === 0 ) {
+	if (!cv && totalDocuments === 0) {
 		return game.settings.set("pbta", "systemMigrationVersion", game.system.version);
 	}
 

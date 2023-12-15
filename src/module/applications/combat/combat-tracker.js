@@ -52,7 +52,7 @@ export default class PbtACombatTracker extends CombatTracker {
 			// remove it from the combat.
 			if (!combatant.actor) {
 				game.combat.deleteEmbeddedDocuments("Combatant", [combatant.id]);
-			} else if ( !combatant.visible ) {
+			} else if (!combatant.visible) {
 				return groups;
 			} else {
 				// Append valid actors to the appropriate group.
@@ -84,15 +84,15 @@ export default class PbtACombatTracker extends CombatTracker {
 				combatant.effects = new Set();
 				if (combatant.token) {
 					combatant.token.effects.forEach((e) => combatant.effects.add(e));
-					if ( combatant.token.overlayEffect ) {
+					if (combatant.token.overlayEffect) {
 						combatant.effects.add(combatant.token.overlayEffect);
 					}
 				}
 				if (combatant.actor) {
-					for ( const effect of combatant.actor.temporaryEffects ) {
-						if ( effect.statuses.has(CONFIG.specialStatusEffects.DEFEATED) ) {
+					for (const effect of combatant.actor.temporaryEffects) {
+						if (effect.statuses.has(CONFIG.specialStatusEffects.DEFEATED)) {
 							combatant.defeated = true;
-						} else if ( effect.icon ) {
+						} else if (effect.icon) {
 							combatant.effects.add(effect.icon);
 						}
 					}
@@ -275,7 +275,7 @@ export default class PbtACombatTracker extends CombatTracker {
 				},
 				callback: (li) => {
 					const combatant = this.viewed.combatants.get(li.data("combatant-id"));
-					if ( combatant ) {
+					if (combatant) {
 						combatant.unsetFlag("pbta", "moveCount", 0);
 					}
 				}
@@ -293,7 +293,7 @@ export default class PbtACombatTracker extends CombatTracker {
 				icon: '<i class="fas fa-trash"></i>',
 				callback: (li) => {
 					const combatant = this.viewed.combatants.get(li.data("combatant-id"));
-					if ( combatant ) {
+					if (combatant) {
 						return combatant.delete();
 					}
 				}

@@ -142,8 +142,8 @@ export default class ItemPbta extends Item {
 		const documentName = this.metadata.name;
 		const types = game.documentTypes[documentName].filter((t) => t !== CONST.BASE_DOCUMENT_TYPE && t !== "tag");
 		let collection;
-		if ( !parent ) {
-			if ( pack ) {
+		if (!parent) {
+			if (pack) {
 				collection = game.packs.get(pack);
 			} else {
 				collection = game.collections.get(documentName);
@@ -176,13 +176,13 @@ export default class ItemPbta extends Item {
 				const form = html[0].querySelector("form");
 				const fd = new FormDataExtended(form);
 				foundry.utils.mergeObject(data, fd.object, {inplace: true});
-				if ( !data.folder ) {
+				if (!data.folder) {
 					delete data.folder;
 				}
-				if ( types.length === 1 ) {
+				if (types.length === 1) {
 					data.type = types[0];
 				}
-				if ( !data.name?.trim() ) {
+				if (!data.name?.trim()) {
 					data.name = this.defaultName();
 				}
 				return this.create(data, {parent, pack, renderSheet: true});
