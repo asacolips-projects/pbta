@@ -1,4 +1,4 @@
-import { MappingField } from "../../shared.js";
+import { MappingField } from "../../fields.js";
 
 export class ActorDataTemplate extends foundry.abstract.DataModel {
 	static defineSchema() {
