@@ -140,7 +140,7 @@ export default class RollPbtA extends Roll {
 			maxMod ??= Infinity;
 			let [baseFormula, modifierString = "0"] = this.formula.split(/([+-].*)/s);
 			// This should be a string of integers joined with + and -. This should be safe to eval.
-			let originalMod = eval(modifierString);
+			let originalMod = Roll.safeEval(modifierString);
 			if (originalMod < minMod || originalMod > maxMod) {
 				let totalMod = Math.clamped(originalMod, minMod, maxMod);
 				const newFormula = `${baseFormula}+${totalMod}`.replace(/\+\s*-/g, "-");

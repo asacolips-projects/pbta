@@ -227,9 +227,9 @@ export default class ItemPbta extends Item {
 
 			let shift = action === "shiftUp" ? "+ 1" : "- 1";
 			if (value) {
-				value = eval(`${value} ${shift}`);
+				value = Roll.safeEval(`${value} ${shift}`);
 			} else {
-				value = eval(shift);
+				value = Roll.safeEval(shift);
 			}
 			if (value >= 0) {
 				value = `+ ${value}`;
@@ -244,7 +244,7 @@ export default class ItemPbta extends Item {
 			content = content.replace(diceFormula[1], roll);
 
 			const diceTotal = content.match(diceTotalReg);
-			let total = eval(`${diceTotal[1]} ${shift}`);
+			let total = Roll.safeEval(`${diceTotal[1]} ${shift}`);
 			content = content.replace(diceTotalReg, `<h4 class="dice-total">${total}</h4>`);
 
 			const { rollResults } = game.pbta.sheetConfig;
