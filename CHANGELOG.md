@@ -1,3 +1,20 @@
+# 0.8.1
+
+## Features and Changes
+
+- **Deprecation Warning** Added new tags setting configuration. This can be accessed under the PbtA settings and is separate from the TOML config setting. Tag settings are intended as a replacement for tag items and module devs should plan to replace their compendium tags by defining tags in `game.pbta.tagConfigOverride`. See the updated [README.md](https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/blob/master/README.md) for an example.
+- Added support for shifting results of rolls. To enable this, add `rollShifting = true` to your TOML config (at the same level as `rollFormula` and other global TOML settings).
+- Added a Hide Sidebar buttons setting.
+- Removed the ability to create Tag items and added a warning on Tag item sheets.
+- Removed the "Welcome to the Alpha" header from the Sheet Configuration and update the notes.
+
+## Bug Fixes
+- Changed List's multi-checkbox to accept spaces in-between the label (e.g. `Condition | 3`).
+- Fixed Speaker and RollMode not being set on rolls.
+- Fixed Forward/Ongoing making rolls fail if no condition is set.
+- Fixed NPC Move Rolls not showing Result Ranges.
+- Fixed Stat Toggle only setting toggled stats' values to 0.
+
 # 0.8.0
 
 - Removed support for Foundry v10. Version 0.8.0 and above will be for Foundry v11+

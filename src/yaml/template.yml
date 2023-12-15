@@ -31,7 +31,6 @@ Actor:
     templates:
       - base
     tags: []
-    tagsString: ''
   other:
     templates:
       - base
@@ -40,7 +39,6 @@ Actor:
     details:
       playbook: ''
     tags: []
-    tagsSTring: ''
 Item:
   types:
     - move
@@ -82,7 +80,6 @@ Item:
     quantity: 1
     weight: 0
     tags: []
-    tagsString: ''
     itemType:
     equipmentType: null
   tag:
