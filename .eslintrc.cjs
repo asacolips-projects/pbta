@@ -36,7 +36,6 @@ module.exports = {
 		"comma-style": "warn",
 		"computed-property-spacing": "warn",
 		"constructor-super": "error",
-		curly: "warn",
 		"default-param-last": "warn",
 		"dot-location": ["warn", "property"],
 		"eol-last": ["error", "always"],
