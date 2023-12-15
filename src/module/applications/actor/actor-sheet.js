@@ -668,12 +668,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		if (dataset.equipmenttype) {
 			system.equipmentType = dataset.equipmenttype;
 		}
-		if (dataset.level) {
-			system.spellLevel = dataset.level;
-		}
-		const name = type === "bond" ? game.i18n.localize("PBTA.BondDefault") : `New ${type.capitalize()}`;
-		let itemData = {
-			name: name,
+		const itemData = {
+			name: `New ${type.capitalize()}`,
 			type: type,
 			system: system
 		};
