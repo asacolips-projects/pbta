@@ -1,4 +1,6 @@
-Compatible with FoundryVTT v11.
+![Foundry v11](https://img.shields.io/badge/foundry-v11-green) ![Foundry v12](https://img.shields.io/badge/foundry-v12-green)
+
+
 
 ![Screenshot of the PbtA system](https://mattsmithin-files.s3.amazonaws.com/pbta-system.png)
 
