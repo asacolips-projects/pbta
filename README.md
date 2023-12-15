@@ -6,15 +6,14 @@
 
 # Description
 
-Build campaigns compatible with (most) [Powered by the Apocalypse RPGs](http://apocalypse-world.com/pbta/) using Foundry VTT! This system is in active development, and it currently has three versions: a public beta version, a patreon beta version, and a patreon alpha version. There is no difference between the versions aside from the feature release cadence (described later in the Patreon section of this readme).
+Build campaigns compatible with (most) [Powered by the Apocalypse RPGs](http://apocalypse-world.com/pbta/) using Foundry VTT! This system is a sandbox that will allow you to configure a custom sheet (see **Usage** below for documentation) or to extend with modules that provide prebuilt sheets, such as the Monsters of the Week or MASKS modules.
 
 # Installation
 
-To install the free beta version, use this manifest URL in Foundry's system installer.
-
-**System Manifest:** [https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/jobs/artifacts/beta/raw/system.json?job=build-beta](https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/jobs/artifacts/beta/raw/system.json?job=build-beta)
-
-To install a patreon alpha or beta version, follow the instructions available via the Iron Moose Development patreon and/or Discord server.
+1. Go to the Game Systems tab in the Foundry setup page.
+2. Click Install System
+3. Search for `pbta` or `Powered by the Apocalypse`
+4. Install the system
 
 # Usage
 
