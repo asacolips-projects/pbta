@@ -187,9 +187,7 @@ export function createMoveData() {
 				key: new foundry.data.fields.StringField({ initial: "" }),
 				label: new foundry.data.fields.StringField({ initial: "" }),
 				value: new foundry.data.fields.HTMLField(),
-			}), {
-				initialKeys: {}
-			}
+			})
 		)
 	};
 }
