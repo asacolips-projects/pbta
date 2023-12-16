@@ -1,16 +1,90 @@
 Actor:
-  htmlFields:
-    - 'details.biography'
   types:
     - character
     - npc
     - other
+  templates:
+    base:
+      stats: {}
+      attributesTop: {}
+      attributesLeft: {}
+      attrTop: {}
+      attrLeft: {}
+      details:
+        biography: ''
+    resources:
+      resources:
+        forward:
+          value: 0
+        ongoing:
+          value: 0
+        rollFormula:
+          value: ''
+          stat: ''
+  character:
+    templates:
+      - base
+      - resources
+    details:
+      playbook: ''
+  npc:
+    templates:
+      - base
+    tags: []
+  other:
+    templates:
+      - base
+      - resources
+    customType: ''
+    details:
+      playbook: ''
+    tags: []
 Item:
-  htmlFields:
-    - 'description'
   types:
     - move
     - npcMove
     - equipment
     - playbook
     - tag
+  templates:
+    base:
+      name: ''
+      description: ''
+    resource:
+      uses: 0
+    move:
+      # requiresMove: ''
+      moveType: null
+      rollFormula: ''
+      # moveGroup: ''
+      moveResults: {}
+  move:
+    templates:
+      - base
+      - move
+      - resource
+    playbook: ''
+    rollType: ''
+    rollMod: 0
+    choices: ''
+  npcMove:
+    templates:
+      - base
+      - move
+      - resource
+  equipment:
+    templates:
+      - base
+      - resource
+    playbook: ''
+    quantity: 1
+    weight: 0
+    tags: []
+    itemType:
+    equipmentType: null
+  tag:
+    templates:
+      - base
+  playbook:
+    templates:
+      - base
