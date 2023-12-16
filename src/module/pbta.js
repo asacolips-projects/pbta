@@ -28,7 +28,7 @@ globalThis.pbta = {
 };
 
 Hooks.once("init", async function () {
-	globalThis.pbta = game.pbta = Object.assign(game.system, globalThis.pbta);
+	game.pbta = globalThis.pbta;
 
 	CONFIG.ui.combat = applications.combat.PbtACombatTracker;
 	CONFIG.Combatant.documentClass = documents.CombatantPbtA;
