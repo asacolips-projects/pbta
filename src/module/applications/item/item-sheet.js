@@ -6,7 +6,11 @@ export default class PbtaItemSheet extends ItemSheet {
 	constructor(...args) {
 		super(...args);
 		if (this.item.type === "equipment") {
-			this.options.height = this.position.height = 555;
+			if (this.actor) {
+				this.options.height = this.position.height = 600;
+			} else {
+				this.options.height = this.position.height = 555;
+			}
 		} else if (this.item.type === "playbook") {
 			this.options.classes.push("class");
 			this.options.width = this.position.width = 780;
