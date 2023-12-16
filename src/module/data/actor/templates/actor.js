@@ -25,6 +25,9 @@ export class ActorDataTemplate extends foundry.abstract.DataModel {
 			};
 			delete source.details.playbook;
 		}
+		if (source.resources && typeof source.resources.rollFormula === "object") {
+			source.resources.rollFormula = source.resources.rollFormula.value;
+		}
 		return super.migrateData(source);
 	}
 }

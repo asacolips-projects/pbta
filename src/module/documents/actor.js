@@ -65,7 +65,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	getRollFormula(defaultFormula = "2d6") {
-		const rollFormula = this.system?.resources?.rollFormula?.value;
+		const rollFormula = this.system?.resources?.rollFormula;
 		if (rollFormula && Roll.validate(rollFormula)) {
 			return rollFormula.trim();
 		}

@@ -18,10 +18,7 @@ export function createActorResources() {
 				integer: true
 			})
 		}),
-		rollFormula: new foundry.data.fields.SchemaField({
-			stat: new foundry.data.fields.StringField({ initial: "" }),
-			value: new FormulaField({ initial: "" })
-		})
+		rollFormula: new FormulaField({ initial: "" })
 	});
 }
 
