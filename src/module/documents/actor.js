@@ -24,10 +24,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	get playbook() {
-		if (this.system?.details?.playbook) {
-			return this.system?.details?.playbook;
-		}
-		return "";
+		return this.system?.playbook?.name ?? "";
 	}
 
 	/**
