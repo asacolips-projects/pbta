@@ -13,3 +13,9 @@ PBTA.attrTypes = [
 	"Roll",
 	"Track"
 ];
+
+PBTA.rollModes = {
+	def: "PBTA.Normal",
+	adv: "PBTA.Advantage",
+	dis: "PBTA.Disadvantage"
+};

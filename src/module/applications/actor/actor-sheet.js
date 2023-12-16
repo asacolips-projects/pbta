@@ -16,12 +16,6 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	/* -------------------------------------------- */
 
-	get enrichmentOptions() {
-		return {
-			rollData: this.actor.getRollData() ?? {},
-		};
-	}
-
 	/** @override */
 	get template() {
 		const path = "systems/pbta/templates/sheet";
@@ -46,129 +40,77 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	/** @override */
 	async getData() {
-		let isOwner = false;
-		let isEditable = this.isEditable;
-		let context = {};
-		let items = {};
-		let effects = {};
-		let actorData = {};
-		let sheetConfig = foundry.utils.deepClone(game.pbta.sheetConfig);
+		const source = this.actor.toObject();
+		const context = {
+			actor: this.actor,
+			source: source.system,
+			system: this.actor.system,
+			items: Array.from(this.actor.items).sort((a, b) => (a.sort || 0) - (b.sort || 0)),
 
-		// const data = super.getData();
-		isOwner = this.document.isOwner;
-		isEditable = this.isEditable;
-		// The Actor's data
-		actorData = this.actor.toObject(false);
-		context.actor = actorData;
-		context.system = actorData.system;
-
-		// Owned Items
-		context.items = actorData.items;
-		for (let i of context.items) {
-			const item = this.actor.items.get(i._id);
-			i.labels = item.labels;
-		}
-		context.items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-
-		// Copy Active Effects
-		// TODO: Test and refactor this.
-		effects = this.object.effects.map((e) => foundry.utils.deepClone(e));
-		context.effects = effects;
-
-		// Handle actor types.
-		context.pbtaActorType = this.actor.type;
-		if (context.pbtaActorType === "other") {
-			context.pbtaSheetType = actorData.system?.customType ?? "character";
-			context.pbtaBaseType = sheetConfig.actorTypes[context.pbtaSheetType]?.baseType ?? "character";
-		} else {
-			context.pbtaSheetType = context.pbtaActorType;
-			context.pbtaBaseType = context.pbtaActorType;
-		}
+			effects: this.object.effects.map((e) => foundry.utils.deepClone(e)),
+			owner: this.actor.isOwner,
+			limited: this.actor.limited,
+			options: this.options,
+			editable: this.isEditable,
+			cssClass: this.isEditable ? "editable" : "locked",
+			isCharacter: this.actor.baseType === "character",
+			isNPC: this.actor.baseType === "npc",
+			config: CONFIG.PBTA,
+			flags: foundry.utils.mergeObject({
+				pbta: { rollMode: "def" }}, this.actor?.flags ?? {}
+			),
+			enrichmentOptions: {
+				secrets: this.actor.isOwner,
+				rollData: this.actor.getRollData(),
+				relativeTo: this.actor
+			},
+			sheetSettings: [
+				"hideRollFormula",
+				"hideForward",
+				"hideOngoing",
+				"hideRollMode",
+				"hideUses"
+			].reduce((obj, key) => {
+				obj[key] = game.settings.get("pbta", key);
+				return obj;
+			}, {})
+		};
 
 		// Prepare items.
-		await this._prepareCharacterItems(context);
-		await this._prepareNpcItems(context);
+		await this._prepareItems(context);
 		await this._prepareAttrs(context);
 
 		if (context.system?.details?.biography) {
 			context.system.details.biography =
-				await TextEditor.enrichHTML(context.system.details.biography, this.enrichmentOptions);
+				await TextEditor.enrichHTML(context.system.details.biography, context.enrichmentOptions);
 		}
 
 		// Add playbooks.
-		if (context.pbtaSheetType === "character" || context.pbtaBaseType === "character") {
+		if (this.actor.baseType === "character") {
 			context.system.playbooks = CONFIG.PBTA.playbooks.map((p) => {
 				return { name: p.name, uuid: p.uuid };
 			});
+
+			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
 			context.system.statToggle = sheetConfig?.statToggle ?? false;
-			context.system.statSettings = sheetConfig.actorTypes[context.pbtaSheetType]?.stats ?? {};
+			context.system.statSettings = sheetConfig.actorTypes[this.actor.baseType]?.stats ?? {};
 
 			if (context.system.statSettings) {
-				context.system.statSettings.ask = {label: game.i18n.localize("PBTA.Ask"), value: 0};
-				context.system.statSettings.prompt = {label: game.i18n.localize("PBTA.Prompt"), value: 0};
-				context.system.statSettings.formula = {label: game.i18n.localize("PBTA.Formula"), value: 0};
+				context.system.statSettings = foundry.utils.mergeObject(context.system.statSettings, {
+					ask: { label: game.i18n.localize("PBTA.Ask"), value: 0 },
+					prompt: { label: game.i18n.localize("PBTA.Prompt"), value: 0 },
+					formula: { label: game.i18n.localize("PBTA.Formula"), value: 0 }
+				});
 			}
 
-			// Flags
-			context.rollModes = {
-				def: "PBTA.Normal",
-				adv: "PBTA.Advantage",
-				dis: "PBTA.Disadvantage"
-			};
-
 			// Set a warning for tokens.
-			context.system.isToken = this.actor.token !== null;
+			context.isToken = this.actor.token !== null;
 		}
 
 		this._sortAttrs(context);
 
-		// Get sheet visibility settings.
-		const sheetSettings = {};
-		const settingKeys = [
-			"hideRollFormula",
-			"hideForward",
-			"hideOngoing",
-			"hideRollMode",
-			"hideUses"
-		];
-
-		for (let key of settingKeys) {
-			sheetSettings[key] = game.settings.get("pbta", key);
-		}
-
-		// Get flags.
-		const flags = this.object?.flags ?? {};
-
-		if (!flags?.pbta?.rollMode) {
-			if (!flags?.pbta) {
-				flags.pbta = {};
-			}
-			flags.pbta.rollMode = "def";
-		}
-
-		let returnData = {
-			actor: this.object,
-			cssClass: isEditable ? "editable" : "locked",
-			editable: isEditable,
-			system: context.system,
-			moves: context.moves,
-			moveTypes: context.moveTypes,
-			equipment: context.equipment,
-			equipmentTypes: context.equipmentTypes,
-			rollModes: context?.rollModes,
-			effects: effects,
-			flags: flags,
-			items: items,
-			limited: this.object.limited,
-			options: this.options,
-			owner: isOwner,
-			title: this.title,
-			rollData: this.actor.getRollData(),
-			sheetSettings: sheetSettings
-		};
-
 		// Return template data
-		return returnData;
+		return context;
 	}
 
 	/**
@@ -178,16 +120,16 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * so this helper adds a string that we'll use later for the name attribute
 	 * on the HTML element.
 	 *
-	 * @param {object} sheetData Data prop on actor.
+	 * @param {object} context Data prop on actor.
 	 */
-	async _prepareAttrs(sheetData) {
+	async _prepareAttrs(context) {
 		const groups = ["attrTop", "attrLeft"];
 		for (let group of groups) {
-			for (let [attrKey, attrValue] of Object.entries(sheetData.system[group])) {
+			for (let [attrKey, attrValue] of Object.entries(context.system[group])) {
 				if (attrValue.type === "LongText") {
-					sheetData.system[group][attrKey].attrName = `system.${group}.${attrKey}.value`;
-					sheetData.system[group][attrKey].value =
-						await TextEditor.enrichHTML(attrValue.value, this.enrichmentOptions);
+					context.system[group][attrKey].attrName = `system.${group}.${attrKey}.value`;
+					context.system[group][attrKey].value =
+						await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
 				}
 			}
 		}
@@ -202,10 +144,9 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * this solves the immediate problem and reorders them at render time for the
 	 * sheet.
 	 *
-	 * @param {object} sheetData Data prop on actor.
+	 * @param {object} context Data prop on actor.
 	 */
-	_sortAttrs(sheetData) {
-		const actorData = sheetData;
+	_sortAttrs(context) {
 		let groups = [
 			"stats",
 			"attrTop",
@@ -214,7 +155,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Iterate through the groups that need to be sorted.
 		for (let group of groups) {
 			// Confirm the keys exist, and assign them to a sorting array if so.
-			let sortKeys = game.pbta.sheetConfig.actorTypes?.[sheetData.pbtaSheetType]?.[group];
+			let sortKeys = game.pbta.sheetConfig.actorTypes?.[context.pbtaSheetType]?.[group];
 			let sortingArray = [];
 			if (sortKeys) {
 				sortingArray = Object.keys(sortKeys);
@@ -222,7 +163,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				continue;
 			}
 			// Grab the keys of the group on the actor.
-			let newData = Object.keys(actorData.system[group])
+			let newData = Object.keys(context.system[group])
 			// Sort them based on the sorting array.
 				.sort((a, b) => {
 					return sortingArray.indexOf(a) - sortingArray.indexOf(b);
@@ -230,13 +171,13 @@ export default class PbtaActorSheet extends ActorSheet {
 			// Build a new object from the sorted keys.
 				.reduce(
 					(obj, key) => {
-						obj[key] = actorData.system[group][key];
+						obj[key] = context.system[group][key];
 						return obj;
 					}, {}
 				);
 
 			// Replace the data object handed over to the sheet.
-			actorData.system[group] = newData;
+			context.system[group] = newData;
 		}
 	}
 
@@ -245,40 +186,41 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * @param {object} context The actor to prepare.
 	 * @returns {undefined}
 	 */
-	async _prepareCharacterItems(context) {
-		const actorData = context;
-		const actorType = context.pbtaSheetType ?? "character";
-		const moveType = context.pbtaBaseType === "npc" ? "npcMove" : "move";
+	async _prepareItems(context) {
+		const actorType = this.actor.baseType;
+		const moveType = this.actor.baseType === "npc" ? "npcMove" : "move";
 
-		let moveTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.moveTypes;
-		actorData.moveTypes = {};
-		actorData.moves = {};
+		const sheetConfig = game.pbta.sheetConfig;
+		const moveTypes = sheetConfig?.actorTypes[actorType]?.moveTypes;
+		const equipmentTypes = sheetConfig?.actorTypes[actorType]?.equipmentTypes;
+
+		context.moveTypes = {};
+		context.moves = {};
 
 		let items = context.items;
 
 		if (moveTypes) {
 			for (let [k, v] of Object.entries(moveTypes)) {
-				actorData.moveTypes[k] = v.label;
-				actorData.moves[k] = [];
+				context.moveTypes[k] = v.label;
+				context.moves[k] = [];
 			}
 		}
 
-		let equipmentTypes = game.pbta.sheetConfig?.actorTypes[actorType]?.equipmentTypes;
-		actorData.equipmentTypes = {};
-		actorData.equipment = {};
+		context.equipmentTypes = {};
+		context.equipment = {};
 
 		if (equipmentTypes) {
 			for (let [k, v] of Object.entries(equipmentTypes)) {
-				actorData.equipmentTypes[k] = v.label;
-				actorData.equipment[k] = [];
+				context.equipmentTypes[k] = v.label;
+				context.equipment[k] = [];
 			}
 		}
 
-		if (!actorData.equipment.PBTA_OTHER) {
-			actorData.equipment.PBTA_OTHER = [];
+		if (!context.equipment.PBTA_OTHER) {
+			context.equipment.PBTA_OTHER = [];
 		}
-		if (!actorData.moves.PBTA_OTHER) {
-			actorData.moves.PBTA_OTHER = [];
+		if (!context.moves.PBTA_OTHER) {
+			context.moves.PBTA_OTHER = [];
 		}
 
 		// Iterate through items, allocating to containers
@@ -287,43 +229,37 @@ export default class PbtaActorSheet extends ActorSheet {
 			item.img = item.img || Item.DEFAULT_ICON;
 			// Enrich text fields.
 			if (item.system?.description) {
-				item.system.description = await TextEditor.enrichHTML(item.system.description, this.enrichmentOptions);
+				item.system.description =
+					await TextEditor.enrichHTML(item.system.description, context.enrichmentOptions);
 			}
 			if (item.system?.choices) {
-				item.system.choices = await TextEditor.enrichHTML(item.system.choices, this.enrichmentOptions);
+				item.system.choices = await TextEditor.enrichHTML(item.system.choices, context.enrichmentOptions);
 			}
 			if (item.system?.moveResults) {
 				for (let [mK, mV] of Object.entries(item.system.moveResults)) {
 					if (mV.value) {
 						item.system.moveResults[mK].value =
-							await TextEditor.enrichHTML(mV.value, this.enrichmentOptions);
+							await TextEditor.enrichHTML(mV.value, context.enrichmentOptions);
 					}
 				}
 			}
 			// If this is a move, sort into various arrays.
 			if (item.type === moveType) {
-				if (actorData.moves[item.system.moveType]) {
-					actorData.moves[item.system.moveType].push(item);
+				if (context.moves[item.system.moveType]) {
+					context.moves[item.system.moveType].push(item);
 				} else {
-					actorData.moves.PBTA_OTHER.push(item);
+					context.moves.PBTA_OTHER.push(item);
 				}
 			} else if (item.type === "equipment") {
 				// If this is equipment, we currently lump it together.
-				if (actorData.equipment[item.system.equipmentType]) {
-					actorData.equipment[item.system.equipmentType].push(item);
+				if (context.equipment[item.system.equipmentType]) {
+					context.equipment[item.system.equipmentType].push(item);
 				} else {
-					actorData.equipment.PBTA_OTHER.push(item);
+					context.equipment.PBTA_OTHER.push(item);
 				}
 			}
 		}
 	}
-
-	/**
-	 * Prepare tagging.
-	 *
-	 * @param {object} context The actor to prepare.
-	 */
-	async _prepareNpcItems(context) {}
 
 	/* -------------------------------------------- */
 
