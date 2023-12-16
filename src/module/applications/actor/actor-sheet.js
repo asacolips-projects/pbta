@@ -16,6 +16,12 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	/* -------------------------------------------- */
 
+	get enrichmentOptions() {
+		return {
+			rollData: this.actor.getRollData() ?? {},
+		};
+	}
+
 	/** @override */
 	get template() {
 		const path = "systems/pbta/templates/sheet";
@@ -79,17 +85,6 @@ export default class PbtaActorSheet extends ActorSheet {
 			context.pbtaBaseType = context.pbtaActorType;
 		}
 
-		// Handle rich text fields.
-		const enrichmentOptions = {
-			secrets: false,
-			documents: true,
-			links: true,
-			rolls: true,
-			rollData: this.actor.getRollData() ?? {},
-			async: true,
-		};
-		context.enrichmentOptions = enrichmentOptions;
-
 		// Prepare items.
 		await this._prepareCharacterItems(context);
 		await this._prepareNpcItems(context);
@@ -97,7 +92,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		if (context.system?.details?.biography) {
 			context.system.details.biography =
-				await TextEditor.enrichHTML(context.system.details.biography, enrichmentOptions);
+				await TextEditor.enrichHTML(context.system.details.biography, this.enrichmentOptions);
 		}
 
 		// Add playbooks.
@@ -186,17 +181,13 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * @param {object} sheetData Data prop on actor.
 	 */
 	async _prepareAttrs(sheetData) {
-		const actorData = sheetData;
-		let groups = [
-			"attrTop",
-			"attrLeft"
-		];
+		const groups = ["attrTop", "attrLeft"];
 		for (let group of groups) {
-			for (let [attrKey, attrValue] of Object.entries(actorData.system[group])) {
+			for (let [attrKey, attrValue] of Object.entries(sheetData.system[group])) {
 				if (attrValue.type === "LongText") {
-					actorData.system[group][attrKey].attrName = `system.${group}.${attrKey}.value`;
-					actorData.system[group][attrKey].value =
-						await TextEditor.enrichHTML(attrValue.value, actorData.enrichmentOptions);
+					sheetData.system[group][attrKey].attrName = `system.${group}.${attrKey}.value`;
+					sheetData.system[group][attrKey].value =
+						await TextEditor.enrichHTML(attrValue.value, this.enrichmentOptions);
 				}
 			}
 		}
@@ -296,17 +287,16 @@ export default class PbtaActorSheet extends ActorSheet {
 			item.img = item.img || Item.DEFAULT_ICON;
 			// Enrich text fields.
 			if (item.system?.description) {
-				item.system.description =
-					await TextEditor.enrichHTML(item.system.description, actorData.enrichmentOptions);
+				item.system.description = await TextEditor.enrichHTML(item.system.description, this.enrichmentOptions);
 			}
 			if (item.system?.choices) {
-				item.system.choices = await TextEditor.enrichHTML(item.system.choices, actorData.enrichmentOptions);
+				item.system.choices = await TextEditor.enrichHTML(item.system.choices, this.enrichmentOptions);
 			}
 			if (item.system?.moveResults) {
 				for (let [mK, mV] of Object.entries(item.system.moveResults)) {
 					if (mV.value) {
 						item.system.moveResults[mK].value =
-							await TextEditor.enrichHTML(mV.value, actorData.enrichmentOptions);
+							await TextEditor.enrichHTML(mV.value, this.enrichmentOptions);
 					}
 				}
 			}
