@@ -30,8 +30,8 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	render(force=false, options={}) {
 		const playbook = this.actor.playbook.slugify();
-		if (playbook && !(this.options.classes.includes(playbook))) {
-			this.options.classes.push(playbook);
+		if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
+			this.options.classes.push(`playbook-${playbook}`);
 		}
 		return super.render(force, options);
 	}
@@ -348,7 +348,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".charplaybook").on("change", (event) => {
 			const currPlaybook = this.actor.playbook.slugify();
 			if (currPlaybook) {
-				this.options.classes = this.options.classes.filter((c) => c !== currPlaybook);
+				this.options.classes = this.options.classes.filter((c) => c !== `playbook-${currPlaybook}`);
 			}
 
 			const selected = CONFIG.PBTA.playbooks.find((p) => p.uuid === event.target.value);
