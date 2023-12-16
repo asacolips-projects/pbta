@@ -108,7 +108,7 @@
                         <label class="cell__title">{{localize "PBTA.Forward"}}</label>
                         <div class="cell__wrapper">
                           <button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.forward.value" >-</button>
-                          <input type="number" name="system.resources.forward.value" value="{{numberFormat system.resources.forward.value decimals=0 sign=false}}" data-dtype="Number"/>
+                          <input type="number" name="system.resources.forward.value" value="{{system.resources.forward.value}}" data-dtype="Number"/>
                           <button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.forward.value">+</button>
                         </div>
                       </div>
@@ -119,7 +119,7 @@
                         <label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
                         <div class="cell__wrapper">
                           <button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.ongoing.value">-</button>
-                          <input type="number" name="system.resources.ongoing.value" value="{{numberFormat system.resources.ongoing.value decimals=0 sign=false}}" data-dtype="Number"/>
+                          <input type="number" name="system.resources.ongoing.value" value="{{system.resources.ongoing.value}}" data-dtype="Number"/>
                           <button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
                         </div>
                       </div>
