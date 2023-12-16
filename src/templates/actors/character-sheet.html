@@ -25,20 +25,7 @@
 			  <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
 			</div>
 
-			<div class="cell cell--stats">
-			  <ol class="stats-list">
-			  {{#each system.stats as |stat key|}}
-				<li class="stat flexrow" data-stat="{{key}}">
-				  <span class="stat-icon stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
-				  <label for="system.stats.{{key}}.value" class="cell__title stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}">{{ stat.label }}</label>
-				  <input class="stat-value" type="text" name="system.stats.{{key}}.value" value="{{#if stat.value}}{{numberFormat stat.value decimals=0 sign=true}}{{else}}0{{/if}}" data-dtype="Number"/>
-				  {{#if ../system.statToggle}}
-					<label class="stat-toggle checkbox"><input type="checkbox" name="system.stats.{{key}}.toggle" {{checked stat.toggle}}/>{{../system.statToggle.label}}</label>
-				  {{/if}}
-				</li>
-			  {{/each}}
-			  </ol>
-			</div>
+			{{> "pbta.actor-stats" }}
 
 		  </section>
 

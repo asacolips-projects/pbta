@@ -901,6 +901,7 @@ export async function preloadHandlebarsTemplates() {
 		"systems/pbta/templates/actors/parts/actor-inventory.hbs",
 		"systems/pbta/templates/actors/parts/actor-movelist.hbs",
 		"systems/pbta/templates/actors/parts/actor-moves.hbs",
+		"systems/pbta/templates/actors/parts/actor-stats.hbs",
 	];
 
 	const paths = {};
