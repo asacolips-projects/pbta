@@ -664,6 +664,9 @@ export function getDeprecatedTagList() {
  * @returns {object[]}
  */
 export function getTagList(document) {
+	if (game.pbta.tagList) {
+		return game.pbta.tagList;
+	}
 	const { general = "[]", actor: actorTags = {}, item: itemTags = {} } = game.settings.get("pbta", "tagConfig") ?? {};
 	const { general: moduleGeneral = "[]", actor: moduleActorTags = {}, item: moduleItemTags = {} } = game.pbta.tagConfigOverride ?? {};
 	const generalTags = parseTags(general);
@@ -699,6 +702,7 @@ export function getTagList(document) {
 		}
 		return 0;
 	});
+	game.pbta.tagList = tagNames;
 	return tagNames;
 }
 
