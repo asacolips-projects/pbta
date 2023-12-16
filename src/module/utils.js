@@ -896,12 +896,22 @@ export async function preloadHandlebarsTemplates() {
 	// Define template paths to load
 	const templatePaths = [
 		// Attribute list partial.
-		"systems/pbta/templates/parts/sheet-attributes.html",
-		"systems/pbta/templates/parts/sheet-moves.html",
+		"systems/pbta/templates/actors/parts/actor-attributes.hbs",
+		"systems/pbta/templates/actors/parts/actor-description.hbs",
+		"systems/pbta/templates/actors/parts/actor-inventory.hbs",
+		"systems/pbta/templates/actors/parts/actor-movelist.hbs",
+		"systems/pbta/templates/actors/parts/actor-moves.hbs",
 	];
 
+	const paths = {};
+	for (const path of templatePaths) {
+		paths[path.replace(".hbs", ".html")] = path;
+		paths[`pbta.${path.split("/").pop()
+			.replace(".hbs", "")}`] = path;
+	}
+
 	// Load the template parts
-	return loadTemplates(templatePaths);
+	return loadTemplates(paths);
 }
 
 /**
