@@ -12,13 +12,15 @@ export default class ItemPbta extends Item {
 
 	/** @override */
 	getRollData() {
-		let data = super.getRollData();
-		data.type = this.type;
+		let rollData = {
+			...super.getRollData(),
+			type: this.type
+		};
 		if (this.actor && this.actor.system?.stats) {
-			data = foundry.utils.mergeObject(data, this.actor.getRollData());
+			rollData = foundry.utils.mergeObject(rollData, this.actor.getRollData());
 		}
-		data.formula = this.getRollFormula();
-		return data;
+		rollData.formula = this.getRollFormula();
+		return rollData;
 	}
 
 	getRollFormula(defaultFormula = "2d6") {

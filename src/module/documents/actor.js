@@ -59,9 +59,10 @@ export default class ActorPbta extends Actor {
 
 	/** @override */
 	getRollData() {
-		const data = super.getRollData();
-		data.formula = this.getRollFormula();
-		return data;
+		return {
+			...super.getRollData(),
+			formula: this.getRollFormula()
+		};
 	}
 
 	getRollFormula(defaultFormula = "2d6") {
