@@ -129,11 +129,10 @@ export default class ActorPbta extends Actor {
 			const stat = $(a).parents(".stat")
 				.data("stat") ?? null;
 			if (stat) {
+				formula += `+ @stats.${stat}.value`;
 				if (this.system.stats[stat].toggle) {
 					const { modifier } = game.pbta.sheetConfig.statToggle;
 					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
-				} else {
-					formula += `+ @stats.${stat}.value`;
 				}
 			}
 
