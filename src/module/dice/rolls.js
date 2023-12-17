@@ -113,7 +113,7 @@ export default class RollPbtA extends Roll {
 			this.options.conditions.push(game.i18n.localize("PBTA.Disadvantage"));
 		}
 
-		let { forward, ongoing } = this.data?.resources ?? {};
+		const { forward, ongoing } = this.data?.resources ?? {};
 		if (forward?.value) {
 			const fRoll = new Roll(`${forward.value}`, this.data);
 			if (!(fRoll.terms[0] instanceof OperatorTerm)) {
@@ -167,34 +167,15 @@ export default class RollPbtA extends Roll {
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
 		this.options.conditions = [];
 		let needsDialog = false;
-		const attrs = Object.entries(this.data.attrLeft).concat(Object.entries(this.data.attrTop));
-		const conditionGroups = attrs
-			.filter((condition) => condition[1]?.condition)
-			.map((condition) => {
-				return {
-					key: condition[0],
-					label: condition[1].label,
-					conditions: Object.values(condition[1].options).filter((v) => v.value && (v.userLabel ?? v.label).match(/\d/))
-						.map((v) => {
-							let conditionLabel = v.userLabel ?? v.label;
-							const mod = Roll.safeEval(conditionLabel.match(/[\d+-]/g).join(""));
-							return {
-								label: conditionLabel,
-								mod
-							};
-						})
-				};
-			})
-			.filter((c) => c.conditions.length > 0);
 
 		// Prepare the base set of options used for the roll dialog.
-		if (!needsDialog && (this.data.rollType === "ask" || this.data.rollType === "prompt" || conditionGroups.length)) {
+		if (!needsDialog && (this.data.rollType === "ask" || this.data.rollType === "prompt" || this.data.conditionGroups.length)) {
 			needsDialog = true;
 		}
 
 		if (needsDialog) {
 			templateData = foundry.utils.mergeObject(templateData, {
-				conditionGroups,
+				conditionGroups: this.data.conditionGroups,
 				hasPrompt: this.data.rollType === "prompt"
 			});
 

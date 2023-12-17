@@ -14,6 +14,50 @@ export default class ActorPbta extends Actor {
 		}
 	}
 
+	/**
+	 * Returns both attrLeft and attrTop as a single object.
+	 * @returns {object}
+	 */
+	get attributes() {
+		return {
+			...this.system.attrLeft,
+			...this.system.attrTop
+		};
+	}
+
+	/**
+	 * Returns all active conditions.
+	 * @returns {object[]}
+	 */
+	get conditions() {
+		return this.conditionGroups.flatMap((c) => c.conditions);
+	}
+
+	/**
+	 * Returns all active conditions ordered by group.
+	 * @returns {object[]}
+	 */
+	get conditionGroups() {
+		return Object.entries(this.attributes)
+			.filter((attr) => attr[1]?.condition)
+			.map((condition) => {
+				return {
+					key: condition[0],
+					label: condition[1].label,
+					conditions: Object.values(condition[1].options).filter((v) => v.value && (v.userLabel ?? v.label).match(/\d/))
+						.map((v) => {
+							let conditionLabel = v.userLabel ?? v.label;
+							const mod = Roll.safeEval(conditionLabel.match(/[\d+-]/g).join(""));
+							return {
+								label: conditionLabel,
+								mod
+							};
+						})
+				};
+			})
+			.filter((c) => c.conditions.length > 0);
+	}
+
 	get sheetType() {
 		return this.system?.customType ?? null;
 	}

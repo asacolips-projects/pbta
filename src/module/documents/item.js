@@ -13,7 +13,7 @@ export default class ItemPbta extends Item {
 	/** @override */
 	getRollData() {
 		let rollData = {
-			...super.getRollData(),
+			...this.system,
 			type: this.type
 		};
 		if (this.actor && this.actor.system?.stats) {
