@@ -301,11 +301,21 @@ export function convertSheetConfig(sheetConfig) {
 
 			if (v.moveTypes) {
 				actorType.moveTypes = {};
-				for (let [mtKey, mtLabel] of Object.entries(v.moveTypes)) {
-					actorType.moveTypes[cleanClass(mtKey, false)] = {
-						label: mtLabel,
-						moves: []
-					};
+				for (let [mtKey, mtValue] of Object.entries(v.moveTypes)) {
+					if (typeof mtValue === "string") {
+						actorType.moveTypes[cleanClass(mtKey, false)] = {
+							label: mtValue,
+							moves: []
+						};
+					} else {
+						const { label, playbook = false, creation = false} = mtValue;
+						actorType.moveTypes[cleanClass(mtKey, false)] = {
+							label,
+							playbook,
+							creation,
+							moves: [] // @todo add support for moves
+						};
+					}
 				}
 			}
 

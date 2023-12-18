@@ -241,6 +241,30 @@ export default class ActorPbta extends Actor {
 				};
 			}
 		}
+		const sheetData = game.pbta.sheetConfig.actorTypes?.[this.type];
+		if (sheetData?.moveTypes) {
+			const validCreationMoveType = Object.keys(sheetData.moveTypes)
+				.filter((mt) => sheetData.moveTypes[mt].creation);
+			if (validCreationMoveType.length) {
+				let moves = [];
+				for (let mt of validCreationMoveType) {
+					moves = game.items
+						.filter((item) => item.type === "move" && item.system.moveType === mt)
+						.map((item) => item.toObject(false));
+					const itemCompendiums = game.packs
+						.filter((c) => c.metadata?.type === "Item")
+						.map((c) => c.metadata.id);
+					for (let c of itemCompendiums) {
+						let items = await game.packs.get(c).getDocuments();
+						items = items
+							.filter((item) => item.type === "move" && item.system.moveType === mt)
+							.map((item) => item.toObject(false));
+						moves = moves.concat(items);
+					}
+				}
+				if (moves.length) changes.items = moves;
+			}
+		}
 		this.updateSource(changes);
 	}
 
