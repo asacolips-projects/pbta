@@ -17,7 +17,7 @@ export default class OtherData extends ActorDataTemplate {
 			}),
 
 			// NPC Data
-			tags: new foundry.data.fields.ArrayField(new foundry.data.fields.StringField())
+			tags: new foundry.data.fields.StringField(),
 		};
 	}
 }
