@@ -5,16 +5,8 @@
 export default class PbtaItemSheet extends ItemSheet {
 	constructor(...args) {
 		super(...args);
-		if (this.item.type === "equipment") {
-			if (this.actor) {
-				this.options.height = this.position.height = 600;
-			} else {
-				this.options.height = this.position.height = 555;
-			}
-		} else if (this.item.type === "playbook") {
-			this.options.classes.push("class");
-			this.options.width = this.position.width = 780;
-			this.options.tabs[0].initial = "description";
+		if (this.item.type === "playbook") {
+			this.options.classes.push("playbook");
 		}
 	}
 
@@ -22,8 +14,8 @@ export default class PbtaItemSheet extends ItemSheet {
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "item"],
-			width: 520,
-			height: 480,
+			width: 450,
+			height: 400,
 			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details" }]
 		});
 	}
@@ -40,21 +32,22 @@ export default class PbtaItemSheet extends ItemSheet {
 
 	/** @override */
 	async getData() {
-		let isOwner = false;
-		let isEditable = this.isEditable;
-		let context = this.item.toObject(false);
-		let effects = {};
-		const actor = this.actor;
+		const source = this.item.toObject();
+		const context = {
+			actor: this.actor,
+			item: this.item,
+			source: source.system,
+			system: this.item.system,
 
-		this.options.title = this.document.name;
-		isOwner = this.document.isOwner;
-		isEditable = this.isEditable;
+			effects: this.item.effects.map((e) => foundry.utils.deepClone(e)),
+			owner: this.item.isOwner,
+			limited: this.item.limited,
+			options: this.options,
+			editable: this.isEditable,
+			cssClass: this.isEditable ? "editable" : "locked",
+			flags: this.item.flags
+		};
 
-		// Copy Active Effects
-		effects = this.item.effects.map((e) => foundry.utils.deepClone(e));
-		context.effects = effects;
-
-		context.dtypes = ["String", "Number", "Boolean"];
 		// Add playbooks.
 		context.system.playbooks = await game.pbta.utils.getPlaybooks();
 
@@ -68,13 +61,19 @@ export default class PbtaItemSheet extends ItemSheet {
 			context.system.description = await TextEditor.enrichHTML(context.system.description, enrichmentOptions);
 		}
 
+		const sheetConfig = game.pbta.sheetConfig;
 		if (this.item.type === "move" || this.item.type === "npcMove") {
 			if (this.item.type === "move") {
-				if (game.pbta.sheetConfig?.actorTypes[actor?.baseType]?.stats) {
-					const stats = foundry.utils.duplicate(game.pbta.sheetConfig.actorTypes[actor.baseType].stats);
+				context.system.stats = {};
+				if (this.actor?.system?.stats) {
+					const stats = foundry.utils.duplicate(this.actor?.system?.stats);
 					context.system.stats = stats;
-				} else {
-					context.system.stats = {};
+				} else if (Object.keys(sheetConfig?.actorTypes || {}).length) {
+					const validCharacterType = Object.entries(sheetConfig.actorTypes)
+						.find(([k, v]) => [k, v?.baseType].includes("character") && v.stats);
+					if (validCharacterType) {
+						context.system.stats = foundry.utils.duplicate(validCharacterType[1].stats);
+					}
 				}
 				context.system.stats.prompt = {label: game.i18n.localize("PBTA.Prompt")};
 				if (Object.keys(context.system.stats).length > 1) {
@@ -86,29 +85,45 @@ export default class PbtaItemSheet extends ItemSheet {
 					context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
 				}
 			} else if (this.item.type === "npcMove") {
-				context.system.rollExample = game.pbta.sheetConfig?.rollFormula ?? "2d6";
+				context.system.rollExample = sheetConfig?.rollFormula ?? "2d6";
 			}
-			context.system.moveTypes = game.pbta.sheetConfig?.actorTypes[actor?.baseType]?.moveTypes ?? {};
+			context.system.moveTypes = {};
+			if (this.actor?.system?.moveTypes) {
+				const moveTypes = foundry.utils.duplicate(this.actor?.system?.moveTypes);
+				context.system.moveTypes = moveTypes;
+			} else if (Object.keys(sheetConfig?.actorTypes || {}).length) {
+				const validCharacterType = Object.entries(sheetConfig.actorTypes)
+					.find(([k, v]) => [k, v?.baseType].includes("character") && v.moveTypes);
+				if (validCharacterType) {
+					context.system.moveTypes = foundry.utils.duplicate(validCharacterType[1].moveTypes);
+				}
+			}
+			if (Object.keys(context.system.moveTypes) && context.system.moveType) {
+				if (context.system.moveTypes[context.system.moveType].playbook) {
+					context.isPlaybookMove = true;
+				}
+			}
+
 			for (let [key, moveResult] of Object.entries(context.system.moveResults)) {
 				context.system.moveResults[key].rangeName = `system.moveResults.${key}.value`;
 				context.system.moveResults[key].value =
 					await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
 			}
 		} else if (this.item.type === "equipment") {
-			context.system.equipmentTypes = game.pbta.sheetConfig?.actorTypes[actor?.baseType]?.equipmentTypes ?? null;
+			context.system.equipmentTypes = sheetConfig?.actorTypes[this.actor?.baseType]?.equipmentTypes ?? null;
+		} else if (this.item.type === "playbook") {
+			const groupedImprovements = {
+				equipment: [],
+				move: [],
+				improvement: [],
+			};
+			this.item.system.improvementGroups.forEach((g) => {
+				groupedImprovements[g.type].push(g);
+			});
+			context.groups = groupedImprovements;
 		}
 
-		return {
-			item: this.item,
-			cssClass: isEditable ? "editable" : "locked",
-			editable: isEditable,
-			system: context.system,
-			effects: effects,
-			limited: this.item.limited,
-			options: this.options,
-			owner: isOwner,
-			title: context.name
-		};
+		return context;
 	}
 
 	/* -------------------------------------------- */
@@ -128,7 +143,7 @@ export default class PbtaItemSheet extends ItemSheet {
 	async _tagify(html) {
 		let $input = html.find('input[name="system.tags"]');
 		if ($input.length > 0) {
-			if (!this.options.editable) {
+			if (!this.isEditable) {
 				$input.attr("readonly", true);
 			}
 			const whitelist = game.pbta.utils.getTagList(this.item, "item");
