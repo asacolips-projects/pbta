@@ -221,6 +221,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 							configDiff.values.push(`${actorType}.${attrGroup}.${attr}.value`);
 							updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].value;
 						}
+						// Handle updating ListOne values.
+						if (newGroup[attr].playbook && newGroup[attr].playbook !== oldGroup[attr].playbook) {
+							configDiff.values.push(`${actorType}.${attrGroup}.${attr}.playbook`);
+							updatesDiff[actorType][`system.${attrGroup}.${attr}.playbook`] = newGroup[attr].playbook;
+						}
 					}
 				}
 				for (let attr of Object.keys(oldGroup)) {

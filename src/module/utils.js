@@ -374,6 +374,7 @@ export function convertAttr(attrGroup) {
 		attr.description = attrValue.description ?? null;
 		attr.customLabel = attrValue.customLabel ?? false;
 		attr.userLabel = attr.customLabel ? attr.label : false;
+		attr.playbook = attrValue.playbook ?? null;
 
 		if (!attrValue.type) {
 			// If an object structure was used and no type was specified, it's invalid.

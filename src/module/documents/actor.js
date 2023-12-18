@@ -71,6 +71,10 @@ export default class ActorPbta extends Actor {
 		return this.system?.playbook?.name ?? "";
 	}
 
+	get playbookSlug() {
+		return this.playbook.slugify();
+	}
+
 	/**
 	 * Prepare Character type specific data
 	 */
