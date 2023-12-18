@@ -101,7 +101,9 @@ export default class ActorPbta extends Actor {
 	/** @override */
 	getRollData() {
 		return {
-			...super.getRollData(),
+			...this.system,
+			conditionCount: this.conditions.length,
+			conditionGroups: this.conditionGroups,
 			formula: this.getRollFormula()
 		};
 	}
