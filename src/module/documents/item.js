@@ -111,6 +111,7 @@ export default class ItemPbta extends Item {
 	async _preCreate(data, options, userId) {
 		await super._preCreate(data, options, userId);
 
+		// Handle Moves because they're dependent on template
 		if (this.type === "move" || this.type === "npcMove") {
 			const templateData = foundry.utils.duplicate(this);
 			if (!templateData.system) {
@@ -134,6 +135,15 @@ export default class ItemPbta extends Item {
 			this.updateSource({
 				system: foundry.utils.mergeObject(templateData.system, this.toObject(false).system)
 			});
+		}
+
+		// Handle everything else if not imported from compendiums
+		const sourceId = this.getFlag("core", "sourceId");
+		if (sourceId?.startsWith("Compendium.")) return;
+		if (this.type === "playbook") {
+			if (!this.system.slug) {
+				this.updateSource({ "system.slug": this.name.slugify() });
+			}
 		}
 	}
 
