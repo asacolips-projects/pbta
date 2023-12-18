@@ -47,7 +47,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			system: this.actor.system,
 			items: Array.from(this.actor.items).sort((a, b) => (a.sort || 0) - (b.sort || 0)),
 
-			effects: this.object.effects.map((e) => foundry.utils.deepClone(e)),
+			effects: this.actor.effects.map((e) => foundry.utils.deepClone(e)),
 			owner: this.actor.isOwner,
 			limited: this.actor.limited,
 			options: this.options,
