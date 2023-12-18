@@ -391,117 +391,117 @@ export function convertAttr(attrGroup) {
 		}
 
 		switch (attrValue.type) {
-		case "Number":
-			attr.type = attrValue.type;
-			attr.value = attrValue.default ?? 0;
-			break;
+			case "Number":
+				attr.type = attrValue.type;
+				attr.value = attrValue.default ?? 0;
+				break;
 
-		case "Clock":
-			attr.type = attrValue.type;
-			attr.value = attrValue.default ?? 0;
-			attr.max = attrValue.max ?? 0;
-			attr.steps = [];
-			if (attr.max) {
-				for (let i = 0; i < attr.max; i++) {
-					attr.steps.push(i < attr.value);
+			case "Clock":
+				attr.type = attrValue.type;
+				attr.value = attrValue.default ?? 0;
+				attr.max = attrValue.max ?? 0;
+				attr.steps = [];
+				if (attr.max) {
+					for (let i = 0; i < attr.max; i++) {
+						attr.steps.push(i < attr.value);
+					}
 				}
-			}
-			break;
+				break;
 
-		case "Xp":
-			attr.type = attrValue.type;
-			attr.value = attrValue.default ?? 0;
-			attr.max = attrValue.max ?? 0;
-			attr.steps = [];
-			if (attr.max) {
-				for (let i = 0; i < attr.max; i++) {
-					attr.steps.push(i < attr.value);
+			case "Xp":
+				attr.type = attrValue.type;
+				attr.value = attrValue.default ?? 0;
+				attr.max = attrValue.max ?? 0;
+				attr.steps = [];
+				if (attr.max) {
+					for (let i = 0; i < attr.max; i++) {
+						attr.steps.push(i < attr.value);
+					}
 				}
-			}
-			break;
+				break;
 
-		case "Resource":
-			attr.type = attrValue.type;
-			attr.value = attrValue.default ?? 0;
-			attr.max = attrValue.max ?? 0;
-			break;
+			case "Resource":
+				attr.type = attrValue.type;
+				attr.value = attrValue.default ?? 0;
+				attr.max = attrValue.max ?? 0;
+				break;
 
-		case "Text":
-			attr.type = attrValue.type;
-			attr.value = attrValue.default ?? "";
-			break;
+			case "Text":
+				attr.type = attrValue.type;
+				attr.value = attrValue.default ?? "";
+				break;
 
-		case "LongText":
-			attr.type = attrValue.type;
-			attr.value = attrValue.default ?? "";
-			break;
+			case "LongText":
+				attr.type = attrValue.type;
+				attr.value = attrValue.default ?? "";
+				break;
 
-		case "Checkbox":
-			attr.type = attrValue.type;
-			attr.checkboxLabel = attrValue.checkboxLabel ?? false;
-			attr.value = attrValue.default ?? false;
-			break;
+			case "Checkbox":
+				attr.type = attrValue.type;
+				attr.checkboxLabel = attrValue.checkboxLabel ?? false;
+				attr.value = attrValue.default ?? false;
+				break;
 
-		case "ListMany":
-			attr.type = attrValue.type;
-			attr.condition = attrValue.condition ?? false;
-			attr.options = getListOptions(attrValue);
-			break;
+			case "ListMany":
+				attr.type = attrValue.type;
+				attr.condition = attrValue.condition ?? false;
+				attr.options = getListOptions(attrValue);
+				break;
 
-		case "ListOne":
-			attr.type = attrValue.type;
-			attr.options = getListOptions(attrValue, true);
-			attr.value = attrValue.default ?? "0";
-			break;
+			case "ListOne":
+				attr.type = attrValue.type;
+				attr.options = getListOptions(attrValue, true);
+				attr.value = attrValue.default ?? "0";
+				break;
 
-		case "Roll":
-			attr.type = attrValue.type;
-			attr.value = attrValue.default ?? "";
-			break;
+			case "Roll":
+				attr.type = attrValue.type;
+				attr.value = attrValue.default ?? "";
+				break;
 
-		case "Track":
-			// based on Faction Reputation of Root RPG
-			attr.type = attrValue.type;
-			attr.value = attrValue.default ?? 0;
+			case "Track":
+				// based on Faction Reputation of Root RPG
+				attr.type = attrValue.type;
+				attr.value = attrValue.default ?? 0;
 
-			attr.negative = {
-				value: attrValue.negative?.default ?? 0,
-				steps: attrValue.negative?.steps ?? 3,
-				max: attrValue.negative?.max ?? 3,
-				label: attrValue.negative?.label,
-			};
-			attr.positive = {
-				value: attrValue.positive?.default ?? 0,
-				steps: attrValue.positive?.steps ?? 5,
-				max: attrValue.positive?.max ?? 5,
-				label: attrValue.positive?.label,
-			};
+				attr.negative = {
+					value: attrValue.negative?.default ?? 0,
+					steps: attrValue.negative?.steps ?? 3,
+					max: attrValue.negative?.max ?? 3,
+					label: attrValue.negative?.label,
+				};
+				attr.positive = {
+					value: attrValue.positive?.default ?? 0,
+					steps: attrValue.positive?.steps ?? 5,
+					max: attrValue.positive?.max ?? 5,
+					label: attrValue.positive?.label,
+				};
 
-			// Rendering helper for Track
-			attr.steps = [];
-			for (let i = attr.negative.max - 1; i >= 0; i--) {
-				attr.steps.push({ isValue: true, label: `-${i + 1}`, value: -(i + 1) });
-				for (let j = attr.negative.steps - 1; j >= 0; j--) {
-					attr.steps.push({ isValue: false, step: j, value: -(i + 1) });
+				// Rendering helper for Track
+				attr.steps = [];
+				for (let i = attr.negative.max - 1; i >= 0; i--) {
+					attr.steps.push({ isValue: true, label: `-${i + 1}`, value: -(i + 1) });
+					for (let j = attr.negative.steps - 1; j >= 0; j--) {
+						attr.steps.push({ isValue: false, step: j, value: -(i + 1) });
+					}
 				}
-			}
-			attr.steps.push({ isValue: true, label: "+0", value: 0 });
-			for (let i = 0; i < attr.positive.max; i++) {
-				for (let j = 0; j < attr.positive.steps; j++) {
-					attr.steps.push({ isValue: false, step: j, value: i + 1 });
+				attr.steps.push({ isValue: true, label: "+0", value: 0 });
+				for (let i = 0; i < attr.positive.max; i++) {
+					for (let j = 0; j < attr.positive.steps; j++) {
+						attr.steps.push({ isValue: false, step: j, value: i + 1 });
+					}
+					attr.steps.push({ isValue: true, label: `+${i + 1}`, value: i + 1 });
 				}
-				attr.steps.push({ isValue: true, label: `+${i + 1}`, value: i + 1 });
-			}
-			// used to display the label
-			attr.stepsNegative = (attr.negative.max * attr.negative.steps) + attr.negative.max;
-			attr.stepsPositive = (attr.positive.max * attr.positive.steps) + attr.positive.max;
+				// used to display the label
+				attr.stepsNegative = (attr.negative.max * attr.negative.steps) + attr.negative.max;
+				attr.stepsPositive = (attr.positive.max * attr.positive.steps) + attr.positive.max;
 
-			updateAttrCellTrackDisplay(attr);
+				updateAttrCellTrackDisplay(attr);
 
-			break;
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 
 		attrs[attrKey] = attr;
@@ -726,6 +726,7 @@ export function parseTags(tagString) {
  * @returns {object[] | string[]}
  */
 export async function getPlaybooks(labels_only = true) {
+	// @todo add caching similar to taglist
 	// First, retrieve any custom or overridden playbooks so that we can
 	// prioritize those.
 	let playbooks = game.items.filter((item) => item.type === "playbook");
@@ -896,7 +897,7 @@ export async function preloadHandlebarsTemplates() {
 
 	// Define template paths to load
 	const templatePaths = [
-		// Attribute list partial.
+		// Actor partials
 		"systems/pbta/templates/actors/parts/actor-attributes.hbs",
 		"systems/pbta/templates/actors/parts/actor-description.hbs",
 		"systems/pbta/templates/actors/parts/actor-inventory.hbs",
