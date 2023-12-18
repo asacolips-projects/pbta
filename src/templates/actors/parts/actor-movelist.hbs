@@ -65,7 +65,7 @@
 		<ol class="items-list">
 		{{#each moveGroup as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
-			{{> "pbta.actor-moves" item=item statSettings=../../system.statSettings sheetSettings=../../sheetSettings}}
+			{{> "pbta.actor-moves" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
 			</li>
 		{{/each}}
 		</ol>

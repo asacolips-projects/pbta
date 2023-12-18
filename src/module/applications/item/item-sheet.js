@@ -49,7 +49,7 @@ export default class PbtaItemSheet extends ItemSheet {
 		};
 
 		// Add playbooks.
-		context.system.playbooks = await game.pbta.utils.getPlaybooks();
+		context.playbooks = await game.pbta.utils.getPlaybooks();
 
 		// Handle rich text fields.
 		const enrichmentOptions = {

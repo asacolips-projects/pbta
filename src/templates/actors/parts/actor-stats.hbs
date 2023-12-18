@@ -10,8 +10,8 @@
 			name="system.stats.{{key}}.value"
 			value="{{#if stat.value includeZero=true}}{{numberFormat stat.value decimals=0 sign=true}}{{/if}}"
 			data-dtype="Number" />
-		{{#if ../system.statToggle}}
-		<label class="stat-toggle checkbox"><input type="checkbox" name="system.stats.{{key}}.toggle" {{checked stat.toggle}}/>{{../system.statToggle.label}}</label>
+		{{#if ../statToggle}}
+		<label class="stat-toggle checkbox"><input type="checkbox" name="system.stats.{{key}}.toggle" {{checked stat.toggle}}/>{{../statToggle.label}}</label>
 		{{/if}}
 	</li>
 	{{/each}}

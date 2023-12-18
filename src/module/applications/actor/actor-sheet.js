@@ -87,16 +87,16 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Add playbooks.
 		if (this.actor.baseType === "character") {
-			context.system.playbooks = CONFIG.PBTA.playbooks.map((p) => {
+			context.playbooks = CONFIG.PBTA.playbooks.map((p) => {
 				return { name: p.name, uuid: p.uuid };
 			});
 
 			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
-			context.system.statToggle = sheetConfig?.statToggle ?? false;
-			context.system.statSettings = sheetConfig.actorTypes[this.actor.baseType]?.stats ?? {};
+			context.statToggle = sheetConfig?.statToggle ?? false;
+			context.statSettings = sheetConfig.actorTypes[this.actor.baseType]?.stats ?? {};
 
-			if (context.system.statSettings) {
-				context.system.statSettings = foundry.utils.mergeObject(context.system.statSettings, {
+			if (context.statSettings) {
+				context.statSettings = foundry.utils.mergeObject(context.statSettings, {
 					ask: { label: game.i18n.localize("PBTA.Ask"), value: 0 },
 					prompt: { label: game.i18n.localize("PBTA.Prompt"), value: 0 },
 					formula: { label: game.i18n.localize("PBTA.Formula"), value: 0 }
