@@ -27,12 +27,17 @@
     border: 1px solid rgba(0,0,0,0.25);
     // border: 0;
 
-    &:hover,
-    &:focus {
+    &:hover:not(:disabled),
+    &:focus:not(:disabled) {
       box-shadow: 0 0 5px #38366378;
       // border: 0;
       outline: 0;
     }
+
+    &:disabled {
+      background: #99999940;
+    }
+
   }
 
   input[type="radio"],
@@ -55,7 +60,7 @@
   input,
   textarea {
     // border: 0;
-    margin: 5px 0;
+    // margin: 5px 0;
 
     &::placeholder {
       color: #bfbfbf;

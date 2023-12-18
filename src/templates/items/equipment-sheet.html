@@ -24,12 +24,12 @@
 
         {{!-- Details Tab --}}
         <div class="tab" data-group="primary" data-tab="details">
-          <div class="resource">
+          <div class="form-group">
             <label for="tag" class="control-label">{{localize "PBTA.Tags"}}</label>
-            <div class="help-text"><p>{{localize "PBTA.TagsHelp" }}</p></div>
             <input name='system.tags' class='tags' placeholder='{{localize "PBTA.TagsPlaceholder"}}' value='{{ system.tags }}'/>
+            <p class="notes">{{localize "PBTA.TagsHelp" }}</p>
           </div>
-          <div class="resource">
+          <div class="form-group">
             <label>{{localize "PBTA.Playbook"}}</label>
             <select name="system.playbook">
               {{#select system.playbook}}
@@ -40,20 +40,20 @@
               {{/select}}
             </select>
           </div>
-          <div class="resource">
+          <div class="form-group">
             <label>{{localize "PBTA.Quantity"}}</label>
             <input type="text" name="system.quantity" value="{{system.quantity}}" data-dtype="Number"/>
           </div>
-          <div class="resource">
+          <div class="form-group">
             <label>{{localize "PBTA.Uses"}}</label>
             <input type="text" name="system.uses" value="{{system.uses}}" data-dtype="Number"/>
           </div>
-          <div class="resource">
+          <div class="form-group">
             <label>{{localize "PBTA.Weight"}}</label>
             <input type="text" name="system.weight" value="{{system.weight}}" data-dtype="Number"/>
           </div>
           {{#if system.equipmentTypes}}
-            <div class="resource">
+            <div class="form-group">
               <label>{{localize "PBTA.EquipmentType"}}</label>
               <select name="system.equipmentType" data-dtype="String">
                 {{#select system.equipmentType}}

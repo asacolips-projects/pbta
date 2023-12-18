@@ -1,0 +1,22 @@
+<div class="tab" data-group="primary" data-tab="description">
+	<div class="form-group-stacked">
+		<label>{{localize "PBTA.Common.Description"}}</label>
+		{{editor system.description target="system.description" button=true owner=owner editable=editable}}
+	</div>
+
+	{{#if system.moveResults}}
+	{{#each system.moveResults as |result key|}}
+		<div class="form-group-stacked">
+			<label>{{result.label}}</label>
+			{{editor result.value target=result.rangeName button=true owner=../owner editable=../editable}}
+		</div>
+	{{/each}}
+	{{/if}}
+
+	{{#if system.choices}}
+	<div class="form-group-stacked">
+		<label>{{localize "PBTA.Choices"}}</label>
+		{{editor system.choices target="system.choices" button=true owner=owner editable=editable}}
+	</div>
+	{{/if}}
+</div>

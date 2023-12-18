@@ -904,6 +904,9 @@ export async function preloadHandlebarsTemplates() {
 		"systems/pbta/templates/actors/parts/actor-movelist.hbs",
 		"systems/pbta/templates/actors/parts/actor-moves.hbs",
 		"systems/pbta/templates/actors/parts/actor-stats.hbs",
+
+		// Item partials
+		"systems/pbta/templates/items/parts/move-description.hbs",
 	];
 
 	const paths = {};
