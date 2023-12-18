@@ -44,7 +44,7 @@ module.exports = {
 		"func-call-spacing": "warn",
 		"func-names": ["warn", "never"],
 		"getter-return": "warn",
-		indent: ["warn", "tab"],
+		indent: ["warn", "tab", { SwitchCase: 1 }],
 		"lines-between-class-members": "warn",
 		"new-parens": ["warn", "always"],
 		"newline-per-chained-call": "warn",
