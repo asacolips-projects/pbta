@@ -111,16 +111,6 @@ export default class PbtaItemSheet extends ItemSheet {
 			}
 		} else if (this.item.type === "equipment") {
 			context.system.equipmentTypes = sheetConfig?.actorTypes[this.actor?.baseType]?.equipmentTypes ?? null;
-		} else if (this.item.type === "playbook") {
-			const groupedImprovements = {
-				equipment: [],
-				move: [],
-				improvement: [],
-			};
-			this.item.system.improvementGroups.forEach((g) => {
-				groupedImprovements[g.type].push(g);
-			});
-			context.groups = groupedImprovements;
 		}
 
 		return context;
@@ -134,6 +124,12 @@ export default class PbtaItemSheet extends ItemSheet {
 		if (this.item.type === "equipment") {
 			this._tagify(html);
 		}
+		html.find(".regenerate-slug").on("click", this._onItemRegenerateSlug.bind(this));
+	}
+
+	_onItemRegenerateSlug(event) {
+		event.preventDefault();
+		this.item.update({ "system.slug": this.item.name.slugify() });
 	}
 
 	/**

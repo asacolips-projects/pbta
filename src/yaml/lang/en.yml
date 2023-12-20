@@ -176,6 +176,9 @@ PBTA:
         World: "World Tags"
         all: "All {documentType}"
       title: "Configure Tags"
+  Slug:
+    label: "PbtA ID"
+    tooltip: "Regenerate PbtA ID"
   Warnings:
     UnlinkedToken:
       Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
