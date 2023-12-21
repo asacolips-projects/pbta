@@ -130,6 +130,20 @@ Hooks.on("i18nInit", () => {
 	}
 });
 
+/**
+ * This function runs after game data has been requested and loaded from the servers, so documents exist
+ */
+Hooks.once("setup", function () {
+	// Localize CONFIG objects once up-front
+	const toLocalize = [];
+	for (let o of toLocalize) {
+		CONFIG.PBTA[o] = Object.entries(CONFIG.PBTA[o]).reduce((obj, e) => {
+			obj[e[0]] = game.i18n.localize(e[1]);
+			return obj;
+		}, {});
+	}
+});
+
 Hooks.once("ready", async function () {
 	// Override sheet config.
 	if (game.user.isGM) {
@@ -222,21 +236,3 @@ Hooks.on("renderChatMessage", (data, html, options) => {
 
 Hooks.on("renderChatLog", (app, html, data) => documents.ItemPbta.chatListeners(html));
 Hooks.on("renderChatPopout", (app, html, data) => documents.ItemPbta.chatListeners(html));
-
-/* -------------------------------------------- */
-/*  Foundry VTT Setup                           */
-/* -------------------------------------------- */
-
-/**
- * This function runs after game data has been requested and loaded from the servers, so documents exist
- */
-Hooks.once("setup", function () {
-	// Localize CONFIG objects once up-front
-	const toLocalize = [];
-	for (let o of toLocalize) {
-		CONFIG.PBTA[o] = Object.entries(CONFIG.PBTA[o]).reduce((obj, e) => {
-			obj[e[0]] = game.i18n.localize(e[1]);
-			return obj;
-		}, {});
-	}
-});
