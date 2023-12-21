@@ -80,10 +80,11 @@ export default class PbtaActorSheet extends ActorSheet {
 		await this._prepareItems(context);
 		await this._prepareAttrs(context);
 
-		if (context.system?.details?.biography) {
-			context.system.details.biography =
-				await TextEditor.enrichHTML(context.system.details.biography, context.enrichmentOptions);
-		}
+		Object.entries(context.system.details).forEach(async ([k, v]) => {
+			if (v.value) {
+				context.system.details[k].value = await TextEditor.enrichHTML(v.value, context.enrichmentOptions);
+			}
+		});
 
 		// Add playbooks.
 		if (this.actor.baseType === "character") {

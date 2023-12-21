@@ -166,7 +166,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 				}
 			}
 		}
-		let attrGroups = ["stats", "attrLeft", "attrTop", "moveTypes", "equipmentTypes"];
+		let attrGroups = ["details", "stats", "attrLeft", "attrTop", "moveTypes", "equipmentTypes"];
 
 		for (let actorType of actorTypes) {
 			// Handle deleting custom actor types.

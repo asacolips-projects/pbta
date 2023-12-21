@@ -1,6 +1,6 @@
 Actor:
   htmlFields:
-    - 'details.biography'
+    - 'details.biography.value'
   types:
     - character
     - npc

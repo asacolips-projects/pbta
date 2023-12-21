@@ -271,12 +271,37 @@ export function convertSheetConfig(sheetConfig) {
 
 		} else if (k === "maxMod") {
 			newConfig.maxMod = v;
-		} else if (v.label || v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
+		} else if (v.label || v.description || v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
 			// Actors
 			let actorType = {};
 			if (v.label) {
 				actorType.label = game.i18n.localize(v.label);
 			}
+
+			if (v.description) {
+				actorType.details = {};
+				if (typeof v.description === "string") {
+					actorType.details[v.description] = {
+						label: v.description,
+						value: ""
+					};
+				} else if (typeof v.description === "object") {
+					Object.entries(v.description).forEach(([key, v]) => {
+						actorType.details[key] = foundry.utils.mergeObject({
+							label: key,
+							value: ""
+						}, v);
+					});
+				}
+			} else {
+				actorType.details = {
+					biography: {
+						label: game.i18n.localize("PBTA.Biography"),
+						value: ""
+					}
+				};
+			}
+
 			if (v.stats) {
 				actorType.stats = {};
 				for (let [statKey, statLabel] of Object.entries(v.stats)) {
@@ -552,6 +577,9 @@ export function applyActorTemplates(clear = false) {
 			}
 			if (v.attrLeft) {
 				template.attrLeft = v.attrLeft;
+			}
+			if (v.details) {
+				template.details = v.details;
 			}
 
 			let orig = !clear ? foundry.utils.duplicate(templates[type]) : {};
