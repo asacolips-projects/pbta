@@ -28,7 +28,6 @@
   "scripts": [
     "scripts/lib/tagify.min.js",
     "scripts/lib/codemirror.js",
-    "scripts/lib/codemirror.toml.js",
     "scripts/lib/codemirror.loadmode.js",
     "scripts/lib/toml-node.js"
   ],
