@@ -45,7 +45,8 @@ export default class PbtaItemSheet extends ItemSheet {
 			options: this.options,
 			editable: this.isEditable,
 			cssClass: this.isEditable ? "editable" : "locked",
-			flags: this.item.flags
+			flags: this.item.flags,
+			isGM: game.user.isGM
 		};
 
 		// Add playbooks.

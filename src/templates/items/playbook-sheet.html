@@ -12,7 +12,9 @@
   <nav class="sheet-navigation sheet-tabs tabs" data-group="primary">
     <a class="item" data-tab="description">{{localize "PBTA.Common.Description" }}</a>
     <!-- <a class="item" data-tab="moves">{{localize "PBTA.Moves" }}</a> -->
+    {{#if isGM}}
     <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
+    {{/if}}
   </nav>
 
   {{!-- Sheet Body --}}
@@ -24,6 +26,7 @@
     </div>
 
     {{!-- Details Tab --}}
+    {{#if isGM}}
     <div class="tab" data-group="primary" data-tab="details">
       <div class="form-group">
         <label class="control-label">{{localize "PBTA.Slug.label" }}</label>
@@ -35,5 +38,6 @@
         </div>
       </div>
     </div>
+    {{/if}}
   </section>
 </form>
