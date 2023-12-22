@@ -703,7 +703,7 @@ export function getDeprecatedTagList() {
  * @returns {object[]}
  */
 export function getTagList(document) {
-	if (Object.keys(game.pbta.tagList)) {
+	if (game.pbta.tagList) {
 		// @todo this will cause conflicts once Actor Tags are supported
 		// should refactor the whole thing to create two lists on CONFIG.PBTA.tags
 		// and have the specific tagify functions get from them instead
