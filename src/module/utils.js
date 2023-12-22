@@ -703,7 +703,10 @@ export function getDeprecatedTagList() {
  * @returns {object[]}
  */
 export function getTagList(document) {
-	if (game.pbta.tagList) {
+	if (Object.keys(game.pbta.tagList)) {
+		// @todo this will cause conflicts once Actor Tags are supported
+		// should refactor the whole thing to create two lists on CONFIG.PBTA.tags
+		// and have the specific tagify functions get from them instead
 		return game.pbta.tagList;
 	}
 	const { general = "[]", actor: actorTags = {}, item: itemTags = {} } = game.settings.get("pbta", "tagConfig") ?? {};
@@ -730,17 +733,7 @@ export function getTagList(document) {
 
 		tagNames.push(...allItemTags, ...typeTags, ...allModuleItemTags, ...moduleTypeTags);
 	}
-	tagNames.sort((a, b) => {
-		const aSort = a.value.toLowerCase();
-		const bSort = b.value.toLowerCase();
-		if (aSort < bSort) {
-			return -1;
-		}
-		if (aSort > bSort) {
-			return 1;
-		}
-		return 0;
-	});
+	tagNames.sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: "base" }));
 	game.pbta.tagList = tagNames;
 	return tagNames;
 }

@@ -666,6 +666,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	/* -------------------------------------------- */
 
+	// @todo currently unused
 	async _activateTagging(html) {
 		// Build the tags list.
 		let tags = game.items.filter((item) => item.type === "tag").map((item) => {
@@ -689,17 +690,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		}
 
 		// Sort the tagnames list.
-		tagNames.sort((a, b) => {
-			const aSort = a.toLowerCase();
-			const bSort = b.toLowerCase();
-			if (aSort < bSort) {
-				return -1;
-			}
-			if (aSort > bSort) {
-				return 1;
-			}
-			return 0;
-		});
+		tagNames.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 
 		// Tagify!
 		let $input = html.find('input[name="system.tags"]');
