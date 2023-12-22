@@ -147,6 +147,41 @@ export default class ItemPbta extends Item {
 		}
 	}
 
+	static async create(data, context={}) {
+		const created = await super.create(data, context);
+		if (created.type === "playbook") {
+			CONFIG.PBTA.playbooks.push({
+				name: created.name,
+				slug: created.system.slug,
+				uuid: created.uuid,
+				actorType: created.system.actorType
+			});
+		}
+		return created;
+	}
+
+	async update(data={}, context={}) {
+		const updated = await super.update(data, context);
+		if (updated?.type === "playbook") {
+			const index = CONFIG.PBTA.playbooks.findIndex((p) => p.uuid === updated.uuid);
+			CONFIG.PBTA.playbooks[index] = {
+				name: updated.name,
+				slug: updated.system.slug,
+				uuid: updated.uuid,
+				actorType: updated.system.actorType
+			};
+		}
+		return updated;
+	}
+
+	async delete(context={}) {
+		const deleted = await super.delete(context);
+		if (deleted.type === "playbook") {
+			CONFIG.PBTA.playbooks = CONFIG.PBTA.playbooks.filter((p) => p.uuid !== deleted.uuid);
+		}
+		return deleted;
+	}
+
 	static async createDialog(data={}, {parent=null, pack=null, ...options}={}) {
 
 		// Collect data

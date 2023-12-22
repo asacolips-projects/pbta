@@ -198,10 +198,9 @@ Hooks.once("ready", async function () {
 	// Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
 	Hooks.on("hotbarDrop", (bar, data, slot) => documents.macro.createPbtaMacro(data, slot));
 
-	PBTA.playbooks = (await utils.getPlaybooks(false)).map((p) => {
-		return { name: p.name, slug: p?.slug || p.name.slugify(), uuid: p.uuid };
-	});
 	CONFIG.PBTA = PBTA;
+
+	utils.getPlaybooks(false);
 
 	// Apply structure to actor types.
 	utils.applyActorTemplates();

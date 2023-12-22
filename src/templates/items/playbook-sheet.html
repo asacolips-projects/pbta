@@ -30,13 +30,23 @@
     <div class="tab" data-group="primary" data-tab="details">
       <div class="form-group">
         <label class="control-label">{{localize "PBTA.Slug.label" }}</label>
-        <input type="text" name='system.slug' value='{{ system.slug }}'/>
-        <div class="item-controls">
-          <a class="regenerate-slug" data-tooltip="PBTA.Slug.tooltip">
-            <i class="fa-solid fa-arrows-rotate"></i>
-          </a>
+        <div class="flexrow">
+          <input type="text" name='system.slug' value='{{ system.slug }}'/>
+          <div class="item-controls">
+            <a class="regenerate-slug" data-tooltip="PBTA.Slug.tooltip">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </a>
+          </div>
         </div>
       </div>
+      {{#if (gt actorTypes.length 1)}}
+      <div class="form-group">
+        <label>Character Type @todo localize</label>
+        <select name="system.actorType">
+          {{selectOptions actorTypes selected=system.actorType nameAttr="value" labelAttr="label" blank="" sort=true}}
+        </select>
+      </div>
+      {{/if}}
     </div>
     {{/if}}
   </section>

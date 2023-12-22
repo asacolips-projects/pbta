@@ -88,9 +88,14 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Add playbooks.
 		if (this.actor.baseType === "character") {
-			context.playbooks = CONFIG.PBTA.playbooks.map((p) => {
-				return { name: p.name, uuid: p.uuid };
-			});
+			const hasMultipleCharacterTypes = Object.keys(game.pbta.sheetConfig.actorTypes)
+				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
+				.length;
+			context.playbooks = CONFIG.PBTA.playbooks
+				.filter((p) => !hasMultipleCharacterTypes || p.actorType === this.actor.type || p.actorType === "")
+				.map((p) => {
+					return { name: p.name, uuid: p.uuid };
+				});
 
 			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
 			context.statToggle = sheetConfig?.statToggle ?? false;

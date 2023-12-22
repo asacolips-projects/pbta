@@ -758,72 +758,47 @@ export function parseTags(tagString) {
 }
 
 /**
- * Retrives a list of Playbooks in the world and compendiums
+ * Retrieves a list of Playbooks in the world and compendiums
  * and returns them as an array of names or of documents.
- * @param {boolean} labels_only	Sets if the output will be a list of names or list of documents.
- * @returns {object[] | string[]}
  */
-export async function getPlaybooks(labels_only = true) {
-	// @todo add caching similar to taglist
-	// First, retrieve any custom or overridden playbooks so that we can
-	// prioritize those.
+export async function getPlaybooks() {
+	// Retrieve custom or overridden playbooks.
 	let playbooks = game.items.filter((item) => item.type === "playbook");
-	// Next, retrieve compendium playbooks and merge them in.
+
+	// Retrieve compendium playbooks and merge them in.
 	for (let c of game.packs) {
 		if (c.metadata.type && c.metadata.type === "Item" && c.metadata.name.includes("playbooks")) {
-			// Load the compendium and then merge it with the existing items. Filter
-			// it to include only playbook items.
-			let items = c ? await c.getDocuments() : [];
+			const items = c ? await c.getDocuments() : [];
 			playbooks = playbooks.concat(items.filter((i) => i.type === "playbook"));
 		}
 	}
-	// Reduce duplicates. Because item playbooks happen first, this will prevent
-	// duplicate compendium entries from overriding the items.
-	let charPlaybookNames = [];
-	for (let charPlaybook of playbooks) {
-		let charPlaybookName = charPlaybook.name;
-		if (charPlaybookNames.includes(charPlaybookName) !== false) {
-			playbooks = playbooks.filter((item) => item.id !== charPlaybook.id);
-		} else {
-			charPlaybookNames.push(charPlaybookName);
-		}
-	}
 
-	// Sort the charPlaybookNames list.
-	if (labels_only) {
-		charPlaybookNames.sort((a, b) => {
-			const aSort = a.toLowerCase();
-			const bSort = b.toLowerCase();
-			if (aSort < bSort) {
-				return -1;
-			}
-			if (aSort > bSort) {
-				return 1;
-			}
-			return 0;
+	const sortedPlaybooks = playbooks.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
+	CONFIG.PBTA.playbooks = sortedPlaybooks
+		.map((p) => {
+			return {
+				name: p.name,
+				slug: p.system.slug || p.name.slugify(),
+				uuid: p.uuid,
+				actorType: p.system.actorType
+			};
 		});
-		return charPlaybookNames;
-	}
-	// Otherwise, sort the playbook objects list.
-	playbooks.sort((a, b) => {
-		const aSort = a.name.toLowerCase();
-		const bSort = b.name.toLowerCase();
-		if (aSort < bSort) {
-			return -1;
-		}
-		if (aSort > bSort) {
-			return 1;
-		}
-		return 0;
-	});
-	return playbooks;
+}
+
+/**
+ * Returns a list of names of the playbooks listed under CONFIG.PBTA.playbooks.
+ * @returns {string[]}
+ */
+export function getPlaybookLabels() {
+	const playbooksLabels = Array.from(new Set(CONFIG.PBTA.playbooks.map((playbook) => playbook.name)));
+	return playbooksLabels.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 }
 
 /**
  * Updates every actor in the world with changes from a
  * new Sheet Config.
  * @param {object} newConfig
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 export async function updateActors(newConfig) {
 	let success = true;

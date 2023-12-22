@@ -50,7 +50,7 @@ export default class PbtaItemSheet extends ItemSheet {
 		};
 
 		// Add playbooks.
-		context.playbooks = await game.pbta.utils.getPlaybooks();
+		context.playbooks = game.pbta.utils.getPlaybookLabels();
 
 		// Handle rich text fields.
 		const enrichmentOptions = {
@@ -112,6 +112,17 @@ export default class PbtaItemSheet extends ItemSheet {
 			}
 		} else if (this.item.type === "equipment") {
 			context.system.equipmentTypes = sheetConfig?.actorTypes[this.actor?.baseType]?.equipmentTypes ?? null;
+		} else if (this.item.type === "playbook") {
+			context.actorTypes = Object.keys(game.pbta.sheetConfig.actorTypes)
+				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
+				.map((a) => {
+					const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
+					const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
+					return {
+						label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a),
+						value: a
+					};
+				});
 		}
 
 		return context;

@@ -15,7 +15,8 @@ export default class PlaybookData extends ItemTemplateData {
 						});
 					}
 				}
-			})
+			}),
+			actorType: new foundry.data.fields.StringField({ initial: "" })
 		};
 	}
 }

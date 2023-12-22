@@ -14,6 +14,8 @@ PBTA.attrTypes = [
 	"Track"
 ];
 
+PBTA.playbooks = [];
+
 PBTA.rollModes = {
 	def: "PBTA.Normal",
 	adv: "PBTA.Advantage",
