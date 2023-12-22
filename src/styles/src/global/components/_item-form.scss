@@ -44,7 +44,7 @@
     .tags {
       background-color: #fff;
 
-      &:read-only {
+      &:disabled {
         background-color: #99999940;
       }
     }
