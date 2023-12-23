@@ -42,8 +42,8 @@
 
   input[type="radio"],
   input[type="checkbox"] {
-    zoom: 0.9;
-    margin-right: 5px;
+    width: 18px;
+    height: 18px;
 
     &:hover,
     &:focus {
@@ -53,8 +53,11 @@
   }
 
   input[type="radio"] {
-    width: 20px;
-    height: 20px;
+    margin: 0 5px;
+  }
+
+  input[type="checkbox"] {
+    flex: 0 0 18px;
   }
 
   input,
