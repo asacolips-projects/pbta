@@ -133,6 +133,10 @@ export default class PbtaActorSheet extends ActorSheet {
 		const groups = ["attrTop", "attrLeft"];
 		for (let group of groups) {
 			for (let [attrKey, attrValue] of Object.entries(context.system[group])) {
+				if (context.limited && !attrValue.limited) {
+					delete context.system[group][attrKey];
+					continue;
+				}
 				const playbook = attrValue.playbook;
 				if (playbook && ![this.actor.playbook, this.actor.playbookSlug].includes(playbook)) {
 					delete context.system[group][attrKey];

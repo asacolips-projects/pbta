@@ -38,8 +38,10 @@
 				{{!-- Sheet Tab Navigation --}}
 				<nav class="sheet-tabs tabs" data-group="primary">
 					<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
+					{{#unless limited}}
 					<a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
 					<a class="item" data-tab="equipment">{{localize "PBTA.Equipment"}}</a>
+					{{/unless}}
 				</nav>
 
 				{{!-- Sheet Body --}}

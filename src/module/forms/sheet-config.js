@@ -203,29 +203,21 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 						configDiff.add.push(`${actorType}.${attrGroup}.${attr}`);
 						updatesDiff[actorType][`system.${attrGroup}.${attr}`] = newGroup[attr];
 					} else {
-						// Handle updating label values.
-						if (newGroup[attr].label && newGroup[attr].label !== oldGroup[attr].label) {
-							configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.label`);
-							updatesDiff[actorType][`system.${attrGroup}.${attr}.label`] = newGroup[attr].label;
-						}
-						if (newGroup[attr].customLabel && newGroup[attr].customLabel !== oldGroup[attr].customLabel) {
-							configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.customLabel`);
-							updatesDiff[actorType][`system.${attrGroup}.${attr}.customLabel`] = newGroup[attr].customLabel;
-						}
-						// Handle updating description values.
-						if (newGroup[attr].description && newGroup[attr].description !== oldGroup[attr].description) {
-							configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.description`);
-							updatesDiff[actorType][`system.${attrGroup}.${attr}.description`] = newGroup[attr].description;
-						}
+						const cosmetic = ["label", "customLabel", "description", "playbook", "limited"];
+						cosmetic.forEach((v) => {
+							const isValid = !foundry.utils.isEmpty(newGroup[attr][v]);
+							if (isValid && newGroup[attr][v] !== oldGroup[attr][v]) {
+								configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.${v}`);
+								updatesDiff[actorType][`system.${attrGroup}.${attr}.${v}`] = newGroup[attr][v];
+							}
+						});
 						// Handle updating ListOne values.
-						if (newGroup[attr].value && newGroup[attr].value !== oldGroup[attr].value) {
+						if (
+							!foundry.utils.isEmpty(newGroup[attr].value)
+							&& newGroup[attr].value !== oldGroup[attr].value
+						) {
 							configDiff.values.push(`${actorType}.${attrGroup}.${attr}.value`);
 							updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].value;
-						}
-						// Handle updating an playbook values.
-						if (newGroup[attr].playbook && newGroup[attr].playbook !== oldGroup[attr].playbook) {
-							configDiff.values.push(`${actorType}.${attrGroup}.${attr}.playbook`);
-							updatesDiff[actorType][`system.${attrGroup}.${attr}.playbook`] = newGroup[attr].playbook;
 						}
 					}
 				}
