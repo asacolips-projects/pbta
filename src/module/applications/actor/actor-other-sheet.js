@@ -5,30 +5,6 @@ import PbtaActorSheet from "./actor-sheet.js";
  * @extends {ActorSheet}
  */
 export default class PbtaActorOtherSheet extends PbtaActorSheet {
-
-	/** @override */
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
-			classes: ["pbta", "sheet", "actor"],
-			width: 840,
-			height: 780,
-			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "moves" }],
-		});
-	}
-
-	/** @override */
-	get template() {
-		const path = "systems/pbta/templates/actors";
-		return `${path}/${this.actor.baseType}-sheet.html`;
-	}
-
-	get unsupportedItemTypes() {
-		if (this.actor.baseType === "character") {
-			return new Set(["npcMove", "tag"]);
-		}
-		return new Set(["move", "playbook", "tag"]);
-	}
-
 	/** @override */
 	constructor(...args) {
 		super(...args);
@@ -45,5 +21,27 @@ export default class PbtaActorOtherSheet extends PbtaActorSheet {
 		} else {
 			this.options.classes.push("character");
 		}
+	}
+
+	/** @override */
+	static get defaultOptions() {
+		return foundry.utils.mergeObject(super.defaultOptions, {
+			classes: ["pbta", "sheet", "actor"],
+			width: 840,
+			height: 780,
+		});
+	}
+
+	/** @override */
+	get template() {
+		const path = "systems/pbta/templates/actors";
+		return `${path}/${this.actor.baseType}-sheet.html`;
+	}
+
+	get unsupportedItemTypes() {
+		if (this.actor.baseType === "character") {
+			return new Set(["npcMove", "tag"]);
+		}
+		return new Set(["move", "playbook", "tag"]);
 	}
 }
