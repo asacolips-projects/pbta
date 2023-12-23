@@ -184,18 +184,19 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			}
 			// Handle attribute groups.
 			for (let attrGroup of attrGroups) {
-				if (!currentConfig.actorTypes[actorType][attrGroup]) {
-					// configDiff.add.push(`${actorType}.${attrGroup}`);
-					continue;
-				}
-
-				if (!newConfig.actorTypes[actorType][attrGroup]) {
-					// configDiff.add.push(`${actorType}.${attrGroup}`);
-					continue;
-				}
-
 				let newGroup = newConfig.actorTypes[actorType][attrGroup];
 				let oldGroup = currentConfig.actorTypes[actorType][attrGroup];
+
+				if (!oldGroup && newGroup) {
+					configDiff.add.push(`${actorType}.${attrGroup}`);
+					updatesDiff[actorType][`system.${attrGroup}`] = newGroup;
+					continue;
+				} else if (oldGroup && !newGroup) {
+					configDiff.del.push(`${actorType}.${attrGroup}`);
+					updatesDiff[actorType][`system.-=${attrGroup}`] = null;
+					continue;
+				}
+				if (!newGroup || !oldGroup) continue;
 
 				for (let attr of Object.keys(newGroup)) {
 					if (!oldGroup[attr]) {
@@ -221,7 +222,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 							configDiff.values.push(`${actorType}.${attrGroup}.${attr}.value`);
 							updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].value;
 						}
-						// Handle updating ListOne values.
+						// Handle updating an playbook values.
 						if (newGroup[attr].playbook && newGroup[attr].playbook !== oldGroup[attr].playbook) {
 							configDiff.values.push(`${actorType}.${attrGroup}.${attr}.playbook`);
 							updatesDiff[actorType][`system.${attrGroup}.${attr}.playbook`] = newGroup[attr].playbook;
