@@ -1,5 +1,3 @@
-import { PBTA } from "./config.js";
-
 /**
  * Transforms any string into "sluggy" string
  * @param {string} string	The string to be transformed.
@@ -111,8 +109,8 @@ export function validateSheetConfig(sheetConfig) {
 					for (let [attr, attrValue] of Object.entries(actorConfig[attrGroup])) {
 						// Confirm the attribute type is valid.
 						let attrType = typeof attrValue === "object" && attrValue.type ? attrValue.type : attrValue;
-						if (!PBTA.attrTypes.includes(attrType)) {
-							errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeType} ${PBTA.attrTypes.join(", ")}.`);
+						if (!CONFIG.PBTA.attrTypes.includes(attrType)) {
+							errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeType} ${CONFIG.PBTA.attrTypes.join(", ")}.`);
 						}
 
 						if (typeof attrType === "object") {
@@ -421,7 +419,7 @@ export function convertAttr(attrGroup) {
 			attrValue = { type: val, value: "" };
 		}
 
-		if (!PBTA.attrTypes.includes(attrValue.type)) {
+		if (!CONFIG.PBTA.attrTypes.includes(attrValue.type)) {
 			continue;
 		}
 
