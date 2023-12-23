@@ -906,6 +906,7 @@ export async function preloadHandlebarsTemplates() {
 		// Actor partials
 		"systems/pbta/templates/actors/parts/actor-attributes.hbs",
 		"systems/pbta/templates/actors/parts/actor-description.hbs",
+		"systems/pbta/templates/actors/parts/actor-header.hbs",
 		"systems/pbta/templates/actors/parts/actor-inventory.hbs",
 		"systems/pbta/templates/actors/parts/actor-movelist.hbs",
 		"systems/pbta/templates/actors/parts/actor-moves.hbs",

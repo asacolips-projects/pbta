@@ -19,7 +19,8 @@ export default class PbtaActorSheet extends ActorSheet {
 	/** @override */
 	get template() {
 		const path = "systems/pbta/templates/actors";
-		return `${path}/${this.actor.type}-sheet.html`;
+		// @todo add limited sheet
+		return `${path}/actor-sheet.html`;
 	}
 
 	get unsupportedItemTypes() {
