@@ -1,14 +1,14 @@
 <form class="{{cssClass}}" autocomplete="off">
 
-	<div class="sheet-wrapper">
+	<div class="sheet-wrapper flexcol">
 
 		{{!-- Sheet Header --}}
 		{{> "pbta.actor-header" }}
 
-		<section class="sheet-top">
+		<section class="sheet-top flexcol">
 			{{#if isCharacter}}
 			{{!-- Attributes --}}
-			<section class="sheet-attributes">
+			<section class="sheet-attributes flexrow">
 				<div class="cell cell--image">
 					<img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
 				</div>
@@ -19,11 +19,11 @@
 			{{/if}}
 
 			<section class="sheet-attributes-top">
-				{{~> "pbta.actor-attributes" attrs=system.attrTop group="attrTop" class="attributes-top" owner=owner editable=editable ~}}
+				{{~> "pbta.actor-attributes" attrs=system.attrTop group="attrTop" class="attributes-top flexrow" owner=owner editable=editable ~}}
 			</section>
 		</section>
 
-		<section class="sheet-bottom">
+		<section class="sheet-bottom flexrow">
 			{{!-- Sidebar --}}
 			{{#if (objLen system.attrLeft)}}
 			<section class="sheet-look">

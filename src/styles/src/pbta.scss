@@ -54,15 +54,6 @@
 
     &.npc {
       min-width: 420px;
-
-      .window-content {
-        background-size:
-          100% 230px,
-          100%;
-        background-position:
-          0 0,
-          0 228px;
-      }
     }
   }
 
@@ -79,7 +70,7 @@
     @import 'global/base/cell';
     @import 'global/components/tabs';
     // Specific.
-    @import 'global/components/sheet';
+    // @import 'global/components/sheet';
     @import 'global/components/item-form';
     // @import 'global/components/tags';
     @import 'global/components/header';

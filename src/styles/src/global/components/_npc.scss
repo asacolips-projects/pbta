@@ -1,12 +1,17 @@
 &.npc {
-  .cell--image {
-    flex: 0 0 80px;
-  }
+  .sheet-wrapper {
+    .sheet-header {
+      column-gap: 10px;
 
-  // @todo convert original do flex and remove this
-  .sheet-header__fields {
-    display: flex;
-    padding: 0 16px;
+      .cell--image {
+        flex: 0 0 80px;
+      }
+    }
+    .sheet-top {
+      // For some reason it grows bigger than Character sheet since it has no Stats.
+      // The actual fix would be to remove the "height: 100%" .sheet-wrapper, but it breaks editors
+      max-height: 139px;
+    }
   }
 
   .help-text {

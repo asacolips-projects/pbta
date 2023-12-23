@@ -111,7 +111,7 @@
 
       {{!-- Fallback to a text field. --}}
       {{else}}
-        <input type="text" class="input input--title" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}"/>
+        <input type="text" class="input input--{{key}}" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}"/>
       {{/if}}
     </div>
   {{/each}}

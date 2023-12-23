@@ -1,56 +1,52 @@
 <div class="tab moves active" data-group="primary" data-tab="moves">
-	{{#if isCharacter}}
 	<section class="sheet-tab">
+		{{#if isCharacter}}
+		<section class="sheet-notifications">
+			{{#if isToken}}
+			<div class="cell__title warning small-text">{{localize "PBTA.Warnings.UnlinkedToken.Moves"}}</div>
+			{{/if}}
+		</section>
 
-	<section class="sheet-notifications">
-		{{#if isToken}}
-		<div class="cell__title warning small-text">{{localize "PBTA.Warnings.UnlinkedToken.Moves"}}</div>
-		{{/if}}
-	</section>
-
-	<section class="sheet-resources flexrow">
-		{{#if (not sheetSettings.hideRollFormula)}}
-		<div class="cell cell--roll-formula">
-			<label class="cell__title">{{localize "PBTA.RollFormulaOverride"}}</label>
-			<div class="cell__wrapper">
-			<input type="text" name="system.resources.rollFormula" value="{{system.resources.rollFormula}}" placeholder="ex: 3d6kh2"/>
+		<section class="sheet-resources flexrow">
+			{{#if (not sheetSettings.hideRollFormula)}}
+			<div class="cell cell--roll-formula">
+				<label class="cell__title">{{localize "PBTA.RollFormulaOverride"}}</label>
+				<div class="cell__wrapper">
+				<input type="text" name="system.resources.rollFormula" value="{{system.resources.rollFormula}}" placeholder="ex: 3d6kh2"/>
+				</div>
 			</div>
-		</div>
-		{{/if}}
+			{{/if}}
 
-		{{#if (not sheetSettings.hideForward)}}
-		<div class="cell cell--forward">
-			<label class="cell__title">{{localize "PBTA.Forward"}}</label>
-			<div class="cell__wrapper">
-			<button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.forward.value" >-</button>
-			<input type="number" name="system.resources.forward.value" value="{{system.resources.forward.value}}" data-dtype="Number"/>
-			<button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.forward.value">+</button>
+			{{#if (not sheetSettings.hideForward)}}
+			<div class="cell cell--forward">
+				<label class="cell__title">{{localize "PBTA.Forward"}}</label>
+				<div class="cell__wrapper">
+				<button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.forward.value" >-</button>
+				<input type="number" name="system.resources.forward.value" value="{{system.resources.forward.value}}" data-dtype="Number"/>
+				<button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.forward.value">+</button>
+				</div>
 			</div>
-		</div>
-		{{/if}}
+			{{/if}}
 
-		{{#if (not sheetSettings.hideOngoing)}}
-		<div class="cell cell--ongoing">
-			<label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
-			<div class="cell__wrapper">
-			<button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.ongoing.value">-</button>
-			<input type="number" name="system.resources.ongoing.value" value="{{system.resources.ongoing.value}}" data-dtype="Number"/>
-			<button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
+			{{#if (not sheetSettings.hideOngoing)}}
+			<div class="cell cell--ongoing">
+				<label class="cell__title">{{localize "PBTA.Ongoing"}}</label>
+				<div class="cell__wrapper">
+				<button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.ongoing.value">-</button>
+				<input type="number" name="system.resources.ongoing.value" value="{{system.resources.ongoing.value}}" data-dtype="Number"/>
+				<button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.ongoing.value">+</button>
+				</div>
 			</div>
-		</div>
-		{{/if}}
+			{{/if}}
 
-		{{#if (not sheetSettings.hideRollMode)}}
-		<div class="cell cell--roll-mode flexrow">
-			<label class="cell__title">{{localize "PBTA.RollMode"}}</label>
-			{{radioBoxes 'flags.pbta.rollMode' config.rollModes checked=flags.pbta.rollMode localize=true}}
-		</div>
+			{{#if (not sheetSettings.hideRollMode)}}
+			<div class="cell cell--roll-mode flexrow">
+				<label class="cell__title">{{localize "PBTA.RollMode"}}</label>
+				{{radioBoxes 'flags.pbta.rollMode' config.rollModes checked=flags.pbta.rollMode localize=true}}
+			</div>
+			{{/if}}
+		</section>
 		{{/if}}
-	</section>
-	{{else}}
-	<div class="sheet-tab">
-		<div class="sheet-moves moves">
-	{{/if}}
 
 		{{#each moves as |moveGroup moveKey|}}
 			<div class="cell cell--moves cell--group cell--{{moveKey}}">
@@ -86,21 +82,7 @@
 			{{/each}}
 			</ol>
 			</div>
-		</h2>
-		<ol class="items-list">
-		{{#each moveGroup as |item id|}}
-			<li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
-			{{> "pbta.actor-moves" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-			</li>
 		{{/each}}
-		</ol>
-		</div>
-	{{/each}}
 
-	{{#if isCharacter}}
 	</section>
-	{{else}}
-		</div>
-	</div>
-	{{/if}}
 </div>
