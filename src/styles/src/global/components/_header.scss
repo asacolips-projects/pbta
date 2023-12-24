@@ -9,13 +9,25 @@
   }
 
   select.charplaybook {
+
+    &:has(option[value=""]:checked) {
+      color: #bfbfbf;
+
+      option {
+        &:not([value=""]) {
+          color: fieldtext;
+        }
+      }
+    }
+
     option {
       background: #fff;
-    }
-  }
+      color: inherit;
 
-  .charclass {
-    flex: 2;
+      &[value=""] {
+        color: #bfbfbf;
+      }
+    }
   }
 
   .flex-item {
