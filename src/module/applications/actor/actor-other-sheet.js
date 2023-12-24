@@ -11,7 +11,6 @@ export default class PbtaActorOtherSheet extends PbtaActorSheet {
 
 		if (this.actor.baseType === "npc") {
 			this.options.classes.push("npc");
-			this.options.tabs[0].contentSelector = ".sheet-tabs-content";
 
 			this.options.width = 720;
 			this.options.height = 640;
