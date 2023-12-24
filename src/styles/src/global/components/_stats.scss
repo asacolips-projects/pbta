@@ -92,13 +92,23 @@
 
           select {
             font-weight: bold;
+            color: #fff;
+
+            &.up {
+              background: url(/icons/svg/up.svg) no-repeat -10% rgba(0,0,0,.25);
+              background-size: contain;
+            }
+
+            &.down {
+              background: url(/icons/svg/down.svg) no-repeat -10% rgba(0,0,0,.25);
+              background-size: contain;
+            }
 
             option {
+              color: fieldtext;
               background: #fff;
             }
           }
-
-
         }
       }
     }
