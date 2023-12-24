@@ -8,8 +8,6 @@ export default class PbtaActorSheet extends ActorSheet {
 		super(...args);
 
 		if (this.actor.limited) {
-			this.options.classes.push("npc");
-
 			this.options.width = 580;
 			this.options.height = 500;
 
