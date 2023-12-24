@@ -216,7 +216,6 @@ export default class PbtaActorSheet extends ActorSheet {
 	/**
 	 * Organize and classify Items for Character sheets.
 	 * @param {object} context The actor to prepare.
-	 * @returns {undefined}
 	 */
 	async _prepareItems(context) {
 		const actorType = this.actor.baseType;
