@@ -230,11 +230,13 @@ export function convertSheetConfig(sheetConfig) {
 				};
 			}
 		} else if (k === "statShifting") {
+			const img = "systems/pbta/assets/icons/svg/back-forth.svg";
 			const statLabel = game.i18n.localize("PBTA.Stat.label");
 			const statsLabel = game.i18n.localize("PBTA.Stat.labelPl");
 			const label = game.i18n.format("PBTA.Stat.Shifting.label", { stat: statLabel });
 			if (typeof v === "object") {
 				newConfig.statShifting = {
+					img: v.img ?? img,
 					label: v.label || label,
 					value: v.value && !isNaN(v.value) ? Math.abs(v.value) : 1,
 					labels: {
@@ -244,6 +246,7 @@ export function convertSheetConfig(sheetConfig) {
 				};
 			} else {
 				newConfig.statShifting = {
+					img,
 					label,
 					value: 1,
 					labels: {
