@@ -310,11 +310,11 @@ export function convertSheetConfig(sheetConfig) {
 						value: ""
 					};
 				} else if (typeof v.description === "object") {
-					Object.entries(v.description).forEach(([key, v]) => {
+					Object.entries(v.description).forEach(([key, value]) => {
 						actorType.details[key] = foundry.utils.mergeObject({
 							label: key,
 							value: ""
-						}, v);
+						}, { ...value });
 					});
 				}
 			} else {
