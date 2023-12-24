@@ -45,6 +45,7 @@
         align-items: center;
         justify-content: center;
         border-bottom: 1px solid $ct-white;
+        column-gap: 2px;
 
         &:hover {
           cursor: pointer;
@@ -57,8 +58,6 @@
       }
 
       .stat-icon {
-        order: 1;
-        flex: 0 0 32px;
         color: $c-white;
         font-size: 18px;
         height: 20px;

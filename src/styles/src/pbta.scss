@@ -20,31 +20,22 @@
 .pbta {
   font-family: $font-stack-base;
 
-  textarea {
-    resize: vertical;
-  }
-
-  .window-content {
-    // background: $c-white;
-  }
-
-  &.actor {
-    min-height: 620px;
-    min-width: 720px;
-
-    &.npc {
-      min-height: 500px;
-      min-width: 580px;
-    }
-  }
-
-  &.item {
-    min-height: 400px;
-    min-width: 450px;
-  }
-
-  // Import components, scoped within the sheet.
   &.sheet {
+    &.actor {
+      min-height: 620px;
+      min-width: 625px;
+
+      &.npc {
+        min-height: 500px;
+        min-width: 580px;
+      }
+    }
+
+    &.item {
+      min-height: 400px;
+      min-width: 450px;
+    }
+
     // Generic.
     @import 'global/base/input';
     @import 'global/base/sheet-wrapper';

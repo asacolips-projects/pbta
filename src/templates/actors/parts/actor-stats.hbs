@@ -2,15 +2,15 @@
 	<ol class="stats-list flexrow">
 		{{#each system.stats as |stat key|}}
 		<li class="stat flexrow" data-stat="{{key}}">
-			<span class="stat-icon stat-rollable {{#unless ../limited}}rollable{{/unless}}" data-mod="{{stat.value}}" data-label="{{stat.label}}">
-				<i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
-			</span>
 			<label
 				for="system.stats.{{key}}.value"
 				class="cell__title stat-rollable rollable"
 				data-mod="{{stat.value}}"
 				data-label="{{stat.label}}"
 				>
+				<span class="stat-icon">
+					<i class="fas fa-dice-d6"></i>
+				</span>
 				{{ stat.label }}
 			</label>
 			{{#if ../statToggle}}
