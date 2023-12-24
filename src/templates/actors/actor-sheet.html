@@ -49,12 +49,13 @@
 					{{!-- Main Tab --}}
 					{{> "pbta.actor-description" }}
 
+					{{#unless limited}}
 					{{!-- Moves Tab --}}
 					{{> "pbta.actor-movelist" }}
 
 					{{!-- Owned Equipment Tab --}}
 					{{> "pbta.actor-inventory" }}
-
+					{{/unless}}
 				</section>
 			</section>
 		</section>

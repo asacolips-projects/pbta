@@ -4,6 +4,21 @@
  */
 export default class PbtaActorSheet extends ActorSheet {
 	/** @override */
+	constructor(...args) {
+		super(...args);
+
+		if (this.actor.limited) {
+			this.options.classes.push("npc");
+
+			this.options.width = 580;
+			this.options.height = 500;
+
+			this.position.width = 580;
+			this.position.height = 500;
+		}
+	}
+
+	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "actor", "character"],
@@ -20,6 +35,7 @@ export default class PbtaActorSheet extends ActorSheet {
 	get template() {
 		const path = "systems/pbta/templates/actors";
 		// @todo add limited sheet
+		if (this.actor.limited) return `${path}/limited-sheet.html`;
 		return `${path}/actor-sheet.html`;
 	}
 
@@ -30,9 +46,11 @@ export default class PbtaActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	render(force=false, options={}) {
-		const playbook = this.actor.playbookSlug;
-		if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
-			this.options.classes.push(`playbook-${playbook}`);
+		if (!this.actor.limited) {
+			const playbook = this.actor.playbookSlug;
+			if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
+				this.options.classes.push(`playbook-${playbook}`);
+			}
 		}
 		return super.render(force, options);
 	}

@@ -1,0 +1,24 @@
+<form class="{{cssClass}}" autocomplete="off">
+
+	<div class="sheet-wrapper flexcol">
+
+		{{!-- Sheet Header --}}
+		{{> "pbta.actor-header" }}
+
+		<section class="sheet-bottom flexrow">
+			{{!-- Main --}}
+			<section class="sheet-main flexcol">
+				{{!-- Sheet Tab Navigation --}}
+				<nav class="sheet-tabs tabs" data-group="primary">
+					<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
+				</nav>
+
+				{{!-- Sheet Body --}}
+				<section class="sheet-body">
+					{{!-- Main Tab --}}
+					{{> "pbta.actor-description" }}
+				</section>
+			</section>
+		</section>
+	</div>
+	</form>

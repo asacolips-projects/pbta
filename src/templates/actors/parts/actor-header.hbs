@@ -1,12 +1,12 @@
 <header class="sheet-header">
-	{{#if isNPC}}
+	{{#if (or isNPC limited)}}
 	<div class="cell cell--image">
 		<img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
 	</div>
 	{{/if}}
 	<div class="sheet-header__fields flexrow">
 		<input class="input--title" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
-		{{#if isCharacter}}
+		{{#if (and isCharacter (not limited))}}
 		<span class="sheet-playbook">
 			<span class="view-playbook" data-playbook="{{system.playbook.uuid}}" title="{{localize 'PBTA.ViewPlaybook'}}">
 			<i class="fas fa-eye"></i>
