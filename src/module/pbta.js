@@ -89,31 +89,6 @@ Hooks.once("init", async function () {
 
 Hooks.on("i18nInit", () => {
 	registerSettings();
-	if (!game.settings.get("pbta", "hideSidebarButtons")) {
-		Hooks.on("renderSettings", (app, html) => {
-			let settingsButton = $(`<button id="pbta-settings-btn" data-action="pbta-settings">
-				<i class="fas fa-file-alt"></i> ${game.i18n.localize("PBTA.Settings.sheetConfig.label")}
-			</button>`);
-			html.find('button[data-action="configure"]').before(settingsButton);
-
-			let helpButton = $(`<button id="pbta-help-btn" data-action="pbta-help">
-				<i class="fas fa-question-circle"></i> ${game.i18n.localize("PBTA.Settings.button.help")}
-			</button>`);
-			html.find('button[data-action="controls"]').after(helpButton);
-
-			settingsButton.on("click", (ev) => {
-				ev.preventDefault();
-				let menu = game.settings.menus.get("pbta.sheetConfigMenu");
-				let app = new menu.type();
-				app.render(true);
-			});
-
-			helpButton.on("click", (ev) => {
-				ev.preventDefault();
-				window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
-			});
-		});
-	}
 
 	// Build out character data structures.
 	const pbtaSettings = game.settings.get("pbta", "sheetConfig");
@@ -141,6 +116,32 @@ Hooks.once("setup", function () {
 			obj[e[0]] = game.i18n.localize(e[1]);
 			return obj;
 		}, {});
+	}
+
+	if (game.user.isGM && !game.settings.get("pbta", "hideSidebarButtons")) {
+		Hooks.on("renderSettings", (app, html) => {
+			let settingsButton = $(`<button id="pbta-settings-btn" data-action="pbta-settings">
+				<i class="fas fa-file-alt"></i> ${game.i18n.localize("PBTA.Settings.sheetConfig.label")}
+			</button>`);
+			html.find('button[data-action="configure"]').before(settingsButton);
+
+			let helpButton = $(`<button id="pbta-help-btn" data-action="pbta-help">
+				<i class="fas fa-question-circle"></i> ${game.i18n.localize("PBTA.Settings.button.help")}
+			</button>`);
+			html.find('button[data-action="controls"]').after(helpButton);
+
+			settingsButton.on("click", (ev) => {
+				ev.preventDefault();
+				let menu = game.settings.menus.get("pbta.sheetConfigMenu");
+				let app = new menu.type();
+				app.render(true);
+			});
+
+			helpButton.on("click", (ev) => {
+				ev.preventDefault();
+				window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
+			});
+		});
 	}
 });
 
