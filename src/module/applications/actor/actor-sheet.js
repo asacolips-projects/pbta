@@ -45,7 +45,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		const context = {
 			actor: this.actor,
 			source: source.system,
-			system: this.actor.system,
+			system: foundry.utils.duplicate(this.actor.system),
 			items: Array.from(this.actor.items).sort((a, b) => (a.sort || 0) - (b.sort || 0)),
 
 			effects: this.actor.effects.map((e) => foundry.utils.deepClone(e)),
