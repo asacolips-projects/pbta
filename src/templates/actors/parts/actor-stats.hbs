@@ -7,12 +7,17 @@
 			</span>
 			<label
 				for="system.stats.{{key}}.value"
-				class="cell__title stat-rollable {{#unless ../limited}}rollable{{/unless}}"
+				class="cell__title stat-rollable rollable"
 				data-mod="{{stat.value}}"
 				data-label="{{stat.label}}"
 				>
 				{{ stat.label }}
 			</label>
+			{{#if ../statToggle}}
+			<label class="stat-toggle checkbox"><input type="checkbox" name="system.stats.{{key}}.toggle" {{checked stat.toggle}}/>
+				{{../statToggle.label}}
+			</label>
+			{{/if}}
 			<input
 				class="stat-value"
 				type="text"
@@ -20,11 +25,6 @@
 				value="{{#if stat.value includeZero=true}}{{numberFormat stat.value decimals=0 sign=true}}{{/if}}"
 				data-dtype="Number"
 				/>
-			{{#if ../statToggle}}
-			<label class="stat-toggle checkbox"><input type="checkbox" name="system.stats.{{key}}.toggle" {{checked stat.toggle}}/>
-				{{../statToggle.label}}
-			</label>
-			{{/if}}
 		</li>
 		{{/each}}
 	</ol>

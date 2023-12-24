@@ -38,10 +38,8 @@
 				{{!-- Sheet Tab Navigation --}}
 				<nav class="sheet-tabs tabs" data-group="primary">
 					<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
-					{{#unless limited}}
 					<a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
 					<a class="item" data-tab="equipment">{{localize "PBTA.Equipment"}}</a>
-					{{/unless}}
 				</nav>
 
 				{{!-- Sheet Body --}}
@@ -49,13 +47,11 @@
 					{{!-- Main Tab --}}
 					{{> "pbta.actor-description" }}
 
-					{{#unless limited}}
 					{{!-- Moves Tab --}}
 					{{> "pbta.actor-movelist" }}
 
 					{{!-- Owned Equipment Tab --}}
 					{{> "pbta.actor-inventory" }}
-					{{/unless}}
 				</section>
 			</section>
 		</section>
