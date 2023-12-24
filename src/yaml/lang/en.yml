@@ -179,6 +179,15 @@ PBTA:
   Slug:
     label: "PbtA ID"
     tooltip: "Regenerate PbtA ID"
+  Stat:
+    label: "Stat"
+    labelPl: "Stats"
+    Shifting:
+      fail: "Shifting failed."
+      label: "{stat} Shift"
+      shifts: "{actor} shifts {stats}"
+      up: "{stat} Shifts Up"
+      down: "{stat} Shifts Down"
   Warnings:
     UnlinkedToken:
       Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."

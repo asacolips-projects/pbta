@@ -16,6 +16,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		}
 	}
 
+	statShifting = {};
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
@@ -51,6 +53,11 @@ export default class PbtaActorSheet extends ActorSheet {
 			}
 		}
 		return super.render(force, options);
+	}
+
+	async close(options={}) {
+		this.statShifting = {};
+		return super.close(options);
 	}
 
 	/* -------------------------------------------- */
@@ -124,6 +131,14 @@ export default class PbtaActorSheet extends ActorSheet {
 					prompt: { label: game.i18n.localize("PBTA.Prompt"), value: 0 },
 					formula: { label: game.i18n.localize("PBTA.Formula"), value: 0 }
 				});
+			}
+
+			if (game.pbta.sheetConfig.statShifting) {
+				context.statShifting = {
+					...foundry.utils.duplicate(game.pbta.sheetConfig.statShifting),
+					up: this.statShifting?.up,
+					down: this.statShifting?.down,
+				};
 			}
 
 			// Set a warning for tokens.
@@ -338,6 +353,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Stats.
 		html.find(".stat-rollable").on("mouseover", this._onStatHoverOn.bind(this));
 		html.find(".stat-rollable").on("mouseout", this._onStatHoverOff.bind(this));
+		html.find(".stat-shift label").on("click", this._onStatShiftClick.bind(this));
+		html.find(".stat-shift .up, .stat-shift .down").on("change", this._onStatShiftChange.bind(this));
 
 		// Spells.
 		// html.find('.prepared').click(this._onPrepareSpell.bind(this));
@@ -545,6 +562,55 @@ export default class PbtaActorSheet extends ActorSheet {
 		const rollable = $(event.currentTarget);
 		const parent = rollable.parents(".stat");
 		parent.removeClass("hover");
+	}
+
+	_onStatShiftChange(event) {
+		event.preventDefault();
+		const classList = event.currentTarget.classList;
+		if (classList.contains("up")) this.statShifting.up = event.target.value;
+		else if (classList.contains("down")) this.statShifting.down = event.target.value;
+	}
+
+	async _onStatShiftClick(event) {
+		event.preventDefault();
+		const { up, down } = this.statShifting;
+		if ((!up && !down) || (up === down)) return;
+
+		const { maxMod, minMod, statShifting } = game.pbta.sheetConfig;
+		const { labels, value } = statShifting;
+
+		const system = {};
+		let fail = false;
+
+		if (up) {
+			const newValue = this.actor.system.stats[up].value + value;
+			if (maxMod && newValue > maxMod) fail = true;
+			else system[`stats.${up}.value`] = newValue;
+		}
+		if (down) {
+			const newValue = this.actor.system.stats[down].value - value;
+			if (minMod && newValue < minMod) fail = true;
+			else system[`stats.${down}.value`] = newValue;
+		}
+
+		if (!fail) await this.actor.update({system});
+		this.statShifting = {};
+		this.render(false);
+
+		const content = await renderTemplate("systems/pbta/templates/chat/stat-shift.hbs", {
+			actor: this.actor,
+			labels,
+			up: up ? this.actor.system.stats[up] : "",
+			down: down ? this.actor.system.stats[down] : "",
+			fail
+		});
+
+		ChatMessage.create({
+			user: game.user.id,
+			content: content,
+			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+			type: CONST.CHAT_MESSAGE_TYPES.OTHER
+		});
 	}
 
 	/**

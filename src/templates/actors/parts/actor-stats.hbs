@@ -27,5 +27,23 @@
 				/>
 		</li>
 		{{/each}}
+		{{#if (and editable (objLen system.stats) statShifting)}}
+		<li class="stat stat-shift flexrow" data-stat="{{key}}">
+			<label class="cell__title stat-rollable">
+				{{#if statShifting.img}}
+				<img src="{{statShifting.img}}" />
+				{{/if}}
+				{{ statShifting.label }}
+			</label>
+			<div class="select-holder flexrow">
+				<select class="up">
+					{{selectOptions system.stats selected=statShifting.up labelAttr="label" blank="" sort=true }}
+				</select>
+				<select class="down">
+					{{selectOptions system.stats selected=statShifting.down labelAttr="label" blank="" sort=true }}
+				</select>
+			</div>
+		</li>
+		{{/if}}
 	</ol>
 </div>

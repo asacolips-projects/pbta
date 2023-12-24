@@ -229,6 +229,29 @@ export function convertSheetConfig(sheetConfig) {
 					modifier: 0
 				};
 			}
+		} else if (k === "statShifting") {
+			const statLabel = game.i18n.localize("PBTA.Stat.label");
+			const statsLabel = game.i18n.localize("PBTA.Stat.labelPl");
+			const label = game.i18n.format("PBTA.Stat.Shifting.label", { stat: statLabel });
+			if (typeof v === "object") {
+				newConfig.statShifting = {
+					label: v.label || label,
+					value: v.value && !isNaN(v.value) ? Math.abs(v.value) : 1,
+					labels: {
+						stat: v.stat || statLabel,
+						stats: v.stats || statsLabel
+					}
+				};
+			} else {
+				newConfig.statShifting = {
+					label,
+					value: 1,
+					labels: {
+						stat: statLabel,
+						stats: statsLabel
+					}
+				};
+			}
 		} else if (k === "rollResults") {
 			newConfig.rollResults = {};
 			// Set result ranges.
@@ -913,6 +936,9 @@ export async function preloadHandlebarsTemplates() {
 
 		// Item partials
 		"systems/pbta/templates/items/parts/move-description.hbs",
+
+		// Chat Cards
+		"systems/pbta/templates/chat/stat-shift.hbs",
 	];
 
 	const paths = {};

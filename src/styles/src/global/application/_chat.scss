@@ -15,6 +15,17 @@
       padding: 4px 0;
     }
 
+    .shift {
+      font-weight: bold;
+
+      &.up {
+        color: darkred;
+      }
+      &.down {
+        color: red;
+      }
+    }
+
     .item-icon {
       flex: 0 0 40px;
       width: 40px;

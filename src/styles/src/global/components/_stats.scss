@@ -80,6 +80,23 @@
         line-height: 1;
         height: 28px;
       }
+
+      &.stat-shift {
+        .select-holder {
+          font-family: $font-stack-secondary;
+          column-gap: 4px;
+
+          select {
+            font-weight: bold;
+
+            option {
+              background: #fff;
+            }
+          }
+
+
+        }
+      }
     }
 
     // .stat {
