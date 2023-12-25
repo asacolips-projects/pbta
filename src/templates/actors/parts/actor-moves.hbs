@@ -16,7 +16,12 @@
     </span>
   </div>
   {{/if}}
-  <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
+	<span class="item-label {{#if item.isExpanded}}open{{/if}}">
+    {{item.name}}
+    <span class="item-details-toggle">
+      <i class="fas fa-chevron-down"></i>
+    </span>
+  </span>
 </h4>
 {{#if item.system.rollType}}
   <div class="item-meta tags">

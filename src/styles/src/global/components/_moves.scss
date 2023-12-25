@@ -50,6 +50,10 @@
     flex: none;
     width: 100%;
 
+    &.expanded {
+      display: block;
+    }
+
     .result {
       border-top: 1px solid $ct-gray;
       padding-top: 6px;

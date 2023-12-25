@@ -16,7 +16,19 @@ export default class PbtaActorSheet extends ActorSheet {
 		}
 	}
 
-	statShifting = {};
+	/**
+	 * IDs for items on the sheet that have been expanded.
+	 * @type {Set<string>}
+	 * @protected
+	 */
+	_expanded = new Set();
+
+	/**
+	 * Stats targetted by the Stat Shifting feature.
+	 * @type {object}
+	 * @protected
+	 */
+	_statShifting = {};
 
 	/** @override */
 	static get defaultOptions() {
@@ -56,7 +68,7 @@ export default class PbtaActorSheet extends ActorSheet {
 	}
 
 	async close(options={}) {
-		this.statShifting = {};
+		this._statShifting = {};
 		return super.close(options);
 	}
 
@@ -136,8 +148,8 @@ export default class PbtaActorSheet extends ActorSheet {
 			if (game.pbta.sheetConfig.statShifting) {
 				context.statShifting = {
 					...foundry.utils.duplicate(game.pbta.sheetConfig.statShifting),
-					up: this.statShifting?.up,
-					down: this.statShifting?.down,
+					up: this._statShifting?.up,
+					down: this._statShifting?.down,
 				};
 			}
 
@@ -289,6 +301,7 @@ export default class PbtaActorSheet extends ActorSheet {
 					}
 				}
 			}
+			item.isExpanded = this._expanded.has(item.id);
 			// If this is a move, sort into various arrays.
 			if (item.type === moveType) {
 				if (context.moves[item.system.moveType]) {
@@ -345,8 +358,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".item-label").on("click", this._showItemDetails.bind(this));
 
 		// Attributes.
-		html.find(".attr-clock").on("click", this._onClockClick.bind(this));
-		html.find(".attr-xp").on("click", this._onClockClick.bind(this));
+		html.find(".attr-clock, .attr-xp").on("click", this._onClockClick.bind(this));
 		html.find(".attr-track-value").on("click", this._onTrackValueClick.bind(this));
 		html.find(".attr-track-step").on("click", this._onTrackStepClick.bind(this));
 
@@ -549,7 +561,14 @@ export default class PbtaActorSheet extends ActorSheet {
 		const description = item.find(".item-description");
 
 		toggler.toggleClass("open");
-		description.slideToggle();
+		if (description.hasClass("expanded")) {
+			this._expanded.delete(item.data().itemId);
+			description.slideUp(200);
+		} else {
+			this._expanded.add(item.data().itemId);
+			description.slideDown(200);
+		}
+		description.toggleClass("expanded");
 	}
 
 	_onStatHoverOn(event) {
@@ -567,13 +586,13 @@ export default class PbtaActorSheet extends ActorSheet {
 	_onStatShiftChange(event) {
 		event.preventDefault();
 		const classList = event.currentTarget.classList;
-		if (classList.contains("up")) this.statShifting.up = event.target.value;
-		else if (classList.contains("down")) this.statShifting.down = event.target.value;
+		if (classList.contains("up")) this._statShifting.up = event.target.value;
+		else if (classList.contains("down")) this._statShifting.down = event.target.value;
 	}
 
 	async _onStatShiftClick(event) {
 		event.preventDefault();
-		const { up, down } = this.statShifting;
+		const { up, down } = this._statShifting;
 		if ((!up && !down) || (up === down)) return;
 
 		const { maxMod, minMod, statShifting } = game.pbta.sheetConfig;
@@ -594,7 +613,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		}
 
 		if (!fail) await this.actor.update({system});
-		this.statShifting = {};
+		this._statShifting = {};
 		this.render(false);
 
 		const content = await renderTemplate("systems/pbta/templates/chat/stat-shift.hbs", {
