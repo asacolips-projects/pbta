@@ -159,23 +159,32 @@
 
 .cell__counter,
 .cell__clock {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
 }
 
+.cell__clock {
+  &:has(input[type=checkbox]) {
+    margin: 0 5px;
+  }
+
+  input[type=checkbox] {
+    margin: 3px 0;
+  }
+  input[type=radio] {
+    margin: 0;
+  }
+}
+
 .cell__counter {
+  flex-wrap: nowrap;
+
   > span {
+    flex: 0;
     font-size: 30px;
     font-weight: bold;
     padding: 0 14px;
   }
-}
-
-.cell__clock {
-  flex-wrap: wrap;
 }
 
 .cell__roll {

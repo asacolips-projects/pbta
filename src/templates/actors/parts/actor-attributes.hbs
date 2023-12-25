@@ -21,14 +21,14 @@
         <input type="text" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
       {{!-- Resource with value/max --}}
       {{else if (eq attr.type "Resource")}}
-        <div class="cell__counter">
+        <div class="cell__counter flexrow">
           <input type="text" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
           <span> / </span>
           <input type="text" name="system.{{../group}}.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
         </div>
       {{!-- TODO: Replace this with stylized checkboxes per xp pip. --}}
       {{else if (eq attr.type "Xp")}}
-        <div class="cell__clock">
+        <div class="cell__clock flexrow">
           {{#if attr.steps}}
             {{#each attr.steps as |step stepKey|}}
               <input type="radio" class="attr-xp" data-name="system.{{../../group}}.{{key}}" data-step="{{stepKey}}" {{checked step}}>
@@ -37,7 +37,7 @@
         </div>
       {{!-- TODO: Replace this with checkboxes per clock pip. --}}
       {{else if (eq attr.type "Clock")}}
-        <div class="cell__clock">
+        <div class="cell__clock flexrow">
           {{#if attr.steps}}
             {{#each attr.steps as |step stepKey|}}
               <input type="checkbox" class="attr-clock" data-name="system.{{../../group}}.{{key}}" data-step="{{stepKey}}" {{checked step}}>
