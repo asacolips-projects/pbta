@@ -207,7 +207,10 @@
 
   label.flexrow {
     align-items: center;
-    justify-content: flex-start;
+
+    &:has(.attr-list) {
+      flex-wrap: nowrap;
+    }
 
     .input-title {
       text-align: left;
