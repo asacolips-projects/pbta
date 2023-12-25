@@ -27,10 +27,8 @@
       }
 
       .cell__title {
-        order: 0;
         width: 100%;
         min-width: 100%;
-        flex: 1;
         color: $c-white;
         text-align: center;
         display: flex;
@@ -92,7 +90,7 @@
 
           select {
             font-weight: bold;
-            color: #fff;
+            color: $c-white;
             padding-left: 10px;
             max-width: calc(50% - 2px);
 
@@ -108,7 +106,7 @@
 
             option {
               color: fieldtext;
-              background: #fff;
+              background: $c-white;
             }
           }
         }

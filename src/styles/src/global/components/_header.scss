@@ -11,7 +11,7 @@
   select.charplaybook {
 
     &:has(option[value=""]:checked) {
-      color: #bfbfbf;
+      color: $c-gray-silver;
 
       option {
         &:not([value=""]) {
@@ -21,10 +21,10 @@
     }
 
     option {
-      background: #fff;
+      background: $c-white;
 
       &[value=""] {
-        color: #bfbfbf;
+        color: $c-gray-silver;
       }
     }
   }

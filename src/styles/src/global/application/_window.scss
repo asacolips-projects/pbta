@@ -23,7 +23,7 @@
   textarea {
     font-family: $font-stack-base;
     font-size: 14px;
-    background: #fff;
+    background: $c-white;
     border: 1px solid rgba(0,0,0,0.25);
     // border: 0;
 
@@ -66,7 +66,7 @@
     // margin: 5px 0;
 
     &::placeholder {
-      color: #bfbfbf;
+      color: $c-gray-silver;
     }
 
     &.disabled {
@@ -78,7 +78,7 @@
   &.journal-sheet {
     button,
     .button {
-      color: #fff;
+      color: $c-white;
     }
   }
 
@@ -86,9 +86,9 @@
   .button {
     font-family: $font-stack-base;
     background: rgba(0, 0, 0, 0.1);
-    border: 1px solid #999;
+    border: 1px solid $c-navy-up;
     border-radius: 3px;
-    box-shadow: 0 0 2px #fff inset;
+    box-shadow: 0 0 2px $c-white inset;
     cursor: pointer;
 
     &:hover,
