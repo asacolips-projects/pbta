@@ -605,6 +605,10 @@ export function applyActorTemplates(clear = false) {
 			}
 			if (v.details) {
 				template.details = v.details;
+			} else {
+				template.details = {
+					biography: { label: game.i18n.localize("PBTA.Biography"), value: "" }
+				};
 			}
 
 			let orig = !clear ? foundry.utils.duplicate(templates[type]) : {};
