@@ -15,5 +15,7 @@ export default class PbtaActorNpcSheet extends PbtaActorSheet {
 		});
 	}
 
-	static unsupportedItemTypes = new Set(["move", "playbook", "tag"]);
+	get unsupportedItemTypes() {
+		return new Set(["move", "playbook", "tag"]);
+	}
 }
