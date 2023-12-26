@@ -24,6 +24,7 @@ globalThis.pbta = {
 	dataModels,
 	dice,
 	documents,
+	migrations: {},
 	utils,
 };
 

@@ -38,6 +38,9 @@ export class ActorDataTemplate extends foundry.abstract.DataModel {
 		if (source.resources && typeof source.resources.rollFormula === "object") {
 			source.resources.rollFormula = source.resources.rollFormula.value;
 		}
+		if (game.pbta.migrations?.sheetConfig) {
+			game.pbta.migrations.sheetConfig(source);
+		}
 		return super.migrateData(source);
 	}
 }
