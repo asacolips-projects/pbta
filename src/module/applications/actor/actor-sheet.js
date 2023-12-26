@@ -136,6 +136,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
 			context.statToggle = sheetConfig?.statToggle ?? false;
+			context.statClock = sheetConfig?.statClock ?? false;
 			context.statSettings = sheetConfig.actorTypes[this.actor.baseType]?.stats ?? {};
 
 			if (context.statSettings) {
@@ -364,6 +365,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".attr-track-step").on("click", this._onTrackStepClick.bind(this));
 
 		// Stats.
+		html.find(".stat-clock").on("click", this._onStatClockClick.bind(this));
 		html.find(".stat-shift label").on("click", this._onStatShiftClick.bind(this));
 		html.find(".stat-shift .up, .stat-shift .down").on("change", this._onStatShiftChange.bind(this));
 
@@ -543,6 +545,31 @@ export default class PbtaActorSheet extends ActorSheet {
 		const classList = event.currentTarget.classList;
 		if (classList.contains("up")) this._statShifting.up = event.target.value;
 		else if (classList.contains("down")) this._statShifting.down = event.target.value;
+	}
+
+	async _onStatClockClick(event) {
+		event.preventDefault();
+		const $self = $(event.currentTarget);
+		// Get the clicked value.
+		let step = Number($self.data("step")) + 1;
+		const stepValue = $self.attr("checked") !== undefined;
+
+		// Retrieve the attribute.
+		const prop = $self.data("name");
+		const attr = foundry.utils.deepClone(getProperty(this.actor, prop));
+
+		// Handle clicking the same checkbox to unset its value.
+		if (stepValue) {
+			if (attr.steps.value === step) {
+				step--;
+			}
+		}
+
+		// Update the steps.
+		attr.steps.value = step;
+
+		// Update the actor/token.
+		await this.actor.update({ [prop]: attr });
 	}
 
 	async _onStatShiftClick(event) {

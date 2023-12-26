@@ -18,6 +18,13 @@
 				{{../statToggle.label}}
 			</label>
 			{{/if}}
+			{{#if ../statClock}}
+			<div class="cell__clock flexrow">
+				{{#times stat.steps.max}}
+				<input type="radio" class="stat-clock" data-name="system.stats.{{key}}" data-step="{{@index}}" {{checked (gt stat.steps.value @index)}}>
+				{{/times}}
+			</div>
+			{{/if}}
 			<input
 				class="stat-value"
 				type="text"

@@ -255,6 +255,8 @@ export function convertSheetConfig(sheetConfig) {
 					}
 				};
 			}
+		} else if (k === "statClock") {
+			newConfig.statClock = v;
 		} else if (k === "rollResults") {
 			newConfig.rollResults = {};
 			// Set result ranges.
@@ -338,6 +340,13 @@ export function convertSheetConfig(sheetConfig) {
 						label: statLabel,
 						value: 0
 					};
+
+					if (newConfig.statClock) {
+						actorType.stats[cleanKey].steps = {
+							value: 0,
+							max: newConfig.statClock
+						};
+					}
 				}
 			}
 
@@ -962,5 +971,20 @@ export function registerHandlebarsHelpers() {
 	Handlebars.registerHelper("getLabel", function (obj, key) {
 		const result = obj[key]?.label || obj[key] || key;
 		return result.length > 0 ? result : key;
+	});
+
+	Handlebars.registerHelper("times", function (n, options) {
+		let accum = "";
+		let data;
+		if (options.data) {
+			data = Handlebars.createFrame(options.data);
+		}
+		for (let i = 0; i < n; ++i) {
+			if (data) {
+				data.index = i;
+			}
+			accum += options.fn(i, { data: data });
+		}
+		return accum;
 	});
 }
