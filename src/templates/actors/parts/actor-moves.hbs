@@ -39,7 +39,7 @@
   <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
   <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
 </div>
-<div class="item-description">
+<div class="item-description {{#if item.isExpanded}}expanded{{/if}}">
   <div>{{{item.system.description}}}</div>
   {{#if item.system.moveResults}}
     {{#each item.system.moveResults as |result key|}}
