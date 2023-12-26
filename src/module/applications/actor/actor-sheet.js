@@ -363,13 +363,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".attr-track-step").on("click", this._onTrackStepClick.bind(this));
 
 		// Stats.
-		html.find(".stat-rollable").on("mouseover", this._onStatHoverOn.bind(this));
-		html.find(".stat-rollable").on("mouseout", this._onStatHoverOff.bind(this));
 		html.find(".stat-shift label").on("click", this._onStatShiftClick.bind(this));
 		html.find(".stat-shift .up, .stat-shift .down").on("change", this._onStatShiftChange.bind(this));
-
-		// Spells.
-		// html.find('.prepared').click(this._onPrepareSpell.bind(this));
 
 		// Quantity.
 		html.find(".item-meta .tag--quantity").on("click", this._onUsagesControl.bind(this, "system.quantity", 1));
@@ -544,6 +539,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		this.actor.update(update);
 	}
 
+	// @todo add a _shrinked set to persist shrinking, similar to the _expanded set.
 	_hideMoveGroup(event) {
 		event.preventDefault();
 		const toggler = $(event.currentTarget);
@@ -551,7 +547,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		const description = group.find(".items-list");
 
 		toggler.toggleClass("open");
-		description.slideToggle();
+		description.slideToggle(200);
 	}
 
 	_showItemDetails(event) {
@@ -569,18 +565,6 @@ export default class PbtaActorSheet extends ActorSheet {
 			description.slideDown(200);
 		}
 		description.toggleClass("expanded");
-	}
-
-	_onStatHoverOn(event) {
-		const rollable = $(event.currentTarget);
-		const parent = rollable.parents(".stat");
-		parent.addClass("hover");
-	}
-
-	_onStatHoverOff(event) {
-		const rollable = $(event.currentTarget);
-		const parent = rollable.parents(".stat");
-		parent.removeClass("hover");
 	}
 
 	_onStatShiftChange(event) {
