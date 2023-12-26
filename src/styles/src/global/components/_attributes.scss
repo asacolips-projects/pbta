@@ -101,13 +101,16 @@
     border-right: none;
     align-items: center;
 
+    display: grid;
+    grid-column: span 2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
     .cell__title {
-      flex: auto;
+      grid-column: span 3;
       margin-top: 4px;
     }
 
     label.checkbox {
-      height: auto;
       font-size: 14px;
     }
   }
