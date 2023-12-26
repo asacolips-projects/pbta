@@ -34,12 +34,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 	/** @override */
 	async getData(options) {
-		let data = foundry.utils.deepClone(game.settings.get("pbta", "sheetConfig")) ?? {};
-		data.sheetConfigOverride = this.sheetOverriden;
-		if (!data.tomlString) {
-			data.tomlString = "";
-		}
-		return data;
+		const sheetConfig = game.settings.get("pbta", "sheetConfig") || {};
+		return {
+			...foundry.utils.deepClone(sheetConfig),
+			sheetConfigOverride: this.sheetOverriden,
+			tomlString: sheetConfig.tomlString || ""
+		};
 	}
 
 	/* -------------------------------------------- */
