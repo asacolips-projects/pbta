@@ -6,7 +6,7 @@
 
 	{{#if system.moveResults}}
 	{{#each system.moveResults as |result key|}}
-		<div class="form-group-stacked">
+		<div class="move-result form-group-stacked">
 			<label>{{result.label}}</label>
 			{{editor result.value target=result.rangeName button=true owner=../owner editable=../editable}}
 		</div>
