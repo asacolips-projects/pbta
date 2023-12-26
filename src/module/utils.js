@@ -457,17 +457,6 @@ export function convertAttr(attrGroup) {
 				break;
 
 			case "Clock":
-				attr.type = attrValue.type;
-				attr.value = attrValue.default ?? 0;
-				attr.max = attrValue.max ?? 0;
-				attr.steps = [];
-				if (attr.max) {
-					for (let i = 0; i < attr.max; i++) {
-						attr.steps.push(i < attr.value);
-					}
-				}
-				break;
-
 			case "Xp":
 				attr.type = attrValue.type;
 				attr.value = attrValue.default ?? 0;
@@ -487,11 +476,8 @@ export function convertAttr(attrGroup) {
 				break;
 
 			case "Text":
-				attr.type = attrValue.type;
-				attr.value = attrValue.default ?? "";
-				break;
-
 			case "LongText":
+			case "Roll":
 				attr.type = attrValue.type;
 				attr.value = attrValue.default ?? "";
 				break;
@@ -512,11 +498,6 @@ export function convertAttr(attrGroup) {
 				attr.type = attrValue.type;
 				attr.options = getListOptions(attrValue, true);
 				attr.value = attrValue.default ?? "0";
-				break;
-
-			case "Roll":
-				attr.type = attrValue.type;
-				attr.value = attrValue.default ?? "";
 				break;
 
 			case "Track":
