@@ -246,6 +246,7 @@ export default class ActorPbta extends Actor {
 			const validCreationMoveType = Object.keys(sheetData.moveTypes)
 				.filter((mt) => sheetData.moveTypes[mt].creation);
 			if (validCreationMoveType.length) {
+				changes.items = [];
 				let moves = [];
 				for (let mt of validCreationMoveType) {
 					moves = game.items
@@ -261,8 +262,8 @@ export default class ActorPbta extends Actor {
 							.map((item) => item.toObject(false));
 						moves = moves.concat(items);
 					}
+					if (moves.length) changes.items.push(...moves);
 				}
-				if (moves.length) changes.items = moves;
 			}
 		}
 		this.updateSource(changes);
