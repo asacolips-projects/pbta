@@ -16,9 +16,9 @@ export default class EquipmentData extends ItemTemplateData {
 				initial: 0,
 				integer: true
 			}),
-			tags: new foundry.data.fields.StringField(),
-			itemType: new foundry.data.fields.StringField(),
-			equipmentType: new foundry.data.fields.StringField()
+			tags: new foundry.data.fields.StringField({ initial: "" }),
+			itemType: new foundry.data.fields.StringField({ initial: "" }),
+			equipmentType: new foundry.data.fields.StringField({ initial: "" })
 		};
 	}
 }

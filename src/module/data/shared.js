@@ -41,7 +41,7 @@ export function createItemResources() {
  */
 export function createMoveData() {
 	return {
-		moveType: new foundry.data.fields.StringField(),
+		moveType: new foundry.data.fields.StringField({ initial: "" }),
 		rollFormula: new FormulaField({ initial: "" }),
 		moveResults: new MappingField(
 			new foundry.data.fields.SchemaField({
