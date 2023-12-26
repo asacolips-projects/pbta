@@ -37,7 +37,8 @@ export default class PbtaActorSheet extends ActorSheet {
 			width: 840,
 			height: 780,
 			scrollY: [".window-content"],
-			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "moves" }]
+			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "moves" }],
+			dragDrop: [{dragSelector: ".items-list .item"}]
 		});
 	}
 
@@ -375,23 +376,6 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Resources.
 		html.find(".resource-control").on("click", this._onResouceControl.bind(this));
-
-		let isOwner = this.actor.isOwner;
-
-		if (isOwner) {
-			/* Item Dragging */
-			// Core handlers from foundry.js
-			let handler;
-			handler = (ev) => this._onDragStart(ev);
-
-			html.find("li.item").each((i, li) => {
-				if (li.classList.contains("inventory-header")) {
-					return;
-				}
-				li.setAttribute("draggable", true);
-				li.addEventListener("dragstart", handler, false);
-			});
-		}
 	}
 
 	_onResouceControl(event) {
