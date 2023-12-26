@@ -450,15 +450,14 @@ export function convertAttr(attrGroup) {
 			continue;
 		}
 
+		attr.type = attrValue.type;
 		switch (attrValue.type) {
 			case "Number":
-				attr.type = attrValue.type;
 				attr.value = attrValue.default ?? 0;
 				break;
 
 			case "Clock":
 			case "Xp":
-				attr.type = attrValue.type;
 				attr.value = attrValue.default ?? 0;
 				attr.max = attrValue.max ?? 0;
 				attr.steps = [];
@@ -470,7 +469,6 @@ export function convertAttr(attrGroup) {
 				break;
 
 			case "Resource":
-				attr.type = attrValue.type;
 				attr.value = attrValue.default ?? 0;
 				attr.max = attrValue.max ?? 0;
 				break;
@@ -478,31 +476,26 @@ export function convertAttr(attrGroup) {
 			case "Text":
 			case "LongText":
 			case "Roll":
-				attr.type = attrValue.type;
 				attr.value = attrValue.default ?? "";
 				break;
 
 			case "Checkbox":
-				attr.type = attrValue.type;
 				attr.checkboxLabel = attrValue.checkboxLabel ?? false;
 				attr.value = attrValue.default ?? false;
 				break;
 
 			case "ListMany":
-				attr.type = attrValue.type;
 				attr.condition = attrValue.condition ?? false;
 				attr.options = getListOptions(attrValue);
 				break;
 
 			case "ListOne":
-				attr.type = attrValue.type;
 				attr.options = getListOptions(attrValue, true);
 				attr.value = attrValue.default ?? "0";
 				break;
 
 			case "Track":
 				// based on Faction Reputation of Root RPG
-				attr.type = attrValue.type;
 				attr.value = attrValue.default ?? 0;
 
 				attr.negative = {
