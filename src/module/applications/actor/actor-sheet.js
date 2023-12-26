@@ -410,21 +410,16 @@ export default class PbtaActorSheet extends ActorSheet {
 		event.preventDefault();
 		const $self = $(event.currentTarget);
 		// Get the clicked value.
-		let step = Number($self.data("step"));
-		let stepValue = $self.attr("checked") !== undefined;
+		let step = Number($self.data("step")) + 1; // Adjust for 1-index
+		const stepValue = $self.attr("checked") !== undefined;
 
 		// Retrieve the attribute.
-		let prop = $self.data("name");
-		let attr = foundry.utils.deepClone(getProperty(this.actor, prop));
-
-		// Step is offset by 1 (0 index). Adjust and fix.
-		step++;
+		const prop = $self.data("name");
+		const attr = foundry.utils.deepClone(getProperty(this.actor, prop));
 
 		// Handle clicking the same checkbox to unset its value.
-		if (stepValue) {
-			if (attr.value === step) {
-				step--;
-			}
+		if (stepValue && attr.value === step) {
+			step--;
 		}
 
 		// Update the stored value.
@@ -432,19 +427,11 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Update the steps.
 		for (let i = 0; i < attr.max; i++) {
-			if ((i) < attr.value) {
-				attr.steps[i] = true;
-			} else {
-				attr.steps[i] = false;
-			}
+			attr.steps[i] = i < attr.value;
 		}
 
-		// Prepare updates.
-		let update = {};
-		update[prop] = attr;
-
 		// Update the actor/token.
-		this.actor.update(update);
+		await this.actor.update({ [prop]: attr });
 	}
 
 	async updateTrackThreshold(attr) {
