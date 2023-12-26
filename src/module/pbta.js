@@ -201,7 +201,7 @@ Hooks.once("ready", async function () {
 
 	CONFIG.PBTA = PBTA;
 
-	utils.getPlaybooks(false);
+	utils.getPlaybooks();
 
 	// Apply structure to actor types.
 	utils.applyActorTemplates();
