@@ -54,8 +54,9 @@ export default class PbtaItemSheet extends ItemSheet {
 
 		// Handle rich text fields.
 		const enrichmentOptions = {
+			secrets: this.item.isOwner,
 			rollData: this.item?.getRollData() ?? {},
-			relativeTo: this.actor
+			relativeTo: this.item
 		};
 
 		if (context.system?.description) {
