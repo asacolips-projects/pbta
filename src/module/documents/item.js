@@ -1,7 +1,7 @@
 export default class ItemPbta extends Item {
 	static getDefaultArtwork(itemData) {
 		if (itemData.type === "move" || itemData.type === "npcMove") {
-			return { img: "icons/svg/upgrade.svg" };
+			return { img: "icons/svg/aura.svg" };
 		} else if (itemData.type === "playbook") {
 			return { img: "icons/svg/book.svg" };
 		} else if (itemData.type === "tag") {
