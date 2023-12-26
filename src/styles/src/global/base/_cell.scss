@@ -202,8 +202,14 @@
   }
 }
 
-.cell__checkboxes {
+.cell__checkboxes,
+.cell__radio {
   padding-left: 0;
+
+  input[type="radio"] {
+    margin: 1px 5px;
+    flex: 0 0 18px;
+  }
 
   label.flexrow {
     align-items: center;
@@ -211,24 +217,6 @@
     &:has(.attr-list) {
       flex-wrap: nowrap;
     }
-
-    .input-title {
-      text-align: left;
-    }
-  }
-}
-
-.cell__radio {
-  input[type="radio"] {
-    margin: 1px 5px;
-    flex: 0 0 18px;
-  }
-
-  padding-left: 0;
-
-  label.flexrow {
-    align-items: center;
-    justify-content: flex-start;
 
     .input-title {
       text-align: left;
