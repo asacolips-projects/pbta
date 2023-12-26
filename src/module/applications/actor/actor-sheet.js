@@ -702,23 +702,32 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	/* -------------------------------------------- */
 
-	async _onDropItemCreate(itemData) {
-		const items = Array.isArray(itemData) ? itemData : [itemData];
-		const toCreate = [];
-		for (const item of items) {
-			if (!this.unsupportedItemTypes.has(item.type)) {
-				if (item.type === "playbook") {
-					this.actor.update({ "system.playbook": {
-						name: item.name,
-						slug: item.slug ?? item.name.slugify(),
-						uuid: item.uuid
-					} });
-				} else {
-					toCreate.push(item);
-				}
-			}
+	async _onDropItem(event, data) {
+		if (!this.actor.isOwner) return false;
+		const item = await Item.implementation.fromDropData(data);
+		const itemData = item.toObject();
+
+		// Handle item sorting within the same Actor
+		if (this.actor.uuid === item.parent?.uuid) return this._onSortItem(event, itemData);
+
+		if (item.type === "playbook" && this.actor.system.playbook) {
+			this.actor.update({ "system.playbook": {
+				name: item.name,
+				slug: item.slug ?? item.name.slugify(),
+				uuid: item.uuid
+			} });
+			return false;
 		}
 
+		// Create the owned item
+		return this._onDropItemCreate(itemData);
+	}
+
+	/* -------------------------------------------- */
+
+	async _onDropItemCreate(itemData) {
+		const items = Array.isArray(itemData) ? itemData : [itemData];
+		const toCreate = items.filter((item) => !this.unsupportedItemTypes.has(item.type));
 		// Create the owned items as normal
 		return this.actor.createEmbeddedDocuments("Item", toCreate);
 	}
