@@ -247,12 +247,13 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * @param {object} context The actor to prepare.
 	 */
 	async _prepareItems(context) {
-		const actorType = this.actor.baseType;
 		const moveType = this.actor.baseType === "npc" ? "npcMove" : "move";
 
 		const sheetConfig = game.pbta.sheetConfig;
-		const moveTypes = sheetConfig?.actorTypes[actorType]?.moveTypes;
-		const equipmentTypes = sheetConfig?.actorTypes[actorType]?.equipmentTypes;
+		const moveTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.moveTypes
+			?? sheetConfig.actorTypes?.[this.actor.baseType].moveTypes;
+		const equipmentTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.equipmentTypes
+			?? sheetConfig.actorTypes?.[this.actor.baseType]?.equipmentTypes;
 
 		context.moveTypes = {};
 		context.moves = {};

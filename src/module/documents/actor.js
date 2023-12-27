@@ -241,7 +241,8 @@ export default class ActorPbta extends Actor {
 				};
 			}
 		}
-		const sheetData = game.pbta.sheetConfig.actorTypes?.[this.type];
+		const sheetConfig = game.pbta.sheetConfig;
+		const sheetData = sheetConfig.actorTypes?.[this.sheetType] ?? sheetConfig.actorTypes?.[this.baseType];
 		if (sheetData?.moveTypes) {
 			const validCreationMoveType = Object.keys(sheetData.moveTypes)
 				.filter((mt) => sheetData.moveTypes[mt].creation);
