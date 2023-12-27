@@ -67,6 +67,25 @@ export default class PbtaItemSheet extends ItemSheet {
 		const actorType = this.actor?.type || this.item.system?.actorType;
 		if (this.item.system.actorType !== undefined) context.actorTypes = this._getActorTypes();
 		if (this.item.type === "move" || this.item.type === "npcMove") {
+			context.system.moveTypes = {};
+			if (this.actor?.system?.moveTypes) {
+				context.system.moveTypes = foundry.utils.duplicate(this.actor?.system?.moveTypes);
+			} else {
+				const characterOrNpc = this.item.type === "npcMove" ? "npc" : "character";
+				const validCharacterType = Object.fromEntries(Object.entries(sheetConfig.actorTypes)
+					.filter(([k, v]) => [k, v?.baseType].includes(characterOrNpc) && v.moveTypes));
+				if (Object.keys(validCharacterType).length) {
+					context.system.moveTypes =
+						foundry.utils.duplicate(validCharacterType[actorType || characterOrNpc].moveTypes);
+				}
+			}
+
+			for (let [key, moveResult] of Object.entries(context.system.moveResults)) {
+				context.system.moveResults[key].rangeName = `system.moveResults.${key}.value`;
+				context.system.moveResults[key].value =
+					await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
+			}
+
 			if (this.item.type === "move") {
 				context.system.stats = {};
 				if (this.actor?.system?.stats) {
@@ -88,31 +107,13 @@ export default class PbtaItemSheet extends ItemSheet {
 				if (context.system?.choices) {
 					context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
 				}
+				if (Object.keys(context.system.moveTypes) && context.system.moveType) {
+					if (context.system.moveTypes[context.system.moveType].playbook) {
+						context.isPlaybookMove = true;
+					}
+				}
 			} else if (this.item.type === "npcMove") {
 				context.system.rollExample = sheetConfig?.rollFormula ?? "2d6";
-			}
-			context.system.moveTypes = {};
-			if (this.actor?.system?.moveTypes) {
-				context.system.moveTypes = foundry.utils.duplicate(this.actor?.system?.moveTypes);
-			} else {
-				const characterOrNpc = this.item.type === "npcMove" ? "npc" : "character";
-				const validCharacterType = Object.fromEntries(Object.entries(sheetConfig.actorTypes)
-					.filter(([k, v]) => [k, v?.baseType].includes(characterOrNpc) && v.moveTypes));
-				if (Object.keys(validCharacterType).length) {
-					context.system.moveTypes =
-						foundry.utils.duplicate(validCharacterType[actorType || characterOrNpc].moveTypes);
-				}
-			}
-			if (Object.keys(context.system.moveTypes) && context.system.moveType) {
-				if (context.system.moveTypes[context.system.moveType].playbook) {
-					context.isPlaybookMove = true;
-				}
-			}
-
-			for (let [key, moveResult] of Object.entries(context.system.moveResults)) {
-				context.system.moveResults[key].rangeName = `system.moveResults.${key}.value`;
-				context.system.moveResults[key].value =
-					await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
 			}
 		} else if (this.item.type === "equipment") {
 			context.system.equipmentTypes = sheetConfig?.actorTypes[actorType || "character"]?.equipmentTypes ?? null;
