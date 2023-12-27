@@ -65,7 +65,9 @@ export default class PbtaItemSheet extends ItemSheet {
 
 		const sheetConfig = game.pbta.sheetConfig;
 		const actorType = this.actor?.type || this.item.system?.actorType;
-		if (this.item.system.actorType !== undefined) context.actorTypes = this._getActorTypes();
+		if (!this.actor && this.item.system.actorType !== undefined) {
+			context.actorTypes = this._getActorTypes();
+		}
 		if (this.item.type === "move" || this.item.type === "npcMove") {
 			context.system.moveTypes = {};
 			if (this.actor?.system?.moveTypes) {
