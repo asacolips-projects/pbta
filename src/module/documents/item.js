@@ -136,6 +136,9 @@ export default class ItemPbta extends Item {
 				system: foundry.utils.mergeObject(templateData.system, this.toObject(false).system)
 			});
 		}
+		if (this.actor && this.system.actorType !== undefined) {
+			this.updateSource({ "system.actorType": this.actor.type });
+		}
 
 		// Handle everything else if not imported from compendiums
 		const sourceId = this.getFlag("core", "sourceId");
