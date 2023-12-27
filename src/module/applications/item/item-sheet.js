@@ -88,6 +88,11 @@ export default class PbtaItemSheet extends ItemSheet {
 				if (context.system?.choices) {
 					context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
 				}
+				if (Object.keys(context.system.moveTypes) && context.system.moveType) {
+					if (context.system.moveTypes[context.system.moveType].playbook) {
+						context.isPlaybookMove = true;
+					}
+				}
 			} else if (this.item.type === "npcMove") {
 				context.system.rollExample = sheetConfig?.rollFormula ?? "2d6";
 			}
@@ -101,11 +106,6 @@ export default class PbtaItemSheet extends ItemSheet {
 				if (Object.keys(validCharacterType).length) {
 					context.system.moveTypes =
 						foundry.utils.duplicate(validCharacterType[actorType || characterOrNpc].moveTypes);
-				}
-			}
-			if (Object.keys(context.system.moveTypes) && context.system.moveType) {
-				if (context.system.moveTypes[context.system.moveType].playbook) {
-					context.isPlaybookMove = true;
 				}
 			}
 
