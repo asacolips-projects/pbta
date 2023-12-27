@@ -95,10 +95,12 @@ export default class PbtaItemSheet extends ItemSheet {
 			if (this.actor?.system?.moveTypes) {
 				context.system.moveTypes = foundry.utils.duplicate(this.actor?.system?.moveTypes);
 			} else {
+				const characterOrNpc = this.item.type === "npcMove" ? "npc" : "character";
 				const validCharacterType = Object.fromEntries(Object.entries(sheetConfig.actorTypes)
-					.filter(([k, v]) => [k, v?.baseType].includes("character") && v.moveTypes));
+					.filter(([k, v]) => [k, v?.baseType].includes(characterOrNpc) && v.moveTypes));
 				if (Object.keys(validCharacterType).length) {
-					context.system.moveTypes = foundry.utils.duplicate(validCharacterType[actorType || "character"].moveTypes);
+					context.system.moveTypes =
+						foundry.utils.duplicate(validCharacterType[actorType || characterOrNpc].moveTypes);
 				}
 			}
 			if (Object.keys(context.system.moveTypes) && context.system.moveType) {
