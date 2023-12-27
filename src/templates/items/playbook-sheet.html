@@ -41,7 +41,7 @@
       </div>
       {{#if (gt actorTypes.length 1)}}
       <div class="form-group">
-        <label>Character Type @todo localize</label>
+        <label>{{localize "PBTA.ActorType"}}</label>
         <select name="system.actorType">
           {{selectOptions actorTypes selected=system.actorType nameAttr="value" labelAttr="label" blank="" sort=true}}
         </select>

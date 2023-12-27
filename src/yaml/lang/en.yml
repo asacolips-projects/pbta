@@ -11,6 +11,7 @@ TYPES:
     playbook: "Playbook"
     tag: "Tag"
 PBTA:
+  ActorType: "Actor Type"
   Advantage: "Advantage"
   Ask: "Ask"
   AskTitle: "{name}: Choose a Stat"

@@ -18,7 +18,8 @@ export default class EquipmentData extends ItemTemplateData {
 			}),
 			tags: new foundry.data.fields.StringField({ initial: "" }),
 			itemType: new foundry.data.fields.StringField({ initial: "" }),
-			equipmentType: new foundry.data.fields.StringField({ initial: "" })
+			equipmentType: new foundry.data.fields.StringField({ initial: "" }),
+			actorType: new foundry.data.fields.StringField({ initial: "" })
 		};
 	}
 }

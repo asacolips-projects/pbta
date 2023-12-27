@@ -13,7 +13,8 @@ export default class MoveData extends ItemTemplateData {
 			rollMod: new foundry.data.fields.NumberField({
 				initial: 0,
 				integer: true
-			})
+			}),
+			actorType: new foundry.data.fields.StringField({ initial: "" })
 		};
 	}
 }

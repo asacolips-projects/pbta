@@ -46,6 +46,15 @@
           <input type="number" name="system.uses" value="{{system.uses}}" data-dtype="Number"/>
         </div>
 
+        {{#if (gt actorTypes.length 1)}}
+        <div class="form-group">
+          <label>{{localize "PBTA.ActorType"}}</label>
+          <select name="system.actorType">
+            {{selectOptions actorTypes selected=system.actorType nameAttr="value" labelAttr="label" blank="" sort=true}}
+          </select>
+        </div>
+        {{/if}}
+
         <div class="form-group">
           <label>{{localize "PBTA.MoveType"}}</label>
           <select name="system.moveType" data-dtype="String">

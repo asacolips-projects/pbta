@@ -15,7 +15,7 @@ export default class PbtaItemSheet extends ItemSheet {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "item"],
 			width: 450,
-			height: 400,
+			height: 450,
 			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details" }]
 		});
 	}
@@ -64,17 +64,19 @@ export default class PbtaItemSheet extends ItemSheet {
 		}
 
 		const sheetConfig = game.pbta.sheetConfig;
+		const actorType = this.actor?.type || this.item.system?.actorType;
+		if (this.item.system.actorType !== undefined) context.actorTypes = this._getActorTypes();
 		if (this.item.type === "move" || this.item.type === "npcMove") {
 			if (this.item.type === "move") {
 				context.system.stats = {};
 				if (this.actor?.system?.stats) {
-					const stats = foundry.utils.duplicate(this.actor?.system?.stats);
-					context.system.stats = stats;
-				} else if (Object.keys(sheetConfig?.actorTypes || {}).length) {
-					const validCharacterType = Object.entries(sheetConfig.actorTypes)
-						.find(([k, v]) => [k, v?.baseType].includes("character") && v.stats);
-					if (validCharacterType) {
-						context.system.stats = foundry.utils.duplicate(validCharacterType[1].stats);
+					context.system.stats = foundry.utils.duplicate(this.actor.system.stats);
+				} else {
+					const validCharacterType = Object.fromEntries(Object.entries(sheetConfig.actorTypes)
+						.filter(([k, v]) => [k, v?.baseType].includes("character") && v.stats));
+
+					if (Object.keys(validCharacterType).length) {
+						context.system.stats = foundry.utils.duplicate(validCharacterType[actorType || "character"].stats);
 					}
 				}
 				context.system.stats.prompt = {label: game.i18n.localize("PBTA.Prompt")};
@@ -91,13 +93,12 @@ export default class PbtaItemSheet extends ItemSheet {
 			}
 			context.system.moveTypes = {};
 			if (this.actor?.system?.moveTypes) {
-				const moveTypes = foundry.utils.duplicate(this.actor?.system?.moveTypes);
-				context.system.moveTypes = moveTypes;
-			} else if (Object.keys(sheetConfig?.actorTypes || {}).length) {
-				const validCharacterType = Object.entries(sheetConfig.actorTypes)
-					.find(([k, v]) => [k, v?.baseType].includes("character") && v.moveTypes);
-				if (validCharacterType) {
-					context.system.moveTypes = foundry.utils.duplicate(validCharacterType[1].moveTypes);
+				context.system.moveTypes = foundry.utils.duplicate(this.actor?.system?.moveTypes);
+			} else {
+				const validCharacterType = Object.fromEntries(Object.entries(sheetConfig.actorTypes)
+					.filter(([k, v]) => [k, v?.baseType].includes("character") && v.moveTypes));
+				if (Object.keys(validCharacterType).length) {
+					context.system.moveTypes = foundry.utils.duplicate(validCharacterType[actorType || "character"].moveTypes);
 				}
 			}
 			if (Object.keys(context.system.moveTypes) && context.system.moveType) {
@@ -112,21 +113,38 @@ export default class PbtaItemSheet extends ItemSheet {
 					await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
 			}
 		} else if (this.item.type === "equipment") {
-			context.system.equipmentTypes = sheetConfig?.actorTypes[this.actor?.baseType]?.equipmentTypes ?? null;
-		} else if (this.item.type === "playbook") {
-			context.actorTypes = Object.keys(game.pbta.sheetConfig.actorTypes)
-				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
-				.map((a) => {
-					const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
-					const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
-					return {
-						label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a),
-						value: a
-					};
-				});
+			const actorType = this.actor?.type || this.item.system.actorType;
+			context.system.equipmentTypes = sheetConfig?.actorTypes[actorType]?.equipmentTypes ?? null;
 		}
 
 		return context;
+	}
+
+	_getActorTypes() {
+		const sheetConfig = game.pbta.sheetConfig;
+		const filters = (a) => {
+			switch (this.item.type) {
+				case "equipment":
+					return sheetConfig.actorTypes[a]?.equipmentTypes;
+				case "move":
+				case "playbook":
+					return a === "character" || sheetConfig.actorTypes[a]?.baseType === "character";
+				case "npcMove":
+					return a === "npc" || sheetConfig.actorTypes[a]?.baseType === "npc";
+				default:
+					return false;
+			}
+		};
+		return Object.keys(sheetConfig.actorTypes)
+			.filter((a) => filters(a))
+			.map((a) => {
+				const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
+				const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
+				return {
+					label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a),
+					value: a
+				};
+			});
 	}
 
 	/* -------------------------------------------- */
