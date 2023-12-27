@@ -965,6 +965,7 @@ export function registerHandlebarsHelpers() {
 	 * Returns length of Object's keys.
 	 */
 	Handlebars.registerHelper("objLen", function (json) {
+		if (!json) return 0;
 		return Object.keys(json).length;
 	});
 

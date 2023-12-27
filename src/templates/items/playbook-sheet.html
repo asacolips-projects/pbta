@@ -39,11 +39,11 @@
           </div>
         </div>
       </div>
-      {{#if (gt actorTypes.length 1)}}
+      {{#if (gt (objLen actorTypes) 1)}}
       <div class="form-group">
         <label>{{localize "PBTA.ActorType"}}</label>
         <select name="system.actorType">
-          {{selectOptions actorTypes selected=system.actorType nameAttr="value" labelAttr="label" blank="" sort=true}}
+          {{selectOptions actorTypes selected=system.actorType labelAttr="label" blank="" sort=true}}
         </select>
       </div>
       {{/if}}

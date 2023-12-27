@@ -66,7 +66,7 @@ export default class PbtaItemSheet extends ItemSheet {
 		const sheetConfig = game.pbta.sheetConfig;
 		const actorType = this.actor?.type || this.item.system?.actorType;
 		if (!this.actor && this.item.system.actorType !== undefined) {
-			context.actorTypes = this._getActorTypes();
+			context.actorTypes = this.item.getActorTypes();
 		}
 		if (this.item.type === "move" || this.item.type === "npcMove") {
 			context.system.moveTypes = {};
@@ -122,33 +122,6 @@ export default class PbtaItemSheet extends ItemSheet {
 		}
 
 		return context;
-	}
-
-	_getActorTypes() {
-		const sheetConfig = game.pbta.sheetConfig;
-		const filters = (a) => {
-			switch (this.item.type) {
-				case "equipment":
-					return sheetConfig.actorTypes[a]?.equipmentTypes;
-				case "move":
-				case "playbook":
-					return a === "character" || sheetConfig.actorTypes[a]?.baseType === "character";
-				case "npcMove":
-					return a === "npc" || sheetConfig.actorTypes[a]?.baseType === "npc";
-				default:
-					return false;
-			}
-		};
-		return Object.keys(sheetConfig.actorTypes)
-			.filter((a) => filters(a))
-			.map((a) => {
-				const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
-				const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
-				return {
-					label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a),
-					value: a
-				};
-			});
 	}
 
 	/* -------------------------------------------- */

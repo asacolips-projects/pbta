@@ -34,6 +34,34 @@ export default class ItemPbta extends Item {
 	}
 
 	/**
+	 * Returns a list of valid actor types for the item.
+	 * @returns {object}
+	 */
+	getActorTypes() {
+		const sheetConfig = game.pbta.sheetConfig;
+		const filters = (a) => {
+			switch (this.type) {
+				case "equipment":
+					return sheetConfig.actorTypes[a]?.equipmentTypes;
+				case "move":
+				case "playbook":
+					return a === "character" || sheetConfig.actorTypes[a]?.baseType === "character";
+				case "npcMove":
+					return a === "npc" || sheetConfig.actorTypes[a]?.baseType === "npc";
+				default:
+					return false;
+			}
+		};
+		return Object.fromEntries(Object.entries(sheetConfig.actorTypes)
+			.filter(([a, v]) => filters(a))
+			.map(([a, v]) => {
+				const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
+				const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
+				return [a, { label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a) }];
+			}));
+	}
+
+	/**
 	 * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
 	 * @param {boolean} descriptionOnly
 	 * @param {object} options
