@@ -25,14 +25,7 @@
         <div class="form-group">
           <label>{{localize "PBTA.Roll"}}</label>
           <select name="system.rollType" data-dtype="String">
-            {{#select system.rollType}}
-              <option value="">—</option>
-              {{#if system.stats}}
-                {{#each system.stats as |stat key|}}
-                  <option value="{{key}}">{{stat.label}}</option>
-                {{/each}}
-              {{/if}}
-            {{/select}}
+            {{selectOptions system.stats selected=system.rollType nameAttr="key" labelAttr="label" blank="—" }}
           </select>
         </div>
 
@@ -56,12 +49,7 @@
         <div class="form-group">
           <label>{{localize "PBTA.MoveType"}}</label>
           <select name="system.moveType" data-dtype="String">
-            {{#select system.moveType}}
-            <option value="">—</option>
-            {{#each system.moveTypes as |move key|}}
-            <option value="{{key}}">{{move.label}}</option>
-            {{/each}}
-            {{/select}}
+            {{selectOptions system.moveTypes selected=system.moveType nameAttr="key" labelAttr="label" blank="—" }}
           </select>
         </div>
 

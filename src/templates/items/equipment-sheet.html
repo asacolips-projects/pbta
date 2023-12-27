@@ -56,12 +56,7 @@
             <div class="form-group">
               <label>{{localize "PBTA.EquipmentType"}}</label>
               <select name="system.equipmentType" data-dtype="String">
-                {{#select system.equipmentType}}
-                <option value="">—</option>
-                {{#each system.equipmentTypes as |equipment key|}}
-                <option value="{{key}}">{{equipment.label}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions system.equipmentTypes selected=system.equipmentType nameAttr="key" labelAttr="label" blank="—" }}
               </select>
             </div>
           {{/if}}
