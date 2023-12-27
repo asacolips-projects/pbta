@@ -110,7 +110,7 @@ export default class PbtaItemSheet extends ItemSheet {
 					context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
 				}
 				if (Object.keys(context.system.moveTypes) && context.system.moveType) {
-					if (context.system.moveTypes[context.system.moveType].playbook) {
+					if (context.system.moveTypes[context.system.moveType]?.playbook) {
 						context.isPlaybookMove = true;
 					}
 				}
