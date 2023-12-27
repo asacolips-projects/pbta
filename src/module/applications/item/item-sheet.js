@@ -115,8 +115,7 @@ export default class PbtaItemSheet extends ItemSheet {
 					await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
 			}
 		} else if (this.item.type === "equipment") {
-			const actorType = this.actor?.type || this.item.system.actorType;
-			context.system.equipmentTypes = sheetConfig?.actorTypes[actorType]?.equipmentTypes ?? null;
+			context.system.equipmentTypes = sheetConfig?.actorTypes[actorType || "character"]?.equipmentTypes ?? null;
 		}
 
 		return context;
