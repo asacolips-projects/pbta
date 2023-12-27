@@ -53,7 +53,7 @@ export default class PbtaActorSheet extends ActorSheet {
 	}
 
 	get unsupportedItemTypes() {
-		return new Set(["npcMove", "tag"]);
+		return new Set(["npcMove", "playbook", "tag"]);
 	}
 
 	/* -------------------------------------------- */

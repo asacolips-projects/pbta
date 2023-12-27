@@ -33,7 +33,7 @@ export default class PbtaActorOtherSheet extends PbtaActorSheet {
 
 	get unsupportedItemTypes() {
 		if (this.actor.baseType === "character") {
-			return new Set(["npcMove", "tag"]);
+			return new Set(["npcMove", "playbook", "tag"]);
 		}
 		return new Set(["move", "playbook", "tag"]);
 	}
