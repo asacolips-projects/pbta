@@ -12,6 +12,7 @@ import * as applications from "./applications/_module.js";
 import * as dataModels from "./data/_module.js";
 import * as dice from "./dice/_module.js";
 import * as documents from "./documents/_module.js";
+import * as migrations from "./migration.js";
 import * as utils from "./utils.js";
 
 /* -------------------------------------------- */
@@ -24,7 +25,7 @@ globalThis.pbta = {
 	dataModels,
 	dice,
 	documents,
-	migrations: {},
+	migrations,
 	utils,
 };
 
@@ -212,9 +213,10 @@ Hooks.once("ready", async function () {
 	const cv = game.settings.get("pbta", "systemMigrationVersion");
 	const totalDocuments = game.actors.size + game.scenes.size + game.items.size;
 	if (!cv && totalDocuments === 0) return game.settings.set("pbta", "systemMigrationVersion", game.system.version);
+	if (cv && !isNewerVersion(game.system.flags.needsMigrationVersion, cv)) return;
 
 	// Perform the migration
-	await game.settings.set("pbta", "systemMigrationVersion", game.system.version);
+	migrations.migrateWorld();
 });
 
 Hooks.on("renderChatMessage", (data, html, options) => {

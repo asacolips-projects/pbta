@@ -103,6 +103,9 @@ PBTA:
       statString1: "Stat"
       statString2: "must be a string, such as \"Cool\""
       tomlError: "There's a syntax error in your TOML configuration on line {line} at column {column}. See console for more details."
+  Migration:
+    Begin: "Applying PbtA System Migration for version {version}. Please be patient and do not close your game or shut down your server."
+    Complete: "PbtA System Migration to version {version} completed!"
   Settings:
     button:
       help: "PbtA System Help & Tutorial"

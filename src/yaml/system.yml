@@ -51,3 +51,5 @@ manifest: https://asacolips-artifacts.s3.amazonaws.com/pbta/master/system.json
 download: https://asacolips-artifacts.s3.amazonaws.com/pbta/0.8.1/pbta.zip
 changelog: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/raw/master/CHANGELOG.md
 bugs: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/issues
+flags:
+  needsMigrationVersion: "0.8.2"
