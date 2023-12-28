@@ -91,7 +91,7 @@ export function validateSheetConfig(sheetConfig) {
 					}
 				}
 			}
-		} else if (actorType === "character" || actorConfig[actorType]?.baseType === "character") {
+		} else if (actorType === "character" || actorConfig?.baseType === "character") {
 			// Stats are required for characters (but not for NPCs).
 			errors.push(`${t.statsRequired1} '${actorType}' ${t.statsRequired2}.`);
 		}
@@ -140,16 +140,14 @@ export function validateSheetConfig(sheetConfig) {
 			}
 		}
 
-		// Validate that the movetypes are included as an array.
-		if (!actorConfig.moveTypes || typeof actorConfig.moveTypes !== "object" || Object.keys(actorConfig.moveTypes).length < 1) {
+		// Validate that the movetypes are included
+		if (foundry.utils.isEmpty(actorConfig.moveTypes)) {
 			errors.push(`'${actorType}.moveTypes' ${t.moveTypes}`);
 		}
 
-		// Validate that the movetypes are included as an array.
-		if (actorConfig.equipmentTypes) {
-			if (typeof actorConfig.equipmentTypes !== "object" || Object.keys(actorConfig.equipmentTypes).length < 1) {
-				errors.push(`'${actorType}.equipmentTypes' ${t.equipmentTypes}`);
-			}
+		// Validate that the movetypes are included
+		if (foundry.utils.isEmpty(actorConfig.equipmentTypes)) {
+			errors.push(`'${actorType}.equipmentTypes' ${t.equipmentTypes}`);
 		}
 	}
 
@@ -261,7 +259,7 @@ export function convertSheetConfig(sheetConfig) {
 			newConfig.rollResults = {};
 			// Set result ranges.
 			for (let [rollKey, rollSetting] of Object.entries(v)) {
-				if (typeof rollSetting.range === "string" && rollSetting.range) {
+				if (rollSetting.range && typeof rollSetting.range === "string") {
 					// Split the result range into an array.
 					let range = rollSetting.range.split(/[-+]/g);
 					if (range.length === 2 && range[0] !== "") {
@@ -388,12 +386,7 @@ export function convertSheetConfig(sheetConfig) {
 			}
 
 			if (k !== "character" && k !== "npc") {
-				actorType.baseType = "character";
-				if (v.baseType) {
-					actorType.baseType = v.baseType;
-				} else if (v.basetype) {
-					actorType.baseType = v.basetype;
-				}
+				actorType.baseType = v.basetype ?? "character";
 			}
 
 			delete v.attributesTop;
