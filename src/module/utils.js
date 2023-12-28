@@ -66,6 +66,9 @@ export function validateSheetConfig(sheetConfig) {
 			}
 		}
 	}
+	Object.keys(sheetConfig)
+		.filter((key) => !(CONFIG.PBTA.sheetConfigs.includes(key) || game.pbta.sheetConfig?.actorTypes?.[key]))
+		.forEach((key) => actorTypes.push(key));
 
 	// Iterate through the actor types.
 	for (let actorType of actorTypes) {

@@ -14,6 +14,17 @@ PBTA.attrTypes = [
 	"Track"
 ];
 
+PBTA.sheetConfigs = [
+	"maxMod",
+	"minMod",
+	"rollFormula",
+	"rollResults",
+	"rollShifting",
+	"statClock",
+	"statShifting",
+	"statToggle"
+];
+
 PBTA.playbooks = [];
 
 PBTA.rollModes = {
