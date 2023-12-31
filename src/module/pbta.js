@@ -32,6 +32,13 @@ globalThis.pbta = {
 Hooks.once("init", async function () {
 	globalThis.pbta = game.pbta = Object.assign(game.system, globalThis.pbta);
 
+	Object.defineProperty(globalThis.pbta, "rollItemMacro", {
+		value: (itemData) => {
+			console.warn("game.pbta.rollItemMacro has been deprecated. Use game.pbta.documents.macro.rollItemMacro instead.");
+			documents.macro.rollItemMacro(itemData);
+		}
+	});
+
 	CONFIG.ui.combat = applications.combat.PbtACombatTracker;
 	CONFIG.Combatant.documentClass = documents.CombatantPbtA;
 
