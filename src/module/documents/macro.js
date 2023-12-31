@@ -31,7 +31,7 @@ export async function createPbtaMacro(data, slot) {
  * Create a Macro from an Item drop.
  * Get an existing item macro if one exists, otherwise create a new one.
  * @param {string} name
- * @returns {}
+ * @returns {Promise}
  */
 export function rollItemMacro(name) {
 	let actor;
@@ -51,5 +51,5 @@ export function rollItemMacro(name) {
 	if (documents.length > 1) {
 		ui.notifications.warn(game.i18n.format("PBTA.Warnings.Macro.MultipleTargetsWarn", { actor: actor.name, name }));
 	}
-	documents[0].roll();
+	return documents[0].roll();
 }
