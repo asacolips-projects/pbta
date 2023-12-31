@@ -193,8 +193,8 @@ PBTA:
       up: "{stat} Shifts Up"
       down: "{stat} Shifts Down"
   Warnings:
+    TagDeprecation: "Tags as items have been deprecated, use the Tag Configuration menu on the game settings to create your tags."
     UnlinkedToken:
       Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
       Moves: "Moves cannot be rearranged while this token is not linked to an actor."
-    TagDeprecation: "Tags as items have been deprecated, use the Tag Configuration menu on the game settings to create your tags."
 PBTA_OTHER: "Other"
