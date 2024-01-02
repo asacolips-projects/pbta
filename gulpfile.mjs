@@ -3,13 +3,9 @@ import gulp from "gulp";
 import prefix from "gulp-autoprefixer";
 import sass from "gulp-dart-sass";
 import sourcemaps from "gulp-sourcemaps";
-import webp from "gulp-webp";
 import yaml from "gulp-yaml";
-import path from "node:path";
 import buffer from "vinyl-buffer";
 import source from "vinyl-source-stream";
-import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
 
 import rollupStream from "@rollup/stream";
 
@@ -26,13 +22,12 @@ const stylesDirectory = `${sourceDirectory}/styles`;
 const stylesExtension = "scss";
 const sourceFileExtension = "js";
 const staticFiles = [
-	"assets/icons",
+	"assets",
 	"styles/lib",
 	"templates",
 	"scripts"
 ];
 const systemYaml = ["src/yaml/**/*.{yml, yaml}"];
-const systemImages = ["src/assets/**/*.{png,jpeg,jpg}"];
 
 /** ******************/
 /*      BUILD       */
@@ -88,15 +83,6 @@ function buildManifest() {
 }
 
 /**
- *
- */
-function buildImages() {
-	return gulp.src(systemImages, {base: "src"})
-		.pipe(webp())
-		.pipe(gulp.dest("./dist"));
-}
-
-/**
  * Copy static files
  */
 async function copyFiles() {
@@ -111,7 +97,6 @@ async function copyFiles() {
  * Watch for changes for each build step
  */
 export function watch() {
-	gulp.watch(`${sourceDirectory}/assets/*.{png,jpeg,jpg,svg,webp}`, { ignoreInitial: false }, buildImages);
 	gulp.watch(`${sourceDirectory}/**/*.{yml, yaml}`, { ignoreInitial: false }, buildYaml);
 	gulp.watch(`${sourceDirectory}/yaml/system.yml`, { ignoreInitial: false }, buildManifest);
 	gulp.watch(`${sourceDirectory}/**/*.${sourceFileExtension}`, { ignoreInitial: false }, buildCode);
@@ -123,7 +108,7 @@ export function watch() {
 	);
 }
 
-export const build = gulp.series(clean, gulp.parallel(buildYaml, buildManifest, buildImages, buildCode, buildStyles, copyFiles));
+export const build = gulp.series(clean, gulp.parallel(buildYaml, buildManifest, buildCode, buildStyles, copyFiles));
 
 /** ******************/
 /*      CLEAN       */
@@ -133,14 +118,14 @@ export const build = gulp.series(clean, gulp.parallel(buildYaml, buildManifest, 
  * Remove built files from `dist` folder while ignoring source files
  */
 export async function clean() {
-	const files = [...staticFiles, "assets", "lang", "module", "system.json", "template.json"];
+	const files = [...staticFiles, "lang", "module", "system.json", "template.json"];
 
 	if (fs.existsSync(`${stylesDirectory}/src/${packageId}.${stylesExtension}`)) {
 		files.push("styles");
 	}
 
 	console.log(" ", "Files to clean:");
-	console.log("   ", files.join("\n    "));
+	console.log("   ", files.sort().join("\n    "));
 
 	for (const filePath of files) {
 		await fs.remove(`${distDirectory}/${filePath}`);
