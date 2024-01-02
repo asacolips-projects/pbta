@@ -1,18 +1,17 @@
-.cell__title,
-.cell__subtitle {
+.cell__title {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  flex: 100%;
-  color: $c-navy;
-  // color: $c-white;
-  padding: $padding-sm;
-  margin-bottom: 5px;
-  font-weight: bold;
-  font-family: $font-stack-secondary;
-  border: 0;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  color: $c-black;
+  margin: 0 0 5px;
+  padding: 5px 5px 5px 0;
+  line-height: 0.9;
+  position: relative;
+  border-bottom: 2px solid $c-black;
 
   a,
   button {
@@ -76,44 +75,6 @@
   display: none;
 }
 
-.cell__title {
-  display: flex;
-  // text-transform: uppercase;
-  font-weight: bold;
-  font-size: 20px;
-  letter-spacing: 0.5px;
-  color: $c-black;
-  // overflow: hidden;
-  margin: 10px 0 10px;
-  padding: 5px 5px 5px 0;
-  line-height: 0.9;
-  height: 38px;
-  font-family: $font-stack-secondary;
-  position: relative;
-  border-bottom: 2px solid $c-black;
-
-  // &::before,
-  // &::after {
-  //   display: block;
-  //   content: '';
-  //   background: $ct-gray-25;
-  //   height: 4px;
-  // }
-
-  // &::before {
-  //   margin-right: 4px;
-  //   flex: 0 0 15px;
-  //   // TODO: Maybe get rid of the before.
-  //   display: none;
-  // }
-
-  // &::after {
-  //   margin-left: 4px;
-  //   flex: 2 0 auto;
-  //   min-width: 100%;
-  // }
-}
-
 .cell {
   input.input--cell-title[type="text"] {
     text-align: left;
@@ -139,11 +100,6 @@
       color: $c-white;
     }
   }
-}
-
-.cell__subtitle {
-  background: $c-navy-up;
-  color: $c-white;
 }
 
 .cell--image {
@@ -226,7 +182,6 @@
 
 .cell__description--attr {
   font-size: 12px;
-  margin-top: -4px;
 }
 
 .cell {
