@@ -1,8 +1,3 @@
-// SPDX-FileCopyrightText: 2022 Johannes Loher
-// SPDX-FileCopyrightText: 2022 David Archibald
-//
-// SPDX-License-Identifier: MIT
-
 module.exports = {
 	parserOptions: {
 		ecmaVersion: 13,
@@ -26,7 +21,7 @@ module.exports = {
 		"jsdoc"
 	],
 
-	ignorePatterns: ["gulpfile.js", "update-build-tags.js"],
+	ignorePatterns: ["gulpfile.mjs", "update-build-tags.js"],
 
 	rules: {
 		"array-bracket-spacing": ["warn", "never"],
