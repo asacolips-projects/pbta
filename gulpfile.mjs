@@ -21,12 +21,7 @@ const distDirectory = "./dist";
 const stylesDirectory = `${sourceDirectory}/styles`;
 const stylesExtension = "scss";
 const sourceFileExtension = "js";
-const staticFiles = [
-	"assets",
-	"styles/lib",
-	"templates",
-	"scripts"
-];
+const staticFiles = ["assets", "json", "styles/lib", "templates", "scripts"];
 const systemYaml = ["src/yaml/**/*.{yml, yaml}"];
 
 /** ******************/
