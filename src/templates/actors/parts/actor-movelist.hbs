@@ -50,36 +50,36 @@
 
 		{{#each moves as |moveGroup moveKey|}}
 			<div class="cell cell--moves cell--group cell--{{moveKey}}">
-			<h2 class="cell__title">
-				<label class="item-group-label">
-					{{#if (eq moveKey "PBTA_OTHER")}}
-					{{localize moveKey}}
-					{{else}}
-					{{getLabel ../moveTypes moveKey}}
-					{{/if}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span>
-				</label>
-				<div class="item-controls">
-					<button
-						type="button"
-						class="item-control item-create"
-						{{#if ../isCharacter}}
-						data-type="move"
+				<h2 class="cell__title">
+					<label class="item-group-label">
+						{{#if (eq moveKey "PBTA_OTHER")}}
+						{{localize moveKey}}
 						{{else}}
-						data-type="npcMove"
-						{{/if}}
-						data-moveType="{{moveKey}}"
-						>
-						<i class="fas fa-plus"></i>
-					</button>
-				</div>
-			</h2>
-			<ol class="items-list">
-			{{#each moveGroup as |item id|}}
-				<li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
-				{{> "pbta.actor-moves" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-				</li>
-			{{/each}}
-			</ol>
+						{{getLabel ../moveTypes moveKey}}
+						{{/if}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span>
+					</label>
+					<div class="item-controls">
+						<button
+							type="button"
+							class="item-control item-create"
+							{{#if ../isCharacter}}
+							data-type="move"
+							{{else}}
+							data-type="npcMove"
+							{{/if}}
+							data-moveType="{{moveKey}}"
+							>
+							<i class="fas fa-plus"></i>
+						</button>
+					</div>
+				</h2>
+				<ol class="items-list">
+				{{#each moveGroup as |item id|}}
+					<li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
+					{{> "pbta.actor-moves" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+					</li>
+				{{/each}}
+				</ol>
 			</div>
 		{{/each}}
 
