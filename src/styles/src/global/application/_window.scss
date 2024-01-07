@@ -94,6 +94,9 @@
     &:hover,
     &:focus {
       box-shadow: 0 0 5px rgba($c-navy-up, 0.25);
+    }
+
+    &:hover {
       background-color: $c-navy-top;
     }
   }
