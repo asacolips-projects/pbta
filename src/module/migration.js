@@ -3,7 +3,7 @@
  */
 export async function migrateWorld() {
 	const version = game.system.version;
-	ui.notifications.info(game.i18n.format("PBTA.Migration.Begin", {version}), {permanent: true});
+	ui.notifications.info(game.i18n.format("PBTA.Migration.Begin", { version }), { permanent: true });
 
 	const migrationData = await getMigrationData();
 
@@ -18,9 +18,9 @@ export async function migrateWorld() {
 			if (!foundry.utils.isEmpty(updateData)) {
 				console.log(`Migrating Actor document ${actor.name}`);
 				if (flags.persistSourceMigration) {
-					updateData = foundry.utils.mergeObject(source, updateData, {inplace: false});
+					updateData = foundry.utils.mergeObject(source, updateData, { inplace: false });
 				}
-				await actor.update(updateData, {enforceTypes: false, diff: valid && !flags.persistSourceMigration});
+				await actor.update(updateData, { enforceTypes: false, diff: valid && !flags.persistSourceMigration });
 			}
 		} catch(err) {
 			err.message = `Failed pbta system migration for Actor ${actor.name}: ${err.message}`;
@@ -38,9 +38,9 @@ export async function migrateWorld() {
 			if (!foundry.utils.isEmpty(updateData)) {
 				console.log(`Migrating Item document ${item.name}`);
 				if (flags.persistSourceMigration) {
-					updateData = foundry.utils.mergeObject(source, updateData, {inplace: false});
+					updateData = foundry.utils.mergeObject(source, updateData, { inplace: false });
 				}
-				await item.update(updateData, {enforceTypes: false, diff: valid && !flags.persistSourceMigration});
+				await item.update(updateData, { enforceTypes: false, diff: valid && !flags.persistSourceMigration });
 			}
 		} catch(err) {
 			err.message = `Failed pbta system migration for Item ${item.name}: ${err.message}`;
@@ -54,7 +54,7 @@ export async function migrateWorld() {
 			const updateData = migrateMacroData(m.toObject(), migrationData);
 			if (!foundry.utils.isEmpty(updateData)) {
 				console.log(`Migrating Macro document ${m.name}`);
-				await m.update(updateData, {enforceTypes: false});
+				await m.update(updateData, { enforceTypes: false });
 			}
 		} catch(err) {
 			err.message = `Failed pbta system migration for Macro ${m.name}: ${err.message}`;
@@ -82,7 +82,7 @@ export async function migrateWorld() {
 			const updateData = migrateSceneData(s, migrationData);
 			if (!foundry.utils.isEmpty(updateData)) {
 				console.log(`Migrating Scene document ${s.name}`);
-				await s.update(updateData, {enforceTypes: false});
+				await s.update(updateData, { enforceTypes: false });
 				// If we do not do this, then synthetic token actors remain in cache
 				// with the un-updated actorData.
 				s.tokens.forEach((t) => t._actor = null);
@@ -101,7 +101,7 @@ export async function migrateWorld() {
 	}
 
 	game.settings.set("pbta", "systemMigrationVersion", game.system.version);
-	ui.notifications.info(game.i18n.format("PBTA.Migration.Complete", {version}), {permanent: true});
+	ui.notifications.info(game.i18n.format("PBTA.Migration.Complete", { version }), { permanent: true });
 }
 
 /**
@@ -131,7 +131,7 @@ export function migrateActorData(actor, migrationData, flags={}) {
 		// Update the Owned Item
 		if (!foundry.utils.isEmpty(itemUpdate)) {
 			if (itemFlags.persistSourceMigration) {
-				itemUpdate = foundry.utils.mergeObject(itemData, itemUpdate, {inplace: false});
+				itemUpdate = foundry.utils.mergeObject(itemData, itemUpdate, { inplace: false });
 				flags.persistSourceMigration = true;
 			}
 			arr.push({ ...itemUpdate, _id: itemData._id });
@@ -157,7 +157,7 @@ export const migrateCompendium = async function (pack) {
 
 	// Unlock the pack for editing
 	const wasLocked = pack.locked;
-	await pack.configure({locked: false});
+	await pack.configure({ locked: false });
 
 	// Begin by requesting server-side data model migration and get the migrated content
 	await pack.migrate();
@@ -193,7 +193,7 @@ export const migrateCompendium = async function (pack) {
 	}
 
 	// Apply the original locked status for the pack
-	await pack.configure({locked: wasLocked});
+	await pack.configure({ locked: wasLocked });
 	console.log(`Migrated all ${documentName} documents from Compendium ${pack.collection}`);
 };
 
@@ -229,7 +229,7 @@ export function migrateItemData(item, migrationData, flags={}) {
  */
 export const migrateEffectData = function (effect, migrationData) {
 	const updateData = {};
-	_migrateDocumentIcon(effect, updateData, {...migrationData, field: "icon"});
+	_migrateDocumentIcon(effect, updateData, { ...migrationData, field: "icon" });
 	return updateData;
 };
 
@@ -295,7 +295,7 @@ export const migrateSceneData = function (scene, migrationData) {
 		}
 		return t;
 	});
-	return {tokens};
+	return { tokens };
 };
 
 /* -------------------------------------------- */
@@ -309,7 +309,7 @@ export const getMigrationData = async function () {
 	try {
 		const icons = await fetch("systems/pbta/json/icon-migration.json");
 		const spellIcons = await fetch("systems/pbta/json/spell-icon-migration.json");
-		data.iconMap = {...await icons.json(), ...await spellIcons.json()};
+		data.iconMap = { ...await icons.json(), ...await spellIcons.json() };
 	} catch(err) {
 		console.warn(`Failed to retrieve icon migration data: ${err.message}`);
 	}
@@ -328,7 +328,7 @@ export const getMigrationData = async function () {
  * @returns {object}                                        The updateData to apply
  * @private
  */
-function _migrateDocumentIcon(document, updateData, {iconMap, field="img"}={}) {
+function _migrateDocumentIcon(document, updateData, { iconMap, field="img" }={}) {
 	let path = document?.[field];
 	if (path && iconMap) {
 		if (path.startsWith("/") || path.startsWith("\\")) path = path.substring(1);
@@ -359,20 +359,20 @@ function _migrateMacroCommands(macro, updateData) {
 export async function purgeFlags(pack) {
 	const cleanFlags = (flags) => {
 		const flagsPbta = flags.pbta || null;
-		return flagsPbta ? {pbta: flagsPbta} : {};
+		return flagsPbta ? { pbta: flagsPbta } : {};
 	};
-	await pack.configure({locked: false});
+	await pack.configure({ locked: false });
 	const content = await pack.getDocuments();
 	for (let doc of content) {
-		const update = {flags: cleanFlags(doc.flags)};
+		const update = { flags: cleanFlags(doc.flags) };
 		if (pack.documentName === "Actor") {
 			update.items = doc.items.map((i) => {
 				i.flags = cleanFlags(i.flags);
 				return i;
 			});
 		}
-		await doc.update(update, {recursive: false});
+		await doc.update(update, { recursive: false });
 		console.log(`Purged flags from ${doc.name}`);
 	}
-	await pack.configure({locked: true});
+	await pack.configure({ locked: true });
 }

@@ -193,7 +193,7 @@ export function parseTomlString(tomlString) {
 	// If there are errors, output them.
 	if (errors.length > 0) {
 		for (let error of errors) {
-			ui.notifications.error(error, {permanent: true});
+			ui.notifications.error(error, { permanent: true });
 		}
 		throw new Error(errors.join("\r\n"));
 	}
@@ -298,6 +298,7 @@ export function convertSheetConfig(sheetConfig) {
 
 		} else if (k === "maxMod") {
 			newConfig.maxMod = v;
+		// eslint-disable-next-line max-len
 		} else if (v.label || v.description || v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
 			// Actors
 			let actorType = {};
@@ -367,7 +368,7 @@ export function convertSheetConfig(sheetConfig) {
 							moves: []
 						};
 					} else {
-						const { label, playbook = false, creation = false} = mtValue;
+						const { label, playbook = false, creation = false } = mtValue;
 						actorType.moveTypes[cleanClass(mtKey, false)] = {
 							label,
 							playbook,
@@ -692,7 +693,7 @@ export function getDeprecatedTagList() {
 		if (typeof tag === "string") {
 			let tagName = tag.toLowerCase();
 			if (tagNames.includes(tagName) === false) {
-				tagNames.push({value: tagName});
+				tagNames.push({ value: tagName });
 			}
 		}
 	}

@@ -20,11 +20,11 @@ export default class RollPbtA extends Roll {
 	}
 
 	/** @override */
-	async toMessage(messageData={}, {rollMode, create=true}={}) {
+	async toMessage(messageData={}, { rollMode, create=true }={}) {
 
 		// Perform the roll, if it has not yet been rolled
 		if (!this._evaluated) {
-			await this.evaluate({async: true});
+			await this.evaluate({ async: true });
 		}
 
 		const resultRanges = game.pbta.sheetConfig.rollResults;
@@ -117,7 +117,7 @@ export default class RollPbtA extends Roll {
 		if (forward?.value) {
 			const fRoll = new Roll(`${forward.value}`, this.data);
 			if (!(fRoll.terms[0] instanceof OperatorTerm)) {
-				this.terms.push(new OperatorTerm({operator: "+"}));
+				this.terms.push(new OperatorTerm({ operator: "+" }));
 			}
 			this.terms = this.terms.concat(fRoll.terms);
 			this.options.conditions.push(`${game.i18n.localize("PBTA.Forward")} (${forward.value >= 0 ? "+" : ""} ${forward.value})`);
@@ -125,7 +125,7 @@ export default class RollPbtA extends Roll {
 		if (ongoing?.value) {
 			const oRoll = new Roll(`${ongoing.value}`, this.data);
 			if (!(oRoll.terms[0] instanceof OperatorTerm)) {
-				this.terms.push(new OperatorTerm({operator: "+"}));
+				this.terms.push(new OperatorTerm({ operator: "+" }));
 			}
 			this.terms = this.terms.concat(oRoll.terms);
 			this.options.conditions.push(`${game.i18n.localize("PBTA.Ongoing")} (${ongoing.value >= 0 ? "+" : ""} ${ongoing.value})`);
@@ -233,7 +233,7 @@ export default class RollPbtA extends Roll {
 		const addToFormula = (val) => {
 			const statBonus = new Roll(val, this.data);
 			if (!(statBonus.terms[0] instanceof OperatorTerm)) {
-				this.terms.push(new OperatorTerm({operator: "+"}));
+				this.terms.push(new OperatorTerm({ operator: "+" }));
 			}
 			this.terms = this.terms.concat(statBonus.terms);
 		};

@@ -38,7 +38,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			height: 780,
 			scrollY: [".window-content"],
 			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "moves" }],
-			dragDrop: [{dragSelector: ".items-list .item"}]
+			dragDrop: [{ dragSelector: ".items-list .item" }]
 		});
 	}
 
@@ -94,7 +94,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			isNPC: this.actor.baseType === "npc",
 			config: CONFIG.PBTA,
 			flags: foundry.utils.mergeObject({
-				pbta: { rollMode: "def" }}, this.actor?.flags ?? {}
+				pbta: { rollMode: "def" } }, this.actor?.flags ?? {}
 			),
 			enrichmentOptions: {
 				secrets: this.actor.isOwner,
@@ -340,7 +340,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			}
 
 			const selected = CONFIG.PBTA.playbooks.find((p) => p.uuid === event.target.value);
-			this.actor.update({"system.playbook": {
+			this.actor.update({ "system.playbook": {
 				name: selected?.name ?? "",
 				slug: selected?.slug ?? selected?.name.slugify() ?? "",
 				uuid: selected?.uuid ?? ""
@@ -438,6 +438,7 @@ export default class PbtaActorSheet extends ActorSheet {
 	}
 
 	async updateTrackThreshold(attr) {
+		// eslint-disable-next-line no-constant-condition
 		while (true) {
 			let negativeThreshold = (-Math.min(attr.value, 0) + 1) * attr.negative.steps;
 			let positiveThreshold = (Math.max(attr.value, 0) + 1) * attr.positive.steps;
@@ -595,7 +596,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			else system[`stats.${down}.value`] = newValue;
 		}
 
-		if (!fail) await this.actor.update({system});
+		if (!fail) await this.actor.update({ system });
 		this._statShifting = {};
 		this.render(false);
 
@@ -631,7 +632,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		if (item) {
 			const originalAmount = Number(getProperty(item.toObject(), property)) || 0;
 			if (originalAmount + delta >= 0) {
-				await item.update({ [property]: originalAmount + delta});
+				await item.update({ [property]: originalAmount + delta });
 				this.render();
 			}
 		}

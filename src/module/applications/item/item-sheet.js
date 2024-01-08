@@ -100,11 +100,11 @@ export default class PbtaItemSheet extends ItemSheet {
 						context.system.stats = foundry.utils.duplicate(validCharacterType[actorType || "character"].stats);
 					}
 				}
-				context.system.stats.prompt = {label: game.i18n.localize("PBTA.Prompt")};
+				context.system.stats.prompt = { label: game.i18n.localize("PBTA.Prompt") };
 				if (Object.keys(context.system.stats).length > 1) {
-					context.system.stats.ask = {label: game.i18n.localize("PBTA.Ask")};
+					context.system.stats.ask = { label: game.i18n.localize("PBTA.Ask") };
 				}
-				context.system.stats.formula = {label: game.i18n.localize("PBTA.Formula")};
+				context.system.stats.formula = { label: game.i18n.localize("PBTA.Formula") };
 
 				if (context.system?.choices) {
 					context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);

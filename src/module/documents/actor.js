@@ -198,7 +198,7 @@ export default class ActorPbta extends Actor {
 				return;
 			}
 			await roll.toMessage({
-				speaker: ChatMessage.getSpeaker({actor: this}),
+				speaker: ChatMessage.getSpeaker({ actor: this }),
 				title: label ?? "",
 				rollMode: game.settings.get("core", "rollMode")
 			});
@@ -215,7 +215,7 @@ export default class ActorPbta extends Actor {
 				return;
 			}
 			await r.toMessage({
-				speaker: ChatMessage.getSpeaker({actor: this}),
+				speaker: ChatMessage.getSpeaker({ actor: this }),
 				rollMode: game.settings.get("core", "rollMode")
 			});
 		} else if (itemId) {
@@ -295,7 +295,7 @@ export default class ActorPbta extends Actor {
 		return systemData;
 	}
 
-	static async createDialog(data={}, {parent=null, pack=null, ...options}={}) {
+	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
 		const documentName = this.metadata.name;
 		const types = Object.keys(game.pbta.sheetConfig.actorTypes);
 		let collection;
@@ -308,11 +308,11 @@ export default class ActorPbta extends Actor {
 		}
 		const folders = collection?._formatFolderSelectOptions() ?? [];
 		const label = game.i18n.localize(this.metadata.label);
-		const title = game.i18n.format("DOCUMENT.Create", {type: label});
+		const title = game.i18n.format("DOCUMENT.Create", { type: label });
 		// Render the document creation form
 		const html = await renderTemplate("templates/sidebar/document-create.html", {
 			folders,
-			name: data.name || game.i18n.format("DOCUMENT.New", {type: label}),
+			name: data.name || game.i18n.format("DOCUMENT.New", { type: label }),
 			folder: data.folder,
 			hasFolders: folders.length >= 1,
 			type: data.type || CONFIG[documentName]?.defaultType || types[0],
@@ -337,7 +337,7 @@ export default class ActorPbta extends Actor {
 			callback: (html) => {
 				const form = html[0].querySelector("form");
 				const fd = new FormDataExtended(form);
-				foundry.utils.mergeObject(data, fd.object, {inplace: true});
+				foundry.utils.mergeObject(data, fd.object, { inplace: true });
 				if (!data.folder) {
 					delete data.folder;
 				}
@@ -356,7 +356,7 @@ export default class ActorPbta extends Actor {
 					data.type = "other";
 				}
 
-				return this.create(data, {parent, pack, renderSheet: true});
+				return this.create(data, { parent, pack, renderSheet: true });
 			},
 			rejectClose: false,
 			options

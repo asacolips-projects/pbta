@@ -413,7 +413,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			return this._confirm({
 				title: game.i18n.localize("PBTA.Settings.sheetConfig.confirmChanges"),
 				content: content,
-				options: {width: 500, classes: ["pbta", "pbta-sheet-confirm"]},
+				options: { width: 500, classes: ["pbta", "pbta-sheet-confirm"] },
 				buttons: {
 					yes: {
 						icon: '<i class="fas fa-check"></i>',
@@ -452,7 +452,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 		return true;
 	}
 
-	async _confirm({title, content, buttons, defaultButton, options = {}, rejectClose = false, render}={}) {
+	async _confirm({ title, content, buttons, defaultButton, options = {}, rejectClose = false, render }={}) {
 		return new Promise((resolve, reject) => {
 			let resolveButtons = {};
 

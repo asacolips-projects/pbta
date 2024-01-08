@@ -15,7 +15,7 @@ export default class CombatantPbtA extends Combatant {
 			});
 
 			// Update this combatant.
-			this.updateSource({initiative: highestInit});
+			this.updateSource({ initiative: highestInit });
 		}
 	}
 }

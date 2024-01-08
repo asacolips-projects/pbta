@@ -177,6 +177,7 @@ module.exports = {
 		"spaced-comment": "warn",
 
 		"@stylistic/js/space-in-parens": "warn",
+		"@stylistic/js/object-curly-spacing": ["warn", "always"],
 
 		"jsdoc/check-access": "warn",
 		"jsdoc/check-alignment": "warn",

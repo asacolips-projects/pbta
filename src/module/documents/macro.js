@@ -39,7 +39,7 @@ export function rollItemMacro(name) {
 	if (speaker.token) actor = game.actors.tokens[speaker.token];
 	actor ??= game.actors.get(speaker.actor);
 	if (!actor) {
-		ui.notifications.warn("PBTA.Warnings.Macro.NoActorSelected", {localize: true});
+		ui.notifications.warn("PBTA.Warnings.Macro.NoActorSelected", { localize: true });
 		return null;
 	}
 
