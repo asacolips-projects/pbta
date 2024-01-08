@@ -13,11 +13,11 @@ export default class OtherData extends ActorDataTemplate {
 			playbook: new foundry.data.fields.SchemaField({
 				name: new foundry.data.fields.StringField({ initial: "" }),
 				slug: new foundry.data.fields.StringField({ initial: "" }),
-				uuid: new foundry.data.fields.StringField({ initial: "" }),
+				uuid: new foundry.data.fields.StringField({ initial: "" })
 			}),
 
 			// NPC Data
-			tags: new foundry.data.fields.StringField({ initial: "" }),
+			tags: new foundry.data.fields.StringField({ initial: "" })
 		};
 	}
 }

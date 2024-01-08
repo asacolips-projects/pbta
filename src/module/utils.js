@@ -41,7 +41,7 @@ export function validateSheetConfig(sheetConfig) {
 		attributeOptions: game.i18n.localize("PBTA.Messages.sheetConfig.attributeOptions"),
 		attributeOptionsEmpty: game.i18n.localize("PBTA.Messages.sheetConfig.attributeOptionsEmpty"),
 		moveTypes: game.i18n.localize("PBTA.Messages.sheetConfig.moveTypes"),
-		equipmentTypes: game.i18n.localize("PBTA.Messages.sheetConfig.equipmentTypes"),
+		equipmentTypes: game.i18n.localize("PBTA.Messages.sheetConfig.equipmentTypes")
 	};
 
 	// Handle rollFormula.
@@ -507,13 +507,13 @@ export function convertAttr(attrGroup) {
 					value: attrValue.negative?.default ?? 0,
 					steps: attrValue.negative?.steps ?? 3,
 					max: attrValue.negative?.max ?? 3,
-					label: attrValue.negative?.label,
+					label: attrValue.negative?.label
 				};
 				attr.positive = {
 					value: attrValue.positive?.default ?? 0,
 					steps: attrValue.positive?.steps ?? 5,
 					max: attrValue.positive?.max ?? 5,
-					label: attrValue.positive?.label,
+					label: attrValue.positive?.label
 				};
 
 				// Rendering helper for Track
@@ -805,13 +805,13 @@ export async function updateActors(newConfig) {
 	let success = true;
 	let newTokenConfig = {
 		character: {},
-		npc: {},
+		npc: {}
 	};
 
 	// Get all active actors.
 	let documents = {
 		character: Object.keys(newConfig.character).length > 0 ? game.actors.filter((a) => a.type === "character") : [],
-		npc: Object.keys(newConfig.npc).length > 0 ? game.actors.filter((a) => a.type === "npc") : [],
+		npc: Object.keys(newConfig.npc).length > 0 ? game.actors.filter((a) => a.type === "npc") : []
 	};
 
 	// Determine if we need to query other actors.
@@ -924,7 +924,7 @@ export async function preloadHandlebarsTemplates() {
 		"systems/pbta/templates/items/parts/move-description.hbs",
 
 		// Chat Cards
-		"systems/pbta/templates/chat/stat-shift.hbs",
+		"systems/pbta/templates/chat/stat-shift.hbs"
 	];
 
 	const paths = {};

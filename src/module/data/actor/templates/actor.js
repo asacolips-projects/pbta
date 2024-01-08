@@ -8,7 +8,7 @@ export class ActorDataTemplate extends foundry.abstract.DataModel {
 			attrLeft: new foundry.data.fields.ObjectField(),
 			details: new MappingField(new foundry.data.fields.SchemaField({
 				label: new foundry.data.fields.StringField({ initial: "" }),
-				value: new foundry.data.fields.HTMLField({ initial: "" }),
+				value: new foundry.data.fields.HTMLField({ initial: "" })
 			}))
 		};
 	}

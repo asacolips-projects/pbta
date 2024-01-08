@@ -9,7 +9,7 @@ export default class CharacterData extends ActorDataTemplate {
 			playbook: new foundry.data.fields.SchemaField({
 				name: new foundry.data.fields.StringField({ initial: "" }),
 				slug: new foundry.data.fields.StringField({ initial: "" }),
-				uuid: new foundry.data.fields.StringField({ initial: "" }),
+				uuid: new foundry.data.fields.StringField({ initial: "" })
 			}),
 			resources: createActorResources()
 		};

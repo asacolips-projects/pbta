@@ -3,7 +3,7 @@ module.exports = {
 		ecmaVersion: 13,
 		extraFileExtensions: [".cjs", ".mjs"],
 		sourceType: "module",
-		requireConfigFile: false,
+		requireConfigFile: false
 	},
 
 	parser: "@babel/eslint-parser",
@@ -11,7 +11,7 @@ module.exports = {
 	env: {
 		browser: true,
 		es6: true,
-		jquery: true,
+		jquery: true
 	},
 
 	extends: ["eslint:recommended", "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0"],
@@ -28,7 +28,7 @@ module.exports = {
 		"array-callback-return": "warn",
 		"arrow-spacing": "warn",
 		"brace-style": "warn",
-		"comma-dangle": ["warn", "only-multiline"],
+		"comma-dangle": ["warn", "never"],
 		"comma-style": "warn",
 		"computed-property-spacing": "warn",
 		"constructor-super": "error",
@@ -142,8 +142,8 @@ module.exports = {
 				ignoreUrls: true,
 				ignoreStrings: true,
 				ignoreTemplateLiterals: true,
-				ignoreRegExpLiterals: true,
-			},
+				ignoreRegExpLiterals: true
+			}
 		],
 		"no-extra-boolean-cast": ["warn", { enforceForLogicalOperands: true }],
 		"no-extra-semi": "warn",
@@ -158,8 +158,8 @@ module.exports = {
 			"warn",
 			"before",
 			{
-				overrides: { "=": "after", "+=": "after", "-=": "after" },
-			},
+				overrides: { "=": "after", "+=": "after", "-=": "after" }
+			}
 		],
 		"prefer-template": "warn",
 		"quote-props": ["warn", "as-needed", { keywords: false }],
@@ -171,8 +171,8 @@ module.exports = {
 			{
 				anonymous: "always",
 				named: "never",
-				asyncArrow: "always",
-			},
+				asyncArrow: "always"
+			}
 		],
 		"spaced-comment": "warn",
 
@@ -233,9 +233,9 @@ module.exports = {
 		{
 			files: ["./*.js", "./*.cjs", "./*.mjs"],
 			env: {
-				node: true,
-			},
-		},
+				node: true
+			}
+		}
 	],
 
 	settings: {

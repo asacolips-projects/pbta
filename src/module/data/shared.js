@@ -47,7 +47,7 @@ export function createMoveData() {
 			new foundry.data.fields.SchemaField({
 				key: new foundry.data.fields.StringField({ initial: "" }),
 				label: new foundry.data.fields.StringField({ initial: "" }),
-				value: new foundry.data.fields.HTMLField(),
+				value: new foundry.data.fields.HTMLField()
 			})
 		)
 	};

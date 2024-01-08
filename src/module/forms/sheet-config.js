@@ -371,7 +371,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			noteConfirmUpdate: game.i18n.localize("PBTA.Settings.sheetConfig.noteConfirmUpdate"),
 			noteConfirmUpdateBold: game.i18n.localize("PBTA.Settings.sheetConfig.noteConfirmUpdateBold"),
 			noteCancel: game.i18n.localize("PBTA.Settings.sheetConfig.noteCancel"),
-			values: game.i18n.localize("PBTA.Settings.sheetConfig.values"),
+			values: game.i18n.localize("PBTA.Settings.sheetConfig.values")
 		};
 
 		// eslint-disable-next-line max-len
@@ -420,7 +420,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 						label: game.i18n.localize("PBTA.Settings.sheetConfig.confirm"),
 						callback: async () => {
 							return true;
-						},
+						}
 					},
 					update: {
 						icon: '<i class="fas fa-user-check"></i>',
@@ -428,15 +428,15 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 						callback: async () => {
 							let result = await game.pbta.utils.updateActors(updatesDiff);
 							return result;
-						},
+						}
 					},
 					no: {
 						icon: '<i class="fas fa-times"></i>',
 						label: game.i18n.localize("Cancel"),
 						callback: async () => {
 							return false;
-						},
-					},
+						}
+					}
 				},
 				defaultButton: "no"
 			});
@@ -479,7 +479,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 					} else {
 						resolve(null);
 					}
-				},
+				}
 			}, options);
 			dialog.render(true);
 		});

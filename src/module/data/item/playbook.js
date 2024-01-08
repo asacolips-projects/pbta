@@ -11,7 +11,7 @@ export default class PlaybookData extends ItemTemplateData {
 						return new foundry.data.validation.DataModelValidationFailure({
 							unresolved: true,
 							invalidValue: value,
-							message: `${value} is not a valid slug`,
+							message: `${value} is not a valid slug`
 						});
 					}
 				}

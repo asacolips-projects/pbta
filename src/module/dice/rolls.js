@@ -210,9 +210,9 @@ export default class RollPbtA extends Roll {
 					{
 						title,
 						content,
-						buttons,
+						buttons
 					},
-					options,
+					options
 				).render(true);
 			});
 		}

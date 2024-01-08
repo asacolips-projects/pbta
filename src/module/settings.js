@@ -134,7 +134,7 @@ export function registerSettings() {
 		scope: "world",
 		config: false,
 		type: Boolean,
-		default: false,
+		default: false
 	});
 
 	game.settings.register("pbta", "tagConfig", {

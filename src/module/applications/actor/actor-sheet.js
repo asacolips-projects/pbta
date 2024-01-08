@@ -151,7 +151,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				context.statShifting = {
 					...foundry.utils.duplicate(game.pbta.sheetConfig.statShifting),
 					up: this._statShifting?.up,
-					down: this._statShifting?.down,
+					down: this._statShifting?.down
 				};
 			}
 
@@ -343,7 +343,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			this.actor.update({"system.playbook": {
 				name: selected?.name ?? "",
 				slug: selected?.slug ?? selected?.name.slugify() ?? "",
-				uuid: selected?.uuid ?? "",
+				uuid: selected?.uuid ?? ""
 			} });
 		});
 		html.find(".view-playbook").on("click", this._onViewPlaybook.bind(this));

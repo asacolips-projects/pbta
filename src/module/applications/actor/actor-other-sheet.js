@@ -27,7 +27,7 @@ export default class PbtaActorOtherSheet extends PbtaActorSheet {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "actor"],
 			width: 840,
-			height: 780,
+			height: 780
 		});
 	}
 

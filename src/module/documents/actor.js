@@ -192,7 +192,7 @@ export default class ActorPbta extends Actor {
 				stat
 			}));
 			const choice = await roll.configureDialog({
-				title: game.i18n.format("PBTA.RollLabel", { label }),
+				title: game.i18n.format("PBTA.RollLabel", { label })
 			});
 			if (choice === null) {
 				return;
@@ -200,7 +200,7 @@ export default class ActorPbta extends Actor {
 			await roll.toMessage({
 				speaker: ChatMessage.getSpeaker({actor: this}),
 				title: label ?? "",
-				rollMode: game.settings.get("core", "rollMode"),
+				rollMode: game.settings.get("core", "rollMode")
 			});
 			await this.clearForwardAdv();
 			await this.updateCombatMoveCount();
@@ -209,14 +209,14 @@ export default class ActorPbta extends Actor {
 				rollType: "flat"
 			}));
 			const choice = await r.configureDialog({
-				title: label,
+				title: label
 			});
 			if (choice === null) {
 				return;
 			}
 			await r.toMessage({
 				speaker: ChatMessage.getSpeaker({actor: this}),
-				rollMode: game.settings.get("core", "rollMode"),
+				rollMode: game.settings.get("core", "rollMode")
 			});
 		} else if (itemId) {
 			const item = this.items.get(itemId);
@@ -237,7 +237,7 @@ export default class ActorPbta extends Actor {
 			if (this.baseType === "character") {
 				changes.prototypeToken = {
 					actorLink: true,
-					disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+					disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY
 				};
 			}
 		}

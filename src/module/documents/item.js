@@ -105,7 +105,7 @@ export default class ItemPbta extends Item {
 				moveResults: this.system.moveResults,
 				choices: this.system?.choices,
 				sheetType: this.actor?.baseType,
-				rollType,
+				rollType
 			};
 			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 				rollType: this.type,

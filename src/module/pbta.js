@@ -26,7 +26,7 @@ globalThis.pbta = {
 	dice,
 	documents,
 	migrations,
-	utils,
+	utils
 };
 
 Hooks.once("init", async function () {
