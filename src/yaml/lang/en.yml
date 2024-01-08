@@ -16,6 +16,7 @@ PBTA:
   Ask: "Ask"
   AskTitle: "{name}: Choose a Stat"
   Biography: "Biography"
+  Category: "Category"
   ClearMoves: "Clear Moves"
   ChatMessage:
     ShiftUp: "Shift Up"
@@ -27,7 +28,6 @@ PBTA:
   description: "Run games for any PbtA system in FoundryVTT!"
   Disadvantage: "Disadvantage"
   Equipment: "Equipment"
-  EquipmentType: "Equipment Category"
   failure: "Complications (mark XP)"
   Formula: "Custom Roll Formula"
   Forward: "Forward"
@@ -35,7 +35,6 @@ PBTA:
   MoveGroup: "Move Group"
   MoveGroupHelp: "Multiple moves with the same move-group will be either/or selections when creating a new character using the character builder."
   Moves: "Moves"
-  MoveType: "Move Category"
   Name: "Name"
   New: "New"
   Normal: "Normal"
