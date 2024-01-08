@@ -6,7 +6,7 @@
 	</section>
 
 	{{#each equipment as |equipmentGroup equipmentKey|}}
-		<div class="cell cell--equipment cell--group cell--{{equipmentKey}}">
+		<div class="cell cell--equipment cell--group cell--{{equipmentKey}}" data-key="{{equipmentKey}}">
 			<h2 class="cell__title">
 				<label class="item-group-label">{{#if (eq equipmentKey "PBTA_OTHER")}}{{localize equipmentKey}}{{else}}{{getLabel ../equipmentTypes equipmentKey}}{{/if}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span></label>
 				<div class="item-controls">

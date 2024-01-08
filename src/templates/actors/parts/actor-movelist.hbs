@@ -49,7 +49,7 @@
 		{{/if}}
 
 		{{#each moves as |moveGroup moveKey|}}
-			<div class="cell cell--moves cell--group cell--{{moveKey}}">
+			<div class="cell cell--moves cell--group cell--{{moveKey}}" data-key="{{moveKey}}">
 				<h2 class="cell__title">
 					<label class="item-group-label">
 						{{#if (eq moveKey "PBTA_OTHER")}}

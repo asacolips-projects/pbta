@@ -724,7 +724,20 @@ export default class PbtaActorSheet extends ActorSheet {
 		const itemData = item.toObject();
 
 		// Handle item sorting within the same Actor
-		if (this.actor.uuid === item.parent?.uuid) return this._onSortItem(event, itemData);
+		const groupCell = event.target.closest(".cell--group");
+		if (this.actor.uuid === item.parent?.uuid) {
+			if (!groupCell) return this._onSortItem(event, itemData);
+			let key = groupCell.dataset.key;
+			if (key === "PBTA_OTHER") key = "";
+			const itemType = item.system?.moveType ?? item.system?.equipmentType;
+			if (itemType !== undefined && itemType !== key) {
+				if (itemData.system.moveType !== undefined) itemData.system.moveType = key;
+				else if (itemData.system.equipmentType !== undefined) itemData.system.equipmentType= key;
+
+				return this.actor.updateEmbeddedDocuments("Item", [itemData]);
+			}
+			return false;
+		}
 
 		if (item.type === "playbook" && this.actor.system.playbook) {
 			this.actor.update({ "system.playbook": {
@@ -733,6 +746,13 @@ export default class PbtaActorSheet extends ActorSheet {
 				uuid: item.uuid
 			} });
 			return false;
+		}
+
+		if (groupCell) {
+			let key = groupCell.dataset.key;
+			if (key === "PBTA_OTHER") key = "";
+			if (itemData.system.moveType !== undefined) itemData.system.moveType = key;
+			else if (itemData.system.equipmentType !== undefined) itemData.system.equipmentType= key;
 		}
 
 		// Create the owned item
