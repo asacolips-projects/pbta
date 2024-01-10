@@ -120,29 +120,48 @@ Hooks.once("setup", function () {
 		}, {});
 	}
 
-	if (game.user.isGM && !game.settings.get("pbta", "hideSidebarButtons")) {
+	if (game.user.isGM) {
 		Hooks.on("renderSettings", (app, html) => {
-			let settingsButton = $(`<button id="pbta-settings-btn" data-action="pbta-settings">
-				<i class="fas fa-file-alt"></i> ${game.i18n.localize("PBTA.Settings.sheetConfig.label")}
-			</button>`);
-			html.find('button[data-action="configure"]').before(settingsButton);
+			const header = document.createElement("h2");
+			header.innerText = game.i18n.localize("Powered by the Apocalypse");
 
-			let helpButton = $(`<button id="pbta-help-btn" data-action="pbta-help">
-				<i class="fas fa-question-circle"></i> ${game.i18n.localize("PBTA.Settings.button.help")}
-			</button>`);
-			html.find('button[data-action="controls"]').after(helpButton);
+			const a5eSettings = document.createElement("div");
+			html.find("#settings-game")?.after(header, a5eSettings);
 
-			settingsButton.on("click", (ev) => {
-				ev.preventDefault();
-				let menu = game.settings.menus.get("pbta.sheetConfigMenu");
-				let app = new menu.type();
-				app.render(true);
+			const buttons = [
+				{
+					action: (ev) => {
+						ev.preventDefault();
+						let menu = game.settings.menus.get("pbta.sheetConfigMenu");
+						let app = new menu.type();
+						app.render(true);
+					},
+					iconClasses: ["fas", "fa-file-alt"],
+					label: "PBTA.Settings.sheetConfig.label"
+				},
+				{
+					action: (ev) => {
+						ev.preventDefault();
+						window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
+					},
+					iconClasses: ["fas", "fa-question-circle"],
+					label: "PBTA.Settings.button.help"
+				}
+			].map(({ action, iconClasses, label }) => {
+				const button = document.createElement("button");
+				button.type = "button";
+
+				const icon = document.createElement("i");
+				icon.classList.add(...iconClasses);
+
+				button.append(icon, game.i18n.localize(label));
+
+				button.addEventListener("click", action);
+
+				return button;
 			});
 
-			helpButton.on("click", (ev) => {
-				ev.preventDefault();
-				window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
-			});
+			a5eSettings.append(...buttons);
 		});
 	}
 });

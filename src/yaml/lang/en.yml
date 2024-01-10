@@ -107,10 +107,7 @@ PBTA:
     Complete: "PbtA System Migration to version {version} completed!"
   Settings:
     button:
-      help: "PbtA System Help & Tutorial"
-    hideSidebarButtons:
-      name: "Hide Game Settings Sidebar Buttons"
-      hint: "Removes the {button1} and {button2} from the Game Settings sidebar."
+      help: "System Help & Tutorial"
     stats:
       name: "Stats"
       hint: "Enter a comma-separated list of stats/abilities, such as \"Str,Dex,Con,Int,Wis,Cha\""
@@ -142,7 +139,7 @@ PBTA:
       name: "Enable Item Icons"
       hint: "Enable visual icons for moves, spells, and equipment in character sheets (requires browser reload)."
     sheetConfig:
-      label: "PbtA Sheet Configuration"
+      label: "Sheet Configuration"
       name: "Configure character sheets"
       hint: "Choose the data structure for character sheets, such as stats, abilities, and details."
       additions: "Additions:"
