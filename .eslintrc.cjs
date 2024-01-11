@@ -225,6 +225,7 @@ module.exports = {
 	globals: {
 		CodeMirror: false,
 		Color: false,
+		DocumentSheetConfig: false,
 		globalThis: false,
 		OperatorTerm: false,
 		toml: false,

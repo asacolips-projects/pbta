@@ -85,6 +85,11 @@ Hooks.once("init", async function () {
 		makeDefault: true,
 		label: "PBTA.SheetClassItem"
 	});
+	DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, "core", TokenConfig);
+	DocumentSheetConfig.registerSheet(TokenDocument, "core", applications.token.PbtaTokenConfig, {
+		makeDefault: true,
+		label: () => game.i18n.format("SHEETS.DefaultDocumentSheet", { document: game.i18n.localize("DOCUMENT.Token") })
+	});
 
 	utils.registerHandlebarsHelpers();
 
