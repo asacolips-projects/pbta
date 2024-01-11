@@ -9,6 +9,7 @@ import { PBTA } from "./config.js";
 import { registerSettings } from "./settings.js";
 
 import * as applications from "./applications/_module.js";
+import * as canvas from "./canvas/_module.js";
 import * as dataModels from "./data/_module.js";
 import * as dice from "./dice/_module.js";
 import * as documents from "./documents/_module.js";
@@ -21,6 +22,7 @@ import * as utils from "./utils.js";
 
 globalThis.pbta = {
 	applications,
+	canvas,
 	config: PBTA,
 	dataModels,
 	dice,
@@ -59,6 +61,7 @@ Hooks.once("init", async function () {
 	CONFIG.PBTA = PBTA;
 	CONFIG.Actor.documentClass = documents.ActorPbta;
 	CONFIG.Item.documentClass = documents.ItemPbta;
+	CONFIG.Token.objectClass = canvas.TokenPbta;
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
@@ -232,6 +235,8 @@ Hooks.once("ready", async function () {
 	// Apply structure to actor types.
 	utils.applyActorTemplates();
 
+	_configureTrackableAttributes();
+
 	// Run migrations.
 	if (!game.user.isGM) return;
 	const cv = game.settings.get("pbta", "systemMigrationVersion");
@@ -259,3 +264,36 @@ Hooks.on("renderChatMessage", (data, html, options) => {
 
 Hooks.on("renderChatLog", (app, html, data) => documents.ItemPbta.chatListeners(html));
 Hooks.on("renderChatPopout", (app, html, data) => documents.ItemPbta.chatListeners(html));
+
+/**
+ * Configure explicit lists of attributes that are trackable on the token HUD and in the combat tracker.
+ * @internal
+ */
+function _configureTrackableAttributes() {
+	const trackableAttributes = {};
+	for (let [key, data] of Object.entries(game.pbta.sheetConfig.actorTypes)) {
+		console.log(key, data);
+		trackableAttributes[key] = {
+			bar: [],
+			value: []
+		};
+
+		const processAttributes = (attributes) => {
+			const attr = data[attributes];
+			if (attr) {
+				for (let [attrK, attrV] of Object.entries(attr)) {
+					if (attrV.type === "Clock" || attrV.type === "Resource") {
+						trackableAttributes[key].bar.push(`${attributes}.${attrK}`);
+					} else if (attrV.type === "Number") {
+						trackableAttributes[key].value.push(`${attributes}.${attrK}.value`);
+					}
+				}
+			}
+		};
+
+		processAttributes("attrTop");
+		processAttributes("attrLeft");
+	}
+
+	CONFIG.Actor.trackableAttributes = trackableAttributes;
+}
