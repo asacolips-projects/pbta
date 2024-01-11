@@ -7,8 +7,7 @@ export default class TokenPbta extends Token {
 			const system = this.actor.system;
 			const type = foundry.utils.getProperty(system, data.attribute).type;
 			if (type === "Clock") {
-				data.value = (data.max - data.value);
-				const val = Number(data.value);
+				const val = Number(data.max - data.value);
 				const pct = Math.clamped(val, 0, data.max) / data.max;
 
 				// Determine sizing
