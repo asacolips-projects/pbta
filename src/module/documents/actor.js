@@ -367,7 +367,7 @@ export default class ActorPbta extends Actor {
 		const data = foundry.utils.getProperty(this.system, attribute);
 		if (data.type === "Clock") {
 			const steps = new Array(data.max)
-				.fill(true, 0, Math.max(0, value))
+				.fill(true, 0, value)
 				.fill(false, value);
 			const updates = {
 				[`system.${attribute}.value`]: value,
