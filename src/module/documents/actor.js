@@ -364,9 +364,10 @@ export default class ActorPbta extends Actor {
 	}
 
 	async modifyTokenAttribute(attribute, value, isDelta, isBar) {
-		const data = foundry.utils.getProperty(this.system, attribute);
-		if (data.type === "Clock") {
-			const steps = new Array(data.max)
+		const current = foundry.utils.getProperty(this.system, attribute);
+		if (current.type === "Clock") {
+			if (isDelta) value = Math.clamped(0, Number(current.value) + value, current.max);
+			const steps = new Array(current.max)
 				.fill(true, 0, value)
 				.fill(false, value);
 			const updates = {
