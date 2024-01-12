@@ -33,13 +33,13 @@ export default class ActorPbta extends Actor {
 				return {
 					key: condition[0],
 					label: condition[1].label,
-					conditions: Object.values(condition[1].options).filter((v) => v.value && (v.userLabel ?? v.label).match(/\d/))
+					conditions: Object.values(condition[1].options)
+						.filter((v) => v.value && /(?!\d+-)([+-]*\d+)/.test(v.userLabel ?? v.label))
 						.map((v) => {
-							let conditionLabel = v.userLabel ?? v.label;
-							const mod = Roll.safeEval(conditionLabel.match(/[\d+-]/g).join(""));
+							const label = v.userLabel || v.label;
 							return {
-								label: conditionLabel,
-								mod
+								label,
+								mod: Roll.safeEval(label.match(/(?!\d+-)([+-]*\d+)/)[0])
 							};
 						})
 				};
