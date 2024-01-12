@@ -440,14 +440,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 				},
 				defaultButton: "no"
 			});
-
-			// return Dialog.confirm({
-			//   title: 'Confirm Changes',
-			//   content: content,
-			//   yes: () => { return true; },
-			//   no: () => { return false; },
-			//   defaultYes: false
-			// });
 		}
 		return true;
 	}
