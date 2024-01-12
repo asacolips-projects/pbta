@@ -283,92 +283,71 @@ export default class ItemPbta extends Item {
 		event.preventDefault();
 		const button = event.currentTarget;
 		button.disabled = true;
-		const card = button.closest(".chat-message");
-		const messageId = card.closest(".message").dataset.messageId;
-		const message = game.messages.get(messageId);
-		const action = button.dataset.action;
-		let content = message && foundry.utils.duplicate(message.content);
-		let rolls = foundry.utils.deepClone(message.rolls);
+		try {
+			const card = button.closest(".chat-message");
+			const messageId = card.closest(".message").dataset.messageId;
+			const message = game.messages.get(messageId);
 
-		const plusMinusReg = /([+-]\s*\d)/;
-		const diceFormulaReg = /<div class="dice-formula">(.*)<\/div>/;
-		const diceTotalReg = /<h4 class="dice-total">(.*)<\/h4>/;
+			if (!message) return;
 
-		if (diceFormulaReg.test(content)) {
-			const diceFormula = content.match(diceFormulaReg);
-			let roll = diceFormula[1];
-			let value = "";
-			if (plusMinusReg.test(roll)) {
-				value = roll.match(plusMinusReg)[1];
-			}
+			const action = button.dataset.action;
+			let content = foundry.utils.duplicate(message.content);
+			let rolls = foundry.utils.deepClone(message.rolls);
 
-			let shift = action === "shiftUp" ? "+ 1" : "- 1";
-			if (value) {
-				value = Roll.safeEval(`${value} ${shift}`);
-			} else {
-				value = Roll.safeEval(shift);
-			}
-			if (value >= 0) {
-				value = `+ ${value}`;
-			} else {
-				value = `- ${Math.abs(value)}`;
-			}
-			if (plusMinusReg.test(roll)) {
-				roll = roll.replace(plusMinusReg, value);
-			} else {
-				roll = `${roll} ${value}`;
-			}
-			content = content.replace(diceFormula[1], roll);
+			const plusMinusReg = /([+-]\s*\d)/;
+			const diceFormulaReg = /<div class="dice-formula">(.*)<\/div>/;
+			const diceTotalReg = /<h4 class="dice-total">(.*)<\/h4>/;
 
-			const diceTotal = content.match(diceTotalReg);
-			let total = Roll.safeEval(`${diceTotal[1]} ${shift}`);
-			content = content.replace(diceTotalReg, `<h4 class="dice-total">${total}</h4>`);
+			if (diceFormulaReg.test(content)) {
+				const diceFormula = content.match(diceFormulaReg);
+				let roll = diceFormula[1];
+				const plusMinusMatch = roll.match(plusMinusReg);
+				const value = plusMinusMatch ? plusMinusMatch[1] : "";
+				const shift = action === "shiftUp" ? 1 : -1;
+				const newValue = Roll.safeEval(`${value} + ${shift}`);
+				const updatedValue = newValue >= 0 ? `+ ${newValue}` : `- ${Math.abs(newValue)}`;
 
-			const { rollResults } = game.pbta.sheetConfig;
-			const { resultType, rollType } = message.rolls[0].options;
+				roll = plusMinusMatch ? roll.replace(plusMinusReg, updatedValue) : `${roll} ${updatedValue}`;
+				content = content.replace(diceFormula[1], roll);
 
-			let changedResult = false;
-			const { start, end } = rollResults?.[resultType] ?? {};
-			if (action === "shiftUp") {
-				changedResult = end && end < total;
-			} else {
-				changedResult = start && start > total;
-			}
-			if (changedResult) {
-				const newResult = Object.keys(rollResults).find((k) => {
-					if (k === resultType) {
-						return false;
-					}
-					const { start, end } = rollResults[k];
-					return (!start || total >= start) && (!end || total <= end);
-				});
-				rolls[0].options.resultType = newResult;
-				if (rollType === "move" || rollType === "npcMove") {
-					let { label } = rollResults[newResult];
-					let value;
+				const diceTotal = content.match(diceTotalReg);
+				let total = Roll.safeEval(`${diceTotal[1]} + ${shift}`);
+				content = content.replace(diceTotalReg, `<h4 class="dice-total">${total}</h4>`);
 
-					const itemUuid = message.getFlag("pbta", "itemUuid");
-					const item = await fromUuid(itemUuid);
-					if (item && item.system.moveResults) {
-						label = item.system.moveResults[newResult].label;
-						value = `<div class="result-details">${item.system.moveResults[newResult].value}</div>`;
-					}
-					const partialRe = /<div class="row result (.*?)">/;
-					const rollRe = /<div class="roll (.*?)">/;
-					const resultLabelRe = /<div class="result-label">(.*?)<\/div>/;
-					const resultDetailsRe = /(<div class="result-details"><p>.*?<\/p><\/div>)/;
-					content = content.replace(content.match(partialRe)[1], newResult);
-					content = content.replace(content.match(rollRe)[1], newResult);
-					content = content.replace(content.match(resultLabelRe)[1], label);
-					if (value && resultDetailsRe.test(content)) {
-						content = content.replace(content.match(resultDetailsRe)[1], value);
+				const { rollResults } = game.pbta.sheetConfig;
+				const { resultType, rollType } = message.rolls[0].options;
+				const { start, end } = rollResults?.[resultType] ?? {};
+
+				if ((action === "shiftUp" && end && end < total) || (action === "shiftDown" && start && start > total)) {
+					const newResult = Object.keys(rollResults)
+						.filter((k) => k !== resultType)
+						.find((k) => {
+							const { start, end } = rollResults[k];
+							return (!start || total >= start) && (!end || total <= end);
+						});
+
+					rolls[0].options.resultType = newResult;
+
+					if (rollType === "move" || rollType === "npcMove") {
+						const itemUuid = message.getFlag("pbta", "itemUuid");
+						const item = await fromUuid(itemUuid);
+						if (item && item.system.moveResults) {
+							const moveResult = item.system.moveResults[newResult];
+							content = content.replace(/<div class="row result (.*?)">/, `<div class="row result ${newResult}">`);
+							content = content.replace(/<div class="roll (.*?)">/, `<div class="roll ${newResult}">`);
+							content = content.replace(/<div class="result-label">(.*?)<\/div>/, `<div class="result-label">${moveResult.label}</div>`);
+							content = content.replace(/<div class="result-details">(<p>.*?<\/p>)*?<\/div>/, `<div class="result-details">${moveResult.value}</div>`);
+						}
 					}
 				}
-			}
 
-			message.update({ content, rolls });
+				await message.update({ content, rolls });
+			}
+		} catch(err) {
+			console.error("Error handling chat card action:", err);
+		} finally {
+			button.disabled = false;
 		}
-		button.disabled = false;
 	}
 
 	static _onChatCardToggleContent(event) {
