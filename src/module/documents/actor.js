@@ -57,11 +57,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	get playbook() {
-		return this.system?.playbook?.name ?? "";
-	}
-
-	get playbookSlug() {
-		return this.playbook.slugify();
+		return this.system?.playbook ?? { name: "", slug: "", uuid: "" };
 	}
 
 	/**

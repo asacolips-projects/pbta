@@ -60,7 +60,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	render(force=false, options={}) {
 		if (!this.actor.limited) {
-			const playbook = this.actor.playbookSlug;
+			const playbook = this.actor.playbook.slug;
 			if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
 				this.options.classes.push(`playbook-${playbook}`);
 			}
@@ -183,7 +183,7 @@ export default class PbtaActorSheet extends ActorSheet {
 					continue;
 				}
 				const playbook = attrValue.playbook;
-				if (playbook && ![this.actor.playbook, this.actor.playbookSlug].includes(playbook)) {
+				if (playbook && ![this.actor.playbook.name, this.actor.playbook.slug].includes(playbook)) {
 					delete context.system[group][attrKey];
 					continue;
 				}
@@ -334,7 +334,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// // View playbook.
 		html.find(".charplaybook").on("change", (event) => {
-			const currPlaybook = this.actor.playbookSlug;
+			const currPlaybook = this.actor.playbook.slug;
 			if (currPlaybook) {
 				this.options.classes = this.options.classes.filter((c) => c !== `playbook-${currPlaybook}`);
 			}
