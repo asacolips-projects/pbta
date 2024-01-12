@@ -28,7 +28,7 @@ export function createActorResources() {
  */
 export function createItemResources() {
 	return {
-		use: new foundry.data.fields.NumberField({
+		uses: new foundry.data.fields.NumberField({
 			initial: 0,
 			integer: true
 		})
