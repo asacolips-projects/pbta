@@ -16,7 +16,7 @@ export class ActorDataTemplate extends foundry.abstract.DataModel {
 	get attributes() {
 		return {
 			...this.attrTop,
-			...this.attrLeft,
+			...this.attrLeft
 		};
 	}
 
