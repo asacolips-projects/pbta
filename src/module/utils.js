@@ -492,11 +492,13 @@ export function convertAttr(attrGroup) {
 
 			case "ListMany":
 				attr.condition = attrValue.condition ?? false;
+				attr.sort = attrValue.sort ?? false;
 				attr.options = getListOptions(attrValue);
 				break;
 
 			case "ListOne":
 				attr.options = getListOptions(attrValue, true);
+				attr.sort = attrValue.sort ?? false;
 				attr.value = attrValue.default ?? "0";
 				break;
 

@@ -309,6 +309,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 										}
 									}
 								}
+								if (newGroup[attr]?.sort !== oldGroup[attr]?.sort) {
+									configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.sort`);
+									updatesDiff[actorType][`system.${attrGroup}.${attr}.sort`] = newGroup[attr]?.sort ?? false;
+								}
 							} else if (newType === "Track") {
 								const { positive: oldPositive, negative: oldNegative } = oldGroup[attr];
 								const { positive: newPositive, negative: newNegative } = newGroup[attr];

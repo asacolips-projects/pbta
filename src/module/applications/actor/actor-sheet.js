@@ -216,29 +216,23 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Iterate through the groups that need to be sorted.
 		for (let group of groups) {
 			// Confirm the keys exist, and assign them to a sorting array if so.
-			let sortKeys = game.pbta.sheetConfig.actorTypes?.[context.pbtaSheetType]?.[group];
-			let sortingArray = [];
-			if (sortKeys) {
-				sortingArray = Object.keys(sortKeys);
-			} else {
-				continue;
+			const type = this.actor.sheetType ?? this.actor.baseType;
+			const sortKeys = Object.keys(game.pbta.sheetConfig.actorTypes?.[type]?.[group] ?? {});
+			if (!sortKeys) continue;
+			context.system[group] = Object.keys(context.system[group])
+				.sort((a, b) => sortKeys.indexOf(a) - sortKeys.indexOf(b))
+				.reduce((obj, key) => {
+					obj[key] = context.system[group][key];
+					return obj;
+				}, {});
+			for (let [key, value] of Object.entries(context.system[group])) {
+				if (value.options && value.sort) {
+					context.system[group][key].options = Object.fromEntries(
+						Object.entries(context.system[group][key].options)
+							.sort(([, a], [, b]) => a.label.localeCompare(b.label))
+					);
+				}
 			}
-			// Grab the keys of the group on the actor.
-			let newData = Object.keys(context.system[group])
-			// Sort them based on the sorting array.
-				.sort((a, b) => {
-					return sortingArray.indexOf(a) - sortingArray.indexOf(b);
-				})
-			// Build a new object from the sorted keys.
-				.reduce(
-					(obj, key) => {
-						obj[key] = context.system[group][key];
-						return obj;
-					}, {}
-				);
-
-			// Replace the data object handed over to the sheet.
-			context.system[group] = newData;
 		}
 	}
 
