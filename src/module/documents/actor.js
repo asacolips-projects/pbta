@@ -15,17 +15,6 @@ export default class ActorPbta extends Actor {
 	}
 
 	/**
-	 * Returns both attrLeft and attrTop as a single object.
-	 * @returns {object}
-	 */
-	get attributes() {
-		return {
-			...this.system.attrLeft,
-			...this.system.attrTop
-		};
-	}
-
-	/**
 	 * Returns all active conditions.
 	 * @returns {object[]}
 	 */
@@ -38,7 +27,7 @@ export default class ActorPbta extends Actor {
 	 * @returns {object[]}
 	 */
 	get conditionGroups() {
-		return Object.entries(this.attributes)
+		return Object.entries(this.system.attributes)
 			.filter((attr) => attr[1]?.condition)
 			.map((condition) => {
 				return {

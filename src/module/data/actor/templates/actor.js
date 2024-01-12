@@ -13,6 +13,13 @@ export class ActorDataTemplate extends foundry.abstract.DataModel {
 		};
 	}
 
+	get attributes() {
+		return {
+			...this.attrTop,
+			...this.attrLeft,
+		};
+	}
+
 	/**
 	 * Migrate source data from some prior format into a new specification.
 	 * The source parameter is either original data retrieved from disk or provided by an update operation.
