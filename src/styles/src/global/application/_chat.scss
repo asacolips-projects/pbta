@@ -69,8 +69,8 @@
       padding: 10px;
       background: #efefef;
 
-      &:has(+ .result-details):hover,
-      &:has(+ .result-choices):hover {
+      &:has(+ .result-details:not(:empty)):hover,
+      &:has(+ .result-choices:not(:empty)):hover {
         cursor: pointer;
       }
     }
