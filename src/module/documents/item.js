@@ -336,7 +336,7 @@ export default class ItemPbta extends Item {
 							content = content.replace(/<div class="row result (.*?)">/, `<div class="row result ${newResult}">`);
 							content = content.replace(/<div class="roll (.*?)">/, `<div class="roll ${newResult}">`);
 							content = content.replace(/<div class="result-label">(.*?)<\/div>/, `<div class="result-label">${moveResult.label}</div>`);
-							content = content.replace(/<div class="result-details">(<p>.*?<\/p>)*?<\/div>/, `<div class="result-details">${moveResult.value}</div>`);
+							content = content.replace(/<div class="result-details">[\s\S]*?<\/div>/, `<div class="result-details">${moveResult.value}</div>`);
 						}
 					}
 				}
