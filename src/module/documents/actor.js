@@ -153,7 +153,7 @@ export default class ActorPbta extends Actor {
 		const { label, roll } = event.currentTarget.dataset;
 		const itemId = event.currentTarget.closest(".item")?.dataset.itemId;
 		const options = {};
-		if (game.settings.get("pbta", "hideRollMode")) {
+		if (!game.settings.get("pbta", "hideRollMode")) {
 			options.rollMode = this.flags?.pbta?.rollMode;
 		}
 
