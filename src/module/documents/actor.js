@@ -241,10 +241,8 @@ export default class ActorPbta extends Actor {
 						.filter((c) => c.metadata?.type === "Item")
 						.map((c) => c.metadata.id);
 					for (let c of itemCompendiums) {
-						let items = await game.packs.get(c).getDocuments();
-						items = items
-							.filter((item) => item.type === "move" && item.system.moveType === mt)
-							.map((item) => item.toObject(false));
+						const items = (await game.packs.get(c).getDocuments({ type: "move" }))
+							.flatMap((item) => (item.system.moveType === mt) ? [item.toObject(false)] : []);
 						moves = moves.concat(items);
 					}
 					if (moves.length) changes.items.push(...moves);

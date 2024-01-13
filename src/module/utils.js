@@ -771,10 +771,8 @@ export async function getPlaybooks() {
 
 	// Retrieve compendium playbooks and merge them in.
 	for (let c of game.packs) {
-		if (c.metadata.type && c.metadata.type === "Item" && c.metadata.name.includes("playbooks")) {
-			const items = c ? await c.getDocuments() : [];
-			playbooks = playbooks.concat(items.filter((i) => i.type === "playbook"));
-		}
+		if (c.metadata.type !== "Item") continue;
+		playbooks = playbooks.concat(await c.getDocuments({ type: "playbook" }));
 	}
 
 	const sortedPlaybooks = playbooks.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
