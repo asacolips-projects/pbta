@@ -171,15 +171,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	async _onRollStat(stat, label, options={}) {
-		let formula = "@formula";
-		if (stat) {
-			formula += `+ @stats.${stat}.value`;
-			if (this.system.stats[stat].toggle) {
-				const { modifier } = game.pbta.sheetConfig.statToggle;
-				formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
-			}
-		}
-
+		const formula = this._getStatFormula(stat);
 		const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 			rollType: "stat",
 			sheetType: this.baseType,
@@ -198,6 +190,18 @@ export default class ActorPbta extends Actor {
 		});
 		await this.clearForwardAdv();
 		await this.updateCombatMoveCount();
+	}
+
+	_getStatFormula(stat) {
+		let formula = "@formula";
+		if (stat) {
+			formula += `+ @stats.${stat}.value`;
+			if (this.system.stats[stat].toggle) {
+				const { modifier } = game.pbta.sheetConfig.statToggle;
+				formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
+			}
+		}
+		return formula;
 	}
 
 	async _onRollAttr(roll, label, options={}) {
