@@ -151,63 +151,69 @@ export default class ActorPbta extends Actor {
 	 */
 	async _onRoll(event) {
 		const { label, roll } = event.currentTarget.dataset;
-		const a = event.currentTarget;
-		const itemId = $(a).parents(".item")
-			.attr("data-item-id");
-		const options = {
-			rollMode: this.flags?.pbta?.rollMode
-		};
+		const itemId = event.currentTarget.closest(".item")?.dataset.itemId;
+		const options = {};
+		if (game.settings.get("pbta", "hideRollMode")) {
+			options.rollMode = this.flags?.pbta?.rollMode;
+		}
 
 		// Handle rolls coming directly from the ability score.
-		if ($(a).hasClass("stat-rollable")) {
-			let formula = "@formula";
-			const stat = $(a).parents(".stat")
-				.data("stat") ?? null;
-			if (stat) {
-				formula += `+ @stats.${stat}.value`;
-				if (this.system.stats[stat].toggle) {
-					const { modifier } = game.pbta.sheetConfig.statToggle;
-					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
-				}
-			}
-
-			const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
-				rollType: "stat",
-				sheetType: this.baseType,
-				stat
-			}));
-			const choice = await roll.configureDialog({
-				title: game.i18n.format("PBTA.RollLabel", { label })
-			});
-			if (choice === null) {
-				return;
-			}
-			await roll.toMessage({
-				speaker: ChatMessage.getSpeaker({ actor: this }),
-				title: label ?? "",
-				rollMode: game.settings.get("core", "rollMode")
-			});
-			await this.clearForwardAdv();
-			await this.updateCombatMoveCount();
-		} else if ($(a).hasClass("attr-rollable") && roll) {
-			const r = new CONFIG.Dice.RollPbtA(roll, this.getRollData(), foundry.utils.mergeObject(options, {
-				rollType: "flat"
-			}));
-			const choice = await r.configureDialog({
-				title: label
-			});
-			if (choice === null) {
-				return;
-			}
-			await r.toMessage({
-				speaker: ChatMessage.getSpeaker({ actor: this }),
-				rollMode: game.settings.get("core", "rollMode")
-			});
+		if (event.currentTarget.classList.contains("stat-rollable")) {
+			const stat = event.currentTarget.closest(".stat")?.dataset.stat || null;
+			await this._onRollStat(stat, label, options);
+		} else if (event.currentTarget.classList.contains("attr-rollable") && roll) {
+			await this._onRollAttr(roll, label, options);
 		} else if (itemId) {
 			const item = this.items.get(itemId);
-			const descriptionOnly = a.getAttribute("data-show") === "description";
+			const descriptionOnly = event.currentTarget.getAttribute("data-show") === "description";
 			item.roll({ descriptionOnly }, options);
 		}
+	}
+
+	async _onRollStat(stat, label, options={}) {
+		let formula = "@formula";
+		if (stat) {
+			formula += `+ @stats.${stat}.value`;
+			if (this.system.stats[stat].toggle) {
+				const { modifier } = game.pbta.sheetConfig.statToggle;
+				formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
+			}
+		}
+
+		const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
+			rollType: "stat",
+			sheetType: this.baseType,
+			stat
+		}));
+		const choice = await r.configureDialog({
+			title: label ? game.i18n.format("PBTA.RollLabel", { label }) : game.i18n.format("PBTA.Roll")
+		});
+		if (choice === null) {
+			return;
+		}
+		await r.toMessage({
+			speaker: ChatMessage.getSpeaker({ actor: this }),
+			title: label ?? "",
+			rollMode: game.settings.get("core", "rollMode")
+		});
+		await this.clearForwardAdv();
+		await this.updateCombatMoveCount();
+	}
+
+	async _onRollAttr(roll, label, options={}) {
+		const r = new CONFIG.Dice.RollPbtA(roll, this.getRollData(), foundry.utils.mergeObject(options, {
+			rollType: "flat"
+		}));
+		const choice = await r.configureDialog({
+			title: label
+		});
+		if (choice === null) {
+			return;
+		}
+		await r.toMessage({
+			speaker: ChatMessage.getSpeaker({ actor: this }),
+			rollMode: game.settings.get("core", "rollMode")
+		});
 	}
 
 	/** @inheritdoc */
