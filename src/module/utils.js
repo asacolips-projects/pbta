@@ -64,7 +64,7 @@ export function validateSheetConfig(sheetConfig) {
 		.forEach((key) => actorTypes.add(key));
 
 	// Iterate through the actor types.
-	for (let actorType of actorTypes) {
+	for (const actorType of actorTypes) {
 		// Error for missing actor type.
 		if (!sheetConfig[actorType] && ["character", "npc"].includes(actorType)) {
 			errors.push(`'${actorType}' ${t.actorTypeRequired}`);
@@ -72,7 +72,7 @@ export function validateSheetConfig(sheetConfig) {
 		}
 
 		// Store this in an easier to reference variable.
-		let actorConfig = sheetConfig[actorType];
+		const actorConfig = sheetConfig[actorType];
 
 		if (!actorConfig) {
 			continue;
@@ -81,7 +81,7 @@ export function validateSheetConfig(sheetConfig) {
 		// Validate stats.
 		if (actorConfig.stats) {
 			if (actorConfig.stats.length > 0) {
-				for (let [k, v] of actorConfig.stats) {
+				for (const [k, v] of actorConfig.stats) {
 					if (typeof v !== "string") {
 						errors.push(`${t.statString1} "${k}" ${t.statString2}`);
 					}
@@ -95,14 +95,16 @@ export function validateSheetConfig(sheetConfig) {
 		// Validate attribute groups.
 		let attrGroups = ["attributesTop", "attributesLeft"];
 		for (let attrGroup of attrGroups) {
+			const groupConfig = actorConfig[attrGroup];
+
 			// If an attribute group is present, validate it.
-			if (actorConfig[attrGroup]) {
+			if (groupConfig) {
 				// Groups must be objects.
-				if (typeof actorConfig[attrGroup] !== "object") {
+				if (typeof groupConfig !== "object") {
 					errors.push(`'${actorType}.${attrGroup}' ${t.groupAttributes}`);
 				} else {
 					// Iterate through each attribute.
-					for (let [attr, attrValue] of Object.entries(actorConfig[attrGroup])) {
+					Object.entries(groupConfig).forEach(([attr, attrValue]) => {
 						// Confirm the attribute type is valid.
 						let attrType = typeof attrValue === "object" && attrValue.type ? attrValue.type : attrValue;
 						if (!CONFIG.PBTA.attrTypes.includes(attrType)) {
@@ -111,7 +113,7 @@ export function validateSheetConfig(sheetConfig) {
 
 						if (typeof attrType === "object") {
 							errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeTypeNull}`);
-							continue;
+							return; // Continue to the next iteration.
 						}
 
 						// If this is a clock or XP, require a max value. Resources also
@@ -131,7 +133,7 @@ export function validateSheetConfig(sheetConfig) {
 								errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeOptionsEmpty}`);
 							}
 						}
-					}
+					});
 				}
 			}
 		}
