@@ -388,9 +388,6 @@ export function convertSheetConfig(sheetConfig) {
 				actorType.baseType = v.basetype ?? "character";
 			}
 
-			delete v.attributesTop;
-			delete v.attributesLeft;
-
 			if (!newConfig.actorTypes) {
 				newConfig.actorTypes = {};
 			}
