@@ -58,17 +58,10 @@ export function validateSheetConfig(sheetConfig) {
 	}
 
 	// Handle actor config.
-	let actorTypes = ["character", "npc"];
-	if (game.pbta.sheetConfig?.actorTypes) {
-		for (let actorType of Object.keys(game.pbta.sheetConfig.actorTypes)) {
-			if (!actorTypes.includes(actorType)) {
-				actorTypes.push(actorType);
-			}
-		}
-	}
+	const actorTypes = new Set(["character", "npc", ...Object.keys(game.pbta.sheetConfig?.actorTypes || {})]);
 	Object.keys(sheetConfig)
 		.filter((key) => !(CONFIG.PBTA.sheetConfigs.includes(key) || game.pbta.sheetConfig?.actorTypes?.[key]))
-		.forEach((key) => actorTypes.push(key));
+		.forEach((key) => actorTypes.add(key));
 
 	// Iterate through the actor types.
 	for (let actorType of actorTypes) {
