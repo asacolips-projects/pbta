@@ -1,6 +1,6 @@
 import { MappingField } from "../../fields.js";
 
-export class ActorDataTemplate extends foundry.abstract.DataModel {
+export class ActorDataTemplate extends foundry.abstract.TypeDataModel {
 	static defineSchema() {
 		return {
 			stats: new foundry.data.fields.ObjectField(),
