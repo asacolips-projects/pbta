@@ -156,7 +156,7 @@ export default class RollPbtA extends Roll {
 	}
 
 	/**
-	 * Create a Dialog prompt used to configure evaluation of an existing D20Roll instance.
+	 * Create a Dialog prompt used to configure evaluation of an existing Roll instance.
 	 * @param {object} data                     Dialog configuration data
 	 * @param {string} [data.template]            A custom path to an HTML template to use instead of the default
 	 * @param {string} [data.title]               The title of the shown dialog window
@@ -219,7 +219,7 @@ export default class RollPbtA extends Roll {
 	 * Handle submission of the Roll evaluation configuration Dialog
 	 * @param {jQuery} html            The submitted dialog content
 	 * @param {number} stat   The chosen advantage mode
-	 * @returns {D20Roll}              This damage roll.
+	 * @returns {Roll}              This damage roll.
 	 * @private
 	 */
 	_onDialogSubmit(html, stat) {
