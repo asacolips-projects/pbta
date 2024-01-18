@@ -46,9 +46,8 @@ export default class RollPbtA extends Roll {
 		this.options.resultType = resultType;
 		// Update the templateData.
 		resultLabel = resultRanges[resultType]?.label ?? resultType;
-		if (this.data?.moveResults && this.data?.moveResults[resultType]?.value) {
-			resultDetails = this.data?.moveResults[resultType].value;
-		}
+		resultDetails = this.data?.moveResults?.[resultType]?.value ?? null;
+
 		// Add the stat label.
 		if (stat && this.data.stats[stat]) {
 			statMod = this.data.stats[stat].value;
