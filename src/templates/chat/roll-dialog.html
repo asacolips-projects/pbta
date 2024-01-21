@@ -29,4 +29,13 @@
         </ul>
     </div>
     {{/if}}
+    {{#if isToken}}
+    <div class="cell cell--prompt cell--token">
+        <div>
+            <label for="prompt">{{localize "PBTA.Dialog.HowManyToken"}}</label>
+            <input type="text" name="prompt" value="{{nbrOfToken}}" placeholder="e.g. 1" data-dtype="Number"/>
+            {{#if error}}<p>{{error}}</p>{{/if}}
+        </div>
+    </div>
+    {{/if}}
 </form>

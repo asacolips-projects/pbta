@@ -30,6 +30,16 @@
 
           <div class="cell cell--stats">
             <ol class="stats-list">
+            {{!-- This need to be improved to handle multiple tokens, token with stats, min and max value ... --}}
+            {{#if system.stats.token}}
+              <li class="stat flexrow token-modif minus">-</li>  
+              <li class="stat flexrow" data-stat="{{system.stats.value}}">
+                <span class="stat-icon token-rollable rollable" data-label="{{system.stats.label.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
+                <label for="system.stats.value" class="cell__title token-rollable rollable" data-label="{{system.stats.label.label}}">{{ system.stats.label.label }}</label>
+                <input class="stat-value" type="text" name="system.stats.value" value="{{#if system.stats.value}}{{system.stats.value}}{{else}}{{system.stats.default.label}}{{/if}}" data-dtype="Number" min={{system.stats.default.label}} max="{{system.stats.max.label}}" disabled />
+              </li>
+              <li class="stat flexrow token-modif plus">+</li>  
+            {{else}}
             {{#each system.stats as |stat key|}}
               <li class="stat flexrow" data-stat="{{key}}">
                 <span class="stat-icon stat-rollable rollable" data-mod="{{stat.value}}" data-label="{{stat.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
@@ -40,6 +50,7 @@
                 {{/if}}
               </li>
             {{/each}}
+            {{/if}}
             </ol>
           </div>
 

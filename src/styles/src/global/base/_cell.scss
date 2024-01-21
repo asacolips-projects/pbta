@@ -241,10 +241,35 @@
 
 .roll-dialog {
   .cell {
-    margin: $padding-sm 0;
+    margin: $padding-sm;
 
     + .cell {
       border-top: 2px solid $ct-gray;
+    }
+  }
+
+  .cell--token {
+    div {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    label {
+      flex-grow: 4;
+      flex-shrink: 1;
+      flex-wrap: nowrap;
+      flex-basis: 80%;
+      font-weight: bold;
+      vertical-align: middle;
+    }
+
+    input {
+      flex-grow: 1;
+      flex-shrink: 4;
+      flex-basis: 20%;
+      margin: 0;
     }
   }
 }

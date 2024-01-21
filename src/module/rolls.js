@@ -187,9 +187,16 @@ export class RollPbtA extends Roll {
 			})
 			.filter((c) => c.conditions.length > 0);
 
+		let stat = "";
+		let maxValue = undefined;
 		// Prepare the base set of options used for the roll dialog.
 		if (!needsDialog && (this.data.rollType === "ask" || this.data.rollType === "prompt" || conditionGroups.length)) {
 			needsDialog = true;
+		}
+		if (!needsDialog && templateData.isToken) {
+			needsDialog = true;
+			stat = "token";
+			maxValue = !isNaN(templateData.nbrOfToken) ? templateData.nbrOfToken : 0;
 		}
 
 		if (needsDialog) {
@@ -205,7 +212,7 @@ export class RollPbtA extends Roll {
 					submit: {
 						label: game.i18n.localize("PBTA.Roll"),
 						callback: (html) => {
-							resolve(this._onDialogSubmit(html));
+							resolve(this._onDialogSubmit(html, stat, maxValue));
 						}
 					}
 				};
@@ -243,10 +250,11 @@ export class RollPbtA extends Roll {
 	 * Handle submission of the Roll evaluation configuration Dialog
 	 * @param {jQuery} html            The submitted dialog content
 	 * @param {number} stat   The chosen advantage mode
+	 * @param {number} maxValue   the maximum value of prompt
 	 * @returns {D20Roll}              This damage roll.
 	 * @private
 	 */
-	_onDialogSubmit(html, stat) {
+	_onDialogSubmit(html, stat, maxValue) {
 		const form = html[0].querySelector("form");
 
 		const addToFormula = (val) => {
@@ -258,13 +266,22 @@ export class RollPbtA extends Roll {
 		};
 
 		// Append a situational bonus term
-		if (stat) {
+		if (stat && stat !== "token") {
 			this.options.stat = stat;
 			addToFormula(`@stats.${stat}.value`);
 		}
 
 		// Customize the modifier
 		if (form?.prompt?.value) {
+			if (stat === "token" && maxValue !== undefined && maxValue !== null) {
+				const value = parseInt(form?.prompt?.value ?? 0);
+				const parsedMaxValue = parseInt(maxValue ?? -1);
+				if (parsedMaxValue >= 0) {
+					if (value > parsedMaxValue) {
+						throw new Error(game.i18n.localize("PBTA.Dialog.ErrorAboveMax"));
+					}
+				}
+			}
 			addToFormula(`${form.prompt.value}`);
 		}
 

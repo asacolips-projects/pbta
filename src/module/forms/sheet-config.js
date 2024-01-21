@@ -378,7 +378,14 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			values: game.i18n.localize("PBTA.Settings.sheetConfig.values"),
 		};
 
-		if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType || hasSafe || hasOptions || hasDeletedValues) {
+		if (hasAdditions
+			|| hasDeletions
+			|| hasMax
+			|| hasSoftType
+			|| hasHardType
+			|| hasSafe
+			|| hasOptions
+			|| hasDeletedValues) {
 			let content = `<p>${t.noteChangesDetected}</p><ul><li>${t.noteConfirm}</li><li>${t.noteConfirmUpdate}<strong> (${t.noteConfirmUpdateBold})</strong></li><li>${t.noteCancel}</li></ul>`;
 
 			if (hasAdditions) {

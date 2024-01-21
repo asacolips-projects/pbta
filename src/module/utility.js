@@ -693,8 +693,8 @@ export class PbtaUtility {
 
 	static getTagList(document, type) {
 		if (game.pbta.tagList) {
-            return game.pbta.tagList;
-        }
+			return game.pbta.tagList;
+		}
 		const { general = "[]", actor: actorTags = {}, item: itemTags = {} } = game.settings.get("pbta", "tagConfig") ?? {};
 		const { general: moduleGeneral = "[]", actor: moduleActorTags = {}, item: moduleItemTags = {} } = game.pbta.tagConfigOverride ?? {};
 		const generalTags = this.parseTags(general);

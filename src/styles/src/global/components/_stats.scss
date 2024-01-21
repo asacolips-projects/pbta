@@ -43,6 +43,11 @@
         background: #6599ce;
       }
 
+      &.token-modif {
+        font-size: 50px;
+        cursor: pointer;
+      }
+
       .cell__title {
         order: 0;
         width: 100%;

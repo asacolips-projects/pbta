@@ -6,6 +6,8 @@ import { RollPbtA } from "../rolls.js";
  * @extends {Actor}
  */
 export class ActorPbta extends Actor {
+	static EVALUATION_TEMPLATE = "systems/pbta/templates/chat/roll-dialog.html";
+
 	/**
 	 * Augment the basic actor data with additional dynamic data.
 	 */
@@ -151,6 +153,34 @@ export class ActorPbta extends Actor {
 				title: label ?? "",
 				rollMode: game.settings.get("core", "rollMode"),
 			});
+			await this.clearForwardAdv();
+			await this.updateCombatMoveCount();
+		} else if ($(a).hasClass("token-rollable")) {
+			const nbrOfToken = $(a).parents(".stat")
+				.data("stat") ?? null;
+			const templateData = { isToken: true, nbrOfToken };
+			let formula = "@formula";
+			const roll = new RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
+				rollType: "stat",
+				sheetType: this.baseType
+			}));
+			const choice = await roll.configureDialog({
+				templateData,
+				title: game.i18n.format("PBTA.RollLabel", { label }),
+			});
+			if (choice === null) {
+				return;
+			}
+			const tokenUsed = choice.terms.length >= 3 ? choice.terms[2].number : 0;
+			const nbrTokenAfterRoll = parseInt(nbrOfToken) - parseInt(tokenUsed);
+			const updates = {};
+			updates["system.stats.value"] = nbrTokenAfterRoll;
+			await roll.toMessage({
+				speaker: ChatMessage.getSpeaker({actor: this}),
+				title: label ?? "",
+				rollMode: game.settings.get("core", "rollMode"),
+			});
+			await this.update(updates);
 			await this.clearForwardAdv();
 			await this.updateCombatMoveCount();
 		} else if ($(a).hasClass("attr-rollable") && roll) {

@@ -358,6 +358,12 @@ export class PbtaActorSheet extends ActorSheet {
 		html.find(".stat-rollable").on("mouseover", this._onStatHoverOn.bind(this));
 		html.find(".stat-rollable").on("mouseout", this._onStatHoverOff.bind(this));
 
+		// Token.
+		html.find(".token-rollable").on("mouseover", this._onTokenHoverOn.bind(this));
+		html.find(".token-rollable").on("mouseout", this._onTokenHoverOff.bind(this));
+		html.find(".token-modif.minus").on("click", this._onTokenMinusClick.bind(this));
+		html.find(".token-modif.plus").on("click", this._onTokenPlusClick.bind(this));
+
 		// Spells.
 		// html.find('.prepared').click(this._onPrepareSpell.bind(this));
 
@@ -564,6 +570,39 @@ export class PbtaActorSheet extends ActorSheet {
 		const rollable = $(event.currentTarget);
 		const parent = rollable.parents(".stat");
 		parent.removeClass("hover");
+	}
+
+	_onTokenHoverOn(event) {
+		const rollable = $(event.currentTarget);
+		const parent = rollable.parents(".stat");
+		parent.addClass("hover");
+	}
+
+	_onTokenHoverOff(event) {
+		const rollable = $(event.currentTarget);
+		const parent = rollable.parents(".stat");
+		parent.removeClass("hover");
+	}
+
+	_onTokenMinusClick(_event) {
+		const updates = {};
+		let value = this.object.system.stats.value - 1;
+		if (value < 0) {
+			value = 0;
+		}
+		updates["system.stats.value"] = value;
+		this.actor.update(updates);
+	}
+
+	_onTokenPlusClick(_event) {
+		const updates = {};
+		let value = this.object.system.stats.value + 1;
+		const maxValue = parseInt(this.object.system.stats.max.label);
+		if (value > maxValue) {
+			value = this.object.system.stats.value;
+		}
+		updates["system.stats.value"] = value;
+		this.actor.update(updates);
 	}
 
 	/**
