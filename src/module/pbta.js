@@ -133,8 +133,8 @@ Hooks.once("setup", function () {
 			const header = document.createElement("h2");
 			header.innerText = game.i18n.localize("Powered by the Apocalypse");
 
-			const a5eSettings = document.createElement("div");
-			html.find("#settings-game")?.after(header, a5eSettings);
+			const pbtaSettings = document.createElement("div");
+			html.find("#settings-game")?.after(header, pbtaSettings);
 
 			const buttons = [
 				{
@@ -169,7 +169,7 @@ Hooks.once("setup", function () {
 				return button;
 			});
 
-			a5eSettings.append(...buttons);
+			pbtaSettings.append(...buttons);
 		});
 	}
 });
