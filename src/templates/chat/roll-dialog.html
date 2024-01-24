@@ -7,7 +7,7 @@
         <p>{{localize "PBTA.Dialog.Prompt1"}}</p>
         <div class="form-group">
             <label><strong>{{localize "PBTA.Prompt"}}</strong></label>
-            <input type="text" name="prompt" value="{{prompt}}" placeholder="e.g. 1" data-dtype="Number"/>
+            <input type="text" name="prompt" value="{{prompt}}" placeholder="e.g. 1" data-dtype="Number" />
         </div>
     </div>
     {{/if}}
@@ -20,7 +20,7 @@
                 <ul>
                 {{#each conditionGroup.conditions as |condition key|}}
                     <li>
-                        <label><input type="checkbox" name="condition" data-mod="{{condition.mod}}" data-content="{{condition.label}}">{{condition.label}}</label>
+                        <label><input type="checkbox" name="condition" data-mod="{{condition.mod}}" data-content="{{condition.label}}" />{{condition.label}}</label>
                     </li>
                 {{/each}}
                 </ul>
@@ -33,9 +33,8 @@
     <div class="cell cell--prompt cell--token">
         <label for="prompt">{{localize "PBTA.Dialog.HowManyToken"}}</label>
         <div class="cell__wrapper">
-            <input type="number" name="prompt" value="{{numberFormat nbrOfToken decimals=0 sign=false}}" placeholder="e.g. 1" data-dtype="Number"/>
+            <input type="number" name="prompt" value="{{numberFormat nbrOfToken decimals=0 sign=false}}" placeholder="e.g. 1" data-dtype="Number" />
         </div>
-        {{#if error}}<p>{{error}}</p>{{/if}}
     </div>
     {{/if}}
 </form>

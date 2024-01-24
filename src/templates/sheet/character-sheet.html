@@ -36,7 +36,7 @@
               <li class="stat flexrow" data-stat="{{system.stats.value}}">
                 <span class="stat-icon token-rollable rollable" data-label="{{system.stats.label.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
                 <label for="system.stats.value" class="cell__title token-rollable rollable" data-label="{{system.stats.label.label}}">{{ system.stats.label.label }}</label>
-                <input class="stat-value {{#if (eq system.stats.value system.stats.max.label)}}max-stat-value{{/if}}" type="text" name="system.stats.value" value="{{#if system.stats.value}}{{system.stats.value}}{{else}}{{system.stats.default.label}}{{/if}}" data-dtype="Number" min={{system.stats.default.label}} max="{{system.stats.max.label}}" disabled />
+                <input class="stat-value {{#if (eq system.stats.value system.stats.max.label)}}max-stat-value{{/if}}" type="text" name="system.stats.value" value="{{#if system.stats.value includeZero=true}}{{system.stats.value}}{{else}}{{system.stats.default.label}}{{/if}}" data-dtype="Number" min={{system.stats.default.label}} max="{{system.stats.max.label}}" disabled />
               </li>
               <li class="stat flexrow token-modif" data-action="increase" data-attr="stats.value">+</li>  
             {{else}}
