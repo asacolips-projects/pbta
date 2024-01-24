@@ -1,14 +1,9 @@
-// SPDX-FileCopyrightText: 2022 Johannes Loher
-// SPDX-FileCopyrightText: 2022 David Archibald
-//
-// SPDX-License-Identifier: MIT
-
 module.exports = {
 	parserOptions: {
 		ecmaVersion: 13,
 		extraFileExtensions: [".cjs", ".mjs"],
 		sourceType: "module",
-		requireConfigFile: false,
+		requireConfigFile: false
 	},
 
 	parser: "@babel/eslint-parser",
@@ -16,27 +11,27 @@ module.exports = {
 	env: {
 		browser: true,
 		es6: true,
-		jquery: true,
+		jquery: true
 	},
 
 	extends: ["eslint:recommended", "@typhonjs-fvtt/eslint-config-foundry.js/0.8.0"],
 
 	plugins: [
+		"@stylistic/js",
 		"jsdoc"
 	],
 
-	ignorePatterns: ["gulpfile.js"],
+	ignorePatterns: ["gulpfile.mjs", "update-build-tags.js"],
 
 	rules: {
 		"array-bracket-spacing": ["warn", "never"],
 		"array-callback-return": "warn",
 		"arrow-spacing": "warn",
 		"brace-style": "warn",
-		"comma-dangle": ["warn", "only-multiline"],
+		"comma-dangle": ["warn", "never"],
 		"comma-style": "warn",
 		"computed-property-spacing": "warn",
 		"constructor-super": "error",
-		curly: "warn",
 		"default-param-last": "warn",
 		"dot-location": ["warn", "property"],
 		"eol-last": ["error", "always"],
@@ -44,7 +39,7 @@ module.exports = {
 		"func-call-spacing": "warn",
 		"func-names": ["warn", "never"],
 		"getter-return": "warn",
-		indent: ["warn", "tab"],
+		indent: ["warn", "tab", { SwitchCase: 1 }],
 		"lines-between-class-members": "warn",
 		"new-parens": ["warn", "always"],
 		"newline-per-chained-call": "warn",
@@ -147,8 +142,8 @@ module.exports = {
 				ignoreUrls: true,
 				ignoreStrings: true,
 				ignoreTemplateLiterals: true,
-				ignoreRegExpLiterals: true,
-			},
+				ignoreRegExpLiterals: true
+			}
 		],
 		"no-extra-boolean-cast": ["warn", { enforceForLogicalOperands: true }],
 		"no-extra-semi": "warn",
@@ -163,8 +158,8 @@ module.exports = {
 			"warn",
 			"before",
 			{
-				overrides: { "=": "after", "+=": "after", "-=": "after" },
-			},
+				overrides: { "=": "after", "+=": "after", "-=": "after" }
+			}
 		],
 		"prefer-template": "warn",
 		"quote-props": ["warn", "as-needed", { keywords: false }],
@@ -176,10 +171,13 @@ module.exports = {
 			{
 				anonymous: "always",
 				named: "never",
-				asyncArrow: "always",
-			},
+				asyncArrow: "always"
+			}
 		],
 		"spaced-comment": "warn",
+
+		"@stylistic/js/space-in-parens": "warn",
+		"@stylistic/js/object-curly-spacing": ["warn", "always"],
 
 		"jsdoc/check-access": "warn",
 		"jsdoc/check-alignment": "warn",
@@ -226,6 +224,8 @@ module.exports = {
 
 	globals: {
 		CodeMirror: false,
+		Color: false,
+		DocumentSheetConfig: false,
 		globalThis: false,
 		OperatorTerm: false,
 		toml: false,
@@ -236,9 +236,9 @@ module.exports = {
 		{
 			files: ["./*.js", "./*.cjs", "./*.mjs"],
 			env: {
-				node: true,
-			},
-		},
+				node: true
+			}
+		}
 	],
 
 	settings: {

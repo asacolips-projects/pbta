@@ -1,5 +1,3 @@
-import { PbtaActorTemplates } from "../pbta/pbta-actors.js";
-import { PbtaUtility } from "../utility.js";
 import { codeMirrorAddToml } from "./codemirror.toml.js";
 
 export class PbtaSettingsConfigDialog extends FormApplication {
@@ -36,12 +34,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 	/** @override */
 	async getData(options) {
-		let data = foundry.utils.deepClone(game.settings.get("pbta", "sheetConfig")) ?? {};
-		data.sheetConfigOverride = this.sheetOverriden;
-		if (!data.tomlString) {
-			data.tomlString = "";
-		}
-		return data;
+		const sheetConfig = game.settings.get("pbta", "sheetConfig") || {};
+		return {
+			...foundry.utils.deepClone(sheetConfig),
+			sheetConfigOverride: this.sheetOverriden,
+			tomlString: sheetConfig.tomlString || ""
+		};
 	}
 
 	/* -------------------------------------------- */
@@ -118,7 +116,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 	async _updateObject(event, formData) {
 		let computed = {};
 
-		computed = PbtaUtility.parseTomlString(formData.tomlString) ?? null;
+		computed = game.pbta.utils.parseTomlString(formData.tomlString) ?? null;
 		if (computed) {
 			let confirm = true;
 			if (game.pbta.sheetConfig?.actorTypes?.character && game.pbta.sheetConfig?.actorTypes?.npc) {
@@ -141,7 +139,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 		let currentConfig = game.pbta.sheetConfig;
 		let duplicateConfig = foundry.utils.duplicate(sheetConfig);
-		let newConfig = PbtaUtility.convertSheetConfig(duplicateConfig);
+		let newConfig = game.pbta.utils.convertSheetConfig(duplicateConfig);
 
 		let configDiff = {
 			add: [],
@@ -168,7 +166,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 				}
 			}
 		}
-		let attrGroups = ["stats", "attrLeft", "attrTop", "moveTypes", "equipmentTypes"];
+		let attrGroups = ["details", "stats", "attrLeft", "attrTop", "moveTypes", "equipmentTypes"];
 
 		for (let actorType of actorTypes) {
 			// Handle deleting custom actor types.
@@ -186,40 +184,38 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			}
 			// Handle attribute groups.
 			for (let attrGroup of attrGroups) {
-				if (!currentConfig.actorTypes[actorType][attrGroup]) {
-					// configDiff.add.push(`${actorType}.${attrGroup}`);
-					continue;
-				}
-
-				if (!newConfig.actorTypes[actorType][attrGroup]) {
-					// configDiff.add.push(`${actorType}.${attrGroup}`);
-					continue;
-				}
-
 				let newGroup = newConfig.actorTypes[actorType][attrGroup];
 				let oldGroup = currentConfig.actorTypes[actorType][attrGroup];
+
+				if (!oldGroup && newGroup) {
+					configDiff.add.push(`${actorType}.${attrGroup}`);
+					updatesDiff[actorType][`system.${attrGroup}`] = newGroup;
+					continue;
+				} else if (oldGroup && !newGroup) {
+					configDiff.del.push(`${actorType}.${attrGroup}`);
+					updatesDiff[actorType][`system.-=${attrGroup}`] = null;
+					continue;
+				}
+				if (!newGroup || !oldGroup) continue;
 
 				for (let attr of Object.keys(newGroup)) {
 					if (!oldGroup[attr]) {
 						configDiff.add.push(`${actorType}.${attrGroup}.${attr}`);
 						updatesDiff[actorType][`system.${attrGroup}.${attr}`] = newGroup[attr];
 					} else {
-						// Handle updating label values.
-						if (newGroup[attr].label && newGroup[attr].label !== oldGroup[attr].label) {
-							configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.label`);
-							updatesDiff[actorType][`system.${attrGroup}.${attr}.label`] = newGroup[attr].label;
-						}
-						if (newGroup[attr].customLabel && newGroup[attr].customLabel !== oldGroup[attr].customLabel) {
-							configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.customLabel`);
-							updatesDiff[actorType][`system.${attrGroup}.${attr}.customLabel`] = newGroup[attr].customLabel;
-						}
-						// Handle updating description values.
-						if (newGroup[attr].description && newGroup[attr].description !== oldGroup[attr].description) {
-							configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.description`);
-							updatesDiff[actorType][`system.${attrGroup}.${attr}.description`] = newGroup[attr].description;
-						}
+						const cosmetic = ["label", "customLabel", "description", "playbook", "limited"];
+						cosmetic.forEach((v) => {
+							const isValid = !foundry.utils.isEmpty(newGroup[attr][v]);
+							if (isValid && newGroup[attr][v] !== oldGroup[attr][v]) {
+								configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.${v}`);
+								updatesDiff[actorType][`system.${attrGroup}.${attr}.${v}`] = newGroup[attr][v];
+							}
+						});
 						// Handle updating ListOne values.
-						if (newGroup[attr].value && newGroup[attr].value !== oldGroup[attr].value) {
+						if (
+							!foundry.utils.isEmpty(newGroup[attr].value)
+							&& newGroup[attr].value !== oldGroup[attr].value
+						) {
 							configDiff.values.push(`${actorType}.${attrGroup}.${attr}.value`);
 							updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].value;
 						}
@@ -313,6 +309,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 										}
 									}
 								}
+								if (newGroup[attr]?.sort !== oldGroup[attr]?.sort) {
+									configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.sort`);
+									updatesDiff[actorType][`system.${attrGroup}.${attr}.sort`] = newGroup[attr]?.sort ?? false;
+								}
 							} else if (newType === "Track") {
 								const { positive: oldPositive, negative: oldNegative } = oldGroup[attr];
 								const { positive: newPositive, negative: newNegative } = newGroup[attr];
@@ -375,9 +375,10 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			noteConfirmUpdate: game.i18n.localize("PBTA.Settings.sheetConfig.noteConfirmUpdate"),
 			noteConfirmUpdateBold: game.i18n.localize("PBTA.Settings.sheetConfig.noteConfirmUpdateBold"),
 			noteCancel: game.i18n.localize("PBTA.Settings.sheetConfig.noteCancel"),
-			values: game.i18n.localize("PBTA.Settings.sheetConfig.values"),
+			values: game.i18n.localize("PBTA.Settings.sheetConfig.values")
 		};
 
+		// eslint-disable-next-line max-len
 		if (hasAdditions || hasDeletions || hasMax || hasSoftType || hasHardType || hasSafe || hasOptions || hasDeletedValues) {
 			let content = `<p>${t.noteChangesDetected}</p><ul><li>${t.noteConfirm}</li><li>${t.noteConfirmUpdate}<strong> (${t.noteConfirmUpdateBold})</strong></li><li>${t.noteCancel}</li></ul>`;
 
@@ -416,46 +417,38 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			return this._confirm({
 				title: game.i18n.localize("PBTA.Settings.sheetConfig.confirmChanges"),
 				content: content,
-				options: {width: 500, classes: ["pbta", "pbta-sheet-confirm"]},
+				options: { width: 500, classes: ["pbta", "pbta-sheet-confirm"] },
 				buttons: {
 					yes: {
 						icon: '<i class="fas fa-check"></i>',
 						label: game.i18n.localize("PBTA.Settings.sheetConfig.confirm"),
 						callback: async () => {
 							return true;
-						},
+						}
 					},
 					update: {
 						icon: '<i class="fas fa-user-check"></i>',
 						label: game.i18n.localize("PBTA.Settings.sheetConfig.confirmUpdate"),
 						callback: async () => {
-							let result = await PbtaActorTemplates.updateActors(updatesDiff);
+							let result = await game.pbta.utils.updateActors(updatesDiff);
 							return result;
-						},
+						}
 					},
 					no: {
 						icon: '<i class="fas fa-times"></i>',
 						label: game.i18n.localize("Cancel"),
 						callback: async () => {
 							return false;
-						},
-					},
+						}
+					}
 				},
 				defaultButton: "no"
 			});
-
-			// return Dialog.confirm({
-			//   title: 'Confirm Changes',
-			//   content: content,
-			//   yes: () => { return true; },
-			//   no: () => { return false; },
-			//   defaultYes: false
-			// });
 		}
 		return true;
 	}
 
-	async _confirm({title, content, buttons, defaultButton, options = {}, rejectClose = false, render}={}) {
+	async _confirm({ title, content, buttons, defaultButton, options = {}, rejectClose = false, render }={}) {
 		return new Promise((resolve, reject) => {
 			let resolveButtons = {};
 
@@ -477,12 +470,12 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 				default: defaultButton ?? Object.keys(resolveButtons)[0],
 				render: render,
 				close: () => {
-					if ( rejectClose ) {
+					if (rejectClose) {
 						reject("The confirmation Dialog was closed without a choice being made");
 					} else {
 						resolve(null);
 					}
-				},
+				}
 			}, options);
 			dialog.render(true);
 		});

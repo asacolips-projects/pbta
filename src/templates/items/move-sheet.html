@@ -18,83 +18,63 @@
   <section class="sheet-body">
 
       {{!-- Description Tab --}}
-      <div class="tab" data-group="primary" data-tab="description">
-        <div class="resource">
-          <label>{{localize "PBTA.Common.Description"}}</label>
-          {{editor system.description target="system.description" button=true owner=owner editable=editable}}
-        </div>
-
-        {{#if system.moveResults}}
-          {{#each system.moveResults as |result key|}}
-            <div class="resource">
-              <label>{{result.label}}</label>
-              {{editor result.value target=result.rangeName button=true owner=../owner editable=../editable}}
-            </div>
-          {{/each}}
-        {{/if}}
-
-        <div class="resource">
-          <label>{{localize "PBTA.Choices"}}</label>
-          {{editor system.choices target="system.choices" button=true owner=owner editable=editable}}
-        </div>
-      </div>
+      {{> "pbta.move-description" }}
 
       {{!-- Details Tab --}}
       <div class="tab" data-group="primary" data-tab="details">
-        <div class="resource">
+        <div class="form-group">
           <label>{{localize "PBTA.Roll"}}</label>
           <select name="system.rollType" data-dtype="String">
-            {{#select system.rollType}}
-              <option value="">—</option>
-              {{#if system.stats}}
-                {{#each system.stats as |stat key|}}
-                  <option value="{{key}}">{{stat.label}}</option>
-                {{/each}}
-              {{/if}}
-            {{/select}}
+            {{selectOptions system.stats selected=system.rollType labelAttr="label" blank="—" }}
           </select>
         </div>
 
         {{#if (eq system.rollType 'formula')}}
-          <div class="resource">
+          <div class="form-group">
             <label>{{localize "PBTA.RollFormula"}}</label>
-            <input type="text" name="system.rollFormula" value="{{system.rollFormula}}" placeholder="ex: d6 + d8 + @stats.cool.value" data-dtype="String"/>
+            <input type="text" name="system.rollFormula" value="{{system.rollFormula}}" placeholder="ex: {{system.rollExample}}" data-dtype="String" />
           </div>
         {{/if}}
 
-        <div class="resource">
+        <div class="form-group">
           <label>{{localize "PBTA.Modifier"}}</label>
           <input type="text" name="system.rollMod" value="{{system.rollMod}}" data-dtype="Number"/>
         </div>
 
-        <div class="resource">
+        <div class="form-group">
           <label>{{localize "PBTA.Uses"}}</label>
           <input type="number" name="system.uses" value="{{system.uses}}" data-dtype="Number"/>
         </div>
 
-        <div class="resource">
+        {{#if (gt (objLen actorTypes) 1)}}
+        <div class="form-group">
+          <label>{{localize "PBTA.ActorType"}}</label>
+          <select name="system.actorType">
+            {{selectOptions actorTypes selected=system.actorType labelAttr="label" blank="" sort=true}}
+          </select>
+        </div>
+        {{/if}}
+
+        <div class="form-group">
+          <label>{{localize "PBTA.Category"}}</label>
+          <select name="system.moveType" data-dtype="String">
+            {{selectOptions system.moveTypes selected=system.moveType labelAttr="label" blank="—" }}
+          </select>
+        </div>
+
+        {{#if isPlaybookMove}}
+        <div class="form-group">
           <label>{{localize "PBTA.Playbook"}}</label>
           <select name="system.playbook">
             {{#select system.playbook}}
               <option value="">—</option>
-              {{#each system.playbooks as |playbook id|}}
+              {{#each playbooks as |playbook id|}}
               <option value="{{playbook}}">{{playbook}}</option>
               {{/each}}
             {{/select}}
           </select>
         </div>
-
-        <div class="resource">
-          <label>{{localize "PBTA.MoveType"}}</label>
-          <select name="system.moveType" data-dtype="String">
-            {{#select system.moveType}}
-            <option value="">—</option>
-            {{#each system.moveTypes as |move key|}}
-            <option value="{{key}}">{{move.label}}</option>
-            {{/each}}
-            {{/select}}
-          </select>
-        </div>
+        {{/if}}
       </div>
   </section>
 </form>

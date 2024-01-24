@@ -1,0 +1,24 @@
+<section class="pbta-chat-card">
+  <div class="cell cell--chat">
+    <div class="chat-title row flexrow">
+      <h2 class="cell__title">{{localize 'PBTA.Stat.Shifting.shifts' actor=actor.name stats=labels.stats }}</h2>
+    </div>
+
+    <div>
+		{{#if fail}}
+			<span>{{localize 'PBTA.Stat.Shifting.fail' }}</span>
+		{{else}}
+		{{#if up}}
+		<div>
+			<span class="shift up">{{localize 'PBTA.Stat.Shifting.up' stat=up.label }}</b>
+		</div>
+		{{/if}}
+		{{#if down}}
+		<div>
+			<span class="shift down">{{localize 'PBTA.Stat.Shifting.down' stat=down.label }}</span>
+		</div>
+		{{/if}}
+		{{/if}}
+    </div>
+  </div>
+</section>

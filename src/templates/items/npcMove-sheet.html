@@ -18,46 +18,26 @@
   <section class="sheet-body">
 
       {{!-- Description Tab --}}
-      <div class="tab" data-group="primary" data-tab="description">
-          <div class="resource">
-            <label>{{localize "PBTA.Common.Description"}}</label>
-            {{editor system.description target="system.description" button=true owner=owner editable=editable}}
-          </div>
-
-          {{#if system.moveResults}}
-            {{#each system.moveResults as |result key|}}
-              <div class="resource">
-                <label>{{result.label}}</label>
-                {{editor result.value target=result.rangeName button=true owner=../owner editable=../editable}}
-              </div>
-            {{/each}}
-          {{/if}}
-      </div>
+      {{> "pbta.move-description" }}
 
       {{!-- Details Tab --}}
       <div class="tab" data-group="primary" data-tab="details">
-        <div class="resource">
+        <div class="form-group">
           <label>{{localize "PBTA.RollFormula"}}</label>
-          <input type="text" name="system.rollFormula" value="{{system.rollFormula}}" placeholder="ex: {{system.rollExample}}" data-dtype="String"/>
+          <input type="text" name="system.rollFormula" value="{{system.rollFormula}}" placeholder="ex: {{system.rollExample}}" data-dtype="String" />
         </div>
 
-        <div class="resource">
-          <label>{{localize "PBTA.MoveType"}}</label>
-          <select name="system.moveType" data-dtype="String">
-            {{#select system.moveType}}
-            <option value="">—</option>
-            {{#each system.moveTypes as |move key|}}
-            <option value="{{key}}">{{move.label}}</option>
-            {{/each}}
-            {{/select}}
-          </select>
-        </div>
-
-        <div class="resource">
+        <div class="form-group">
           <label>{{localize "PBTA.Uses"}}</label>
           <input type="number" name="system.uses" value="{{system.uses}}" data-dtype="Number"/>
         </div>
 
+        <div class="form-group">
+          <label>{{localize "PBTA.Category"}}</label>
+          <select name="system.moveType" data-dtype="String">
+            {{selectOptions system.moveTypes selected=system.moveType labelAttr="label" blank="—" }}
+          </select>
+        </div>
       </div>
   </section>
 </form>

@@ -22,12 +22,8 @@
     {{#if resultLabel}}
       <div class="row result{{#if result}} {{result}}{{/if}}">
         <div class="result-label">{{resultLabel}}</div>
-        {{#if resultDetails}}
-          <div class="result-details">{{{resultDetails}}}</div>
-        {{/if}}
-        {{#if choices}}
-          <div class="result-choices">{{{choices}}}</div>
-        {{/if}}
+        <div class="result-details">{{{resultDetails}}}</div>
+        <div class="result-choices">{{{choices}}}</div>
       </div>
       <div class="card-buttons">
         <button data-action="shiftUp">

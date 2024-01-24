@@ -1,33 +1,13 @@
 .sheet-attributes {
   .cell--stats {
-    grid-column: span 16;
-    // background: rgba($c-navy-up, 0.25);
-    // padding: 0 10px;
-    padding: 0;
-    margin-left: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     .stats-list {
-      // display: grid;
-      // grid-column: span 3 / span 3;
-      // grid-template-columns: repeat(3, minmax(0, 1fr));
-      // gap: 10px;
-      // margin: 10px 0;
-      // padding: 0;
-      // width: 100%;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
       align-items: stretch;
+      gap: 10px 5px;
       justify-content: center;
-      padding-left: 0;
+      padding: 0;
     }
 
     .stat {
-      display: flex;
-      flex-direction: row;
       background: $c-blue;
       color: $c-white;
       border-radius: 4px;
@@ -36,23 +16,20 @@
       align-items: center;
       text-transform: uppercase;
       flex: 0 0 30%;
-      margin: 0 5px 10px;
       transition: all ease-in-out 0.25s;
 
-      &.hover {
+      &:hover {
         background: #6599ce;
       }
 
       .cell__title {
-        order: 0;
         width: 100%;
         min-width: 100%;
-        flex: 1;
         color: $c-white;
         text-align: center;
         display: flex;
         font-size: 22px;
-        margin: 0 0 4px;;
+        margin: 0 0 4px;
         line-height: 0.9;
         min-height: auto;
         height: auto;
@@ -62,6 +39,7 @@
         align-items: center;
         justify-content: center;
         border-bottom: 1px solid $ct-white;
+        column-gap: 2px;
 
         &:hover {
           cursor: pointer;
@@ -74,25 +52,21 @@
       }
 
       .stat-icon {
-        order: 1;
-        flex: 0 0 32px;
         color: $c-white;
-        margin-left: 4px;
-        cursor: pointer;
+        font-size: 18px;
+        height: 20px;
+        width: 20px;
 
-        &:hover {
-          cursor: pointer;
+        img {
+          border: 0;
         }
       }
 
       .stat-toggle {
-        order: 2;
-        flex: 1;
         text-align: center;
       }
 
       .stat-value {
-        order: 3;
         flex: 0 0 48px;
         padding: 2px 4px;
         color: $c-white;
@@ -104,63 +78,35 @@
         line-height: 1;
         height: 28px;
       }
+
+      &.stat-shift {
+        .select-holder {
+          font-family: $font-stack-secondary;
+          column-gap: 4px;
+
+          select {
+            font-weight: bold;
+            color: $c-white;
+            padding-left: 10px;
+            max-width: calc(50% - 2px);
+
+            &.up {
+              background: url(/icons/svg/up.svg) no-repeat -10% rgba(0,0,0,.25);
+              background-size: contain;
+            }
+
+            &.down {
+              background: url(/icons/svg/down.svg) no-repeat -10% rgba(0,0,0,.25);
+              background-size: contain;
+            }
+
+            option {
+              color: fieldtext;
+              background: $c-white;
+            }
+          }
+        }
+      }
     }
-
-    // .stat {
-    //   display: flex;
-    //   flex-direction: row;
-    //   flex-wrap: wrap;
-    //   position: relative;
-    //   min-height: 76px;
-
-    //   .cell__title {
-    //     flex: 100%;
-    //     background: $c-navy;
-    //     color: $c-white;
-    //     padding: $padding-sm;
-    //     margin-right: 8px;
-    //     border-radius: 0 50px 0 0;
-    //   }
-
-    //   // .stat-value {
-    //   //   flex: 32px;
-    //   //   flex-grow: 0;
-    //   // }
-
-    //   .stat-value {
-    //     position: absolute;
-    //     top: -23px;
-    //     right: -2px;
-    //     bottom: 0;
-    //     margin: auto;
-    //     width: 50px;
-    //     height: 50px;
-    //     text-align: center;
-    //     border: 2px solid $c-navy;
-    //     border-radius: 50px;
-    //     line-height: 38px;
-    //     font-size: 24px;
-    //     background: $c-white;
-    //     color: $c-navy;
-    //     display: flex;
-    //     align-items: center;
-    //     justify-content: center;
-    //   }
-
-    //   .stat-toggle {
-    //     display: flex;
-    //     flex-direction: row;
-    //     flex-wrap: nowrap;
-    //     align-items: center;
-    //     margin: 0 8px;
-    //     font-size: 10px;
-    //     position: relative;
-    //     top: -14px;
-
-    //     input {
-    //       margin-right: 4px;
-    //     }
-    //   }
-    // }
   }
 }

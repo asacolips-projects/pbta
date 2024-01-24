@@ -4,15 +4,17 @@
       <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
     </div>
     <div class="header-fields">
-      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize "PBTA.Common.Name"}}"/></h1>
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'PBTA.Common.Name'}}" /></h1>
     </div>
   </header>
 
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-navigation sheet-tabs tabs" data-group="primary">
     <a class="item" data-tab="description">{{localize "PBTA.Common.Description" }}</a>
-    {{!-- <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
-    <a class="item" data-tab="equipment">{{localize "PBTA.Equipment"}}</a> --}}
+    <!-- <a class="item" data-tab="moves">{{localize "PBTA.Moves" }}</a> -->
+    {{#if isGM}}
+    <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
+    {{/if}}
   </nav>
 
   {{!-- Sheet Body --}}
@@ -22,5 +24,30 @@
     <div class="tab" data-group="primary" data-tab="description">
       {{editor system.description target="system.description" button=true owner=owner editable=editable}}
     </div>
+
+    {{!-- Details Tab --}}
+    {{#if isGM}}
+    <div class="tab" data-group="primary" data-tab="details">
+      <div class="form-group">
+        <label class="control-label">{{localize "PBTA.Slug.label" }}</label>
+        <div class="flexrow">
+          <input type="text" name='system.slug' value='{{ system.slug }}'/>
+          <div class="item-controls">
+            <a class="regenerate-slug" data-tooltip="PBTA.Slug.tooltip">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      {{#if (gt (objLen actorTypes) 1)}}
+      <div class="form-group">
+        <label>{{localize "PBTA.ActorType"}}</label>
+        <select name="system.actorType">
+          {{selectOptions actorTypes selected=system.actorType labelAttr="label" blank="" sort=true}}
+        </select>
+      </div>
+      {{/if}}
+    </div>
+    {{/if}}
   </section>
 </form>

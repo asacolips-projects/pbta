@@ -5,41 +5,48 @@
  */
 
 // Import Modules
-import { PbtaActorNpcSheet } from "./actor/actor-npc-sheet.js";
-import { PbtaActorOtherSheet } from "./actor/actor-other-sheet.js";
-import { PbtaActorSheet } from "./actor/actor-sheet.js";
-import { ActorPbta } from "./actor/actor.js";
-import { PbtACombatTracker } from "./combat/combat-tracker.js";
-import { PbtACombatant } from "./combat/combatant.js";
-import { PBTA, PbtaPlaybooks } from "./config.js";
-import { PbtaSettingsConfigDialog } from "./forms/sheet-config.js";
-import { PbtaRegisterHelpers } from "./handlebars.js";
-import { PbtaItemSheet } from "./item/item-sheet.js";
-import { ItemPbta } from "./item/item.js";
-import { MigratePbta } from "./migrate/migrate.js";
-import { PbtaActorTemplates } from "./pbta/pbta-actors.js";
-import { RollPbtA } from "./rolls.js";
+import { PBTA } from "./config.js";
 import { registerSettings } from "./settings.js";
-import { preloadHandlebarsTemplates } from "./templates.js";
-import { PbtaUtility } from "./utility.js";
+
+import * as applications from "./applications/_module.js";
+import * as canvas from "./canvas/_module.js";
+import * as dataModels from "./data/_module.js";
+import * as dice from "./dice/_module.js";
+import * as documents from "./documents/_module.js";
+import * as migrations from "./migration.js";
+import * as utils from "./utils.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
-Hooks.once("init", async function () {
-	game.pbta = {
-		ActorPbta,
-		ItemPbta,
-		rollItemMacro,
-		PbtaUtility,
-		PbtaActorTemplates,
-		MigratePbta,
-		PbtaSettingsConfigDialog
-	};
+globalThis.pbta = {
+	applications,
+	canvas,
+	config: PBTA,
+	dataModels,
+	dice,
+	documents,
+	migrations,
+	utils
+};
 
-	CONFIG.ui.combat = PbtACombatTracker;
-	CONFIG.Combatant.documentClass = PbtACombatant;
+Hooks.once("init", async function () {
+	globalThis.pbta = game.pbta = Object.assign(game.system, globalThis.pbta);
+
+	CONFIG.ui.combat = applications.combat.PbtACombatTracker;
+	CONFIG.Combatant.documentClass = documents.CombatantPbtA;
+
+	// Define DataModels
+	CONFIG.Actor.dataModels.character = dataModels.CharacterData;
+	CONFIG.Actor.dataModels.npc = dataModels.NpcData;
+	CONFIG.Actor.dataModels.other = dataModels.OtherData;
+
+	CONFIG.Item.dataModels.equipment = dataModels.EquipmentData;
+	CONFIG.Item.dataModels.move = dataModels.MoveData;
+	CONFIG.Item.dataModels.npcMove = dataModels.NpcMoveData;
+	CONFIG.Item.dataModels.playbook = dataModels.PlaybookData;
+	CONFIG.Item.dataModels.tag = dataModels.ItemData;
 
 	game.socket.on("system.pbta", (data) => {
 		if (game.user.isGM && data.combatantUpdate) {
@@ -48,70 +55,50 @@ Hooks.once("init", async function () {
 		}
 	});
 
-	CONFIG.Dice.RollPbtA = RollPbtA;
-	CONFIG.Dice.rolls.push(RollPbtA);
+	CONFIG.Dice.RollPbtA = dice.RollPbtA;
+	CONFIG.Dice.rolls.push(dice.RollPbtA);
 
 	CONFIG.PBTA = PBTA;
-	CONFIG.Actor.documentClass = ActorPbta;
-	CONFIG.Item.documentClass = ItemPbta;
+	CONFIG.Actor.documentClass = documents.ActorPbta;
+	CONFIG.Item.documentClass = documents.ItemPbta;
+	CONFIG.Token.objectClass = canvas.TokenPbta;
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("pbta", PbtaActorSheet, {
+	Actors.registerSheet("pbta", applications.actor.PbtaActorSheet, {
 		types: ["character"],
 		makeDefault: true,
 		label: "PBTA.SheetClassCharacter"
 	});
-	Actors.registerSheet("pbta", PbtaActorOtherSheet, {
+	Actors.registerSheet("pbta", applications.actor.PbtaActorOtherSheet, {
 		types: ["other"],
 		makeDefault: true,
 		label: "PBTA.SheetClassOther"
 	});
-	Actors.registerSheet("pbta", PbtaActorNpcSheet, {
+	Actors.registerSheet("pbta", applications.actor.PbtaActorNpcSheet, {
 		types: ["npc"],
 		makeDefault: true,
 		label: "PBTA.SheetClassNPC"
 	});
 	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("pbta", PbtaItemSheet, {
+	Items.registerSheet("pbta", applications.item.PbtaItemSheet, {
 		makeDefault: true,
 		label: "PBTA.SheetClassItem"
 	});
+	DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, "core", TokenConfig);
+	DocumentSheetConfig.registerSheet(TokenDocument, "core", applications.token.PbtaTokenConfig, {
+		makeDefault: true,
+		label: () => game.i18n.format("SHEETS.DefaultDocumentSheet", { document: game.i18n.localize("DOCUMENT.Token") })
+	});
 
-	PbtaRegisterHelpers.init();
+	utils.registerHandlebarsHelpers();
 
 	// Preload template partials.
-	preloadHandlebarsTemplates();
+	utils.preloadHandlebarsTemplates();
 });
 
 Hooks.on("i18nInit", () => {
 	registerSettings();
-	if (!game.settings.get("pbta", "hideSidebarButtons")) {
-		Hooks.on("renderSettings", (app, html) => {
-			let settingsButton = $(`<button id="pbta-settings-btn" data-action="pbta-settings">
-				<i class="fas fa-file-alt"></i> ${game.i18n.localize("PBTA.Settings.sheetConfig.label")}
-			</button>`);
-			html.find('button[data-action="configure"]').before(settingsButton);
-
-			let helpButton = $(`<button id="pbta-help-btn" data-action="pbta-help">
-				<i class="fas fa-question-circle"></i> ${game.i18n.localize("PBTA.Settings.button.help")}
-			</button>`);
-			html.find('button[data-action="controls"]').after(helpButton);
-
-			settingsButton.on("click", (ev) => {
-				ev.preventDefault();
-				let menu = game.settings.menus.get("pbta.sheetConfigMenu");
-				let app = new menu.type();
-				app.render(true);
-			});
-
-			helpButton.on("click", (ev) => {
-				ev.preventDefault();
-				window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
-			});
-		});
-
-	}
 
 	// Build out character data structures.
 	const pbtaSettings = game.settings.get("pbta", "sheetConfig");
@@ -121,10 +108,69 @@ Hooks.on("i18nInit", () => {
 		game.pbta.sheetConfig = pbtaSettings.overridden;
 	} else if (pbtaSettings?.computed) {
 		// Otherwise, retrieve computed config.
-		game.pbta.sheetConfig = PbtaUtility.convertSheetConfig(pbtaSettings.computed);
+		game.pbta.sheetConfig = utils.convertSheetConfig(pbtaSettings.computed);
 	} else {
 		// Fallback to empty config.
 		game.pbta.sheetConfig = pbtaSettings;
+	}
+});
+
+/**
+ * This function runs after game data has been requested and loaded from the servers, so documents exist
+ */
+Hooks.once("setup", function () {
+	// Localize CONFIG objects once up-front
+	const toLocalize = [];
+	for (let o of toLocalize) {
+		CONFIG.PBTA[o] = Object.entries(CONFIG.PBTA[o]).reduce((obj, e) => {
+			obj[e[0]] = game.i18n.localize(e[1]);
+			return obj;
+		}, {});
+	}
+
+	if (game.user.isGM) {
+		Hooks.on("renderSettings", (app, html) => {
+			const header = document.createElement("h2");
+			header.innerText = game.i18n.localize("Powered by the Apocalypse");
+
+			const pbtaSettings = document.createElement("div");
+			html.find("#settings-game")?.after(header, pbtaSettings);
+
+			const buttons = [
+				{
+					action: (ev) => {
+						ev.preventDefault();
+						let menu = game.settings.menus.get("pbta.sheetConfigMenu");
+						let app = new menu.type();
+						app.render(true);
+					},
+					iconClasses: ["fas", "fa-file-alt"],
+					label: "PBTA.Settings.sheetConfig.label"
+				},
+				{
+					action: (ev) => {
+						ev.preventDefault();
+						window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
+					},
+					iconClasses: ["fas", "fa-question-circle"],
+					label: "PBTA.Settings.button.help"
+				}
+			].map(({ action, iconClasses, label }) => {
+				const button = document.createElement("button");
+				button.type = "button";
+
+				const icon = document.createElement("i");
+				icon.classList.add(...iconClasses);
+
+				button.append(icon, game.i18n.localize(label));
+
+				button.addEventListener("click", action);
+
+				return button;
+			});
+
+			pbtaSettings.append(...buttons);
+		});
 	}
 });
 
@@ -169,9 +215,9 @@ Hooks.once("ready", async function () {
 					delete existingConfig.overridden;
 					delete existingConfig.computed;
 					// Restore computed config and reapply.
-					existingConfig.computed = PbtaUtility.parseTomlString(existingConfig.tomlString);
-					game.pbta.sheetConfig = PbtaUtility.convertSheetConfig(existingConfig.computed);
-					PbtaUtility.applyActorTemplates(true);
+					existingConfig.computed = utils.parseTomlString(existingConfig.tomlString);
+					game.pbta.sheetConfig = utils.convertSheetConfig(existingConfig.computed);
+					utils.applyActorTemplates(true);
 					ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.previousSettingRestored"));
 				}
 				game.settings.set("pbta", "sheetConfig", existingConfig);
@@ -180,26 +226,31 @@ Hooks.once("ready", async function () {
 	}
 
 	// Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
-	Hooks.on("hotbarDrop", (bar, data, slot) => createPbtaMacro(data, slot));
+	Hooks.on("hotbarDrop", (bar, data, slot) => {
+		if (["Item"].includes(data.type)) {
+			documents.macro.createPbtaMacro(data, slot);
+			return false;
+		}
+	});
 
-	PBTA.playbooks = await PbtaPlaybooks.getPlaybooks();
 	CONFIG.PBTA = PBTA;
 
+	utils.getPlaybooks();
+
 	// Apply structure to actor types.
-	PbtaUtility.applyActorTemplates();
+	utils.applyActorTemplates();
+
+	_configureTrackableAttributes();
 
 	// Run migrations.
-	if ( !game.user.isGM ) {
-		return;
-	}
+	if (!game.user.isGM) return;
 	const cv = game.settings.get("pbta", "systemMigrationVersion");
 	const totalDocuments = game.actors.size + game.scenes.size + game.items.size;
-	if ( !cv && totalDocuments === 0 ) {
-		return game.settings.set("pbta", "systemMigrationVersion", game.system.version);
-	}
+	if (!cv && totalDocuments === 0) return game.settings.set("pbta", "systemMigrationVersion", game.system.version);
+	if (cv && !isNewerVersion(game.system.flags.needsMigrationVersion, cv)) return;
 
 	// Perform the migration
-	await MigratePbta.runMigration();
+	migrations.migrateWorld();
 });
 
 Hooks.on("renderChatMessage", (data, html, options) => {
@@ -216,109 +267,38 @@ Hooks.on("renderChatMessage", (data, html, options) => {
 	}
 });
 
-Hooks.on("renderChatLog", (app, html, data) => ItemPbta.chatListeners(html));
-Hooks.on("renderChatPopout", (app, html, data) => ItemPbta.chatListeners(html));
-
-/* -------------------------------------------- */
-/*  Foundry VTT Setup                           */
-/* -------------------------------------------- */
+Hooks.on("renderChatLog", (app, html, data) => documents.ItemPbta.chatListeners(html));
+Hooks.on("renderChatPopout", (app, html, data) => documents.ItemPbta.chatListeners(html));
 
 /**
- * This function runs after game data has been requested and loaded from the servers, so documents exist
+ * Configure explicit lists of attributes that are trackable on the token HUD and in the combat tracker.
+ * @internal
  */
-Hooks.once("setup", function () {
-	// Localize CONFIG objects once up-front
-	const toLocalize = [];
-	for (let o of toLocalize) {
-		CONFIG.PBTA[o] = Object.entries(CONFIG.PBTA[o]).reduce((obj, e) => {
-			obj[e[0]] = game.i18n.localize(e[1]);
-			return obj;
-		}, {});
-	}
-});
-
-/* -------------------------------------------- */
-/*  Hotbar Macros                               */
-/* -------------------------------------------- */
-
-/**
- * Create a Macro from an Item drop.
- * Get an existing item macro if one exists, otherwise create a new one.
- * @param {object} data     The dropped data
- * @param {number} slot     The hotbar slot to use
- * @returns {Promise}
- */
-async function createPbtaMacro(data, slot) {
-	// First, determine if this is a valid owned item.
-	if (data.type !== "Item") {
-		return;
-	}
-	if (!data.uuid.includes("Actor.") && !data.uuid.includes("Token.")) {
-		return ui.notifications.warn("You can only create macro buttons for owned Items");
-	}
-	// If it is, retrieve it based on the uuid.
-	const item = await Item.fromDropData(data);
-
-	// Create the macro command
-	// @todo refactor this to use uuids and folders.
-	const command = `game.pbta.rollItemMacro("${item.name}");`;
-	let macro = game.macros.find((m) => (m.name === item.name) && (m.command === command));
-	if (!macro) {
-		macro = await Macro.create({
-			name: item.name,
-			type: "script",
-			img: item.img,
-			command: command,
-			flags: {
-				"pbta.itemMacro": true,
-				"pbta.itemUuid": data.uuid
-			}
-		});
-	}
-	game.user.assignHotbarMacro(macro, slot);
-	return false;
-}
-
-// eslint-disable-next-line jsdoc/require-returns-check
-/**
- * Create a Macro from an Item drop.
- * Get an existing item macro if one exists, otherwise create a new one.
- * @param {string} itemData
- * @returns {Promise}
- */
-function rollItemMacro(itemData) {
-	// Reconstruct the drop data so that we can load the item.
-	// @todo this section isn't currently used, the name section below is used.
-	if (itemData.includes("Actor.") || itemData.includes("Token.")) {
-		const dropData = {
-			type: "Item",
-			uuid: itemData
+function _configureTrackableAttributes() {
+	const trackableAttributes = {};
+	for (let [key, data] of Object.entries(game.pbta.sheetConfig.actorTypes)) {
+		console.log(key, data);
+		trackableAttributes[key] = {
+			bar: [],
+			value: []
 		};
-		Item.fromDropData(dropData).then((item) => {
-			// Determine if the item loaded and if it's an owned item.
-			if (!item || !item.parent) {
-				const itemName = item?.name ?? itemData;
-				return ui.notifications.warn(`Could not find item ${itemName}. You may need to delete and recreate this macro.`);
+
+		const processAttributes = (attributes) => {
+			const attr = data[attributes];
+			if (attr) {
+				for (let [attrK, attrV] of Object.entries(attr)) {
+					if (attrV.type === "Clock" || attrV.type === "Resource") {
+						trackableAttributes[key].bar.push(`${attributes}.${attrK}`);
+					} else if (attrV.type === "Number") {
+						trackableAttributes[key].value.push(`${attributes}.${attrK}.value`);
+					}
+				}
 			}
+		};
 
-			// Trigger the item roll
-			item.roll();
-		});
-	} else {
-		const speaker = ChatMessage.getSpeaker();
-		let actor;
-		if (speaker.token) {
-			actor = game.actors.tokens[speaker.token];
-		}
-		if (!actor) {
-			actor = game.actors.get(speaker.actor);
-		}
-		const item = actor ? actor.items.find((i) => i.name === itemData) : null;
-		if (!item) {
-			return ui.notifications.warn(`Your controlled Actor does not have an item named ${itemData}`);
-		}
-
-		// Trigger the item roll
-		item.roll();
+		processAttributes("attrTop");
+		processAttributes("attrLeft");
 	}
+
+	CONFIG.Actor.trackableAttributes = trackableAttributes;
 }

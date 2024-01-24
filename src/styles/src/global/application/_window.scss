@@ -23,22 +23,27 @@
   textarea {
     font-family: $font-stack-base;
     font-size: 14px;
-    background: #fff;
+    background: $c-white;
     border: 1px solid rgba(0,0,0,0.25);
     // border: 0;
 
-    &:hover,
-    &:focus {
+    &:hover:not(:disabled),
+    &:focus:not(:disabled) {
       box-shadow: 0 0 5px #38366378;
       // border: 0;
       outline: 0;
     }
+
+    &:disabled {
+      background: #99999940;
+    }
+
   }
 
   input[type="radio"],
   input[type="checkbox"] {
-    zoom: 0.9;
-    margin-right: 5px;
+    width: 18px;
+    height: 18px;
 
     &:hover,
     &:focus {
@@ -48,17 +53,20 @@
   }
 
   input[type="radio"] {
-    width: 20px;
-    height: 20px;
+    margin: 0 5px;
+  }
+
+  input[type="checkbox"] {
+    flex: 0 0 18px;
   }
 
   input,
   textarea {
     // border: 0;
-    margin: 5px 0;
+    // margin: 5px 0;
 
     &::placeholder {
-      color: #bfbfbf;
+      color: $c-gray-silver;
     }
 
     &.disabled {
@@ -70,7 +78,7 @@
   &.journal-sheet {
     button,
     .button {
-      color: #fff;
+      color: $c-white;
     }
   }
 
@@ -78,14 +86,17 @@
   .button {
     font-family: $font-stack-base;
     background: rgba(0, 0, 0, 0.1);
-    border: 1px solid #999;
+    border: 1px solid $c-navy-up;
     border-radius: 3px;
-    box-shadow: 0 0 2px #fff inset;
+    box-shadow: 0 0 2px $c-white inset;
     cursor: pointer;
 
     &:hover,
     &:focus {
       box-shadow: 0 0 5px rgba($c-navy-up, 0.25);
+    }
+
+    &:hover {
       background-color: $c-navy-top;
     }
   }
