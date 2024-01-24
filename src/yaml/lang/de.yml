@@ -61,6 +61,8 @@ PBTA:
       sind:'
     Prompt1: 'Wähle den Modifikator für den: '
     Prompt2: Spielzug.
+    HowManyToken: "How many token would you like to use?"
+    ErrorAboveMax: "You can't spend more token than you have."
   Messages:
     sheetConfig:
       actorTypeRequired: Akteurstyp erforderlich.

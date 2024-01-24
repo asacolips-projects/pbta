@@ -56,6 +56,8 @@ PBTA:
     ChooseConditions: "Elige los modificadores de estado que correspondan:"
     Prompt1: "Elige el modificador para este"
     Prompt2: "movimiento."
+    HowManyToken: "How many token would you like to use?"
+    ErrorAboveMax: "You can't spend more token than you have."
   Messages:
     sheetConfig:
       actorTypeRequired: "se requiere el tipo de actor."

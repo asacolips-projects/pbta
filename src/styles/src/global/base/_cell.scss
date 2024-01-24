@@ -249,12 +249,10 @@
   }
 
   .cell--token {
-    div {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-    }
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
 
     label {
       flex-grow: 4;
@@ -265,12 +263,43 @@
       vertical-align: middle;
     }
 
-    input {
+    .cell__wrapper {
       flex-grow: 1;
       flex-shrink: 4;
       flex-basis: 20%;
-      margin: 0;
+      position: relative;
+      width: 100%;
     }
+    
+    .resource-control {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      line-height: 1;
+      text-align: center;
+      margin: auto;
+      border: 1px solid #bcc8de;
+    }
+
+    .resource-decrease {
+      left: 5px;
+    }
+
+    .resource-increase {
+      right: 5px;
+    }
+
+    input {
+      margin: 0;
+      background-color: $ct-gray;
+      display: block;
+      text-align: center;
+      width: 100%;
+    }
+    
   }
 }
 

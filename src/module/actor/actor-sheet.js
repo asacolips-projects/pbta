@@ -361,8 +361,7 @@ export class PbtaActorSheet extends ActorSheet {
 		// Token.
 		html.find(".token-rollable").on("mouseover", this._onTokenHoverOn.bind(this));
 		html.find(".token-rollable").on("mouseout", this._onTokenHoverOff.bind(this));
-		html.find(".token-modif.minus").on("click", this._onTokenMinusClick.bind(this));
-		html.find(".token-modif.plus").on("click", this._onTokenPlusClick.bind(this));
+		html.find(".token-modif").on("click", this._onTokenModifClick.bind(this));
 
 		// Spells.
 		// html.find('.prepared').click(this._onPrepareSpell.bind(this));
@@ -375,7 +374,7 @@ export class PbtaActorSheet extends ActorSheet {
 		html.find(".item-meta .tag--uses").on("contextmenu", this._onUsagesControl.bind(this, "system.uses", -1));
 
 		// Resources.
-		html.find(".resource-control").on("click", this._onResouceControl.bind(this));
+		html.find(".resource-control").on("click", this._onResourceControl.bind(this));
 
 		let isOwner = this.actor.isOwner;
 
@@ -395,7 +394,7 @@ export class PbtaActorSheet extends ActorSheet {
 		}
 	}
 
-	_onResouceControl(event) {
+	_updateValue(event, min, max) {
 		event.preventDefault();
 		const control = $(event.currentTarget);
 		const action = control.data("action");
@@ -410,17 +409,29 @@ export class PbtaActorSheet extends ActorSheet {
 			// Decrease the value.
 			if (action === "decrease") {
 				system[attr] -= 1;
-				changed = true;
+				if (min !== undefined && min !== null && system[attr] < min) {
+					system[attr] = min;
+				} else {
+					changed = true;
+				}
 			} else if (action === "increase") {
 				// Increase the value.
 				system[attr] += 1;
-				changed = true;
+				if (max !== undefined && max !== null && system[attr] > max) {
+					system[attr] = max;
+				} else {
+					changed = true;
+				}
 			}
 			// If there are changes, apply to the actor.
 			if (changed) {
 				this.actor.update({ system: system });
 			}
 		}
+	}
+
+	_onResourceControl(event) {
+		this._updateValue(event);
 	}
 
 	async _onClockClick(event) {
@@ -584,25 +595,9 @@ export class PbtaActorSheet extends ActorSheet {
 		parent.removeClass("hover");
 	}
 
-	_onTokenMinusClick(_event) {
-		const updates = {};
-		let value = this.object.system.stats.value - 1;
-		if (value < 0) {
-			value = 0;
-		}
-		updates["system.stats.value"] = value;
-		this.actor.update(updates);
-	}
-
-	_onTokenPlusClick(_event) {
-		const updates = {};
-		let value = this.object.system.stats.value + 1;
+	_onTokenModifClick(event) {
 		const maxValue = parseInt(this.object.system.stats.max.label);
-		if (value > maxValue) {
-			value = this.object.system.stats.value;
-		}
-		updates["system.stats.value"] = value;
-		this.actor.update(updates);
+		this._updateValue(event, 0, maxValue);
 	}
 
 	/**
