@@ -15,13 +15,13 @@
     {{!-- Main --}}
     <section class="sheet-main sheet-main--npc">
 
-      {{#if system.attrTop}}
+      {{#if (objLen system.attrTop)}}
         <section class="sheet-attributes-top">
           {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=system.attrTop group="attrTop" class="attributes-top"}}
         </section>
       {{/if}}
 
-      {{#if system.attrLeft}}
+      {{#if (objLen system.attrLeft)}}
         <section class="sheet-attributes-left">
           <div class="cell cell--aesthetics">
             {{> "systems/pbta/templates/parts/sheet-attributes.html" attrs=system.attrLeft group="attrLeft" class="attributes-left"}}
@@ -44,7 +44,6 @@
           <div class="tab description" data-group="primary" data-tab="description">
             <div class="sheet-tab">
               <div class="cell cell--bio">
-                <label class="cell__title">{{localize "PBTA.Biography"}}</label>
                 {{!-- We're avoiding WYSIWYGs... for now... --}}
                 {{editor system.details.biography target="system.details.biography" button=true owner=owner editable=editable}}
               </div>
@@ -59,7 +58,7 @@
                     <h2 class="cell__title">
                       <label class="item-group-label">{{#if (eq moveKey "PBTA_OTHER")}}{{localize moveKey}}{{else}}{{getLabel ../moveTypes moveKey}}{{/if}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span></label>
                       <div class="item-controls">
-                        <button class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="npcMove" data-moveType="{{moveKey}}">
+                        <button type="button" class="item-control item-create" title='{{localize "PBTA.MoveCreate"}}' data-type="npcMove" data-moveType="{{moveKey}}">
                           <i class="fas fa-plus"></i>
                         </button>
                       </div>
@@ -73,11 +72,18 @@
                               {{#if item.system.rollFormula}}
                                 <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
                               {{else}}
-                                <i class="fas fa-book"></i>
+                                <i class="fas fa-comments"></i>
                               {{/if}}
                             </span>
                             <img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>
                           </div>
+                          {{#if item.system.rollFormula}}
+                          <div class="item-showMove">
+                            <span class="showable" data-roll="{{item.system.rollFormula}}" data-show="description">
+                              <i class="fas fa-comments"></i>
+                            </span>
+                          </div>
+                          {{/if}}
                           <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
                         </h4>
                         <div class="item-meta tags">
@@ -101,10 +107,9 @@
 
           {{!-- Owned Equipment Tab --}}
           <div class="tab equipment" data-group="primary" data-tab="equipment">
-            {{!-- <div class="cell cell--equipment cell--group"> --}}
               <section class="sheet-notifications" style="margin-top:10px;">
                 {{#if system.isToken}}
-                <div class="cell__title warning small-text">Equipment cannot be rearranged while this token is not linked to an actor.</div>
+                <div class="cell__title warning small-text">{{localize "PBTA.Warnings.UnlinkedToken.Equipment"}}</div>
                 {{/if}}
               </section>
 
@@ -147,7 +152,6 @@
                   </ol>
                 </div>
               {{/each}}
-            {{!-- </div> --}}
           </div>
         </div>
 

@@ -1,6 +1,11 @@
 <form class="{{cssClass}} item-form flexcol" autocomplete="off">
+    <section class="sheet-notifications" style="flex: 0;">
+        <div class="cell__title error small-text">{{localize "PBTA.Warnings.TagDeprecation"}}</div>
+    </section>
     <header class="sheet-header flexrow">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="cell--image">
+            <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+          </div>
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize "PBTA.Common.Name"}}"/></h1>
         </div>

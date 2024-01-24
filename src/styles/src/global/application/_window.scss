@@ -66,6 +66,14 @@
     }
   }
 
+  &.sidebar-popout,
+  &.journal-sheet {
+    button,
+    .button {
+      color: #fff;
+    }
+  }
+
   button,
   .button {
     font-family: $font-stack-base;
@@ -89,7 +97,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       font-size: 18px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
     }
   }
 

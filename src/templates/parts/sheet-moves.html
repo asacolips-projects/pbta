@@ -4,11 +4,18 @@
       {{#if item.system.rollType}}
         <i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
       {{else}}
-        <i class="fas fa-book"></i>
+        <i class="fas fa-comments"></i>
       {{/if}}
     </span>
     <img class="item-icon" src="{{item.img}}" title="{{item.name}}" width="27" height="27"/>
   </div>
+  {{#if item.system.rollType}}
+  <div class="item-showMove">
+    <span class="showable" data-roll="{{item.system.rollType}}" data-mod="{{item.system.rollMod}}" data-show="description">
+      <i class="fas fa-comments"></i>
+    </span>
+  </div>
+  {{/if}}
   <span class="item-label">{{item.name}}<span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span></span>
 </h4>
 {{#if item.system.rollType}}

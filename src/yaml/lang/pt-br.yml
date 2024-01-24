@@ -1,120 +1,157 @@
 Powered by the Apocalypse: Powered by the Apocalypse
-PBTA.title: Powered by the Apocalypse
-PBTA.description: Jogue qualquer sistema PbtA no FoundryVTT!
-PBTA.failure: Complicações (marque XP)
-PBTA.partial: Sucesso Parcial
-PBTA.success: Successo
-PBTA.Playbook: Arquétipo
-PBTA.Settings.button.help: Ajuda do Sistema Pbta e Tutorial
-PBTA.Settings.stats.name: Atributos
-PBTA.Settings.stats.hint: Insira uma lista de atributos/habilidades separadas por
-  vírgula, como "For,Des,Con,Int,Sab,Car"
-PBTA.Settings.advForward.name: Limpar VAN/DES depois das rolagens
-PBTA.Settings.advForward.hint: Se habilitado, escolhas de vantagem e desvantagem na
-  ficha serão resetados ao normal após cada rolagem (similar a Adiante).
-PBTA.Settings.itemIcons.name: Habilitar ícones nos Itens
-PBTA.Settings.itemIcons.hint: Habilitar ícones visuais nos movimentos, magias e equipamentos
-  nas fichas de personagem (requer Atualizar).
-PBTA.Settings.sheetConfig.label: Configuração da Ficha Pbta
-PBTA.Settings.sheetConfig.name: Configure as Fichas de Personagem
-PBTA.Settings.sheetConfig.hint: Escolha a estrutura das Fichas de Personagem, como
-  atributos, habilidades e detalhes.
-PBTA.Settings.sheetConfig.title: Configure as Fichas de Personagem
-PBTA.Settings.sheetConfig.notes1: Bem vindo à versão Alpha do sistema Pbta!
-PBTA.Settings.sheetConfig.notes2: Eventualmente teremos uma interface gráfica (GUI)
-  para fazer fichas de personagem, mas por agora você precisará inserir os dados da
-  ficha de personagem no formato TOML. Escrever em TOML é similar a trabalhar com
-  arquivos .ini, comuns em alterações de mods em jogos para PC.
-PBTA.Settings.sheetConfig.notes3: 'Leia a documentação com link abaixo antes de configurar
-  sua ficha. Você também pode ir até o canal #powered-by-the-apocalypse do discord
-  principal do Foundry VTT para perguntas e assistência.'
-PBTA.Settings.sheetConfig.saveConfiguration: Salvar Configuração
-PBTA.Settings.sheetConfig.resetDefaults: Resetar aos Padrões
-PBTA.Settings.sheetConfig.confirmChanges: Confirmar Alterações
-PBTA.Settings.sheetConfig.confirm: Confirmar
-PBTA.Settings.sheetConfig.confirmUpdate: Confirmar + Atualizar
-PBTA.Settings.sheetConfig.additions: 'Adicionados:'
-PBTA.Settings.sheetConfig.deletions: 'Deletados:'
-PBTA.Settings.sheetConfig.maxValue: 'Valor Máx alterado:'
-PBTA.Settings.sheetConfig.type: 'Tipo alterado:'
-PBTA.Settings.sheetConfig.typeReset: 'Tipo alterado (atributos serão resetados):'
-PBTA.Settings.sheetConfig.cosmetic: 'Mudanças Cosméticas (nomes ou descrições):'
-PBTA.Settings.sheetConfig.options: 'Opções da Lista alteradas (valores serão preservados):'
-PBTA.Settings.sheetConfig.noteChangesDetected: 'Mudanças foram detectadas em um ou
-  mais dos seus tipos de atores. Reveja as alterações abaixo e escolha uma das seguintes
-  opções:'
-PBTA.Settings.sheetConfig.noteConfirm: Confirmar sem atualizar os atores existentes
-PBTA.Settings.sheetConfig.noteConfirmUpdate: Confirmar e atualizar os atores existentes
-PBTA.Settings.sheetConfig.noteConfirmUpdateBold: 'NOTA: Valores nos atributos deletados
-  serão deletados permanentemente'
-PBTA.Settings.sheetConfig.noteCancel: Cancelar e evitar as alterações serem salvas
-PBTA.Messages.sheetConfig.reset: Resetar configuração da Ficha.
-PBTA.Messages.sheetConfig.noConfig: Nenhuma configuração de ficha foi inserida.
-PBTA.Messages.sheetConfig.rollFormulaRequired: "'rollFormula' é obrigatório."
-PBTA.Messages.sheetConfig.rollResultsRequired: "'rollResults' é obrigatório."
-PBTA.Messages.sheetConfig.rollResultsIncorrect: "'rollResults' inserido incorretamente."
-PBTA.Messages.sheetConfig.actorTypeRequired: tipo de ator é obrigatório.
-PBTA.Messages.sheetConfig.statString1: Atributo
-PBTA.Messages.sheetConfig.statString2: precisa ser um texto, como "Frio"
-PBTA.Messages.sheetConfig.statsRequired1: "'stats' são obrigatórios para"
-PBTA.Messages.sheetConfig.statsRequired2: grupo.
-PBTA.Messages.sheetConfig.groupAttributes: precisa ser um grupo de atributos.
-PBTA.Messages.sheetConfig.attribute: Atributo
-PBTA.Messages.sheetConfig.attributeType: 'precisa ser de um dos seguintes tipos:'
-PBTA.Messages.sheetConfig.attributeTypeNull: não tem um tipo (podem ser opções que
-  tiveram a origem renomeada).
-PBTA.Messages.sheetConfig.attributeMax: precisa incluir uma propriedade 'max'.
-PBTA.Messages.sheetConfig.attributeOptions: precisa incluir um grupo 'options'
-PBTA.Messages.sheetConfig.attributeOptionsEmpty: precisa incluir pelo menos uma opção
-  no grupo 'options'.
-PBTA.Messages.sheetConfig.moveTypes: é obrigatório e precisa ter pelo menos um tipo.
-PBTA.Messages.sheetConfig.equipmentTypes: é obrigatório e precisa ter pelo menos um
-  tipo de equipamento.
-PBTA.Common.Description: Descrição
-PBTA.Common.Details: Detalhes
-PBTA.Common.Name: Nome
-PBTA.Prompt: Mensagem
-PBTA.PromptTitle: Insira o modificador
-PBTA.Choices: Escolhas
-PBTA.Dialog.Prompt1: Escolha um modificador para esse
-PBTA.Dialog.Prompt2: movimento.
-PBTA.Dialog.ChooseConditions: 'Escolha todos os modificadores condicionais que se
-  aplicam:'
-PBTA.RollMove: Rolagem de Movimento
-PBTA.Ask: Perguntar
-PBTA.AskTitle: Escolha um Atributo
-PBTA.Dialog.Ask1: Escolha um Atributo para esse
-PBTA.Dialog.Ask2: movimento.
-PBTA.Formula: Fórmula de Rolagem Customizada
-PBTA_OTHER: Outros
-PBTA.MoveType: Tipo de Movimento
-PBTA.EquipmentType: Tipo de Equipamento
-PBTA.Description: Descrição
-PBTA.Moves: Movimentos
-PBTA.Biography: Biografia
-PBTA.Equipment: Equipmento
-PBTA.Tags: Rótulos
-PBTA.TagsHelp: "(Use tab para autocompletar, vírgula para criar novos rótulos e clique
-  duplo num rótulo para editá-lo)"
-PBTA.Roll: Rolar
-PBTA.Modifier: Modificador
-PBTA.RollFormula: Fórmula de Roalgem
-PBTA.RequiresMove: Requer Movimento
-PBTA.Quantity: Quantidade
-PBTA.Qty: Qtd
-PBTA.Weight: Peso
-PBTA.Wt: Ps
-PBTA.Uses: Usos
-PBTA.MoveGroup: Grupo do Movimento
-PBTA.MoveGroupHelp: Movimentos com o mesmo nome de grupo serão opções quando estiver
-  criando um personagem usando o criador de personagens.
-PBTA.Forward: Adiante
-PBTA.Ongoing: Constante
-PBTA.RollFormulaOverride: Rolar com a Fórmula
-PBTA.Create: Criar
-PBTA.New: Novo
-PBTA.NoTemplate: Sem Template
-PBTA.Normal: Normal
-PBTA.Advantage: Vantagem
-PBTA.Disadvantage: Desvantagem
-PBTA.ConditionsApplied: 'Condições Aplicadas:'
+TYPES:
+  Item:
+    move: "Movimento"
+    npcMove: "Movimento de NPC"
+    equipment: "Equipamento"
+    playbook: "Cartilha"
+    tag: "Tag"
+PBTA:
+  title: Powered by the Apocalypse
+  description: Jogue qualquer sistema PbtA no FoundryVTT!
+  failure: Complicações (marque XP)
+  partial: Sucesso Parcial
+  success: Successo
+  Playbook: Arquétipo
+  Settings:
+    button:
+      help: Ajuda do Sistema Pbta e Tutorial
+    stats:
+      name: Atributos
+      hint: Insira uma lista de atributos/habilidades separadas por vírgula, como "For,Des,Con,Int,Sab,Car"
+    advForward:
+      name: Limpar VAN/DES depois das rolagens
+      hint: Se habilitado, escolhas de vantagem e desvantagem na ficha serão resetados ao normal após cada rolagem (similar a Adiante).
+    hideRollFormula:
+      name: "Esconder fórmulas de rolagem"
+      hint: "Esconde a seção de \"Rolar com a Fórmula\" nas fichas de personagem."
+    hideForward:
+      name: "Esconder Adiante"
+      hint: "Esconde a seção \"Adiante\" nas fichas de personagem."
+    hideOngoing:
+      name: "Esconder Constante"
+      hint: "Esconde a seção \"Constante\" nas fichas de personagem."
+    hideRollMode:
+      name: "Esconder Modo de Rolagem"
+      hint: "Esconde a seção \"Modo de Rolagem\" nas fichas de personagem."
+    hideUses:
+      name: "Esconder Usos"
+      hint: "Esconde os usos restantes de cada movimento no sumário de movimentos nas fichas de personagens."
+    itemIcons:
+      name: Habilitar ícones nos Itens
+      hint: Habilitar ícones visuais nos movimentos, magias e equipamentos nas fichas de personagem (requer Atualizar).
+    sheetConfig:
+      label: Configuração da Ficha Pbta
+      name: Configure as Fichas de Personagem
+      hint: Escolha a estrutura das Fichas de Personagem, como
+        atributos, habilidades e detalhes.
+      title: Configure as Fichas de Personagem
+      notes1: Bem vindo à versão Alpha do sistema Pbta!
+      notes2: Eventualmente teremos uma interface gráfica (GUI)
+        para fazer fichas de personagem, mas por agora você precisará inserir os dados da
+        ficha de personagem no formato TOML. Escrever em TOML é similar a trabalhar com
+        arquivos .ini, comuns em alterações de mods em jogos para PC.
+      notes3: 'Leia a documentação com link abaixo antes de configurar
+        sua ficha. Você também pode ir até o canal #powered-by-the-apocalypse do discord
+        principal do Foundry VTT para perguntas e assistência.'
+      saveConfiguration: Salvar Configuração
+      resetDefaults: Resetar aos Padrões
+      confirmChanges: Confirmar Alterações
+      confirm: Confirmar
+      confirmUpdate: Confirmar + Atualizar
+      additions: 'Adicionados:'
+      deletions: 'Deletados:'
+      maxValue: 'Valor Máx alterado:'
+      type: 'Tipo alterado:'
+      typeReset: 'Tipo alterado (atributos serão resetados):'
+      cosmetic: 'Mudanças Cosméticas (nomes ou descrições):'
+      options: 'Opções da Lista alteradas (valores serão preservados):'
+      values: 'Value in radio list removed (value will be reset to first element):'
+      noteChangesDetected: 'Mudanças foram detectadas em um ou
+        mais dos seus tipos de atores. Reveja as alterações abaixo e escolha uma das seguintes
+        opções:'
+      noteConfirm: Confirmar sem atualizar os atores existentes
+      noteConfirmUpdate: Confirmar e atualizar os atores existentes
+      noteConfirmUpdateBold: 'NOTA: Valores nos atributos deletados
+        serão deletados permanentemente'
+      noteCancel: Cancelar e evitar as alterações serem salvas
+  Messages:
+    sheetConfig:
+      reset: Resetar configuração da Ficha.
+      noConfig: Nenhuma configuração de ficha foi inserida.
+      rollFormulaRequired: "'rollFormula' é obrigatório."
+      rollResultsRequired: "'rollResults' é obrigatório."
+      rollResultsIncorrect: "'rollResults' inserido incorretamente."
+      actorTypeRequired: tipo de ator é obrigatório.
+      statString1: Atributo
+      statString2: precisa ser um texto, como "Frio"
+      statsRequired1: "'stats' são obrigatórios para"
+      statsRequired2: grupo.
+      groupAttributes: precisa ser um grupo de atributos.
+      attribute: Atributo
+      attributeType: 'precisa ser de um dos seguintes tipos:'
+      attributeTypeNull: não tem um tipo (podem ser opções que
+        tiveram a origem renomeada).
+      attributeMax: precisa incluir uma propriedade 'max'.
+      attributeOptions: precisa incluir um grupo 'options'
+      attributeOptionsEmpty: precisa incluir pelo menos uma opção
+        no grupo 'options'.
+      moveTypes: é obrigatório e precisa ter pelo menos um tipo.
+      equipmentTypes: é obrigatório e precisa ter pelo menos um
+        tipo de equipamento.
+  Common:
+    Description: Descrição
+    Details: Detalhes
+    Name: Nome
+  Prompt: Mensagem
+  PromptTitle: Insira o modificador
+  Choices: Escolhas
+  Dialog:
+    Prompt1: Escolha um modificador para esse
+    Prompt2: movimento.
+    ChooseConditions: 'Escolha todos os modificadores condicionais que se
+      aplicam:'
+    Ask1: Escolha um Atributo para esse
+    Ask2: movimento.
+  RollMove: Rolagem de Movimento
+  RollMode: "Modo de Rolagem"
+  Ask: Perguntar
+  AskTitle: Escolha um Atributo
+  Formula: Fórmula de Rolagem Customizada
+  PBTA_OTHER: Outros
+  MoveType: Tipo de Movimento
+  EquipmentType: Tipo de Equipamento
+  Description: Descrição
+  Moves: Movimentos
+  Biography: Biografia
+  ClearMoves: "Limpar Movimentos"
+  ChatMessage:
+    ShiftUp: "Aumentar"
+    ShiftDown: "Diminuir"
+  Equipment: Equipamento
+  Tags: Rótulos
+  TagsHelp: "(Use tab para autocompletar, vírgula para criar novos rótulos e clique
+    duplo num rótulo para editá-lo)"
+  Roll: Rolar
+  Modifier: Modificador
+  RollFormula: Fórmula de Rolagem
+  RequiresMove: Requer Movimento
+  Quantity: Quantidade
+  Qty: Qtd
+  Weight: Peso
+  Wt: Peso
+  Uses: Usos
+  MoveGroup: Grupo do Movimento
+  MoveGroupHelp: Movimentos com o mesmo nome de grupo serão opções quando estiver
+    criando um personagem usando o criador de personagens.
+  Forward: Adiante
+  Ongoing: Constante
+  RollFormulaOverride: Rolar com a Fórmula
+  Create: Criar
+  New: Novo
+  NoTemplate: Sem Modelo
+  Normal: Normal
+  Advantage: Vantagem
+  Disadvantage: Desvantagem
+  ConditionsApplied: "Condições Aplicadas:"
+  ViewPlaybook: "Ver cartilha"

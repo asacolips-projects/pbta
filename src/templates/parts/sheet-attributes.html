@@ -1,3 +1,4 @@
+{{#if (objLen attrs)}}
 <div class="cell cell--{{class}}">
   {{#each attrs as |attr key|}}
     <div class="cell cell--{{key}} cell--attr-{{key}} cell--{{attr.type}}">
@@ -9,10 +10,7 @@
       {{#if attr.description}}<p class="cell__description cell__description--attr">{{attr.description}}</p>{{/if}}
       {{!-- Text area --}}
       {{#if (eq attr.type "LongText")}}
-        {{!-- <textarea class="textarea textarea--title" name="system.{{../group}}.{{key}}.value" rows="5">{{attr.value}}</textarea> --}}
-        {{!-- <div style="display: block; height: 100%; min-height: 100px;"> --}}
-          {{editor attr.value target=attr.attrName button=true owner=../owner editable=../editable}}
-        {{!-- </div> --}}
+        {{editor attr.value target=attr.attrName button=true owner=../owner editable=../editable}}
       {{!-- Checkbox --}}
       {{else if (eq attr.type "Checkbox")}}
         {{#if attr.checkboxLabel}}<label>{{/if}}
@@ -49,7 +47,13 @@
       {{else if (eq attr.type "ListMany") }}
         <ul class="cell__checkboxes flexcol">
           {{#each attr.options as |option optionKey|}}
-            <label class="flexrow">
+            <label
+              class="flexrow"
+              {{#if option.tooltip}}
+              data-tooltip="{{option.tooltip}}"
+              data-tooltip-direction="UP"
+              {{/if}}
+            >
               {{#if option.values}}
                 {{#each option.values as |suboption suboptionKey|}}
                   <input type="checkbox" class="attr-list" name="system.{{../../../group}}.{{key}}.options.{{optionKey}}.values.{{suboptionKey}}.value" {{checked suboption.value}}/>
@@ -65,21 +69,46 @@
             </label>
           {{/each}}
         </ul>
-      {{!-- TODO: Add ListOne type. --}}
-      {{!-- {{else if (eq attr.type "ListOne") }}
-        <ul class="cell__checkboxes flexcol">
+      {{else if (eq attr.type "ListOne") }}
+        <ul class="cell__radio flexcol">
           {{#each attr.options as |option optionKey|}}
-            <label>
-              <input type="radio" class="attr-list" data-name="system.{{../../group}}.{{key}}.value" value="{{optionKey}}" {{checked ../attr.value}}>
-              {{option}}
-            </label>
+          <label
+            class="flexrow"
+            {{#if option.tooltip}}
+            data-tooltip="{{option.tooltip}}"
+            data-tooltip-direction="UP"
+            {{/if}}
+          >
+            <input type="radio" class="attr-list" value="{{@index}}" name="system.{{../../group}}.{{key}}.value" {{checked (softEq attr.value @index)}} />
+            {{#if (eq option.label "[Text]")}}
+              <input type="text" class="input input-title" id="system.{{../../group}}.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
+            {{else}}
+              {{option.label}}
+            {{/if}}
+          </label>
           {{/each}}
-        </ul> --}}
+        </ul>
       {{else if (eq attr.type "Roll")}}
         <div class="cell__roll">
           <span class="attr-icon attr-rollable rollable" data-roll="{{attr.value}}" data-label="{{attr.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
           <input type="text" class="input input--roll" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}"/>
         </div>
+      {{else if (eq attr.type "Track")}}
+        <div class="cell__track">
+          {{#each attr.steps as |step stepKey|}}
+            {{#if step.isValue}}
+              <span class="cell__track__element attr-track-value" role="checkbox" data-name="system.{{../../group}}.{{key}}" data-value="{{step.value}}" aria-checked="{{step.checked}}">{{step.label}}</span>
+            {{else}}
+              <input class="cell__track__element attr-track-step" type="checkbox" data-name="system.{{../../group}}.{{key}}" data-step="{{step.step}}" data-value="{{step.value}}" {{checked step.checked}}>
+            {{/if}}
+          {{/each}}
+          {{#if (and attr.positive.label attr.negative.label) }}
+            <span style="grid-column-end: span {{attr.stepsNegative}}" class="cell__track__label">{{attr.negative.label}}</span>
+            <span style="grid-column-end: span 1; grid-row: 2"></span>
+            <span style="grid-column-end: span {{attr.stepsPositive}}" class="cell__track__label">{{attr.positive.label}}</span>
+          {{/if}}
+        </div>
+
       {{!-- Fallback to a text field. --}}
       {{else}}
         <input type="text" class="input input--title" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}"/>
@@ -87,3 +116,4 @@
     </div>
   {{/each}}
 </div>
+{{/if}}
