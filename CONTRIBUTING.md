@@ -13,7 +13,7 @@ npm install
 npm run build
 ```
 
-If you would like to have the gulp task actively watch for new changes, you can run `npm run gulp` instead to kick off a watch process that will immediately recompile changed files.
+If you would like to have the gulp task actively watch for new changes, you can run `npm run build:watch` instead to kick off a watch process that will immediately recompile changed files.
 
 Once you have the system compiled, you can symlink or copy the dist dir into your install. For example, from the root of the repo:
 
@@ -22,9 +22,3 @@ ln -s ./pbta/dist $FoundryUserDataPath/systems/pbta
 ```
 
 Replace the `$FoundryUserDataPath` variable with the actual path to your Foundry user data directory.
-
-# A quick note on Patreon
-
-This system has alpha and beta access tiers that are only available to Patrons of the system, but those changes will make their way out to the free beta tier a few weeks after each alpha/beta release.
-
-However, I do not want to profit off of community code contributions. If you submit a merge request, I will test it locally for any breaking changes, and when accepted it will be merged directly to the public beta version and then be merged back into the Patreon alpha/beta branches.

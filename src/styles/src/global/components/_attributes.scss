@@ -1,31 +1,18 @@
 .sheet-resources {
-  display: grid;
-  grid-column: span 16;
-  grid-template-columns: repeat(16, minmax(0, 1fr));
   gap: 16px;
-  margin: 0 0 10px 0;
-  padding: 0;
 
   .cell {
     text-align: center;
 
     > .cell__title {
       justify-content: center;
-
-      .fas {
-        margin-right: 5px;
-
-        &.attribute-icon {
-          margin-right: 0;
-        }
-      }
     }
   }
 
   .cell {
     padding: 0;
 
-    & + .cell {
+    & + .cell:not(.cell--roll-mode) {
       &::before {
         display: block;
         content: '';
@@ -51,30 +38,7 @@
   }
 
   .cell__title {
-    position: relative;
     margin-top: 0;
-
-    .attribute-icon {
-      position: absolute;
-      top: 0;
-      right: 2px;
-      bottom: 0;
-      text-align: center;
-      margin: 0;
-      font-size: 30px;
-      z-index: 0;
-      opacity: 0.25;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
-  .cell {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    position: relative;
   }
 
   .cell__counter {
@@ -88,8 +52,6 @@
   .cell--ongoing,
   .cell--forward,
   .cell--roll-formula {
-    grid-column: span 3;
-
     input {
       background-color: $ct-gray;
       margin: 0;
@@ -125,31 +87,23 @@
   }
 
   .cell--roll-mode {
-    grid-column: span 3;
+    flex-basis: 100%;
     padding: 4px 8px;
     border: 1px solid #ccc;
     border-left: none;
     border-right: none;
     align-items: center;
 
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
     .cell__title {
-      flex: auto;
+      grid-column: span 3;
       margin-top: 4px;
     }
 
     label.checkbox {
-      height: auto;
       font-size: 14px;
     }
-  }
-}
-
-.sheet-resources {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-
-  .cell--ongoing,
-  .cell--forward,
-  .cell--roll-formula {
-    grid-column: span 1;
   }
 }

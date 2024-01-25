@@ -36,19 +36,6 @@ export function registerSettings() {
 		default: ""
 	});
 
-	game.settings.register("pbta", "hideSidebarButtons", {
-		name: "PBTA.Settings.hideSidebarButtons.name",
-		hint: game.i18n.format("PBTA.Settings.hideSidebarButtons.hint", {
-			button1: game.i18n.localize("PBTA.Settings.sheetConfig.label"),
-			button2: game.i18n.localize("PBTA.Settings.button.help")
-		}),
-		scope: "world",
-		config: true,
-		type: Boolean,
-		default: false,
-		requiresReload: true
-	});
-
 	game.settings.register("pbta", "autoCollapseItemCards", {
 		name: "PBTA.Settings.AutoCollapseCard.name",
 		hint: "PBTA.Settings.AutoCollapseCard.hint",
@@ -134,7 +121,7 @@ export function registerSettings() {
 		scope: "world",
 		config: false,
 		type: Boolean,
-		default: false,
+		default: false
 	});
 
 	game.settings.register("pbta", "tagConfig", {

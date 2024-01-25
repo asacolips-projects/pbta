@@ -1,68 +1,20 @@
 &.npc {
-  .cell--image {
-    flex: 0 0 80px;
-    width: auto;
-    height: auto;
-    // background: rgba(255, 255, 255, 0.75);
+  .sheet-wrapper {
+    .sheet-top {
+      // For some reason it grows bigger than the Character sheet because it has no Stats.
+      // The actual fix would be to remove the "height: 100%" .sheet-wrapper, but it breaks editors
+      max-height: 139px;
 
-    img {
-      width: auto;
-      height: auto;
-      margin: 0 auto;
-    }
-  }
+      &:has(> .sheet-attributes-top:empty) {
+        display: none;
+      }
 
-  .sheet-attributes {
-    display: grid;
-    grid-column: span 4;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0px 16px;
-    margin: 0 0 16px 0;
-    padding: 0;
-
-    .cell--ac,
-    .cell--hp {
-      grid-column: span 1;
-    }
-
-    .cell--tags {
-      grid-column: span 4;
-    }
-
-    .cell--damage {
-      grid-column: span 2;
-
-      input + input {
-        margin-left: 5px;
+      .sheet-attributes-top {
+        &:empty {
+          display: none;
+        }
       }
     }
-  }
-
-  .sheet-header__fields {
-    display: flex;
-    padding: 0 16px;
-  }
-
-  .sheet-attributes-top {
-    width: 100%;
-
-    .cell--attributes-top {
-      // display: grid;
-      // grid-template-columns: repeat(3, minmax(0, 1fr));
-      // gap: 0px 16px;
-      // margin: 0 0 16px 0;
-      display: flex;
-
-      .cell {
-        grid-column: span 1;
-        flex: 1;
-      }
-    }
-  }
-
-  .sheet-attributes-left {
-    flex: 0 0 32%;
-    margin-right: 16px;
   }
 
   .help-text {
@@ -73,43 +25,5 @@
     width: 100%;
     text-align: left;
     background: $c-white;
-  }
-
-  .sheet-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-
-  .sheet-main {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex: 0;
-    height: auto;
-
-    .sheet-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sheet-tabs {
-      flex: 0 auto;
-    }
-
-    .sheet-tabs-content {
-      flex: 1;
-    }
-
-    .editor {
-      height: 100%;
-    }
-  }
-
-  .sheet-tabs {
-    .item {
-      margin: 0 2px;
-    }
   }
 }

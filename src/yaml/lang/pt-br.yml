@@ -126,6 +126,10 @@ PBTA:
   Description: Descrição
   Moves: Movimentos
   Biography: Biografia
+  ClearMoves: "Limpar Movimentos"
+  ChatMessage:
+    ShiftUp: "Aumentar"
+    ShiftDown: "Diminuir"
   Equipment: Equipamento
   Tags: Rótulos
   TagsHelp: "(Use tab para autocompletar, vírgula para criar novos rótulos e clique

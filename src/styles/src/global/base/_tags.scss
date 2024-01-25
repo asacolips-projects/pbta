@@ -78,7 +78,7 @@
   border-radius: 50px;
 
   &:hover {
-    color: #fff;
+    color: $c-white;
     background: #c77777;
   }
 
@@ -99,6 +99,6 @@
 }
 
 .help-text {
-  color: #999;
+  color: $c-navy-up;
   font-size: 12px;
 }

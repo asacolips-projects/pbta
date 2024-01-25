@@ -1,9 +1,6 @@
 .sheet-wrapper {
-  display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
   align-items: stretch;
-  justify-content: flex-start;
   height: 100%;
 
   .tox-edit-area {
@@ -11,12 +8,13 @@
   }
 
   .sheet-header {
-    // Use 101% to force a line break;
-    width: 101%;
-    order: 0;
-    margin-bottom: 10px;
+    column-gap: 10px;
     max-height: 80px;
     min-height: 50px;
+
+    .cell--image {
+      flex: 0 0 80px;
+    }
 
     input {
       &::placeholder {
@@ -26,8 +24,6 @@
   }
 
   .sheet-notifications {
-    width: 101%;
-
     .error,
     .warning {
       margin-bottom: 10px;
@@ -35,85 +31,59 @@
   }
 
   .sheet-top {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
+    .sheet-attributes {
+      flex-wrap: nowrap;
+      align-items: center;
 
-  .sheet-attributes {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .sheet-attributes-top {
-    border: 2px solid $ct-gray;
-    border-left: 0;
-    border-right: 0;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin: 10px 0;
-
-    &:empty {
-      border-top: 0;
-      padding: 0;
+      .cell--image {
+        flex: 0 0 158px;
+      }
     }
 
-    .cell--attributes-top {
-      display: flex;
-      flex-flow: row wrap;
-      // display: grid;
-      // grid-column: span 16;
-      // grid-template-columns: repeat(16, minmax(0, 1fr));
-      // gap: 0px 16px;
-      margin: 0;
-      padding: 0;
+    .sheet-attributes-top {
+      border: 2px solid $ct-gray;
+      border-left: 0;
+      border-right: 0;
+      padding: 10px 0;
+      margin: 10px 0;
 
-      .cell {
-        position: relative;
-        grid-column: span 4;
-        flex: 1;
-        padding: 0 16px 0 0;
+      &:empty {
+        border-top: 0;
+        padding: 0;
       }
 
-      > .cell + .cell {
-        &::before {
-          display: block;
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -9px;
-          bottom: 0;
-          width: 2px;
-          background: $ct-gray;
-          padding-right: 0;
+      .cell--attributes-top {
+        column-gap: 16px;
+
+        .cell {
+          position: relative;
+          flex: 1;
+        }
+
+        > .cell + .cell {
+          &::before {
+            display: block;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -9px;
+            bottom: 0;
+            width: 2px;
+            background: $ct-gray;
+            padding-right: 0;
+          }
         }
       }
     }
   }
 
-  .cell--image {
-    flex: 0 0 158px;
-  }
-
-  .cell--stats {
-    flex: 1;
-  }
-
   .sheet-bottom {
-    display: grid;
-    grid-column: span 4 / span 4;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0px 16px;
-    margin: 0 0 16px 0;
-    padding: 0;
-    width: 100%;
-    // height: calc(100% - 80px);
+    column-gap: 16px;
+    margin-bottom: 16px;
 
     .sheet-look {
       width: auto;
-      max-width: 100%;
-      grid-column: 1 / span 1;
+      // max-width: 100%;
       height: 100%;
       position: relative;
 
@@ -130,33 +100,35 @@
     }
 
     .sheet-main {
+      flex: 3;
       width: auto;
-      max-width: 100%;
-      grid-column: 2 / span 3;
       height: 100%;
-      display: flex;
-      flex-direction: column;
       align-items: stretch;
 
-      &:only-child {
-        grid-column: 1 / span 4;
+      .sheet-tabs.tabs {
+        max-height: 37px;
       }
-    }
 
-    .sheet-body {
-      flex: 1;
+      .sheet-body {
+        height: 100%;
+
+        .tab {
+          &.equipment {
+            .sheet-notifications {
+              margin-top:10px;
+            }
+          }
+        }
+      }
     }
 
     .cell--bio {
-      display: flex;
-      flex-direction: column;
-      justify-content: stretch;
+      height: 100%;
 
       .editor {
-        min-height: 100%;
+        height: 100%;
       }
     }
-
   }
 
   .cell--LongText {
@@ -211,84 +183,14 @@
     }
   }
 
-  // .sheet-look {
-  //   flex: 33% 1 1;
-  //   order: 1;
-  //   max-width: 33%;
-  //   transition: max-width ease-in-out 0.25s;
-  //   display: flex;
-  //   flex-direction: row;
-  //   flex-wrap: nowrap;
-  //   align-items: stretch;
-  //   height: calc(100% - 80px);
-
-  //   .cell--aesthetics {
-  //     transition: max-width ease-in-out 0.25s;
-  //     max-width: 100%;
-  //   }
-
-  //   &.closed {
-  //     max-width: 40px;
-  //     overflow: hidden;
-  //     padding: 0;
-
-  //     .cell--aesthetics {
-  //       max-width: 0%;
-  //       overflow: hidden;
-  //     }
-  //   }
-
-  //   .toggle--look {
-  //     flex: 20px 1 1;
-  //     margin: 0 10px;
-  //     display: flex;
-  //     align-items: center;
-  //     justify-content: center;
-  //     background: transparent;
-  //     transition: all ease-in-out 0.25s;
-  //     height: 225px;
-
-  //     &:hover {
-  //       background: #bbb;
-  //     }
-
-  //     &:focus {
-  //       box-shadow: none;
-  //     }
-
-  //     &.closed {
-  //       margin-left: 0;
-  //     }
-
-  //     .fas {
-  //       transition: all ease-in-out 0.25s;
-  //     }
-
-  //     &.closed {
-  //       .fas {
-  //         transform: rotate(180deg);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // .sheet-main {
-  //   flex: 66% 1 1;
-  //   order: 2;
-  //   height: calc(100% - 80px);
-  // }
-
   .editor-content {
-    height: 100%;
-    overflow-y: auto;
-    word-break: break-word;
     background: rgba(0, 0, 0, 0.075);
     padding: 0 4px;
     border-radius: 4px;
+    height: 100%;
   }
 
   .sheet-body {
-
     .tab,
     .sheet-tab {
       height: 100%;

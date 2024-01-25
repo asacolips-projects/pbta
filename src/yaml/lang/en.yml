@@ -11,10 +11,12 @@ TYPES:
     playbook: "Playbook"
     tag: "Tag"
 PBTA:
+  ActorType: "Actor Type"
   Advantage: "Advantage"
   Ask: "Ask"
   AskTitle: "{name}: Choose a Stat"
   Biography: "Biography"
+  Category: "Category"
   ClearMoves: "Clear Moves"
   ChatMessage:
     ShiftUp: "Shift Up"
@@ -26,7 +28,6 @@ PBTA:
   description: "Run games for any PbtA system in FoundryVTT!"
   Disadvantage: "Disadvantage"
   Equipment: "Equipment"
-  EquipmentType: "Equipment Type"
   failure: "Complications (mark XP)"
   Formula: "Custom Roll Formula"
   Forward: "Forward"
@@ -34,7 +35,6 @@ PBTA:
   MoveGroup: "Move Group"
   MoveGroupHelp: "Multiple moves with the same move-group will be either/or selections when creating a new character using the character builder."
   Moves: "Moves"
-  MoveType: "Move Type"
   Name: "Name"
   New: "New"
   Normal: "Normal"
@@ -104,12 +104,12 @@ PBTA:
       statString1: "Stat"
       statString2: "must be a string, such as \"Cool\""
       tomlError: "There's a syntax error in your TOML configuration on line {line} at column {column}. See console for more details."
+  Migration:
+    Begin: "Applying PbtA System Migration for version {version}. Please be patient and do not close your game or shut down your server."
+    Complete: "PbtA System Migration to version {version} completed!"
   Settings:
     button:
-      help: "PbtA System Help & Tutorial"
-    hideSidebarButtons:
-      name: "Hide Game Settings Sidebar Buttons"
-      hint: "Removes the {button1} and {button2} from the Game Settings sidebar."
+      help: "System Help & Tutorial"
     stats:
       name: "Stats"
       hint: "Enter a comma-separated list of stats/abilities, such as \"Str,Dex,Con,Int,Wis,Cha\""
@@ -141,7 +141,7 @@ PBTA:
       name: "Enable Item Icons"
       hint: "Enable visual icons for moves, spells, and equipment in character sheets (requires browser reload)."
     sheetConfig:
-      label: "PbtA Sheet Configuration"
+      label: "Sheet Configuration"
       name: "Configure character sheets"
       hint: "Choose the data structure for character sheets, such as stats, abilities, and details."
       additions: "Additions:"
@@ -178,9 +178,25 @@ PBTA:
         World: "World Tags"
         all: "All {documentType}"
       title: "Configure Tags"
+  Slug:
+    label: "PbtA ID"
+    tooltip: "Regenerate PbtA ID"
+  Stat:
+    label: "Stat"
+    labelPl: "Stats"
+    Shifting:
+      fail: "Shifting failed."
+      label: "{stat} Shift"
+      shifts: "{actor} shifts {stats}"
+      up: "{stat} Shifts Up"
+      down: "{stat} Shifts Down"
   Warnings:
+    Macro:
+      NoActorSelected: "No selected or assigned actor could be found to target with macro."
+      MissingTargetWarn: "Your controlled actor '{actor}' does not have an item with name '{name}'."
+      MultipleTargetsWarn: "Your controlled actor '{actor}' has more than one item with name '{name}'. The first match will be chosen."
+    TagDeprecation: "Tags as items have been deprecated, use the Tag Configuration menu on the game settings to create your tags."
     UnlinkedToken:
       Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
       Moves: "Moves cannot be rearranged while this token is not linked to an actor."
-    TagDeprecation: "Tags as items have been deprecated, use the Tag Configuration menu on the game settings to create your tags."
 PBTA_OTHER: "Other"
