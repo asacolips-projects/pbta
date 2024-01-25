@@ -165,7 +165,7 @@ export default class RollPbtA extends Roll {
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
 		this.options.conditions = [];
-		const needsDialog = this.data.rollType === "ask" || this.data.rollType === "prompt" || this.data.conditionGroups.length > 0;
+		let needsDialog = this.data.rollType === "ask" || this.data.rollType === "prompt" || this.data.conditionGroups.length > 0;
 		let stat = "";
 		let maxValue = undefined;
 		if (!needsDialog && templateData.isToken) {

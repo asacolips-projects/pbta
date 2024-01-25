@@ -363,6 +363,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".stat-clock").on("click", this._onStatClockClick.bind(this));
 		html.find(".stat-shift label").on("click", this._onStatShiftClick.bind(this));
 		html.find(".stat-shift .up, .stat-shift .down").on("change", this._onStatShiftChange.bind(this));
+		html.find(".token-modif").on("click", this._onTokenModifClick.bind(this));
 
 		// Quantity.
 		html.find(".item-meta .tag--quantity").on("click", this._onUsagesControl.bind(this, "system.quantity", 1));
@@ -372,10 +373,10 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".item-meta .tag--uses").on("contextmenu", this._onUsagesControl.bind(this, "system.uses", -1));
 
 		// Resources.
-		html.find(".resource-control").on("click", this._onResouceControl.bind(this));
+		html.find(".resource-control").on("click", this._onResourceControl.bind(this));
 	}
 
-	_onResouceControl(event) {
+	_updateValue(event, min, max) {
 		event.preventDefault();
 		const control = $(event.currentTarget);
 		const action = control.data("action");
@@ -390,17 +391,29 @@ export default class PbtaActorSheet extends ActorSheet {
 			// Decrease the value.
 			if (action === "decrease") {
 				system[attr] -= 1;
-				changed = true;
+				if (min !== undefined && min !== null && system[attr] < min) {
+					system[attr] = min;
+				} else {
+					changed = true;
+				}
 			} else if (action === "increase") {
 				// Increase the value.
 				system[attr] += 1;
-				changed = true;
+				if (max !== undefined && max !== null && system[attr] > max) {
+					system[attr] = max;
+				} else {
+					changed = true;
+				}
 			}
 			// If there are changes, apply to the actor.
 			if (changed) {
 				this.actor.update({ system: system });
 			}
 		}
+	}
+
+	_onResourceControl(event) {
+		this._updateValue(event);
 	}
 
 	async _onClockClick(event) {
@@ -541,6 +554,11 @@ export default class PbtaActorSheet extends ActorSheet {
 		const classList = event.currentTarget.classList;
 		if (classList.contains("up")) this._statShifting.up = event.target.value;
 		else if (classList.contains("down")) this._statShifting.down = event.target.value;
+	}
+
+	_onTokenModifClick(event) {
+		const maxValue = parseInt(this.object.system.stats.max.label);
+		this._updateValue(event, 0, maxValue);
 	}
 
 	async _onStatClockClick(event) {
