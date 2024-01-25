@@ -196,7 +196,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	async _onRollToken(stat, label, options={}) {
-		const templateData = { isToken: true, nbrOfToken: stat.value };
+		const templateData = { isToken: true, nbrOfToken: stat };
 		let formula = "@formula";
 		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 			rollType: "stat",
@@ -210,7 +210,7 @@ export default class ActorPbta extends Actor {
 			return;
 		}
 		const tokenUsed = choice.terms.length >= 3 ? choice.terms[2].number : 0;
-		const nbrTokenAfterRoll = parseInt(stat.value) - parseInt(tokenUsed);
+		const nbrTokenAfterRoll = parseInt(stat) - parseInt(tokenUsed);
 		const updates = {};
 		updates["system.stats.value"] = nbrTokenAfterRoll;
 		await roll.toMessage({
