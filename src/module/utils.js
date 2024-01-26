@@ -228,7 +228,7 @@ export function convertSheetConfig(sheetConfig) {
 		} else if (k === "statToken") {
 			if (!v) {
 				newConfig.statToken = false;
-			} else if (typeof v === "object" && v.label) {
+			} else if (typeof v === "object") {
 				newConfig.statToken = {
 					default: v.default ?? 0,
 					max: v.max ?? 1,

@@ -367,12 +367,11 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".token-modif").on("click", this._onStatTokenClick.bind(this));
 
 		// Quantity.
-		for (const attribute of ["quantity", "uses"]) {
-			html.find(`.item-meta .tag--${attribute}`).on({
-				click: this._onUsagesControl.bind(this, `system.${attribute}`, 1),
-				contextmenu: this._onUsagesControl.bind(this, `system.${attribute}`, -1)
-			});
-		}
+		html.find(".item-meta .tag--quantity").on("click", this._onUsagesControl.bind(this, "system.quantity", 1));
+		html.find(".item-meta .tag--quantity").on("contextmenu", this._onUsagesControl.bind(this, "system.quantity", -1));
+
+		html.find(".item-meta .tag--uses").on("click", this._onUsagesControl.bind(this, "system.uses", 1));
+		html.find(".item-meta .tag--uses").on("contextmenu", this._onUsagesControl.bind(this, "system.uses", -1));
 
 		// Resources.
 		html.find(".resource-control").on("click", this._onResourceControl.bind(this));
@@ -541,8 +540,8 @@ export default class PbtaActorSheet extends ActorSheet {
 			const system = {
 				[attr]: Number(getProperty(this.actor.system, attr))
 			};
-			if (action === "decrease" && system[attr] > min
-				|| action === "increase" && system[attr] < max) {
+			if ((action === "decrease" && system[attr] > min)
+				|| (action === "increase" && system[attr] < max)) {
 				system[attr] += (action === "decrease" ? -1 : 1);
 				this.actor.update({ system });
 			}

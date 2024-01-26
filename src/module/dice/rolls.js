@@ -165,7 +165,11 @@ export default class RollPbtA extends Roll {
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
 		this.options.conditions = [];
-		const needsDialog = this.data.rollType === "ask" || this.data.rollType === "prompt" || this.data.conditionGroups.length > 0 || templateData.isStatToken;
+		const needsDialog =
+			this.data.rollType === "ask"
+			|| this.data.rollType === "prompt"
+			|| this.data.conditionGroups.length > 0
+			|| (templateData.isStatToken && templateData.numOfToken);
 
 		if (needsDialog) {
 			templateData = foundry.utils.mergeObject(templateData, {
@@ -187,7 +191,10 @@ export default class RollPbtA extends Roll {
 				if (this.data.rollType === "ask") {
 					title = game.i18n.format("PBTA.AskTitle", { name: templateData.title });
 					buttons = Object.entries(this.data.stats)
-						.filter((stat) => !["ask", "prompt", "formula"].includes(stat[0]))
+						.filter((stat) => {
+							return !["ask", "prompt", "formula"].includes(stat[0])
+								&& (game.pbta.sheetConfig.statToken && stat[0] !== "token");
+						})
 						.map((stat) => {
 							return {
 								label: stat[1].label,
@@ -218,11 +225,10 @@ export default class RollPbtA extends Roll {
 	 * Handle submission of the Roll evaluation configuration Dialog
 	 * @param {jQuery} html            The submitted dialog content
 	 * @param {number} stat   The chosen advantage mode
-	 * @param {number} maxValue   the maximum value of prompt
 	 * @returns {Roll}              This damage roll.
 	 * @private
 	 */
-	_onDialogSubmit(html, stat, maxValue) {
+	_onDialogSubmit(html, stat) {
 		const form = html[0].querySelector("form");
 
 		const addToFormula = (val) => {
@@ -234,22 +240,13 @@ export default class RollPbtA extends Roll {
 		};
 
 		// Append a situational bonus term
-		if (stat && stat !== "token") {
+		if (stat) {
 			this.options.stat = stat;
 			addToFormula(`@stats.${stat}.value`);
 		}
 
 		// Customize the modifier
 		if (form?.prompt?.value) {
-			if (stat === "token" && maxValue !== undefined && maxValue !== null) {
-				const value = parseInt(form?.prompt?.value ?? 0);
-				const parsedMaxValue = parseInt(maxValue ?? -1);
-				if (parsedMaxValue >= 0) {
-					if (value > parsedMaxValue) {
-						throw new Error(game.i18n.localize("PBTA.Dialog.ErrorAboveMax"));
-					}
-				}
-			}
 			addToFormula(`${form.prompt.value}`);
 		}
 

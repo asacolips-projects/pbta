@@ -16,7 +16,7 @@
 			{{#if (and (eq key "token") ../statToken)}}
 			<span class="token-modif" data-action="decrease" data-attr="stats.{{key}}.value">-</span>
 			<input
-				class="stat-value {{#if (eq stat.value ../statToken.max)}}max-stat-value{{/if}}"
+				class="stat-value {{#if (eq stat.value ../statToken.max)}}max{{/if}}"
 				type="text"
 				name="system.stats.{{key}}.value"
 				value="{{stat.value}}"
