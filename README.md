@@ -291,19 +291,6 @@ Hooks.once('pbtaSheetConfig', () => {
 });
 ```
 
-# Defining token instead of stats
-
-Use following toml code instead of usual stats block to use token.
-
-```toml
-  # Define stats.
-  [character.stats]
-	  token = true
-	  label = "Darkness token"
-	  default = 0
-	  max = 5
-```
-
 # Contributing
 
 This project is accepting issue reports and code merge requests! See the [CONTRIBUTING.MD](https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/blob/master/CONTRIBUTING.md) page for details.

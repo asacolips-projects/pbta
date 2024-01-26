@@ -1,9 +1,3 @@
-# 0.8.2
-
-## Features and Changes
-
-- Added support for token instead of stats, for games like Apocalypse keys and Libreté. character.stats block should have token = true, label = "token name", an optional default = [number] which define the default token value for new character and max = [number] which defines the max number of token a character can have.
-
 # 0.8.1
 
 ## Features and Changes
