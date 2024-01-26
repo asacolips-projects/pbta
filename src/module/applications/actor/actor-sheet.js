@@ -540,8 +540,8 @@ export default class PbtaActorSheet extends ActorSheet {
 			const system = {
 				[attr]: Number(getProperty(this.actor.system, attr))
 			};
-			if (action === "decrease" && system[attr] > min
-				|| action === "increase" && system[attr] < max) {
+			if ((action === "decrease" && system[attr] > min)
+				|| (action === "increase" && system[attr] < max)) {
 				system[attr] += (action === "decrease" ? -1 : 1);
 				this.actor.update({ system });
 			}
