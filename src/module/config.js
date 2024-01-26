@@ -22,7 +22,8 @@ PBTA.sheetConfigs = [
 	"rollShifting",
 	"statClock",
 	"statShifting",
-	"statToggle"
+	"statToggle",
+	"statToken"
 ];
 
 PBTA.playbooks = [];
