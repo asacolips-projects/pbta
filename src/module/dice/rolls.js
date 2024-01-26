@@ -191,7 +191,10 @@ export default class RollPbtA extends Roll {
 				if (this.data.rollType === "ask") {
 					title = game.i18n.format("PBTA.AskTitle", { name: templateData.title });
 					buttons = Object.entries(this.data.stats)
-						.filter((stat) => !["ask", "prompt", "formula"].includes(stat[0]))
+						.filter((stat) => {
+							return !["ask", "prompt", "formula"].includes(stat[0])
+								&& (game.pbta.sheetConfig.statToken && stat[0] !== "token");
+						})
 						.map((stat) => {
 							return {
 								label: stat[1].label,
