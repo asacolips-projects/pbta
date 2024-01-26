@@ -365,11 +365,12 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".stat-shift .up, .stat-shift .down").on("change", this._onStatShiftChange.bind(this));
 
 		// Quantity.
-		html.find(".item-meta .tag--quantity").on("click", this._onUsagesControl.bind(this, "system.quantity", 1));
-		html.find(".item-meta .tag--quantity").on("contextmenu", this._onUsagesControl.bind(this, "system.quantity", -1));
-
-		html.find(".item-meta .tag--uses").on("click", this._onUsagesControl.bind(this, "system.uses", 1));
-		html.find(".item-meta .tag--uses").on("contextmenu", this._onUsagesControl.bind(this, "system.uses", -1));
+		for (const attribute of ["quantity", "uses"]) {
+			html.find(`.item-meta .tag--${attribute}`).on({
+				click: this._onUsagesControl.bind(this, `system.${attribute}`, 1),
+				contextmenu: this._onUsagesControl.bind(this, `system.${attribute}`, -1)
+			});
+		}
 
 		// Resources.
 		html.find(".resource-control").on("click", this._onResouceControl.bind(this));
