@@ -160,10 +160,8 @@ export default class ActorPbta extends Actor {
 		// Handle rolls coming directly from the ability score.
 		if (event.currentTarget.classList.contains("stat-rollable")) {
 			const stat = event.currentTarget.closest(".stat")?.dataset.stat || null;
-			await this._onRollStat(stat, label, options);
-		} else if (event.currentTarget.classList.contains("token-rollable")) {
-			const stat = event.currentTarget.closest(".stat")?.dataset.stat || null;
-			await this._onRollToken(stat, label, options);
+			if (stat === "token" && game.pbta.sheetConfig.statToken) await this._onRollToken(stat, label, options);
+			else await this._onRollStat(stat, label, options);
 		} else if (event.currentTarget.classList.contains("attr-rollable") && roll) {
 			await this._onRollAttr(roll, label, options);
 		} else if (itemId) {
@@ -196,7 +194,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	async _onRollToken(stat, label, options={}) {
-		const templateData = { isToken: true, nbrOfToken: stat };
+		const templateData = { isStatToken: true, numOfToken: this.system.stats[stat].value };
 		let formula = "@formula";
 		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 			rollType: "stat",
@@ -209,10 +207,10 @@ export default class ActorPbta extends Actor {
 		if (choice === null) {
 			return;
 		}
-		const tokenUsed = choice.terms.length >= 3 ? choice.terms[2].number : 0;
-		const nbrTokenAfterRoll = parseInt(stat) - parseInt(tokenUsed);
-		const updates = {};
-		updates["system.stats.value"] = nbrTokenAfterRoll;
+		const tokenUsed = choice.terms.find((t) => t instanceof NumericTerm)?.number;
+		const updates = {
+			[`system.stats.${stat}.value`]: this.system.stats[stat].value - tokenUsed
+		};
 		await roll.toMessage({
 			speaker: ChatMessage.getSpeaker({ actor: this }),
 			title: label ?? "",

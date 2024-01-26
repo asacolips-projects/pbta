@@ -29,11 +29,11 @@
         </ul>
     </div>
     {{/if}}
-    {{#if isToken}}
-    <div class="cell cell--prompt cell--token">
+    {{#if isStatToken}}
+    <div class="cell cell--prompt cell--token flexrow">
         <label for="prompt">{{localize "PBTA.Dialog.HowManyToken"}}</label>
         <div class="cell__wrapper">
-            <input type="number" name="prompt" value="{{numberFormat nbrOfToken decimals=0 sign=false}}" placeholder="e.g. 1" data-dtype="Number" />
+            <input type="number" name="prompt" value="{{numberFormat numOfToken decimals=0 sign=false}}" min="0" max="{{numOfToken}}" data-dtype="Number" />
         </div>
     </div>
     {{/if}}

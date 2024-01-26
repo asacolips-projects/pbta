@@ -202,28 +202,18 @@
   }
 
   .cell--token {
-    display: flex;
-    flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
 
     label {
-      flex-grow: 4;
-      flex-shrink: 1;
-      flex-wrap: nowrap;
-      flex-basis: 80%;
+      flex: 4;
       font-weight: bold;
-      vertical-align: middle;
     }
 
     .cell__wrapper {
-      flex-grow: 1;
-      flex-shrink: 4;
-      flex-basis: 20%;
-      position: relative;
-      width: 100%;
+      flex: 1;
     }
-    
+
     .resource-control {
       position: absolute;
       top: 0;
@@ -252,7 +242,7 @@
       text-align: center;
       width: 100%;
     }
-    
+
   }
 }
 

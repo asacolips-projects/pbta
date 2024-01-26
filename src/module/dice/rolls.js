@@ -165,14 +165,7 @@ export default class RollPbtA extends Roll {
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
 		this.options.conditions = [];
-		let needsDialog = this.data.rollType === "ask" || this.data.rollType === "prompt" || this.data.conditionGroups.length > 0;
-		let stat = "";
-		let maxValue = undefined;
-		if (!needsDialog && templateData.isToken) {
-			needsDialog = true;
-			stat = "token";
-			maxValue = !isNaN(templateData.nbrOfToken) ? templateData.nbrOfToken : 0;
-		}
+		const needsDialog = this.data.rollType === "ask" || this.data.rollType === "prompt" || this.data.conditionGroups.length > 0 || templateData.isStatToken;
 
 		if (needsDialog) {
 			templateData = foundry.utils.mergeObject(templateData, {
@@ -187,7 +180,7 @@ export default class RollPbtA extends Roll {
 					submit: {
 						label: game.i18n.localize("PBTA.Roll"),
 						callback: (html) => {
-							resolve(this._onDialogSubmit(html, stat, maxValue));
+							resolve(this._onDialogSubmit(html));
 						}
 					}
 				};
