@@ -225,11 +225,10 @@ export default class RollPbtA extends Roll {
 	 * Handle submission of the Roll evaluation configuration Dialog
 	 * @param {jQuery} html            The submitted dialog content
 	 * @param {number} stat   The chosen advantage mode
-	 * @param {number} maxValue   the maximum value of prompt
 	 * @returns {Roll}              This damage roll.
 	 * @private
 	 */
-	_onDialogSubmit(html, stat, maxValue) {
+	_onDialogSubmit(html, stat) {
 		const form = html[0].querySelector("form");
 
 		const addToFormula = (val) => {
@@ -241,22 +240,12 @@ export default class RollPbtA extends Roll {
 		};
 
 		// Append a situational bonus term
-		if (stat && stat !== "token") {
-			this.options.stat = stat;
+		if (stat) {
 			addToFormula(`@stats.${stat}.value`);
 		}
 
 		// Customize the modifier
 		if (form?.prompt?.value) {
-			if (stat === "token" && maxValue !== undefined && maxValue !== null) {
-				const value = parseInt(form?.prompt?.value ?? 0);
-				const parsedMaxValue = parseInt(maxValue ?? -1);
-				if (parsedMaxValue >= 0) {
-					if (value > parsedMaxValue) {
-						throw new Error(game.i18n.localize("PBTA.Dialog.ErrorAboveMax"));
-					}
-				}
-			}
 			addToFormula(`${form.prompt.value}`);
 		}
 
