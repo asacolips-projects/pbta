@@ -200,8 +200,10 @@ export default class ActorPbta extends Actor {
 			sheetType: this.baseType
 		}));
 		const choice = await roll.configureDialog({
-			isStatToken: true,
-			numOfToken: this.system.stats[stat].value,
+			templateData:{
+				isStatToken: true,
+				numOfToken: this.system.stats[stat].value,
+			},
 			title: game.i18n.format("PBTA.RollLabel", { label })
 		});
 		if (choice === true || choice === null) {
