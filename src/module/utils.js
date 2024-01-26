@@ -217,7 +217,7 @@ export function convertSheetConfig(sheetConfig) {
 			} else if (typeof v === "object" && v.label) {
 				newConfig.statToggle = {
 					label: v.label,
-					modifier: v.modifier ? v.modifier : 0
+					modifier: v.modifier ?? 0
 				};
 			} else {
 				newConfig.statToggle = {
