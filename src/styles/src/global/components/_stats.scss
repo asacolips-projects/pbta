@@ -70,6 +70,10 @@
         padding: 2px 4px;
         background: $ct-gray-25;
         line-height: 1;
+
+        &.max {
+          color: #CD5C5C;
+        }
       }
 
       .stat-value,
@@ -87,9 +91,7 @@
         border: 1px solid rgba(17,14,97,.25);
       }
 
-      .max-stat-value {
-        color: #CD5C5C;
-      }
+
 
       &.stat-shift {
         .select-holder {
