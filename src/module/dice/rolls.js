@@ -165,7 +165,11 @@ export default class RollPbtA extends Roll {
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
 		this.options.conditions = [];
-		const needsDialog = this.data.rollType === "ask" || this.data.rollType === "prompt" || this.data.conditionGroups.length > 0 || templateData.isStatToken;
+		const needsDialog =
+			this.data.rollType === "ask"
+			|| this.data.rollType === "prompt"
+			|| this.data.conditionGroups.length > 0
+			|| (templateData.isStatToken && templateData.numOfToken);
 
 		if (needsDialog) {
 			templateData = foundry.utils.mergeObject(templateData, {
