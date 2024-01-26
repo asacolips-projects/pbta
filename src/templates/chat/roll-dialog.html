@@ -33,7 +33,7 @@
     <div class="cell cell--prompt cell--token flexrow">
         <label for="prompt">{{localize "PBTA.Dialog.HowManyToken"}}</label>
         <div class="cell__wrapper">
-            <input type="number" name="prompt" value="{{numberFormat numOfToken decimals=0 sign=false}}" min="0" max="{{numOfToken}}" data-dtype="Number" />
+            <input type="number" name="prompt" value="{{numOfToken}}" min="0" max="{{numOfToken}}" data-dtype="Number" />
         </div>
     </div>
     {{/if}}
