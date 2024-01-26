@@ -194,14 +194,14 @@ export default class ActorPbta extends Actor {
 	}
 
 	async _onRollToken(stat, label, options={}) {
-		const templateData = { isStatToken: true, numOfToken: this.system.stats[stat].value };
-		let formula = "@formula";
+		const formula = this._getStatFormula();
 		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 			rollType: "stat",
 			sheetType: this.baseType
 		}));
 		const choice = await roll.configureDialog({
-			templateData,
+			isStatToken: true,
+			numOfToken: this.system.stats[stat].value,
 			title: game.i18n.format("PBTA.RollLabel", { label })
 		});
 		if (choice === null) {
