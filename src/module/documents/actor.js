@@ -204,7 +204,7 @@ export default class ActorPbta extends Actor {
 			numOfToken: this.system.stats[stat].value,
 			title: game.i18n.format("PBTA.RollLabel", { label })
 		});
-		if (choice === null) {
+		if (choice === true || choice === null) {
 			return;
 		}
 		const tokenUsed = choice.terms.find((t) => t instanceof NumericTerm)?.number;
