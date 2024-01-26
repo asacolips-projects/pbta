@@ -219,21 +219,19 @@ export default class PbtaActorSheet extends ActorSheet {
 			// Confirm the keys exist, and assign them to a sorting array if so.
 			const type = this.actor.sheetType ?? this.actor.baseType;
 			const sortKeys = Object.keys(game.pbta.sheetConfig.actorTypes?.[type]?.[group] ?? {});
-			if (!sortKeys.includes("token")) {
-				if (!sortKeys) continue;
-				context.system[group] = Object.keys(context.system[group])
-					.sort((a, b) => sortKeys.indexOf(a) - sortKeys.indexOf(b))
-					.reduce((obj, key) => {
-						obj[key] = context.system[group][key];
-						return obj;
-					}, {});
-				for (let [key, value] of Object.entries(context.system[group])) {
-					if (value.options && value.sort) {
-						context.system[group][key].options = Object.fromEntries(
-							Object.entries(context.system[group][key].options)
-								.sort(([, a], [, b]) => a.label.localeCompare(b.label))
-						);
-					}
+			if (!sortKeys) continue;
+			context.system[group] = Object.keys(context.system[group])
+				.sort((a, b) => sortKeys.indexOf(a) - sortKeys.indexOf(b))
+				.reduce((obj, key) => {
+					obj[key] = context.system[group][key];
+					return obj;
+				}, {});
+			for (let [key, value] of Object.entries(context.system[group])) {
+				if (value.options && value.sort) {
+					context.system[group][key].options = Object.fromEntries(
+						Object.entries(context.system[group][key].options)
+							.sort(([, a], [, b]) => a.label.localeCompare(b.label))
+					);
 				}
 			}
 		}
