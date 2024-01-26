@@ -1,32 +1,31 @@
 <div class="cell cell--stats">
 	<ol class="stats-list flexrow">
-		{{!-- This need to be improved to handle multiple tokens, token with stats ... --}}
-		{{#if system.stats.token}}
-			<li class="stat flexrow token-modif" data-action="decrease" data-attr="stats.value">-</li>
-			<li class="stat flexrow" data-stat="{{system.stats.value}}">
-				<label for="system.stats.value" class="cell__title token-rollable rollable" data-label="{{system.stats.label.label}}">
-					<span class="stat-icon">
-						<i class="fas fa-dice-d6"></i>
-					</span>
-					{{ system.stats.label.label }}
-				</label>
-				<input class="stat-value {{#if (eq system.stats.value system.stats.max.label)}}max-stat-value{{/if}}" type="text" name="system.stats.value" value="{{#if system.stats.value includeZero=true}}{{system.stats.value}}{{else}}{{system.stats.default.label}}{{/if}}" data-dtype="Number" min={{system.stats.default.label}} max="{{system.stats.max.label}}" disabled />
-			</li>
-			<li class="stat flexrow token-modif" data-action="increase" data-attr="stats.value">+</li>
-		{{else}}
-			{{#each system.stats as |stat key|}}
-			<li class="stat flexrow" data-stat="{{key}}">
-				<label
-					for="system.stats.{{key}}.value"
-					class="cell__title stat-rollable rollable"
-					data-mod="{{stat.value}}"
-					data-label="{{stat.label}}"
-					>
-					<span class="stat-icon">
-						<i class="fas fa-dice-d6"></i>
-					</span>
-					{{ stat.label }}
-				</label>
+		{{#each system.stats as |stat key|}}
+		<li class="stat flexrow" data-stat="{{key}}">
+			<label
+				for="system.stats.{{key}}.value"
+				class="cell__title stat-rollable rollable"
+				data-mod="{{stat.value}}"
+				data-label="{{stat.label}}"
+				>
+				<span class="stat-icon">
+					<i class="fas fa-dice-d6"></i>
+				</span>
+				{{ stat.label }}
+			</label>
+			{{#if (and (eq key "token") ../statToken)}}
+			<span class="token-modif" data-action="decrease" data-attr="stats.{{key}}.value">-</span>
+			<input
+				class="stat-value {{#if (eq stat.value ../statToken.max)}}max-stat-value{{/if}}"
+				type="text"
+				name="system.stats.{{key}}.value"
+				value="{{stat.value}}"
+				data-dtype="Number"
+				min={{statToggle.min}}
+				max="{{statToggle.max}}"
+				disabled />
+			<span class="token-modif" data-action="increase" data-attr="stats.{{key}}.value">+</span>
+			{{else}}
 				{{#if ../statToggle}}
 				<label class="stat-toggle checkbox"><input type="checkbox" name="system.stats.{{key}}.toggle" {{checked stat.toggle}}/>
 					{{../statToggle.label}}
@@ -46,9 +45,9 @@
 					value="{{#if stat.value includeZero=true}}{{numberFormat stat.value decimals=0 sign=true}}{{/if}}"
 					data-dtype="Number"
 					/>
-			</li>
-			{{/each}}
-		{{/if}}
+			{{/if}}
+		</li>
+		{{/each}}
 		{{#if (and editable (objLen system.stats) statShifting)}}
 		<li class="stat stat-shift flexrow" data-stat="{{key}}">
 			<label class="cell__title stat-rollable">

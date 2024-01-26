@@ -136,6 +136,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
 			context.statToggle = sheetConfig?.statToggle ?? false;
+			context.statToken = sheetConfig?.statToken ?? false;
 			context.statClock = sheetConfig?.statClock ?? false;
 			context.statSettings = sheetConfig.actorTypes[this.actor.baseType]?.stats ?? {};
 
@@ -365,57 +366,33 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".stat-clock").on("click", this._onStatClockClick.bind(this));
 		html.find(".stat-shift label").on("click", this._onStatShiftClick.bind(this));
 		html.find(".stat-shift .up, .stat-shift .down").on("change", this._onStatShiftChange.bind(this));
-		html.find(".token-modif").on("click", this._onTokenModifClick.bind(this));
+		html.find(".token-modif").on("click", this._onStatTokenClick.bind(this));
 
 		// Quantity.
-		html.find(".item-meta .tag--quantity").on("click", this._onUsagesControl.bind(this, "system.quantity", 1));
-		html.find(".item-meta .tag--quantity").on("contextmenu", this._onUsagesControl.bind(this, "system.quantity", -1));
-
-		html.find(".item-meta .tag--uses").on("click", this._onUsagesControl.bind(this, "system.uses", 1));
-		html.find(".item-meta .tag--uses").on("contextmenu", this._onUsagesControl.bind(this, "system.uses", -1));
+		for (const attribute of ["quantity", "uses"]) {
+			html.find(`.item-meta .tag--${attribute}`).on({
+				click: this._onUsagesControl.bind(this, `system.${attribute}`, 1),
+				contextmenu: this._onUsagesControl.bind(this, `system.${attribute}`, -1)
+			});
+		}
 
 		// Resources.
 		html.find(".resource-control").on("click", this._onResourceControl.bind(this));
 	}
 
-	_updateValue(event, min, max) {
+	_onResourceControl(event) {
 		event.preventDefault();
-		const control = $(event.currentTarget);
-		const action = control.data("action");
-		const attr = control.data("attr");
+		const { action, attr } = event.currentTarget.dataset;
 		// If there's an action and target attribute, update it.
 		if (action && attr) {
-			// Initialize data structure.
-			let system = {};
-			let changed = false;
-			// Retrieve the existin value.
-			system[attr] = Number(getProperty(this.actor.system, attr));
-			// Decrease the value.
-			if (action === "decrease") {
-				system[attr] -= 1;
-				if (min !== undefined && min !== null && system[attr] < min) {
-					system[attr] = min;
-				} else {
-					changed = true;
-				}
-			} else if (action === "increase") {
-				// Increase the value.
-				system[attr] += 1;
-				if (max !== undefined && max !== null && system[attr] > max) {
-					system[attr] = max;
-				} else {
-					changed = true;
-				}
-			}
-			// If there are changes, apply to the actor.
-			if (changed) {
-				this.actor.update({ system: system });
+			const system = {
+				[attr]: Number(getProperty(this.actor.system, attr))
+			};
+			if (action === "decrease" || action === "increase") {
+				system[attr] += (action === "decrease" ? -1 : 1);
+				this.actor.update({ system });
 			}
 		}
-	}
-
-	_onResourceControl(event) {
-		this._updateValue(event);
 	}
 
 	async _onClockClick(event) {
@@ -558,9 +535,20 @@ export default class PbtaActorSheet extends ActorSheet {
 		else if (classList.contains("down")) this._statShifting.down = event.target.value;
 	}
 
-	_onTokenModifClick(event) {
-		const maxValue = parseInt(this.object.system.stats.max.label);
-		this._updateValue(event, 0, maxValue);
+	_onStatTokenClick(event) {
+		event.preventDefault();
+		const { action, attr } = event.currentTarget.dataset;
+		const { min, max } = game.pbta.sheetConfig.statToken;
+		if (action && attr) {
+			const system = {
+				[attr]: Number(getProperty(this.actor.system, attr))
+			};
+			if (action === "decrease" && system[attr] > min
+				|| action === "increase" && system[attr] < max) {
+				system[attr] += (action === "decrease" ? -1 : 1);
+				this.actor.update({ system });
+			}
+		}
 	}
 
 	async _onStatClockClick(event) {

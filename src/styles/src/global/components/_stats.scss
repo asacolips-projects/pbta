@@ -22,11 +22,6 @@
         background: #6599ce;
       }
 
-      &.token-modif {
-        font-size: 50px;
-        cursor: pointer;
-      }
-
       .cell__title {
         width: 100%;
         min-width: 100%;
@@ -72,16 +67,24 @@
       }
 
       .stat-value {
-        flex: 0 0 48px;
         padding: 2px 4px;
+        background: $ct-gray-25;
+        line-height: 1;
+      }
+
+      .stat-value,
+      .token-modif {
+        flex: 0 0 48px;
         color: $c-white;
         text-align: center;
-        background: $ct-gray-25;
         font-size: 22px;
         font-weight: bold;
-        margin: 0;
-        line-height: 1;
         height: 28px;
+      }
+
+      .token-modif {
+        cursor: pointer;
+        border: 1px solid rgba(17,14,97,.25);
       }
 
       .max-stat-value {
