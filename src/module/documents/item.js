@@ -66,11 +66,8 @@ export default class ItemPbta extends Item {
 	 * @param {boolean} descriptionOnly
 	 * @param {object} options
 	 */
-	async roll({ descriptionOnly = false } = {}, options = {}) {
-		if (!descriptionOnly && (this.type === "equipment" || (this.type !== "npcMove" && !this.system.rollType))) {
-			descriptionOnly = true;
-		}
-		if (descriptionOnly) {
+	async roll(options = { descriptionOnly: false }) {
+		if (options.descriptionOnly) {
 			const content = await renderTemplate("systems/pbta/templates/chat/chat-move.html", {
 				image: this.img,
 				title: this.name,
