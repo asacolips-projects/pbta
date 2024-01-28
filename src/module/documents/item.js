@@ -63,8 +63,8 @@ export default class ItemPbta extends Item {
 
 	/**
 	 * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
-	 * @param {boolean} descriptionOnly
 	 * @param {object} options
+	 * @param {boolean} options.descriptionOnly
 	 */
 	async roll(options = { descriptionOnly: false }) {
 		if (options.descriptionOnly) {
