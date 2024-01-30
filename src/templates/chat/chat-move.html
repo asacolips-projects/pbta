@@ -1,4 +1,4 @@
-<section class="pbta-chat-card">
+<section class="pbta-chat-card" data-actor-id="{{actor._id}}" {{#if item}}data-item-id="{{item._id}}"{{/if}} {{#if tokenId}}data-token-id="{{tokenId}}"{{/if}}>
   <div class="cell cell--chat">
     <div class="chat-title row flexrow">
       {{#if image}}<img class="item-icon" src="{{image}}" alt="{{title}}"/>{{/if}}

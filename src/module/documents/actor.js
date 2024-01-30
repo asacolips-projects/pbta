@@ -187,6 +187,7 @@ export default class ActorPbta extends Actor {
 			return;
 		}
 		await r.toMessage({
+			actor: this,
 			speaker: ChatMessage.getSpeaker({ actor: this }),
 			title: label ?? "",
 			rollMode: game.settings.get("core", "rollMode")
@@ -212,6 +213,7 @@ export default class ActorPbta extends Actor {
 			rollType: "flat"
 		}));
 		const choice = await r.configureDialog({
+			actor: this,
 			title: label
 		});
 		if (choice === null) {
