@@ -165,10 +165,7 @@ export default class ActorPbta extends Actor {
 			await this._onRollAttr(roll, label, options);
 		} else if (itemId) {
 			const item = this.items.get(itemId);
-			const descriptionOnly =
-				event.currentTarget.getAttribute("data-show") === "description"
-				|| item.type === "equipment"
-				|| (item.type !== "npcMove" && !item.system.rollType);
+			const descriptionOnly = event.currentTarget.getAttribute("data-show") === "description";
 			item.roll({ ...options, descriptionOnly });
 		}
 	}

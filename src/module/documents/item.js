@@ -67,7 +67,7 @@ export default class ItemPbta extends Item {
 	 * @param {boolean} options.descriptionOnly
 	 */
 	async roll(options = { descriptionOnly: false }) {
-		if (options.descriptionOnly) {
+		if (options.descriptionOnly || this.type === "equipment" || (this.type !== "npcMove" && !this.system.rollType)) {
 			const content = await renderTemplate("systems/pbta/templates/chat/chat-move.html", {
 				actor: this.actor,
 				tokenId: this.actor?.token?.uuid || null,
