@@ -237,7 +237,7 @@ export function convertSheetConfig(sheetConfig) {
 			} else {
 				newConfig.statToken = {
 					default: 0,
-					max: 1,
+					max: v,
 					min: 0
 				};
 			}
