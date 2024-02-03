@@ -21,7 +21,7 @@ module.exports = {
 		"jsdoc"
 	],
 
-	ignorePatterns: ["gulpfile.mjs", "update-build-tags.js"],
+	ignorePatterns: ["foundry", "gulpfile.mjs", "update-build-tags.js"],
 
 	rules: {
 		"array-bracket-spacing": ["warn", "never"],
