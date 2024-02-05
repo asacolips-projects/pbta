@@ -87,7 +87,7 @@ export function validateSheetConfig(sheetConfig) {
 					}
 				}
 			}
-		} else if (actorType === "character" || actorConfig?.baseType === "character") {
+		} else if ((actorType === "character" || actorConfig?.baseType === "character") && !sheetConfig.statToken) {
 			// Stats are required for characters (but not for NPCs).
 			errors.push(`${t.statsRequired1} '${actorType}' ${t.statsRequired2}.`);
 		}
@@ -225,6 +225,22 @@ export function convertSheetConfig(sheetConfig) {
 					modifier: 0
 				};
 			}
+		} else if (k === "statToken") {
+			if (!v) {
+				newConfig.statToken = false;
+			} else if (typeof v === "object") {
+				newConfig.statToken = {
+					default: v.default ?? 0,
+					max: v.max ?? 1,
+					min: v.min ?? 0
+				};
+			} else {
+				newConfig.statToken = {
+					default: 0,
+					max: v,
+					min: 0
+				};
+			}
 		} else if (k === "statShifting") {
 			const img = "systems/pbta/assets/icons/svg/back-forth.svg";
 			const statLabel = game.i18n.localize("PBTA.Stat.label");
@@ -344,6 +360,12 @@ export function convertSheetConfig(sheetConfig) {
 							max: newConfig.statClock
 						};
 					}
+				}
+				if (newConfig.statToken && !("token" in actorType.stats)) {
+					actorType.stats.token = {
+						label: "Token",
+						value: newConfig.statToken.default
+					};
 				}
 			}
 

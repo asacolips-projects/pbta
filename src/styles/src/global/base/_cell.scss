@@ -194,11 +194,55 @@
 
 .roll-dialog {
   .cell {
-    margin: $padding-sm 0;
+    margin: $padding-sm;
 
     + .cell {
       border-top: 2px solid $ct-gray;
     }
+  }
+
+  .cell--token {
+    flex-wrap: nowrap;
+    align-items: center;
+
+    label {
+      flex: 4;
+      font-weight: bold;
+    }
+
+    .cell__wrapper {
+      flex: 1;
+    }
+
+    .resource-control {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      line-height: 1;
+      text-align: center;
+      margin: auto;
+      border: 1px solid #bcc8de;
+    }
+
+    .resource-decrease {
+      left: 5px;
+    }
+
+    .resource-increase {
+      right: 5px;
+    }
+
+    input {
+      margin: 0;
+      background-color: $ct-gray;
+      display: block;
+      text-align: center;
+      width: 100%;
+    }
+
   }
 }
 

@@ -136,6 +136,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
 			context.statToggle = sheetConfig?.statToggle ?? false;
+			context.statToken = sheetConfig?.statToken ?? false;
 			context.statClock = sheetConfig?.statClock ?? false;
 			context.statSettings = sheetConfig.actorTypes[this.actor.baseType]?.stats ?? {};
 
@@ -363,6 +364,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".stat-clock").on("click", this._onStatClockClick.bind(this));
 		html.find(".stat-shift label").on("click", this._onStatShiftClick.bind(this));
 		html.find(".stat-shift .up, .stat-shift .down").on("change", this._onStatShiftChange.bind(this));
+		html.find(".token-modif").on("click", this._onStatTokenClick.bind(this));
 
 		// Quantity.
 		html.find(".item-meta .tag--quantity").on("click", this._onUsagesControl.bind(this, "system.quantity", 1));
@@ -372,33 +374,20 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".item-meta .tag--uses").on("contextmenu", this._onUsagesControl.bind(this, "system.uses", -1));
 
 		// Resources.
-		html.find(".resource-control").on("click", this._onResouceControl.bind(this));
+		html.find(".resource-control").on("click", this._onResourceControl.bind(this));
 	}
 
-	_onResouceControl(event) {
+	_onResourceControl(event) {
 		event.preventDefault();
-		const control = $(event.currentTarget);
-		const action = control.data("action");
-		const attr = control.data("attr");
+		const { action, attr } = event.currentTarget.dataset;
 		// If there's an action and target attribute, update it.
 		if (action && attr) {
-			// Initialize data structure.
-			let system = {};
-			let changed = false;
-			// Retrieve the existin value.
-			system[attr] = Number(getProperty(this.actor.system, attr));
-			// Decrease the value.
-			if (action === "decrease") {
-				system[attr] -= 1;
-				changed = true;
-			} else if (action === "increase") {
-				// Increase the value.
-				system[attr] += 1;
-				changed = true;
-			}
-			// If there are changes, apply to the actor.
-			if (changed) {
-				this.actor.update({ system: system });
+			const system = {
+				[attr]: Number(getProperty(this.actor.system, attr))
+			};
+			if (action === "decrease" || action === "increase") {
+				system[attr] += (action === "decrease" ? -1 : 1);
+				this.actor.update({ system });
 			}
 		}
 	}
@@ -541,6 +530,22 @@ export default class PbtaActorSheet extends ActorSheet {
 		const classList = event.currentTarget.classList;
 		if (classList.contains("up")) this._statShifting.up = event.target.value;
 		else if (classList.contains("down")) this._statShifting.down = event.target.value;
+	}
+
+	_onStatTokenClick(event) {
+		event.preventDefault();
+		const { action, attr } = event.currentTarget.dataset;
+		const { min, max } = game.pbta.sheetConfig.statToken;
+		if (action && attr) {
+			const system = {
+				[attr]: Number(getProperty(this.actor.system, attr))
+			};
+			if ((action === "decrease" && system[attr] > min)
+				|| (action === "increase" && system[attr] < max)) {
+				system[attr] += (action === "decrease" ? -1 : 1);
+				this.actor.update({ system });
+			}
+		}
 	}
 
 	async _onStatClockClick(event) {

@@ -13,25 +13,39 @@
 				</span>
 				{{ stat.label }}
 			</label>
-			{{#if ../statToggle}}
-			<label class="stat-toggle checkbox"><input type="checkbox" name="system.stats.{{key}}.toggle" {{checked stat.toggle}}/>
-				{{../statToggle.label}}
-			</label>
-			{{/if}}
-			{{#if ../statClock}}
-			<div class="cell__clock flexrow">
-				{{#times stat.steps.max}}
-				<input type="radio" class="stat-clock" data-name="system.stats.{{key}}" data-step="{{@index}}" {{checked (gt stat.steps.value @index)}}>
-				{{/times}}
-			</div>
-			{{/if}}
+			{{#if (and (eq key "token") ../statToken)}}
+			<span class="token-modif" data-action="decrease" data-attr="stats.{{key}}.value">-</span>
 			<input
-				class="stat-value"
+				class="stat-value {{#if (eq stat.value ../statToken.max)}}max{{/if}}"
 				type="text"
 				name="system.stats.{{key}}.value"
-				value="{{#if stat.value includeZero=true}}{{numberFormat stat.value decimals=0 sign=true}}{{/if}}"
+				value="{{stat.value}}"
 				data-dtype="Number"
-				/>
+				min={{statToggle.min}}
+				max="{{statToggle.max}}"
+				disabled />
+			<span class="token-modif" data-action="increase" data-attr="stats.{{key}}.value">+</span>
+			{{else}}
+				{{#if ../statToggle}}
+				<label class="stat-toggle checkbox"><input type="checkbox" name="system.stats.{{key}}.toggle" {{checked stat.toggle}}/>
+					{{../statToggle.label}}
+				</label>
+				{{/if}}
+				{{#if ../statClock}}
+				<div class="cell__clock flexrow">
+					{{#times stat.steps.max}}
+					<input type="radio" class="stat-clock" data-name="system.stats.{{key}}" data-step="{{@index}}" {{checked (gt stat.steps.value @index)}}>
+					{{/times}}
+				</div>
+				{{/if}}
+				<input
+					class="stat-value"
+					type="text"
+					name="system.stats.{{key}}.value"
+					value="{{#if stat.value includeZero=true}}{{numberFormat stat.value decimals=0 sign=true}}{{/if}}"
+					data-dtype="Number"
+					/>
+			{{/if}}
 		</li>
 		{{/each}}
 		{{#if (and editable (objLen system.stats) statShifting)}}

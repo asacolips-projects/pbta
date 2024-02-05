@@ -67,17 +67,31 @@
       }
 
       .stat-value {
-        flex: 0 0 48px;
         padding: 2px 4px;
+        background: $ct-gray-25;
+        line-height: 1;
+
+        &.max {
+          color: #CD5C5C;
+        }
+      }
+
+      .stat-value,
+      .token-modif {
+        flex: 0 0 48px;
         color: $c-white;
         text-align: center;
-        background: $ct-gray-25;
         font-size: 22px;
         font-weight: bold;
-        margin: 0;
-        line-height: 1;
         height: 28px;
       }
+
+      .token-modif {
+        cursor: pointer;
+        border: 1px solid rgba(17,14,97,.25);
+      }
+
+
 
       &.stat-shift {
         .select-holder {

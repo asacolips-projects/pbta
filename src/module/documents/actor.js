@@ -160,7 +160,8 @@ export default class ActorPbta extends Actor {
 		// Handle rolls coming directly from the ability score.
 		if (event.currentTarget.classList.contains("stat-rollable")) {
 			const stat = event.currentTarget.closest(".stat")?.dataset.stat || null;
-			await this._onRollStat(stat, label, options);
+			if (stat === "token" && game.pbta.sheetConfig.statToken) await this._onRollToken(stat, label, options);
+			else await this._onRollStat(stat, label, options);
 		} else if (event.currentTarget.classList.contains("attr-rollable") && roll) {
 			await this._onRollAttr(roll, label, options);
 		} else if (itemId) {
@@ -188,6 +189,36 @@ export default class ActorPbta extends Actor {
 			title: label ?? "",
 			rollMode: game.settings.get("core", "rollMode")
 		});
+		await this.clearForwardAdv();
+		await this.updateCombatMoveCount();
+	}
+
+	async _onRollToken(stat, label, options={}) {
+		const formula = this._getStatFormula();
+		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
+			rollType: "stat",
+			sheetType: this.baseType
+		}));
+		const choice = await roll.configureDialog({
+			templateData: {
+				isStatToken: true,
+				numOfToken: this.system.stats[stat].value
+			},
+			title: game.i18n.format("PBTA.RollLabel", { label })
+		});
+		if (choice === true || choice === null) {
+			return;
+		}
+		const tokenUsed = choice.terms.find((t) => t instanceof NumericTerm)?.number;
+		const updates = {
+			[`system.stats.${stat}.value`]: this.system.stats[stat].value - tokenUsed
+		};
+		await roll.toMessage({
+			speaker: ChatMessage.getSpeaker({ actor: this }),
+			title: label ?? "",
+			rollMode: game.settings.get("core", "rollMode")
+		});
+		await this.update(updates);
 		await this.clearForwardAdv();
 		await this.updateCombatMoveCount();
 	}

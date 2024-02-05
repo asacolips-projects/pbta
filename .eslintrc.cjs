@@ -227,6 +227,7 @@ module.exports = {
 		Color: false,
 		DocumentSheetConfig: false,
 		globalThis: false,
+		NumericTerm: false,
 		OperatorTerm: false,
 		toml: false,
 		Tagify: false

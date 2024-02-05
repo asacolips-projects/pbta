@@ -113,6 +113,8 @@ PBTA:
       aplicam:'
     Ask1: Escolha um Atributo para esse
     Ask2: movimento.
+    HowManyToken: "How many token would you like to use?"
+    ErrorAboveMax: "You can't spend more token than you have."
   RollMove: Rolagem de Movimento
   RollMode: "Modo de Rolagem"
   Ask: Perguntar
