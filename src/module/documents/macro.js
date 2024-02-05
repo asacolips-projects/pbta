@@ -43,7 +43,7 @@ export function rollItemMacro(name) {
 		return null;
 	}
 
-	const documents = game.items.filter((i) => foundry.utils.getProperty(i, "name") === name);
+	const documents = actor.items.filter((i) => foundry.utils.getProperty(i, "name") === name);
 	if (documents.length === 0) {
 		ui.notifications.warn(game.i18n.format("PBTA.Warnings.Macro.MissingTargetWarn", { actor: actor.name, name }));
 		return null;

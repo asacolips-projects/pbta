@@ -63,15 +63,16 @@ export default class ItemPbta extends Item {
 
 	/**
 	 * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
-	 * @param {boolean} descriptionOnly
 	 * @param {object} options
+	 * @param {boolean} options.descriptionOnly
 	 */
-	async roll({ descriptionOnly = false } = {}, options = {}) {
-		if (!descriptionOnly && (this.type === "equipment" || (this.type !== "npcMove" && !this.system.rollType))) {
-			descriptionOnly = true;
-		}
-		if (descriptionOnly) {
+	async roll(options = { descriptionOnly: false }) {
+		if (options.descriptionOnly || this.type === "equipment" || (this.type !== "npcMove" && !this.system.rollType)) {
 			const content = await renderTemplate("systems/pbta/templates/chat/chat-move.html", {
+				actor: this.actor,
+				tokenId: this.actor?.token?.uuid || null,
+				item: this,
+
 				image: this.img,
 				title: this.name,
 				details: this.system.description,
@@ -99,27 +100,30 @@ export default class ItemPbta extends Item {
 			if (rollMod) {
 				formula += " + @rollMod";
 			}
-			const templateData = {
-				title: this.name,
-				details: this.system.description,
-				moveResults: this.system.moveResults,
-				choices: this.system?.choices,
-				sheetType: this.actor?.baseType,
-				rollType
-			};
 			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 				rollType: this.type,
 				sheetType: this.actor?.baseType,
 				stat
 			}));
 			const choice = await r.configureDialog({
-				templateData,
+				templateData: {
+					title: this.name,
+					details: this.system.description,
+					moveResults: this.system.moveResults,
+					choices: this.system?.choices,
+					sheetType: this.actor?.baseType,
+					rollType
+				},
 				title: game.i18n.format("PBTA.RollLabel", { label: this.name })
 			});
 			if (choice === null) {
 				return;
 			}
 			await r.toMessage({
+				actor: this.actor,
+				tokenId: this.actor?.token?.uuid || null,
+				item: this,
+
 				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 				image: this.img,
 				title: this.name,

@@ -167,7 +167,7 @@ export default class ActorPbta extends Actor {
 		} else if (itemId) {
 			const item = this.items.get(itemId);
 			const descriptionOnly = event.currentTarget.getAttribute("data-show") === "description";
-			item.roll({ descriptionOnly }, options);
+			item.roll({ ...options, descriptionOnly });
 		}
 	}
 
@@ -185,6 +185,7 @@ export default class ActorPbta extends Actor {
 			return;
 		}
 		await r.toMessage({
+			actor: this,
 			speaker: ChatMessage.getSpeaker({ actor: this }),
 			title: label ?? "",
 			rollMode: game.settings.get("core", "rollMode")
@@ -240,6 +241,7 @@ export default class ActorPbta extends Actor {
 			rollType: "flat"
 		}));
 		const choice = await r.configureDialog({
+			actor: this,
 			title: label
 		});
 		if (choice === null) {
@@ -282,8 +284,8 @@ export default class ActorPbta extends Actor {
 						.filter((c) => c.metadata?.type === "Item")
 						.map((c) => c.metadata.id);
 					for (let c of itemCompendiums) {
-						const items = (await game.packs.get(c).getDocuments({ type: "move" }))
-							.flatMap((item) => (item.system.moveType === mt) ? [item.toObject(false)] : []);
+						const items = (await game.packs.get(c).getDocuments({ type: "move", system: { moveType: mt } }))
+							.flatMap((item) => item.toObject(false));
 						moves = moves.concat(items);
 					}
 					if (moves.length) changes.items.push(...moves);

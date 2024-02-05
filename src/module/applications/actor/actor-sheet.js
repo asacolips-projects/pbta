@@ -47,7 +47,6 @@ export default class PbtaActorSheet extends ActorSheet {
 	/** @override */
 	get template() {
 		const path = "systems/pbta/templates/actors";
-		// @todo add limited sheet
 		if (this.actor.limited) return `${path}/limited-sheet.html`;
 		return `${path}/actor-sheet.html`;
 	}
@@ -367,11 +366,12 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".token-modif").on("click", this._onStatTokenClick.bind(this));
 
 		// Quantity.
-		html.find(".item-meta .tag--quantity").on("click", this._onUsagesControl.bind(this, "system.quantity", 1));
-		html.find(".item-meta .tag--quantity").on("contextmenu", this._onUsagesControl.bind(this, "system.quantity", -1));
-
-		html.find(".item-meta .tag--uses").on("click", this._onUsagesControl.bind(this, "system.uses", 1));
-		html.find(".item-meta .tag--uses").on("contextmenu", this._onUsagesControl.bind(this, "system.uses", -1));
+		for (const attribute of ["quantity", "uses"]) {
+			html.find(`.item-meta .tag--${attribute}`).on({
+				click: this._onUsagesControl.bind(this, `system.${attribute}`, 1),
+				contextmenu: this._onUsagesControl.bind(this, `system.${attribute}`, -1)
+			});
+		}
 
 		// Resources.
 		html.find(".resource-control").on("click", this._onResourceControl.bind(this));
@@ -723,9 +723,9 @@ export default class PbtaActorSheet extends ActorSheet {
 		const itemData = item.toObject();
 
 		// Handle item sorting within the same Actor
-		const groupCell = event.target.closest(".cell--group");
 		if (this.actor.uuid === item.parent?.uuid) {
-			if (!groupCell) return this._onSortItem(event, itemData);
+			const groupCell = event.target.closest(".cell--group");
+			if (!groupCell) return false;
 			let key = groupCell.dataset.key;
 			if (key === "PBTA_OTHER") key = "";
 			const itemType = item.system?.moveType ?? item.system?.equipmentType;
@@ -735,7 +735,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 				return this.actor.updateEmbeddedDocuments("Item", [itemData]);
 			}
-			return false;
+			return this._onSortItem(event, itemData);
 		}
 
 		if (item.type === "playbook" && this.actor.system.playbook) {
@@ -745,13 +745,6 @@ export default class PbtaActorSheet extends ActorSheet {
 				uuid: item.uuid
 			} });
 			return false;
-		}
-
-		if (groupCell) {
-			let key = groupCell.dataset.key;
-			if (key === "PBTA_OTHER") key = "";
-			if (itemData.system.moveType !== undefined) itemData.system.moveType = key;
-			else if (itemData.system.equipmentType !== undefined) itemData.system.equipmentType= key;
 		}
 
 		// Create the owned item

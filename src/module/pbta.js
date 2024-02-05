@@ -277,7 +277,6 @@ Hooks.on("renderChatPopout", (app, html, data) => documents.ItemPbta.chatListene
 function _configureTrackableAttributes() {
 	const trackableAttributes = {};
 	for (let [key, data] of Object.entries(game.pbta.sheetConfig.actorTypes)) {
-		console.log(key, data);
 		trackableAttributes[key] = {
 			bar: [],
 			value: []
