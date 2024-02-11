@@ -1,3 +1,161 @@
+# 0.9.0
+
+## Localization Improvements
+
+- Updated pt-br translation (@brunocalado)
+- Updated es translation (@WallaceMcGregor)
+- "Equipment Type" and "Move Type" became "Category".
+
+## Fixes
+- Fixed editors on the Description tab not having a min-height.
+- Fixed item sorting within same Category onto actor sheet.
+- Fixed/Removed item's Category being changed when first dropping onto actor sheet.
+- Fixed item macro calls failing to run.
+
+## Changes
+- Added support for the Automated Animations module.
+- Refactored Item.roll method to only have one parameter. `descriptionOnly` is now a property of the options object.
+- Equipments' "Post to Chat" icon changed to the "balloons" icon.
+- Removed title attribute from img elements.
+- Added Data Models (#91).
+- Added `globalThis.pbta`, which is also accessible through `game.pbta` as before.
+  - Added access to document sheets (`game.pbta.applications`) and roll handler (`game.pbta.dice`).
+  - Moved documents to `game.pbta.documents`.
+- Added `conditionCount` to RollData, which means it is now possible to make rolls such as `2d6 + @conditionCount`.
+- Added `CONFIG.PBTA.playbooks`, which lists all playbooks available.
+- Added attributes of type Clock, Resource and Number as Trackable Attributes for Tokens (Closes #105).
+- Fixed adding/removing entire Attribute Groups (e.g. the whole Top/Left panel) not updating old actors.
+- Fixed Stats not showing up on Move sheets (Closes #101, #102, #103).
+- Fixed Roll Shifting rendering issues (Closes #100).
+- Fixed Condition descriptions with certain number-dash combinations (e.g. "1-fatigue") being handled as bonuses (Closes 59).
+- Moved the system's Game Settings sidebar buttons to their own section and removed the system setting that hid them.
+- Removed the icons that were bundled with the system since they are present on FoundryVTT. A migration will update documents to avoid broken links.
+
+### Styling
+- Reduced padding between listed items.
+- Removed items list's margin.
+
+### Playbook Improvements
+- Added a Details tab to the Playbook sheet. Visible to GMs only.
+  - Added PbtA ID (variable name: `slug`), which is an url-safe string meant to be unique among playbooks. It is meant to be used throughout the system and supporting modules.
+  - Added Actor Type, described below on Item Sheet.
+- A Playbook's PbtA ID is added as a CSS class to the Actor sheets as `.playbook-[PbtA ID]`.
+  - For example: "The Chosen" becomes `playbook-the-chosen`.
+
+### Actor Sheet
+- Added a "limited" sheet which only shows an actor's name and its descriptions (Closes #95).
+- Added "Stat Clock" feature. This adds a set number of buttons that simulates XP, for mechanics similar to Apocalypse World: Burned Over.
+- Added "Stat Shift" feature. This adds a "Stat" to the list that let's you enhance a Stat up/down, for mechanics similar to the Masks.
+- Added "Stat Token" feature to support games that use a token pool for stat rolls (Closes #92) (@s.paquay1, @mclemente)
+- Added changing moves/equipments between categories by dragging and dropping them. This also works for items without a category being dropped onto the category (Closes #38).
+- Replaced the Playbook's input with a selector.
+- Moved the Stats' dice icons to the top of the box.
+- Fixed Stat Toggle not adding the Stat's value.
+
+### Item Sheet
+- Added Actor Type field to Equipment, Move and Playbook items.
+  - Visible only if not owned and if there are more than 1 valid actor type for the item.
+  - Sets which actor type's data will be used to fill in fields such as Equipment Type and Move Type. On Playbook's case, it is used to differentiate between Playbooks that are exclusive to a certain actor type.
+
+## Sheet Configuration
+
+### Added "Stat Clocks" TOML configuration.
+```toml
+statClocks = 4
+```
+### Added "Stat Shifting" TOML configuration (Closes #96).
+```toml
+statShifting = true
+# or
+[statShifting]
+  # Everything is optional. Values shown are the defaults for English localization
+  label = "Stat Shift" # String shown on Character Sheet. Otherwise localize "{stat} Shift"
+  value = 1 # The value to be shifted up/down
+  stat = "Stat" # String used to localize the label
+  stats = "Stats" # String used to localize "Character shifts {stats}" on Chat Message
+```
+### Added `playbook` property to actor attributes.
+You can set either a playbook's name or slug (e.g. "The Chosen" or "the-chosen") and it will only be displayed if an actor has the chosen playbook.
+```toml
+[character.attributesTop.foo]
+  type = "Clock"
+  label = "Foo"
+  playbook = "The Chosen" # or "the-chosen"
+```
+### The `moveTypes` can now be created as objects
+For example, `[character.moveTypes.basic]`. Object moveTypes accept the following properties: `label`, `playbook`, `creation` (Closes #41).
+```toml
+[character.moveTypes.basic]
+  label = "Basic Moves"
+  creation = true # (Optional) Will add all Moves with this move type when creating a character.
+  playbook = false # (Optional) Moves with this move type will display a Playbook field.
+```
+### Added a `description` attribute to actors
+Adds new description editors to the Description tab when set (Closes #97).
+```toml
+[character.description.foo]
+  label = "Foo" # The label shown if there are more than one description. Defaults to the key if not set (e.g. "foo").
+  value = "Lorem ipsum" # (Optional. Default: "") The description's text when an actor is created.
+  limited = false # (Optional, default: true) The visibility of this field on the Limited sheet.
+```
+### The ListOne and ListMany attributes now have an optional `sort` boolean property
+When used, sort property will sort its options based on labels (#22).
+
+```toml
+[character.attributesTop.foo]
+  type = "ListOne"
+  label = "Foo"
+  default = 1
+  sort = true
+  options = [
+    "Option 1",
+    "Option 2",
+    "Option 3",
+    "Option 4"
+  ]
+```
+
+### Added `statToken` for stats with spendable tokens
+
+Added a new `statToken` config that can be used to define a pool of tokens used for rolls made with that stat. To enable this, you'll need to add a `statToken` option to your TOML config defining the range for the pool, and a `token` entry into your `[character.stats]` option. See the example below:
+
+```toml
+# Single number.
+statToken = 5
+# OR define default, min, and max values.
+[statToken]
+  default = 0
+  min = 0
+  max = 5
+
+[character.stats]
+  # Define your regular stats as normal.
+  strength = "Strength"
+  speed = "Speed"
+  magic = "Magic"
+  # Token stat can also be defined, optionally, if you want to rename it.
+  # Otherwise, a stat named "Token" will be added automatically.
+  token = "Luck Token" 
+
+```
+
+## Development
+- Added JSDoc to devDependencies to better document the project.
+- Added a `#times` Handlebars helper that loops a block of code, similar to `#each`.
+- (**BREAKING**) Added bundling to the JS files.
+- Added sourcemap to the CSS.
+- Added support for modules to include changes to the `DataModel.migrateData` by adding a function to `game.pbta.sheetMigration`.
+- (**BREAKING**) Renamed Handlebars Partials.
+- (**BREAKING**) `game.pbta.utils.getPlaybooks()` function has been refactored to only update the `CONFIG.PBTA.playbooks` list. To get the names/labels in the list (generally used for Item Sheets), use the new `game.pbta.utils.getPlaybookLabels()` function.
+- (**BREAKING**) Migrated `actor.system.resources.rollFormula.value` to `actor.system.resources.rollFormula`.
+- (**BREAKING**) Migrated `actor.system.details.playbook` to `actor.system.playbook`.
+- (**BREAKING**) Migrated `actor.system.details.biography` to `actor.system.details.biography.value`.
+- Removed duplicated `scripts/lib/codemirror.toml.js` in favor of the similar file under `module/forms`.
+
+## Credits
+
+Thanks go out to @mclemente, @s.paquay1, @brunocalado, and @WallaceMcGregor for their contributions in this release. Additionally, many thanks to our PbtA module developers who have worked hard to update their modules and help beta test this release!
+
 # 0.8.1
 
 ## Features and Changes
