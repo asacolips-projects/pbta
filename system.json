@@ -3,7 +3,7 @@
   "id": "pbta",
   "title": "Powered by the Apocalypse",
   "description": "Run games for any PbtA system in Foundry VTT!",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "minimumCoreVersion": "11",
   "compatibleCoreVersion": "11",
   "compatibility": {
@@ -67,7 +67,7 @@
   "socket": true,
   "url": "https://asacolips.gitbook.io/pbta-system/",
   "manifest": "https://asacolips-artifacts.s3.amazonaws.com/pbta/master/system.json",
-  "download": "https://asacolips-artifacts.s3.amazonaws.com/pbta/0.9.0/pbta.zip",
+  "download": "https://asacolips-artifacts.s3.amazonaws.com/pbta/0.9.1/pbta.zip",
   "changelog": "https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/raw/master/CHANGELOG.md",
   "bugs": "https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/issues",
   "flags": {
