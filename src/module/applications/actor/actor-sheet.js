@@ -126,7 +126,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		if (this.actor.baseType === "character") {
 			const hasMultipleCharacterTypes = Object.keys(game.pbta.sheetConfig.actorTypes)
 				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
-				.length;
+				.length > 1;
 			context.playbooks = CONFIG.PBTA.playbooks
 				.filter((p) => !hasMultipleCharacterTypes || p.actorType === this.actor.type || p.actorType === "")
 				.map((p) => {

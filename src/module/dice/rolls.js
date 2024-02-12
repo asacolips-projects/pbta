@@ -193,7 +193,7 @@ export default class RollPbtA extends Roll {
 					buttons = Object.entries(this.data.stats)
 						.filter((stat) => {
 							return !["ask", "prompt", "formula"].includes(stat[0])
-								&& (game.pbta.sheetConfig.statToken && stat[0] !== "token");
+								&& !(game.pbta.sheetConfig.statToken && stat[0] === "token");
 						})
 						.map((stat) => {
 							return {
