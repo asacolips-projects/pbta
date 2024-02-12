@@ -7,10 +7,10 @@
 - "Equipment Type" and "Move Type" became "Category".
 
 ## Fixes
-- Fixed editors on the Description tab not having a min-height.
-- Fixed item sorting within same Category onto actor sheet.
-- Fixed/Removed item's Category being changed when first dropping onto actor sheet.
-- Fixed item macro calls failing to run.
+- Fixed adding/removing entire Attribute Groups (e.g. the whole Top/Left panel) not updating old actors.
+- Fixed Stats not showing up on Move sheets (Closes #101, #102, #103).
+- Fixed Roll Shifting rendering issues (Closes #100).
+- Fixed Condition descriptions with certain number-dash combinations (e.g. "1-fatigue") being handled as bonuses (Closes 59).
 
 ## Changes
 - Added support for the Automated Animations module.
@@ -24,10 +24,6 @@
 - Added `conditionCount` to RollData, which means it is now possible to make rolls such as `2d6 + @conditionCount`.
 - Added `CONFIG.PBTA.playbooks`, which lists all playbooks available.
 - Added attributes of type Clock, Resource and Number as Trackable Attributes for Tokens (Closes #105).
-- Fixed adding/removing entire Attribute Groups (e.g. the whole Top/Left panel) not updating old actors.
-- Fixed Stats not showing up on Move sheets (Closes #101, #102, #103).
-- Fixed Roll Shifting rendering issues (Closes #100).
-- Fixed Condition descriptions with certain number-dash combinations (e.g. "1-fatigue") being handled as bonuses (Closes 59).
 - Moved the system's Game Settings sidebar buttons to their own section and removed the system setting that hid them.
 - Removed the icons that were bundled with the system since they are present on FoundryVTT. A migration will update documents to avoid broken links.
 
@@ -124,9 +120,9 @@ Added a new `statToken` config that can be used to define a pool of tokens used 
 statToken = 5
 # OR define default, min, and max values.
 [statToken]
-  default = 0
-  min = 0
-  max = 5
+  default = 0 # Optional, defaults to 0
+  min = 0 # Optional, defaults to 0
+  max = 5 # Optional, defaults to 1
 
 [character.stats]
   # Define your regular stats as normal.
