@@ -30,7 +30,7 @@ Hooks.once('pbtaSheetConfig', () => {
   // Define custom tags.
   game.pbta.tagConfigOverride = {
     // Tags available to any actor and item
-    general: '[{"value":"fire"}]',
+    general: '[{"value":"fire"},{"value":"water"},{"value":"earth"},{"value":"air"}]',
     actor: {
       // Tags available to all actors
       all: '[{"value":"person"}]',

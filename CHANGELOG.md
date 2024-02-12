@@ -1,3 +1,10 @@
+# 0.9.1
+
+## Fixes
+- Fixed "Ask" prompt on rolls being empty.
+- Fixed importing Playbooks from Adventures.
+- Updated README to include an example with multiple tags.
+
 # 0.9.0
 
 ## Localization Improvements
