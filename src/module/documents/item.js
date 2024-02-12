@@ -182,39 +182,33 @@ export default class ItemPbta extends Item {
 		}
 	}
 
-	static async create(data, context={}) {
-		const created = await super.create(data, context);
-		if (created.type === "playbook") {
+	_onCreate(data, options, userId) {
+		if (this.type === "playbook") {
 			CONFIG.PBTA.playbooks.push({
-				name: created.name,
-				slug: created.system.slug,
-				uuid: created.uuid,
-				actorType: created.system.actorType
+				name: this.name,
+				slug: this.system.slug,
+				uuid: this.uuid,
+				actorType: this.system.actorType
 			});
 		}
-		return created;
 	}
 
-	async update(data={}, context={}) {
-		const updated = await super.update(data, context);
-		if (updated?.type === "playbook") {
-			const index = CONFIG.PBTA.playbooks.findIndex((p) => p.uuid === updated.uuid);
+	_onUpdate(changed, options, userId) {
+		if (this.type === "playbook") {
+			const index = CONFIG.PBTA.playbooks.findIndex((p) => p.uuid === this.uuid);
 			CONFIG.PBTA.playbooks[index] = {
-				name: updated.name,
-				slug: updated.system.slug,
-				uuid: updated.uuid,
-				actorType: updated.system.actorType
+				name: this.name,
+				slug: this.system.slug,
+				uuid: this.uuid,
+				actorType: this.system.actorType
 			};
 		}
-		return updated;
 	}
 
-	async delete(context={}) {
-		const deleted = await super.delete(context);
-		if (deleted.type === "playbook") {
-			CONFIG.PBTA.playbooks = CONFIG.PBTA.playbooks.filter((p) => p.uuid !== deleted.uuid);
+	_onDelete(options, userId) {
+		if (this.type === "playbook") {
+			CONFIG.PBTA.playbooks = CONFIG.PBTA.playbooks.filter((p) => p.uuid !== this.uuid);
 		}
-		return deleted;
 	}
 
 	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
