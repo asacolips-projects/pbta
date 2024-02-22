@@ -407,7 +407,7 @@ export function convertSheetConfig(sheetConfig) {
 			}
 
 			if (k !== "character" && k !== "npc") {
-				actorType.baseType = v.basetype ?? "character";
+				actorType.baseType = v.baseType ?? "character";
 			}
 
 			if (!newConfig.actorTypes) {
