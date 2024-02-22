@@ -1,3 +1,9 @@
+# 0.9.2
+
+## Fixes
+
+- #107 - Fixed bug preventing moves from rendering on custom actor types.
+
 # 0.9.1
 
 ## Fixes
@@ -138,7 +144,7 @@ statToken = 5
   magic = "Magic"
   # Token stat can also be defined, optionally, if you want to rename it.
   # Otherwise, a stat named "Token" will be added automatically.
-  token = "Luck Token" 
+  token = "Luck Token"
 
 ```
 
