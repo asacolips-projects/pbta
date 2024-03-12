@@ -41,7 +41,7 @@ export default class PbtaItemSheet extends ItemSheet {
 			enriched: {
 				description: this.item.system.description,
 				moveResults: foundry.utils.duplicate(this.item.system.moveResults),
-				choices: this.item.system?.choices ?? {}
+				choices: this.item.system?.choices ?? ""
 			},
 
 			effects: this.item.effects.map((e) => foundry.utils.deepClone(e)),
