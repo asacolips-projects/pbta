@@ -1,9 +1,10 @@
 <div class="tab description" data-group="primary" data-tab="description">
 	<div class="sheet-tab">
-		{{#each system.details}}
+		{{#each system.details as |result key|}}
 			<div class="cell cell--bio">
-				{{#if (gt (objLen ../system.details) 1)}}<label class="cell__title">{{label}}</label>{{/if}}
-				{{editor value target=(concat "system.details" @key "value" join=".") button=true owner=../owner editable=../editable}}
+				{{log result}}
+				<label class="cell__title">{{result.label}}</label>
+				{{editor result.enriched target=(concat "system.details" key "value" join=".") button=true owner=../owner editable=../editable}}
 			</div>
 		{{/each}}
 	</div>
