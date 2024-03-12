@@ -81,7 +81,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			actor: this.actor,
 			source: source.system,
 			system: foundry.utils.duplicate(this.actor.system),
-			items: Array.from(this.actor.items).sort((a, b) => (a.sort || 0) - (b.sort || 0)),
+			items: Array.from(this.actor.items.toObject()).sort((a, b) => (a.sort || 0) - (b.sort || 0)),
 
 			effects: this.actor.effects.map((e) => foundry.utils.deepClone(e)),
 			owner: this.actor.isOwner,
@@ -282,11 +282,13 @@ export default class PbtaActorSheet extends ActorSheet {
 		// let totalWeight = 0;
 		for (let item of items) {
 			item.img = item.img || Item.DEFAULT_ICON;
+			const sourceItem = this.actor.items.get(item._id) ?? {};
 			const enrichmentOptions = {
 				async: true,
 				secrets: this.actor.isOwner,
-				rollData: item.getRollData() ?? {},
-				relativeTo: item
+				documents: true,
+				rollData: sourceItem?.getRollData() ?? {},
+				relativeTo: sourceItem,
 			};
 			// Enrich text fields.
 			if (item.system?.description) {
