@@ -282,19 +282,25 @@ export default class PbtaActorSheet extends ActorSheet {
 		// let totalWeight = 0;
 		for (let item of items) {
 			item.img = item.img || Item.DEFAULT_ICON;
+			const enrichmentOptions = {
+				async: true,
+				secrets: this.actor.isOwner,
+				rollData: item.getRollData() ?? {},
+				relativeTo: item
+			};
 			// Enrich text fields.
 			if (item.system?.description) {
 				item.system.description =
-					await TextEditor.enrichHTML(item.system.description, context.enrichmentOptions);
+					await TextEditor.enrichHTML(item.system.description, enrichmentOptions);
 			}
 			if (item.system?.choices) {
-				item.system.choices = await TextEditor.enrichHTML(item.system.choices, context.enrichmentOptions);
+				item.system.choices = await TextEditor.enrichHTML(item.system.choices, enrichmentOptions);
 			}
 			if (item.system?.moveResults) {
 				for (let [mK, mV] of Object.entries(item.system.moveResults)) {
 					if (mV.value) {
 						item.system.moveResults[mK].value =
-							await TextEditor.enrichHTML(mV.value, context.enrichmentOptions);
+							await TextEditor.enrichHTML(mV.value, enrichmentOptions);
 					}
 				}
 			}
