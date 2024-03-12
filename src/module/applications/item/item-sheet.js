@@ -38,6 +38,11 @@ export default class PbtaItemSheet extends ItemSheet {
 			item: this.item,
 			source: source.system,
 			system: this.item.system,
+			enriched: {
+				description: this.item.system.description,
+				moveResults: foundry.utils.duplicate(this.item.system.moveResults),
+				choices: this.item.system?.choices ?? {}
+			},
 
 			effects: this.item.effects.map((e) => foundry.utils.deepClone(e)),
 			owner: this.item.isOwner,
@@ -60,7 +65,7 @@ export default class PbtaItemSheet extends ItemSheet {
 		};
 
 		if (context.system?.description) {
-			context.system.description = await TextEditor.enrichHTML(context.system.description, enrichmentOptions);
+			context.enriched.description = await TextEditor.enrichHTML(context.system.description, enrichmentOptions);
 		}
 
 		const sheetConfig = game.pbta.sheetConfig;
@@ -84,7 +89,7 @@ export default class PbtaItemSheet extends ItemSheet {
 
 			for (let [key, moveResult] of Object.entries(context.system.moveResults)) {
 				context.system.moveResults[key].rangeName = `system.moveResults.${key}.value`;
-				context.system.moveResults[key].value =
+				context.enriched.moveResults[key].value =
 					await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
 			}
 
@@ -107,7 +112,7 @@ export default class PbtaItemSheet extends ItemSheet {
 				context.system.stats.formula = { label: game.i18n.localize("PBTA.Formula") };
 
 				if (context.system?.choices) {
-					context.system.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
+					context.enriched.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
 				}
 				if (Object.keys(context.system.moveTypes) && context.system.moveType) {
 					if (context.system.moveTypes[context.system.moveType]?.playbook) {
