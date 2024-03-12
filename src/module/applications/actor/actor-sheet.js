@@ -96,8 +96,8 @@ export default class PbtaActorSheet extends ActorSheet {
 				pbta: { rollMode: "def" } }, this.actor?.flags ?? {}
 			),
 			enrichmentOptions: {
-				secrets: this.actor.isOwner,
 				async: true,
+				secrets: this.actor.isOwner,
 				rollData: this.actor.getRollData(),
 				relativeTo: this.actor
 			},
@@ -117,10 +117,9 @@ export default class PbtaActorSheet extends ActorSheet {
 		await this._prepareItems(context);
 		await this._prepareAttrs(context);
 
-		Object.entries(context.system.details).forEach(async ([k, v]) => {
-			context.system.details[k].enriched = await TextEditor.enrichHTML(v?.value ?? '', context.enrichmentOptions);
-		});
-		console.log(context);
+		for (let [k, v] of Object.entries(context.system.details)) {
+			context.system.details[k].enriched = await TextEditor.enrichHTML(v?.value ?? "", context.enrichmentOptions);
+		}
 
 		// Add playbooks.
 		if (this.actor.baseType === "character") {
@@ -286,9 +285,8 @@ export default class PbtaActorSheet extends ActorSheet {
 			const enrichmentOptions = {
 				async: true,
 				secrets: this.actor.isOwner,
-				documents: true,
 				rollData: sourceItem?.getRollData() ?? {},
-				relativeTo: sourceItem,
+				relativeTo: sourceItem
 			};
 			// Enrich text fields.
 			if (item.system?.description) {

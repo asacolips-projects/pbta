@@ -2,8 +2,7 @@
 	<div class="sheet-tab">
 		{{#each system.details as |result key|}}
 			<div class="cell cell--bio">
-				{{log result}}
-				<label class="cell__title">{{result.label}}</label>
+				{{#if result.label}}<label class="cell__title">{{result.label}}</label>{{/if}}
 				{{editor result.enriched target=(concat "system.details" key "value" join=".") button=true owner=../owner editable=../editable}}
 			</div>
 		{{/each}}
