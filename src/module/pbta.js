@@ -235,7 +235,11 @@ Hooks.once("ready", async function () {
 
 	CONFIG.PBTA = PBTA;
 
-	utils.getPlaybooks();
+	if (game.modules.get("babele")) {
+		Hooks.once("babele.ready", () => utils.getPlaybooks());
+	} else {
+		utils.getPlaybooks();
+	}
 
 	// Apply structure to actor types.
 	utils.applyActorTemplates();
