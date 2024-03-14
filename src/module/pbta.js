@@ -235,7 +235,7 @@ Hooks.once("ready", async function () {
 
 	CONFIG.PBTA = PBTA;
 
-	if (game.modules.get("babele")) {
+	if (game.modules.get("babele")?.active) {
 		Hooks.once("babele.ready", () => utils.getPlaybooks());
 	} else {
 		utils.getPlaybooks();
