@@ -1,0 +1,65 @@
+name: Shared Build Job
+on:
+  workflow_call:
+
+env:
+  AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+  AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+  FVTT_PACKAGE_TOKEN: "${{ secrets.FVTT_PACKAGE_TOKEN }}"
+  S3_BUCKET: asacolips-artifacts
+  REF_TYPE: ${{ github.ref_type }}
+  REF: "${{ github.head_ref || github.ref_name}}"
+jobs:
+
+  #####################################################################
+  ### Build Job #######################################################
+  #####################################################################
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+    if: github.repository_owner == 'asacolips-projects'
+    timeout-minutes: 60
+    steps:
+
+    - name: Retrieving git refs
+      uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: false
+
+    - name: Retrieving cache
+      uses: actions/cache@v4
+      with:
+        path: node_modules/
+        key: default
+
+    - name: Install NPM dependencies
+      run: npm install
+
+    - name: Build dist directory
+      run: npm run build
+
+    - name: Build manifest
+      if: github.ref_type == 'tag'
+      run: node ./.github/workflows/update-build-tags.js --ref_type=${REF_TYPE}  --tag=${REF} --bucket=${S3_BUCKET} --project=${GITHUB_REPOSITORY}
+
+    - name: Create package directory
+      if: github.ref_type == 'tag'
+      run: cp ./dist/system.json ./system.json && mv dist pbta
+
+    - name: Generate pbta.zip
+      uses: montudor/action-zip@v1
+      if: github.ref_type == 'tag'
+      with:
+        args: zip -q pbta.zip -r pbta
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4.1.0
+      if: success() && github.ref_type == 'tag'
+      with:
+        name: "${{ github.job }}"
+        path: |-
+          pbta.zip
+          system.json

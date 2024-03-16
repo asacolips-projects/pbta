@@ -1,0 +1,14 @@
+name: PR Checks
+on:
+  pull_request_target:
+
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+jobs:
+
+  #####################################################################
+  ### Build Job #######################################################
+  #####################################################################
+  build:
+    uses: ./.github/workflows/shared-build.yml
