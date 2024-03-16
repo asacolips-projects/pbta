@@ -81,7 +81,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			actor: this.actor,
 			source: source.system,
 			system: foundry.utils.duplicate(this.actor.system),
-			items: Array.from(this.actor.items).sort((a, b) => (a.sort || 0) - (b.sort || 0)),
+			items: Array.from(this.actor.items.toObject()).sort((a, b) => (a.sort || 0) - (b.sort || 0)),
 
 			effects: this.actor.effects.map((e) => foundry.utils.deepClone(e)),
 			owner: this.actor.isOwner,
@@ -96,6 +96,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				pbta: { rollMode: "def" } }, this.actor?.flags ?? {}
 			),
 			enrichmentOptions: {
+				async: true,
 				secrets: this.actor.isOwner,
 				rollData: this.actor.getRollData(),
 				relativeTo: this.actor
@@ -116,11 +117,9 @@ export default class PbtaActorSheet extends ActorSheet {
 		await this._prepareItems(context);
 		await this._prepareAttrs(context);
 
-		Object.entries(context.system.details).forEach(async ([k, v]) => {
-			if (v.value) {
-				context.system.details[k].value = await TextEditor.enrichHTML(v.value, context.enrichmentOptions);
-			}
-		});
+		for (let [k, v] of Object.entries(context.system.details)) {
+			context.system.details[k].enriched = await TextEditor.enrichHTML(v?.value ?? "", context.enrichmentOptions);
+		}
 
 		// Add playbooks.
 		if (this.actor.baseType === "character") {
@@ -189,7 +188,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				}
 				if (attrValue.type === "LongText") {
 					context.system[group][attrKey].attrName = `system.${group}.${attrKey}.value`;
-					context.system[group][attrKey].value =
+					context.system[group][attrKey].enriched =
 						await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
 				}
 			}
@@ -282,19 +281,26 @@ export default class PbtaActorSheet extends ActorSheet {
 		// let totalWeight = 0;
 		for (let item of items) {
 			item.img = item.img || Item.DEFAULT_ICON;
+			const sourceItem = this.actor.items.get(item._id) ?? {};
+			const enrichmentOptions = {
+				async: true,
+				secrets: this.actor.isOwner,
+				rollData: sourceItem?.getRollData() ?? {},
+				relativeTo: sourceItem
+			};
 			// Enrich text fields.
 			if (item.system?.description) {
 				item.system.description =
-					await TextEditor.enrichHTML(item.system.description, context.enrichmentOptions);
+					await TextEditor.enrichHTML(item.system.description, enrichmentOptions);
 			}
 			if (item.system?.choices) {
-				item.system.choices = await TextEditor.enrichHTML(item.system.choices, context.enrichmentOptions);
+				item.system.choices = await TextEditor.enrichHTML(item.system.choices, enrichmentOptions);
 			}
 			if (item.system?.moveResults) {
 				for (let [mK, mV] of Object.entries(item.system.moveResults)) {
 					if (mV.value) {
 						item.system.moveResults[mK].value =
-							await TextEditor.enrichHTML(mV.value, context.enrichmentOptions);
+							await TextEditor.enrichHTML(mV.value, enrichmentOptions);
 					}
 				}
 			}
