@@ -11,4 +11,5 @@ jobs:
   ### Build Job #######################################################
   #####################################################################
   build:
+    if: github.repository_owner == 'asacolips-projects' && contains(github.head_ref, 'actions') == false
     uses: ./.github/workflows/shared-build.yml
