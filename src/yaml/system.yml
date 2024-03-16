@@ -49,7 +49,7 @@ socket: true
 url: https://asacolips.gitbook.io/pbta-system/
 manifest: https://asacolips-artifacts.s3.amazonaws.com/pbta/latest/system.json
 download: https://asacolips-artifacts.s3.amazonaws.com/pbta/0.9.3/pbta.zip
-changelog: https://github.com/asacolips-projects/pbta/blob/master/CHANGELOG.md
+changelog: https://github.com/asacolips-projects/pbta/blob/main/CHANGELOG.md
 bugs: https://github.com/asacolips-projects/pbta/issues
 flags:
   needsMigrationVersion: "0.8.2"
