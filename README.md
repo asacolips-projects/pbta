@@ -313,6 +313,7 @@ npm run build
 There are several additional run commands defined in the scripts section of `package.json`, but the build command will run all relevant Gulp tasks. If you would prefer to run the compiler constantly, you can instead use `npm run watch` to do the same thing and watch for new changes.
 
 Once the repo has been built, you should symlink the contents of the `dist` directory to your Foundry installation's systems directory using the name `pbta` for the linked directory.
+
 # Licensing
 
 All HTML, CSS, and JS is licensed under the [MIT license](https://gitlab.com/asacolips-projects/foundry-mods/dungeonworld/-/raw/master/LICENSE.txt).
