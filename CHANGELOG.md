@@ -1,3 +1,13 @@
+# 0.9.3
+
+_Release Notes_: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/releases/0.9.3
+
+## Fixes
+
+- Fixed bug with `util.getPlaybooks()` running before Babele had a chance to localize compendium content. (DjLeChuck)
+- Added `choices` back to the DataModel.
+- Fixed bug with `enrichHTML()` on actor and item sheets.
+
 # 0.9.2
 
 ## Fixes
