@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: node:20
-    if: github.ref_type == 'tag' && github.repository_owner == 'asacolips-projects'
+    if: github.ref_type == 'tag' && github.repository_owner == 'asacolips-projects' && contains(github.ref_name, 'beta') == false && contains(github.ref_name, 'alpha') == false
     timeout-minutes: 60
     steps:
 
