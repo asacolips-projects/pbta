@@ -985,6 +985,11 @@ export function registerHandlebarsHelpers() {
 		return result.length > 0 ? result : key;
 	});
 
+	Handlebars.registerHelper("getValue", function (obj, key) {
+		const result = obj?.[key]?.value || obj?.[key] || "";
+		return result.length > 0 ? result : null;
+	});
+
 	Handlebars.registerHelper("times", function (n, options) {
 		let accum = "";
 		let data;

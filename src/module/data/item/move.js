@@ -14,7 +14,8 @@ export default class MoveData extends ItemTemplateData {
 				initial: 0,
 				integer: true
 			}),
-			actorType: new foundry.data.fields.StringField({ initial: "" })
+			actorType: new foundry.data.fields.StringField({ initial: "" }),
+			choices: new foundry.data.fields.HTMLField()
 		};
 	}
 }
