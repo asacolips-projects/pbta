@@ -40,8 +40,6 @@ export default class PbtaItemSheet extends ItemSheet {
 			system: this.item.system,
 			enriched: {
 				description: this.item.system.description,
-				moveResults: foundry.utils.duplicate(this.item.system.moveResults),
-				choices: this.item.system?.choices ?? ""
 			},
 
 			effects: this.item.effects.map((e) => foundry.utils.deepClone(e)),
@@ -86,6 +84,13 @@ export default class PbtaItemSheet extends ItemSheet {
 					context.system.moveTypes =
 						foundry.utils.duplicate(validCharacterType[actorType || characterOrNpc].moveTypes);
 				}
+			}
+
+			if (this.item.system?.moveResults) {
+				context.enriched.moveResults = foundry.utils.duplicate(this.item.system.moveResults);
+			}
+			if (this.item.system?.choices) {
+				context.enriched.choices = this.item.system?.choices ?? "";
 			}
 
 			for (let [key, moveResult] of Object.entries(context.system.moveResults)) {
