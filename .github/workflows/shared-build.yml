@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: node:20
-    if: github.repository_owner == 'asacolips-projects'
+    if: github.repository_owner == 'asacolips-projects' && !contains(github.head_ref, 'beta') && !contains(github.head_ref, 'alpha')
     timeout-minutes: 60
     steps:
 
