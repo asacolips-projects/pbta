@@ -280,27 +280,29 @@ Hooks.on("renderChatPopout", (app, html, data) => documents.ItemPbta.chatListene
  */
 function _configureTrackableAttributes() {
 	const trackableAttributes = {};
-	for (let [key, data] of Object.entries(game.pbta.sheetConfig.actorTypes)) {
-		trackableAttributes[key] = {
-			bar: [],
-			value: []
-		};
+	if (game.pbta.sheetConfig.actorTypes) {
+		for (const [key, data] of Object.entries(game.pbta.sheetConfig.actorTypes)) {
+			trackableAttributes[key] = {
+				bar: [],
+				value: []
+			};
 
-		const processAttributes = (attributes) => {
-			const attr = data[attributes];
-			if (attr) {
-				for (let [attrK, attrV] of Object.entries(attr)) {
-					if (attrV.type === "Clock" || attrV.type === "Resource") {
-						trackableAttributes[key].bar.push(`${attributes}.${attrK}`);
-					} else if (attrV.type === "Number") {
-						trackableAttributes[key].value.push(`${attributes}.${attrK}.value`);
+			const processAttributes = (attributes) => {
+				const attr = data[attributes];
+				if (attr) {
+					for (const [attrK, attrV] of Object.entries(attr)) {
+						if (attrV.type === "Clock" || attrV.type === "Resource") {
+							trackableAttributes[key].bar.push(`${attributes}.${attrK}`);
+						} else if (attrV.type === "Number") {
+							trackableAttributes[key].value.push(`${attributes}.${attrK}.value`);
+						}
 					}
 				}
-			}
-		};
+			};
 
-		processAttributes("attrTop");
-		processAttributes("attrLeft");
+			processAttributes("attrTop");
+			processAttributes("attrLeft");
+		}
 	}
 
 	CONFIG.Actor.trackableAttributes = trackableAttributes;
