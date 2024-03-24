@@ -39,7 +39,7 @@ export default class PbtaItemSheet extends ItemSheet {
 			source: source.system,
 			system: this.item.system,
 			enriched: {
-				description: this.item.system.description,
+				description: this.item.system.description
 			},
 
 			effects: this.item.effects.map((e) => foundry.utils.deepClone(e)),
