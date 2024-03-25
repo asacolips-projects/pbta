@@ -1,6 +1,6 @@
 name: PR Checks
 on:
-  pull_request_target:
+  pull_request:
 
 concurrency:
   group: "${{ github.ref }}"
@@ -11,5 +11,61 @@ jobs:
   ### Build Job #######################################################
   #####################################################################
   build:
-    if: github.repository_owner == 'asacolips-projects'
     uses: ./.github/workflows/shared-build.yml
+
+  #####################################################################
+  ### Lint for Errors #################################################
+  #####################################################################
+  lint_errors:
+    name: Lint Errors
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+    timeout-minutes: 60
+    steps:
+
+    - name: Retrieving git refs
+      uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: false
+
+    - name: Retrieving cache
+      uses: actions/cache@v4
+      with:
+        path: node_modules/
+        key: node-${{ hashFiles('package-lock.json') }}
+        restore-keys: node-
+
+    - name: Lint for errors
+      run: npm run lint:errors
+
+  #####################################################################
+  ### Lint for Warnings ###############################################
+  #####################################################################
+  lint_warnings:
+    name: Lint Warnings
+    needs: lint_errors
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+    timeout-minutes: 60
+    steps:
+
+    - name: Retrieving git refs
+      uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: false
+
+    - name: Retrieving cache
+      uses: actions/cache@v4
+      with:
+        path: node_modules/
+        key: node-${{ hashFiles('package-lock.json') }}
+        restore-keys: node-
+
+    - name: Lint for errors
+      run: npm run lint:warnings
+      continue-on-error: true

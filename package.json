@@ -4,7 +4,10 @@
     "build:watch": "gulp watch",
     "clean": "gulp clean",
     "lint": "eslint --ext .js,.cjs,.mjs .",
-    "lint:fix": "eslint --ext .js,.cjs,.mjs --fix ."
+    "lint:fix": "eslint --ext .js,.cjs,.mjs --fix .",
+    "lint:warnings": "eslint --max-warnings 0 --ext .js,.cjs,.mjs .",
+    "lint:errors": "eslint --quiet --ext .js,.cjs,.mjs .",
+    "lint:fix:errors": "eslint --quiet --ext .js,.cjs,.mjs --fix ."
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.9",
