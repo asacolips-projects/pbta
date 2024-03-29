@@ -127,7 +127,9 @@ export default class PbtaActorSheet extends ActorSheet {
 				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
 				.length > 1;
 			context.playbooks = CONFIG.PBTA.playbooks
-				.filter((p) => !hasMultipleCharacterTypes || p.actorType === this.actor.type || p.actorType === "")
+				.filter((p) => !hasMultipleCharacterTypes
+					|| p.actorType === (this.actor.sheetType ?? this.actor.baseType)
+					|| p.actorType === "")
 				.map((p) => {
 					return { name: p.name, uuid: p.uuid };
 				});
