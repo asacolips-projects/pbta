@@ -16,7 +16,7 @@ export default class PbtaItemSheet extends ItemSheet {
 			classes: ["pbta", "sheet", "item"],
 			width: 450,
 			height: 450,
-			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "details" }]
+			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
 		});
 	}
 
