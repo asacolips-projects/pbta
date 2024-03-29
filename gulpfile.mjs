@@ -69,15 +69,6 @@ function buildYaml() {
 }
 
 /**
- *
- */
-function buildManifest() {
-	return gulp.src("src/yaml/system.yml")
-		.pipe(yaml({ space: 2 }))
-		.pipe(gulp.dest("./"));
-}
-
-/**
  * Copy static files
  */
 async function copyFiles() {
@@ -93,7 +84,6 @@ async function copyFiles() {
  */
 export function watch() {
 	gulp.watch(`${sourceDirectory}/**/*.{yml, yaml}`, { ignoreInitial: false }, buildYaml);
-	gulp.watch(`${sourceDirectory}/yaml/system.yml`, { ignoreInitial: false }, buildManifest);
 	gulp.watch(`${sourceDirectory}/**/*.${sourceFileExtension}`, { ignoreInitial: false }, buildCode);
 	gulp.watch(`${stylesDirectory}/**/*.${stylesExtension}`, { ignoreInitial: false }, buildStyles);
 	gulp.watch(
@@ -103,7 +93,7 @@ export function watch() {
 	);
 }
 
-export const build = gulp.series(clean, gulp.parallel(buildYaml, buildManifest, buildCode, buildStyles, copyFiles));
+export const build = gulp.series(clean, gulp.parallel(buildYaml, buildCode, buildStyles, copyFiles));
 
 /** ******************/
 /*      CLEAN       */

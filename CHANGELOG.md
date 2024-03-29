@@ -1,3 +1,12 @@
+# 0.9.4
+
+_Release Notes_: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/releases/0.9.4
+
+## Fixes
+
+- Fixed bug with playbooks on actors with type 'other'
+- Made 'Details' the default tab for item sheets
+
 # 0.9.3
 
 _Release Notes_: https://gitlab.com/asacolips-projects/foundry-mods/pbta/-/releases/0.9.3
