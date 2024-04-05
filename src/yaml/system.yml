@@ -52,4 +52,4 @@ download: https://asacolips-artifacts.s3.amazonaws.com/pbta/0.9.4/pbta.zip
 changelog: https://github.com/asacolips-projects/pbta/blob/main/CHANGELOG.md
 bugs: https://github.com/asacolips-projects/pbta/issues
 flags:
-  needsMigrationVersion: "0.8.2"
+  needsMigrationVersion: "0.9.4"

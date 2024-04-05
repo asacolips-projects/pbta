@@ -169,7 +169,7 @@ export default class ItemPbta extends Item {
 			});
 		}
 		if (this.actor && this.system.actorType !== undefined) {
-			this.updateSource({ "system.actorType": this.actor.type });
+			this.updateSource({ "system.actorType": this.actor?.system?.customType ?? this.actor.type });
 		}
 
 		// Handle everything else if not imported from compendiums
