@@ -97,7 +97,6 @@ export default class RollPbtA extends Roll {
 	 */
 	configureModifiers() {
 		const r = this.terms[0];
-		r.modifiers = [];
 
 		// Handle Advantage or Disadvantage
 		if (this.hasAdvantage) {
