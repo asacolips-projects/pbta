@@ -210,6 +210,7 @@ export default class RollPbtA extends Roll {
 					{
 						title,
 						content,
+						default: "submit",
 						buttons
 					},
 					options
