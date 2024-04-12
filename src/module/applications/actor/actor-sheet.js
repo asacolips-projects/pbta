@@ -587,7 +587,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		if ((!up && !down) || (up === down)) return;
 
 		const { maxMod, minMod, statShifting } = game.pbta.sheetConfig;
-		const { labels, value } = statShifting;
+		const { stats, value } = statShifting;
 
 		const system = {};
 		let fail = false;
@@ -609,7 +609,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		const content = await renderTemplate("systems/pbta/templates/chat/stat-shift.hbs", {
 			actor: this.actor,
-			labels,
+			stats,
 			up: up ? this.actor.system.stats[up] : "",
 			down: down ? this.actor.system.stats[down] : "",
 			fail

@@ -10,3 +10,6 @@ dist/
 /pbta/
 /pbta.zip
 foundry
+
+#OS
+.DS_Store
