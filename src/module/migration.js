@@ -124,8 +124,12 @@ export function migrateActorData(actor, migrationData, flags={}) {
 
 		let itemUpdate = migrateItemData(itemData, migrationData, itemFlags);
 
-		if ((itemData.system.actorType !== undefined) && (actor.system?.actorType !== actor.type)) {
-			arr.push({ "system.actorType": actor.type, _id: itemData._id });
+		if (itemData.system.actorType !== undefined) {
+			if (itemData.system?.actorType !== (actor.system?.customType ?? actor.type)) {
+				arr.push({ "system.actorType": actor.system?.customType ?? actor.type, _id: itemData._id });
+			} else if ((actor.system?.customType && itemData.system?.actorType === "other")) {
+				arr.push({ "system.actorType": actor.system?.customType ?? actor.type, _id: itemData._id });
+			}
 		}
 
 		// Update the Owned Item

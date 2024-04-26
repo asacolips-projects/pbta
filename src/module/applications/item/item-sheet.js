@@ -81,8 +81,9 @@ export default class PbtaItemSheet extends ItemSheet {
 				const validCharacterType = Object.fromEntries(Object.entries(sheetConfig.actorTypes)
 					.filter(([k, v]) => [k, v?.baseType].includes(characterOrNpc) && v.moveTypes));
 				if (Object.keys(validCharacterType).length) {
-					context.system.moveTypes =
-						foundry.utils.duplicate(validCharacterType[actorType || characterOrNpc].moveTypes);
+					const moveTypes = validCharacterType[actorType]?.moveTypes
+						?? validCharacterType[characterOrNpc]?.moveTypes;
+					context.system.moveTypes = foundry.utils.duplicate(moveTypes);
 				}
 			}
 
@@ -108,7 +109,8 @@ export default class PbtaItemSheet extends ItemSheet {
 						.filter(([k, v]) => [k, v?.baseType].includes("character") && v.stats));
 
 					if (Object.keys(validCharacterType).length) {
-						context.system.stats = foundry.utils.duplicate(validCharacterType[actorType || "character"].stats);
+						const stats = validCharacterType[actorType]?.stats || validCharacterType.character?.stats;
+						context.system.stats = foundry.utils.duplicate(stats);
 					}
 				}
 				context.system.stats.prompt = { label: game.i18n.localize("PBTA.Prompt") };
@@ -129,7 +131,9 @@ export default class PbtaItemSheet extends ItemSheet {
 				context.system.rollExample = sheetConfig?.rollFormula ?? "2d6";
 			}
 		} else if (this.item.type === "equipment") {
-			context.system.equipmentTypes = sheetConfig?.actorTypes[actorType || "character"]?.equipmentTypes ?? null;
+			const equipmentTypes = sheetConfig?.actorTypes[actorType]?.equipmentTypes
+				|| sheetConfig?.actorTypes.character?.equipmentTypes;
+			context.system.equipmentTypes = equipmentTypes ?? null;
 		}
 
 		return context;
