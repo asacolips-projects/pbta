@@ -191,6 +191,7 @@ export default class ItemPbta extends Item {
 				actorType: this.system.actorType
 			});
 		}
+		super._onCreate(data, options, userId);
 	}
 
 	_onUpdate(changed, options, userId) {
@@ -203,12 +204,14 @@ export default class ItemPbta extends Item {
 				actorType: this.system.actorType
 			};
 		}
+		super._onUpdate(changed, options, userId);
 	}
 
 	_onDelete(options, userId) {
 		if (this.type === "playbook") {
 			CONFIG.PBTA.playbooks = CONFIG.PBTA.playbooks.filter((p) => p.uuid !== this.uuid);
 		}
+		super._onDelete(options, userId);
 	}
 
 	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
