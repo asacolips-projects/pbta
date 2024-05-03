@@ -47,6 +47,19 @@
         </select>
       </div>
       {{/if}}
+      {{#if (gt (objLen system.stats) 0)}}
+      <h3>{{ localize "PBTA.Stat.labelPl" }}</h3>
+      {{#each system.stats}}
+      <div class="form-group">
+        <label>{{ this.label }}</label>
+        <input type="number" name='{{concat "system.stats." @key ".value"}}' value='{{ this.value }}' />
+      </div>
+      {{/each}}
+      <div class="form-group">
+        <label>{{ localize "PBTA.Details" }}</label>
+        <input type="text" name='system.statsDetail' value='{{ system.statsDetail }}' />
+      </div>
+      {{/if}}
     </div>
     {{/if}}
   </section>

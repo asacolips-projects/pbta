@@ -179,6 +179,12 @@ export default class ItemPbta extends Item {
 			if (!this.system.slug) {
 				this.updateSource({ "system.slug": this.name.slugify() });
 			}
+			const actorTypes = this.getActorTypes();
+			if (Object.keys(actorTypes).length) {
+				const actorType = Object.keys(actorTypes)[0];
+				const stats = game.pbta.sheetConfig?.actorTypes[actorType]?.stats;
+				this.updateSource({ "system.stats": stats });
+			}
 		}
 	}
 

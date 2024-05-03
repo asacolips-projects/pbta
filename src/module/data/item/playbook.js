@@ -16,7 +16,9 @@ export default class PlaybookData extends ItemTemplateData {
 					}
 				}
 			}),
-			actorType: new foundry.data.fields.StringField({ initial: "" })
+			actorType: new foundry.data.fields.StringField({ initial: "" }), // @todo MIGRATION TO SET A VALID DEFAULT
+			stats: new foundry.data.fields.ObjectField(), // @todo MIGRATION TO SET A VALID DEFAULT BASED ON actorType
+			statsDetail: new foundry.data.fields.StringField({ initial: "" }),
 		};
 	}
 }

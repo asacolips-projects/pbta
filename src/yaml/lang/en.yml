@@ -31,6 +31,7 @@ PBTA:
   failure: "Complications (mark XP)"
   Formula: "Custom Roll Formula"
   Forward: "Forward"
+  ItemGrants: "Item Grants"
   Modifier: "Modifier"
   MoveGroup: "Move Group"
   MoveGroupHelp: "Multiple moves with the same move-group will be either/or selections when creating a new character using the character builder."
