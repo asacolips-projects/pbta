@@ -25,7 +25,7 @@ PBTA:
   ConditionsApplied: "Conditions Applied:"
   Create: "Create"
   Description: "Description"
-  description: "Run games for any PbtA system in FoundryVTT!"
+  Details: "Details"
   Disadvantage: "Disadvantage"
   Equipment: "Equipment"
   failure: "Complications (mark XP)"

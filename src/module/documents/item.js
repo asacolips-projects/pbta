@@ -220,6 +220,16 @@ export default class ItemPbta extends Item {
 		super._onDelete(options, userId);
 	}
 
+	toDragData() {
+		const dragData = { type: this.documentName };
+		if (this.id) {
+			dragData.uuid = this.uuid;
+			dragData.name = this.name;
+			dragData.img = this.img;
+		} else dragData.data = this.toObject();
+		return dragData;
+	}
+
 	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
 
 		// Collect data

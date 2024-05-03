@@ -3,13 +3,6 @@
  * @extends {ItemSheet}
  */
 export default class PbtaItemSheet extends ItemSheet {
-	constructor(...args) {
-		super(...args);
-		if (this.item.type === "playbook") {
-			this.options.classes.push("playbook");
-		}
-	}
-
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
