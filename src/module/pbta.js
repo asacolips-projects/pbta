@@ -177,9 +177,6 @@ Hooks.once("setup", function () {
 Hooks.once("ready", async function () {
 	// Override sheet config.
 	if (game.user.isGM) {
-		// Store default actor types for later.
-		game.pbta.defaultModel = game.system.model;
-
 		// Force sheet config override off, unless a module changes it.
 		await game.settings.set("pbta", "sheetConfigOverride", false);
 
