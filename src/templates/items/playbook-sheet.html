@@ -60,34 +60,7 @@
         <input type="text" name='system.statsDetail' value='{{ system.statsDetail }}' />
       </div>
       {{/if}}
-      <h3>{{ localize "PBTA.ItemGrants" }}</h3>
-      {{#each system.choiceSets}}
-      <fieldset class="choiceset" data-id="{{@key}}">
-        <legend>
-          <div class="flexrow">
-            <input type="text" name="{{concat "system.choiceSets." @key ".title"}}" value="{{this.title}}" />
-            <button type="button" data-action="delete">
-              <i class="fa fa-trash"></i>
-            </button>
-          </div>
-        </legend>
-        {{#if this.choices.length}}
-        {{#each this.choices}}
-        <div class="choiceset-item" data-uuid="{{this.uuid}}">
-          <img src="{{this.img}}" height="32" width="32">
-          <label>{{this.name}}</label>
-        </div>
-        {{/each}}
-        {{else}}
-        <div>Drop your items here</div>
-        {{/if}}
-      </fieldset>
-      {{/each}}
-      <footer>
-        <button type="button" data-action="add">
-          <i class="fa fa-plus"></i>Add Item Grant
-        </button>
-      </footer>
+      {{> "pbta.playbook-choicesets" }}
     </div>
     {{/if}}
   </section>

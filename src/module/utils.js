@@ -937,6 +937,7 @@ export async function preloadHandlebarsTemplates() {
 
 		// Item partials
 		"systems/pbta/templates/items/parts/move-description.hbs",
+		"systems/pbta/templates/items/parts/playbook-choicesets.hbs",
 
 		// Chat Cards
 		"systems/pbta/templates/chat/stat-shift.hbs"

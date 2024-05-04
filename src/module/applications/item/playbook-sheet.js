@@ -25,8 +25,9 @@ export default class PlaybookSheet extends PbtaItemSheet {
 	async activateListeners(html) {
 		super.activateListeners(html);
 		html.find("select[name='system.actorType']").on("change", this._onChangeStats.bind(this));
-		html.find("button[data-action='add']").on("click", this._onAddChoiceSet.bind(this));
-		html.find("button[data-action='delete']").on("click", this._onDeleteChoiceSet.bind(this));
+		html.find("button[data-action='add-choiceset']").on("click", this._onAddChoiceSet.bind(this));
+		html.find("button[data-action='delete-choiceset']").on("click", this._onDeleteChoiceSet.bind(this));
+		html.find("button[data-action='delete-item']").on("click", this._onDeleteItem.bind(this));
 	}
 
 	_onChangeStats(event) {
@@ -55,24 +56,45 @@ export default class PlaybookSheet extends PbtaItemSheet {
 
 	_onDeleteChoiceSet(event) {
 		event.preventDefault();
-		const fieldset = event.target.closest("fieldset");
-		if (!fieldset) return;
-		const id = fieldset.dataset.id;
+		const { id } = event.target.closest(".choiceset").dataset;
+		if (!id) return;
 		this.item.update({ [`system.choiceSets.-=${id}`]: null });
+	}
+
+	_onDeleteItem(event) {
+		event.preventDefault();
+		const { uuid } = event.target.closest(".choiceset-item").dataset;
+		const { id } = event.target.closest(".choiceset").dataset;
+		if (!uuid || !id) return;
+		const choiceset = this.item.system.choiceSets[id];
+		const choices = choiceset.choices.filter((i) => i.uuid !== uuid);
+		this.item.update({ [`system.choiceSets.${id}.choices`]: choices });
 	}
 
 	/* -------------------------------------------- */
 
 	_onDrop(event) {
 		const data = TextEditor.getDragEventData(event);
-		if (!["Item", "Folder"].includes(data.type)) return super._onDrop(event, data);
+		if (!["Item", "Folder"].includes(data.type) || data.subtype === "playbook") return super._onDrop(event, data);
 
-		// if ( data.type === "Folder" ) return this._onDropFolder(event, data);
+		if (data.type === "Folder") return this._onDropFolder(event, data);
 		return this._onDropItem(event, data);
 	}
 
+	async _onDropFolder(event, data) {
+		const folder = await Folder.implementation.fromDropData(data);
+		if (!this.item.isOwner || (folder.type !== "Item")) return [];
+
+		await Promise.all(folder.contents.map(async (item) => {
+			if (!(item instanceof Item)) item = await fromUuid(item.uuid);
+			if (item.type === "playbook") return;
+			return this._onDropItem(event, item.toDragData());
+		}));
+	}
+
 	async _onDropItem(event, data) {
-		const { id: setId } = event.target.dataset;
+		// @todo add sorting
+		const { id: setId } = event.target.closest(".choiceset").dataset;
 		const choiceSets = this.item.system.choiceSets;
 		const { img, name, uuid } = data;
 		choiceSets[setId].choices.push({

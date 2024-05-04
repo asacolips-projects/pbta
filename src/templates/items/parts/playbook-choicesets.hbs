@@ -1,0 +1,33 @@
+<div>
+	<h3>{{ localize "PBTA.ItemGrants" }}</h3>
+	{{#each system.choiceSets}}
+	<fieldset class="choiceset" data-id="{{@key}}">
+		<legend>
+			<div class="flexrow">
+			<input type="text" name="{{concat "system.choiceSets." @key ".title"}}" value="{{this.title}}" />
+			<button type="button" data-action="delete-choiceset">
+				<i class="fa fa-trash"></i>
+			</button>
+			</div>
+		</legend>
+		{{#if this.choices.length}}
+		{{#each this.choices}}
+		<div class="choiceset-item" data-uuid="{{this.uuid}}">
+			<img src="{{this.img}}" height="32" width="32">
+			<label>{{this.name}}</label>
+			<button type="button" data-action="delete-item">
+			<i class="fa fa-trash"></i>
+			</button>
+		</div>
+		{{/each}}
+		{{else}}
+		<div>Drop your items here</div>
+		{{/if}}
+	</fieldset>
+	{{/each}}
+	<footer>
+		<button type="button" data-action="add-choiceset">
+			<i class="fa fa-plus"></i>Add Item Grant
+		</button>
+	</footer>
+</div>

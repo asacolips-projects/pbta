@@ -226,6 +226,7 @@ export default class ItemPbta extends Item {
 			dragData.uuid = this.uuid;
 			dragData.name = this.name;
 			dragData.img = this.img;
+			dragData.subtype = this.type;
 		} else dragData.data = this.toObject();
 		return dragData;
 	}
