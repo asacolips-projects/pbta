@@ -7,7 +7,7 @@ minimumCoreVersion: "11"
 compatibleCoreVersion: "11"
 compatibility:
   minimum: "11"
-  verified: "11.315"
+  verified: "12"
   maximum: "12"
 authors:
   - name: Asacolips
@@ -42,6 +42,9 @@ languages:
     path: lang/fr.json
 gridDistance: 5
 gridUnits: ft
+grid:
+  distance: 5
+  units: 5
 primaryTokenAttribute:
 secondaryTokenAttribute:
 initiative: 1d20
