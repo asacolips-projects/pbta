@@ -571,7 +571,7 @@ export function convertAttr(attrGroup) {
  * @param {boolean} clear	Sets if the system's templates should be merged or replaced.
  */
 export function applyActorTemplates(clear = false) {
-	let templates = game.system.model.Actor;
+	let templates = game.model.Actor;
 	let actorTypes = Object.keys(templates);
 
 	if (!game.pbta.sheetConfig) {
