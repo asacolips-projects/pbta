@@ -156,10 +156,10 @@ export default class PbtaItemSheet extends ItemSheet {
 	}
 
 	/**
-	 * Adding a tag template that puts the description, if it exists otherwise 
-	 * it uses the value
-	 * @param tagData
-	 * @returns an HTML template for the tag
+	 * Adding a tag template that puts the description in the tooltip.
+	 * If the description doesn't exist, there is not tool-tip
+	 * @param {any} tagData
+	 * @returns {string} an HTML template for the tag
 	 */
 	_tagTemplate(tagData) {
 		return `
