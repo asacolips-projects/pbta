@@ -156,6 +156,24 @@ export default class PbtaItemSheet extends ItemSheet {
 	}
 
 	/**
+	 * Adding a tag template that puts the description, if it exists otherwise 
+	 * it uses the value
+	 * @param tagData
+	 * @returns an HTML template for the tag
+	 */
+	_tagTemplate(tagData) {
+		return `
+			<tag data-tooltip="${tagData.description || ""}"
+					class="tagify__tag ${tagData.class ? tagData.class : ""}" ${this.getAttributes(tagData)}>
+				<x title='' class='tagify__tag__removeBtn' role='button' aria-label='remove tag'></x>
+				<div>
+					<span class='tagify__tag-text'>${tagData.value}</span>
+				</div>
+			</tag>
+		`;
+	}
+
+	/**
 	 * Add tagging widget.
 	 * @param {HTMLElement} html
 	 */
@@ -175,6 +193,9 @@ export default class PbtaItemSheet extends ItemSheet {
 					classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
 					enabled: 0,             // <- show suggestions on focus
 					closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
+				},
+				templates: {
+					tag: this._tagTemplate   // <- Add a custom template so descriptions show in a tooltip
 				}
 			});
 		}

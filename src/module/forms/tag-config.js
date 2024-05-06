@@ -71,6 +71,24 @@ export class PbtaTagConfigDialog extends FormApplication {
 	}
 
 	/**
+	 * Adding a tag template that puts the description, if it exists otherwise 
+	 * it uses the value
+	 * @param tagData
+	 * @returns an HTML template for the tag
+	 */
+	_tagTemplate(tagData) {
+		return `
+			<tag data-tooltip="${tagData.description || ""}"
+					class="tagify__tag ${tagData.class ? tagData.class : ""}" ${this.getAttributes(tagData)}>
+				<x title='' class='tagify__tag__removeBtn' role='button' aria-label='remove tag'></x>
+				<div>
+					<span class='tagify__tag-text'>${tagData.value}</span>
+				</div>
+			</tag>
+		`;
+	}
+
+	/**
 	 * Add tagging widget.
 	 * @param {HTMLElement} html
 	 */
@@ -81,12 +99,18 @@ export class PbtaTagConfigDialog extends FormApplication {
 		new Tagify(html.find('input[name="userTags.general"]')[0], {
 			dropdown: {
 				enabled: false
+			},
+			templates: {
+				tag: this._tagTemplate   // <- Add a custom template so descriptions show in a tooltip
 			}
 		});
 		if (html.find('input[name="moduleTags.general"]').length) {
 			new Tagify(html.find('input[name="moduleTags.general"]')[0], {
 				dropdown: {
 					enabled: false
+				},
+				templates: {
+					tag: this._tagTemplate   // <- Add a custom template so descriptions show in a tooltip
 				}
 			});
 		}
@@ -99,6 +123,9 @@ export class PbtaTagConfigDialog extends FormApplication {
 					new Tagify(html.find(`input[name="${path}.${tag}.${t}"]`)[0], {
 						dropdown: {
 							enabled: false
+						},
+						templates: {
+							tag: this._tagTemplate   // <- Add a custom template so descriptions show in a tooltip
 						}
 					});
 				}
