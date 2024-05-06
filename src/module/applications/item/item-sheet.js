@@ -174,6 +174,20 @@ export default class PbtaItemSheet extends ItemSheet {
 	}
 
 	/**
+	 * Allows User input of tags with descriptions in
+	 * the form of "tag name"|"tag description"
+	 * @param {any} tagData
+	 */
+	_transformTag(tagData) {
+		let parts = tagData.value.split(/\|/);
+		let value = parts[0].trim();
+		let description = parts[1]?.replace(/\|/, "").trim();
+
+		tagData.value = value;
+		tagData.description = description || tagData.description;
+	}
+
+	/**
 	 * Add tagging widget.
 	 * @param {HTMLElement} html
 	 */
@@ -196,7 +210,8 @@ export default class PbtaItemSheet extends ItemSheet {
 				},
 				templates: {
 					tag: this._tagTemplate   // <- Add a custom template so descriptions show in a tooltip
-				}
+				},
+				transformTag: this._transformTag
 			});
 		}
 	}
