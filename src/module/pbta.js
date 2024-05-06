@@ -89,7 +89,7 @@ Hooks.once("init", async function () {
 	Items.registerSheet("pbta", applications.item.PlaybookSheet, {
 		makeDefault: true,
 		types: ["playbook"],
-		label: "PBTA.SheetClassItem"
+		label: "PBTA.SheetClassPlaybook"
 	});
 	DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, "core", TokenConfig);
 	DocumentSheetConfig.registerSheet(TokenDocument, "core", applications.token.PbtaTokenConfig, {

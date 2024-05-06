@@ -61,6 +61,7 @@ PBTA:
   SheetClassNPC: "Default PbtA NPC Sheet"
   SheetClassOther: "Default PbtA Other Sheet"
   SheetClassItem: "Default PbtA Item Sheet"
+  SheetClassPlaybook: "Default PbtA Playbook Sheet"
   success: "Success"
   Tags: "Tags"
   TagsHelp: "(Use tab to autocomplete, commas to create new tags, and double click a tag to edit it)"
