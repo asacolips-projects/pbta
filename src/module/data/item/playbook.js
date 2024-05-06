@@ -20,9 +20,11 @@ export default class PlaybookData extends ItemTemplateData {
 			actorType: new foundry.data.fields.StringField({ initial: "" }), // @todo MIGRATION TO SET A VALID DEFAULT
 			stats: new foundry.data.fields.ObjectField(), // @todo MIGRATION TO SET A VALID DEFAULT BASED ON actorType
 			statsDetail: new foundry.data.fields.StringField({ initial: "" }),
+			attributes: new foundry.data.fields.ObjectField(), // @todo migration
 			choiceSets: new MappingField(
 				new foundry.data.fields.SchemaField({
 					title: new foundry.data.fields.StringField({ initial: "", required: true }),
+					desc: new foundry.data.fields.StringField({ initial: "", required: true }),
 					type: new foundry.data.fields.StringField({ initial: "single", choices: ["single", "multi"] }),
 					choices: new foundry.data.fields.ArrayField(
 						new foundry.data.fields.SchemaField({
@@ -30,12 +32,16 @@ export default class PlaybookData extends ItemTemplateData {
 							img: new foundry.data.fields.StringField({ initial: null, nullable: true }),
 							name: new foundry.data.fields.StringField({ initial: null, nullable: true }),
 							granted: new foundry.data.fields.BooleanField({ initial: false }),
-							advancement: new foundry.data.fields.NumberField({ initial: 0, nullable: false })
+							advancement: new foundry.data.fields.NumberField({
+								required: true, integer: true, min: 0, initial: 0, nullable: false
+							})
 						})
 					),
 					grantOn: new foundry.data.fields.NumberField({
-						initial: 0,
-						integer: true
+						required: true, integer: true, min: 0, initial: 0, nullable: false
+					}),
+					advancement: new foundry.data.fields.NumberField({
+						required: true, integer: true, min: 0, initial: 0, nullable: false
 					})
 				})
 			)

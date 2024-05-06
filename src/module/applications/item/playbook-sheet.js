@@ -5,8 +5,9 @@ export default class PlaybookSheet extends PbtaItemSheet {
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "item", "playbook"],
+			width: 550,
 			dragDrop: [
-				{ dragSelector: ".choiceset-item", dropSelector: ".choiceset" }
+				{ dragSelector: ".choiceset-item .item", dropSelector: ".choiceset" }
 			]
 		});
 	}
@@ -16,6 +17,10 @@ export default class PlaybookSheet extends PbtaItemSheet {
 	/** @override */
 	async getData() {
 		const context = await super.getData();
+		context.grantOptions = {
+			0: "On Drop",
+			1: "Advancement"
+		};
 		return context;
 	}
 
@@ -25,9 +30,12 @@ export default class PlaybookSheet extends PbtaItemSheet {
 	async activateListeners(html) {
 		super.activateListeners(html);
 		html.find("select[name='system.actorType']").on("change", this._onChangeStats.bind(this));
-		html.find("button[data-action='add-choiceset']").on("click", this._onAddChoiceSet.bind(this));
-		html.find("button[data-action='delete-choiceset']").on("click", this._onDeleteChoiceSet.bind(this));
-		html.find("button[data-action='delete-item']").on("click", this._onDeleteItem.bind(this));
+		html.find("[data-action='add-choiceset']").on("click", this._onAddChoiceSet.bind(this));
+		html.find("[data-action='delete-choiceset']").on("click", this._onDeleteChoiceSet.bind(this));
+		html.find("[data-action='delete-item']").on("click", this._onDeleteItem.bind(this));
+		html.find("[name='granton']").on("change", this._onChoiceSetGrantOn.bind(this));
+		html.find("[name='advancement']").on("change", this._onChoiceSetAdvancement.bind(this));
+		html.find("[name='item-advancement']").on("change", this._onItemGrantAdvancementChange.bind(this));
 	}
 
 	_onChangeStats(event) {
@@ -68,6 +76,32 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		if (!uuid || !id) return;
 		const choiceset = this.item.system.choiceSets[id];
 		const choices = choiceset.choices.filter((i) => i.uuid !== uuid);
+		this.item.update({ [`system.choiceSets.${id}.choices`]: choices });
+	}
+
+	_onChoiceSetGrantOn(event) {
+		event.preventDefault();
+		const { id } = event.target.closest(".choiceset").dataset;
+		if (!id) return;
+		this.item.update({ [`system.choiceSets.${id}.grantOn`]: Number(event.target.value) });
+	}
+
+	_onChoiceSetAdvancement(event) {
+		event.preventDefault();
+		const { id } = event.target.closest(".choiceset").dataset;
+		if (!id) return;
+		if (!Number.isNumeric(event.target.value)) return this.render();
+		this.item.update({ [`system.choiceSets.${id}.advancement`]: Number(event.target.value) });
+	}
+
+	_onItemGrantAdvancementChange(event) {
+		event.preventDefault();
+		const { uuid } = event.target.closest(".choiceset-item").dataset;
+		const { id } = event.target.closest(".choiceset").dataset;
+		if (!uuid || !id) return;
+		if (!Number.isNumeric(event.target.value)) return this.render();
+		const choices = this.item.system.choiceSets[id].choices;
+		choices.find((c) => c.uuid === uuid).advancement = Number(event.target.value);
 		this.item.update({ [`system.choiceSets.${id}.choices`]: choices });
 	}
 

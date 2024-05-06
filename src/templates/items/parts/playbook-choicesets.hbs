@@ -1,33 +1,53 @@
 <div>
-	<h3>{{ localize "PBTA.ItemGrants" }}</h3>
 	{{#each system.choiceSets}}
 	<fieldset class="choiceset" data-id="{{@key}}">
-		<legend>
-			<div class="flexrow">
-			<input type="text" name="{{concat "system.choiceSets." @key ".title"}}" value="{{this.title}}" />
-			<button type="button" data-action="delete-choiceset">
-				<i class="fa fa-trash"></i>
-			</button>
+		<div class="form-group">
+			<label>Label</label>
+			<div class="form-fields">
+				<input type="text" name="system.choiceSets.{{@key}}.title" value="{{this.title}}" />
+				<a style="flex: 0; margin: 3px;" type="button" data-action="delete-choiceset">
+					<i class="fa fa-trash"></i>
+				</a>
 			</div>
-		</legend>
+		</div>
+		<div class="form-group">
+			<label>Description</label>
+			<div class="form-fields">
+				<input type="text" name="system.choiceSets.{{@key}}.desc" value="{{this.desc}}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Grant On</label>
+			<div class="form-fields">
+				<select name="granton">
+					{{ selectOptions ../grantOptions selected=this.grantOn}}
+				</select>
+				<label>Advancement</label>
+				<input type="number" name="advancement" value="{{this.advancement}}" {{disabled (not this.grantOn)}}>
+			</div>
+		</div>
+		<hr>
 		{{#if this.choices.length}}
 		{{#each this.choices}}
-		<div class="choiceset-item" data-uuid="{{this.uuid}}">
-			<img src="{{this.img}}" height="32" width="32">
-			<label>{{this.name}}</label>
-			<button type="button" data-action="delete-item">
-			<i class="fa fa-trash"></i>
-			</button>
+		<div class="form-group choiceset-item" data-uuid="{{this.uuid}}">
+			{{!-- TODO add visual for already granted item --}}
+			<div class="item flexrow">
+				<img style="flex: 0; margin-right: 3px;" src="{{this.img}}" height="32" width="32">
+				<label>{{this.name}}</label>
+			</div>
+			<input type="number" name="item-advancement" value="{{this.advancement}}">
+			<a style="flex: 0; margin: 3px;" data-action="delete-item">
+				<i class="fa fa-trash"></i>
+			</a>
 		</div>
 		{{/each}}
-		{{else}}
-		<div>Drop your items here</div>
+		<div style="margin: 3px; text-align: center;">Drop your items here</div>
 		{{/if}}
 	</fieldset>
 	{{/each}}
 	<footer>
-		<button type="button" data-action="add-choiceset">
+		<a type="button" data-action="add-choiceset">
 			<i class="fa fa-plus"></i>Add Item Grant
-		</button>
+		</a>
 	</footer>
 </div>
