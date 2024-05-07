@@ -775,6 +775,58 @@ export function parseTags(tagString) {
 	return [];
 }
 
+export class TagHandler {
+	/**
+	 * Adding a tag template that puts the description in the tooltip.
+	 * If the description doesn't exist, there is not tool-tip
+	 * @param {any} tagData
+	 * @returns {string} an HTML template for the tag
+	 */
+	static tagTemplate(tagData) {
+		return `
+			<tag data-tooltip="${tagData.description ?? ""}"
+					class="tagify__tag ${tagData.class ?? ""}" ${this.getAttributes(tagData)}>
+				<x title='' class='tagify__tag__removeBtn' role='button' aria-label='remove tag'></x>
+				<div>
+					<span class='tagify__tag-text'>${tagData.value}</span>
+				</div>
+			</tag>
+		`;
+	}
+
+	/**
+	 * Allows User input of tags with descriptions in
+	 * the form of "tag name"|"tag description"
+	 * @param {any} tagData
+	 */
+	static transformTag(tagData) {
+		let parts = tagData.value.split(/\|/);
+		let value = parts[0].trim();
+		let description = parts[1]?.replace(/\|/, "").trim();
+
+		tagData.value = value;
+		tagData.description = description || tagData.description;
+	}
+
+	static onEdit(tagify, { tag, data }) {
+		let output = data.value;
+		if (data.description) output += ` | ${data.description}`;
+		tagify.setTagTextNode(tag, output);
+	}
+
+	static get config() {
+		return {
+			a11y: {
+				focusableTags: true
+			},
+			templates: {
+				tag: this.tagTemplate   // <- Add a custom template so descriptions show in a tooltip
+			},
+			transformTag: this.transformTag
+		};
+	}
+}
+
 /**
  * Retrieves a list of Playbooks in the world and compendiums
  * and returns them as an array of names or of documents.

@@ -145,7 +145,8 @@ export default class PbtaItemSheet extends ItemSheet {
 	async activateListeners(html) {
 		super.activateListeners(html);
 		if (this.item.type === "equipment") {
-			this._tagify(html);
+			const tagify = this._tagify(html);
+			tagify.on("edit:start", ({ detail: { tag, data } }) => game.pbta.utils.TagHandler.onEdit(tagify, { tag, data }));
 		}
 		html.find(".regenerate-slug").on("click", this._onItemRegenerateSlug.bind(this));
 	}
@@ -156,42 +157,11 @@ export default class PbtaItemSheet extends ItemSheet {
 	}
 
 	/**
-	 * Adding a tag template that puts the description in the tooltip.
-	 * If the description doesn't exist, there is not tool-tip
-	 * @param {any} tagData
-	 * @returns {string} an HTML template for the tag
-	 */
-	_tagTemplate(tagData) {
-		return `
-			<tag data-tooltip="${tagData.description || ""}"
-					class="tagify__tag ${tagData.class ? tagData.class : ""}" ${this.getAttributes(tagData)}>
-				<x title='' class='tagify__tag__removeBtn' role='button' aria-label='remove tag'></x>
-				<div>
-					<span class='tagify__tag-text'>${tagData.value}</span>
-				</div>
-			</tag>
-		`;
-	}
-
-	/**
-	 * Allows User input of tags with descriptions in
-	 * the form of "tag name"|"tag description"
-	 * @param {any} tagData
-	 */
-	_transformTag(tagData) {
-		let parts = tagData.value.split(/\|/);
-		let value = parts[0].trim();
-		let description = parts[1]?.replace(/\|/, "").trim();
-
-		tagData.value = value;
-		tagData.description = description || tagData.description;
-	}
-
-	/**
 	 * Add tagging widget.
 	 * @param {HTMLElement} html
+	 * @returns {Tagify | undefined}
 	 */
-	async _tagify(html) {
+	_tagify(html) {
 		let $input = html.find('input[name="system.tags"]');
 		if ($input.length > 0) {
 			if (!this.isEditable) {
@@ -200,7 +170,7 @@ export default class PbtaItemSheet extends ItemSheet {
 			const whitelist = game.pbta.utils.getTagList(this.item, "item");
 
 			// init Tagify script on the above inputs
-			new Tagify($input[0], {
+			return new Tagify($input[0], {
 				whitelist,
 				dropdown: {
 					maxItems: 20,           // <- mixumum allowed rendered suggestions
@@ -208,10 +178,7 @@ export default class PbtaItemSheet extends ItemSheet {
 					enabled: 0,             // <- show suggestions on focus
 					closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
 				},
-				templates: {
-					tag: this._tagTemplate   // <- Add a custom template so descriptions show in a tooltip
-				},
-				transformTag: this._transformTag
+				...game.pbta.utils.TagHandler.config
 			});
 		}
 	}
