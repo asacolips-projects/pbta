@@ -12,6 +12,10 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		});
 	}
 
+	get unsupportedItemTypes() {
+		return new Set(["npcMove", "playbook", "tag"]);
+	}
+
 	/* -------------------------------------------- */
 
 	/** @override */
@@ -21,6 +25,15 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			0: "On Drop",
 			1: "Advancement"
 		};
+		const grantsByAdvancement = {};
+		Object.entries(context.system.choiceSets).forEach(([key, data]) => {
+			if (!grantsByAdvancement[data.advancement]) grantsByAdvancement[data.advancement] = [];
+			grantsByAdvancement[data.advancement].push({
+				...context.system.choiceSets[key],
+				key: key
+			});
+		});
+		context.grantsByAdvancement = grantsByAdvancement;
 		return context;
 	}
 
@@ -109,7 +122,9 @@ export default class PlaybookSheet extends PbtaItemSheet {
 
 	_onDrop(event) {
 		const data = TextEditor.getDragEventData(event);
-		if (!["Item", "Folder"].includes(data.type) || data.subtype === "playbook") return super._onDrop(event, data);
+		if (!["Item", "Folder"].includes(data.type) || this.unsupportedItemTypes.has(data.subtype)) {
+			return super._onDrop(event, data);
+		}
 
 		if (data.type === "Folder") return this._onDropFolder(event, data);
 		return this._onDropItem(event, data);
@@ -121,7 +136,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 
 		await Promise.all(folder.contents.map(async (item) => {
 			if (!(item instanceof Item)) item = await fromUuid(item.uuid);
-			if (item.type === "playbook") return;
+			if (this.unsupportedItemTypes.has(item.type)) return;
 			return this._onDropItem(event, item.toDragData());
 		}));
 	}
