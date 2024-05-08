@@ -25,15 +25,8 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			0: "On Drop",
 			1: "Advancement"
 		};
-		const grantsByAdvancement = {};
-		Object.entries(context.system.choiceSets).forEach(([key, data]) => {
-			if (!grantsByAdvancement[data.advancement]) grantsByAdvancement[data.advancement] = [];
-			grantsByAdvancement[data.advancement].push({
-				...context.system.choiceSets[key],
-				key: key
-			});
-		});
-		context.grantsByAdvancement = grantsByAdvancement;
+		// @todo rename
+		context.grantsByAdvancement = this.item.choicesByAdvancement;
 		return context;
 	}
 
@@ -46,9 +39,6 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		html.find("[data-action='add-choiceset']").on("click", this._onAddChoiceSet.bind(this));
 		html.find("[data-action='delete-choiceset']").on("click", this._onDeleteChoiceSet.bind(this));
 		html.find("[data-action='delete-item']").on("click", this._onDeleteItem.bind(this));
-		html.find("[name='granton']").on("change", this._onChoiceSetGrantOn.bind(this));
-		html.find("[name='advancement']").on("change", this._onChoiceSetAdvancement.bind(this));
-		html.find("[name='item-advancement']").on("change", this._onItemGrantAdvancementChange.bind(this));
 	}
 
 	_onChangeStats(event) {
@@ -65,13 +55,17 @@ export default class PlaybookSheet extends PbtaItemSheet {
 
 	_onAddChoiceSet(event) {
 		event.preventDefault();
-		const choiceSets = this.item.system.choiceSets ?? {};
-		choiceSets[foundry.utils.randomID(8)] = {
+		const choiceSets = this.item.system.choiceSets ?? [];
+		// @todo add Creation Dialog
+		choiceSets.push({
 			title: "",
-			type: "single",
+			desc: "",
+			type: "multi",
+			repeatable: true,
 			choices: [],
-			grantOn: 0
-		};
+			grantOn: 0,
+			advancement: 0
+		});
 		this.item.update({ "system.choiceSets": choiceSets });
 	}
 
@@ -79,55 +73,41 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		event.preventDefault();
 		const { id } = event.target.closest(".choiceset").dataset;
 		if (!id) return;
-		this.item.update({ [`system.choiceSets.-=${id}`]: null });
+		const choiceSets = this.item.system.choiceSets.filter((item, index) => index !== Number(id));
+		this.item.update({ "system.choiceSets": choiceSets });
 	}
 
 	_onDeleteItem(event) {
 		event.preventDefault();
-		const { uuid } = event.target.closest(".choiceset-item").dataset;
+		const { id: index } = event.target.closest(".choiceset-item").dataset;
 		const { id } = event.target.closest(".choiceset").dataset;
-		if (!uuid || !id) return;
-		const choiceset = this.item.system.choiceSets[id];
-		const choices = choiceset.choices.filter((i) => i.uuid !== uuid);
-		this.item.update({ [`system.choiceSets.${id}.choices`]: choices });
-	}
-
-	_onChoiceSetGrantOn(event) {
-		event.preventDefault();
-		const { id } = event.target.closest(".choiceset").dataset;
-		if (!id) return;
-		this.item.update({ [`system.choiceSets.${id}.grantOn`]: Number(event.target.value) });
-	}
-
-	_onChoiceSetAdvancement(event) {
-		event.preventDefault();
-		const { id } = event.target.closest(".choiceset").dataset;
-		if (!id) return;
-		if (!Number.isNumeric(event.target.value)) return this.render();
-		this.item.update({ [`system.choiceSets.${id}.advancement`]: Number(event.target.value) });
+		if (!index || !id) return;
+		const choiceSets = this.item.system.choiceSets;
+		choiceSets[id].choices = choiceSets[id].choices.filter((item, _index) => _index !== Number(index));
+		this.item.update({ "system.choiceSets": choiceSets });
 	}
 
 	_onItemGrantAdvancementChange(event) {
 		event.preventDefault();
-		const { uuid } = event.target.closest(".choiceset-item").dataset;
+		const { id: index } = event.target.closest(".choiceset-item").dataset;
 		const { id } = event.target.closest(".choiceset").dataset;
-		if (!uuid || !id) return;
-		if (!Number.isNumeric(event.target.value)) return this.render();
-		const choices = this.item.system.choiceSets[id].choices;
-		choices.find((c) => c.uuid === uuid).advancement = Number(event.target.value);
-		this.item.update({ [`system.choiceSets.${id}.choices`]: choices });
+		if (!index || !id) return;
+		if (!Number.isNumeric(event.target.value)) return;
+		const choiceSets = this.item.system.choiceSets;
+		choiceSets[id].choices[index].advancement = Number(event.target.value);
+		this.item.update({ "system.choiceSets": choiceSets });
 	}
 
 	/* -------------------------------------------- */
 
-	_onDrop(event) {
+	async _onDrop(event) {
 		const data = TextEditor.getDragEventData(event);
 		if (!["Item", "Folder"].includes(data.type) || this.unsupportedItemTypes.has(data.subtype)) {
 			return super._onDrop(event, data);
 		}
 
 		if (data.type === "Folder") return this._onDropFolder(event, data);
-		return this._onDropItem(event, data);
+		return await this._onDropItem(event, data);
 	}
 
 	async _onDropFolder(event, data) {
@@ -153,6 +133,6 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			granted: false,
 			advancement: 0
 		});
-		this.item.update({ "system.choiceSets": choiceSets });
+		return await this.item.update({ "system.choiceSets": choiceSets });
 	}
 }

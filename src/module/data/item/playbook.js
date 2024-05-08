@@ -1,4 +1,3 @@
-import { MappingField } from "../fields.js";
 import { ItemTemplateData } from "./templates/item.js";
 
 export default class PlaybookData extends ItemTemplateData {
@@ -21,11 +20,14 @@ export default class PlaybookData extends ItemTemplateData {
 			stats: new foundry.data.fields.ObjectField(), // @todo MIGRATION TO SET A VALID DEFAULT BASED ON actorType
 			statsDetail: new foundry.data.fields.StringField({ initial: "" }),
 			attributes: new foundry.data.fields.ObjectField(), // @todo migration
-			choiceSets: new MappingField(
+			choiceSets: new foundry.data.fields.ArrayField(
 				new foundry.data.fields.SchemaField({
 					title: new foundry.data.fields.StringField({ initial: "", required: true }),
+					// @todo consider HTMLField instead
 					desc: new foundry.data.fields.StringField({ initial: "", required: true }),
-					type: new foundry.data.fields.StringField({ initial: "single", choices: ["single", "multi"] }),
+					type: new foundry.data.fields.StringField({ initial: "multi", choices: ["single", "multi"] }),
+					// optional: new foundry.data.fields.BooleanField({ initial: false }),
+					repeatable: new foundry.data.fields.BooleanField({ initial: true }),
 					choices: new foundry.data.fields.ArrayField(
 						new foundry.data.fields.SchemaField({
 							uuid: new foundry.data.fields.StringField({ initial: "", required: true }),
