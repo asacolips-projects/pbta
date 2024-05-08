@@ -60,7 +60,10 @@ export class PbtaTagConfigDialog extends FormApplication {
 
 	async activateListeners(html) {
 		super.activateListeners(html);
-		await this._tagify(html);
+		const tags = await this._tagify(html);
+		for (const t of tags) {
+			t.on("edit:start", ({ detail: { tag, data } }) => game.pbta.utils.TagHandler.onEdit(t, { tag, data }));
+		}
 		this.setPosition();
 	}
 
@@ -71,24 +74,51 @@ export class PbtaTagConfigDialog extends FormApplication {
 	}
 
 	/**
+	 * Adding a tag template that puts the description in the tooltip.
+	 * If the description doesn't exist, there is not tool-tip
+	 * @param {any} tagData
+	 * @returns {string} an HTML template for the tag
+	 */
+	_tagTemplate(tagData) {
+		return `
+			<tag data-tooltip="${tagData.description || ""}"
+					class="tagify__tag ${tagData.class ? tagData.class : ""}" ${this.getAttributes(tagData)}>
+				<x title='' class='tagify__tag__removeBtn' role='button' aria-label='remove tag'></x>
+				<div>
+					<span class='tagify__tag-text'>${tagData.value}</span>
+				</div>
+			</tag>
+		`;
+	}
+
+	/**
+	 * Allows User input of tags with descriptions in
+	 * the form of "tag name"|"tag description"
+	 * @param {any} tagData
+	 */
+	_transformTag(tagData) {
+		let parts = tagData.value.split(/\|/);
+		let value = parts[0].trim();
+		let description = parts[1]?.replace(/\|/, "").trim();
+
+		tagData.value = value;
+		tagData.description = description || tagData.description;
+	}
+
+	/**
 	 * Add tagging widget.
 	 * @param {HTMLElement} html
+	 * @returns {Promise<Tagify[]>}
 	 */
 	async _tagify(html) {
 		const data = foundry.utils.deepClone(await this.getData());
 		const { userTags, moduleTags } = data;
 
-		new Tagify(html.find('input[name="userTags.general"]')[0], {
-			dropdown: {
-				enabled: false
-			}
-		});
+		const TAGS = [];
+
+		TAGS.push(new Tagify(html.find('input[name="userTags.general"]')[0], game.pbta.utils.TagHandler.config));
 		if (html.find('input[name="moduleTags.general"]').length) {
-			new Tagify(html.find('input[name="moduleTags.general"]')[0], {
-				dropdown: {
-					enabled: false
-				}
-			});
+			TAGS.push(new Tagify(html.find('input[name="moduleTags.general"]')[0], game.pbta.utils.TagHandler.config));
 		}
 		delete userTags.general;
 		delete moduleTags.general;
@@ -96,16 +126,13 @@ export class PbtaTagConfigDialog extends FormApplication {
 		const initializeTagify = (tags, path) => {
 			for (let tag in tags) {
 				for (let t in tags[tag]) {
-					new Tagify(html.find(`input[name="${path}.${tag}.${t}"]`)[0], {
-						dropdown: {
-							enabled: false
-						}
-					});
+					TAGS.push(new Tagify(html.find(`input[name="${path}.${tag}.${t}"]`)[0], game.pbta.utils.TagHandler.config));
 				}
 			}
 		};
 
 		initializeTagify(userTags, "userTags");
 		initializeTagify(moduleTags, "moduleTags");
+		return TAGS;
 	}
 }
