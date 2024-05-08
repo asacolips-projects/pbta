@@ -784,11 +784,11 @@ export class TagHandler {
 	 */
 	static tagTemplate(tagData) {
 		return `
-			<tag data-tooltip="${tagData.description ?? ""}"
+			<tag data-tooltip="${game.i18n.localize(tagData.description) ?? ""}"
 					class="tagify__tag ${tagData.class ?? ""}" ${this.getAttributes(tagData)}>
 				<x title='' class='tagify__tag__removeBtn' role='button' aria-label='remove tag'></x>
 				<div>
-					<span class='tagify__tag-text'>${tagData.value}</span>
+					<span class='tagify__tag-text'>${game.i18n.localize(tagData.value)}</span>
 				</div>
 			</tag>
 		`;
