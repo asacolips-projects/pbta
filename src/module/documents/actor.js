@@ -14,6 +14,10 @@ export default class ActorPbta extends Actor {
 		}
 	}
 
+	get advancements() {
+		return this.system?.advancements ?? null;
+	}
+
 	/**
 	 * Returns all active conditions.
 	 * @returns {object[]}

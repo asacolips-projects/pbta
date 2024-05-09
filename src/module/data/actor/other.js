@@ -10,6 +10,9 @@ export default class OtherData extends ActorDataTemplate {
 			customType: new foundry.data.fields.StringField({ initial: "" }),
 
 			// Character Data
+			advancements: new foundry.data.fields.NumberField({
+				required: true, integer: true, min: 0, initial: 0, nullable: false
+			}),
 			playbook: new foundry.data.fields.SchemaField({
 				name: new foundry.data.fields.StringField({ initial: "" }),
 				slug: new foundry.data.fields.StringField({ initial: "" }),
