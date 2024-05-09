@@ -61,7 +61,7 @@ function isNewerVersion(v1, v0) {
     if ( p1 !== p0 ) return p1 > p0;
   }
   if ( v0Parts.length > v1Parts.length ) return false;
-  return !v1Parts.equals(v0Parts);
+  return v1Parts.join(".") !== v0Parts.join(".");
 }
 
 // Verify compatibility is valid before adding.
