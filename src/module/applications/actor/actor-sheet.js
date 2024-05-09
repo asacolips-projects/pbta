@@ -51,8 +51,12 @@ export default class PbtaActorSheet extends ActorSheet {
 		return `${path}/actor-sheet.html`;
 	}
 
+	/**
+	 * Blocklist of item types that shouldn't be added to the actor.
+	 * @returns {Set<string>}
+	 */
 	get unsupportedItemTypes() {
-		return new Set(["npcMove", "playbook", "tag"]);
+		return new Set(["npcMove", "tag"]);
 	}
 
 	/* -------------------------------------------- */

@@ -185,7 +185,68 @@ export default class ItemPbta extends Item {
 				const stats = game.pbta.sheetConfig?.actorTypes[actorType]?.stats;
 				this.updateSource({ "system.stats": stats });
 			}
+
+			if (this.parent) {
+				const choiceUpdate = await this.handleChoices(data);
+				if (Object.keys(choiceUpdate).length > 0) {
+					this.updateSource(choiceUpdate);
+					const items = await Promise.all(
+						choiceUpdate["system.choiceSets"].flatMap((set) => set.choices.map((i) => fromUuid(i.uuid)))
+					);
+					const grantedItems = await ItemPbta.createDocuments(
+						items.map((i) => i.toObject()),
+						{
+							parent: this.parent,
+							renderSheet: null
+						}
+					);
+					const created = grantedItems.map((i) => i.id);
+					this.updateSource({
+						"flags.pbta": { granted: created }
+					});
+				}
+			}
 		}
+	}
+
+	async handleChoices(data) {
+		if (data.system?.choiceSets?.length > 0) {
+			for (const choiceSet of data.system.choiceSets) {
+				// if (choiceSet.choice !== null) continue;
+				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
+				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
+				const validChoices = choices.filter((c) => !c.granted && c.advancement <= this.parent.advancement);
+				if (!validChoices.length) continue;
+
+				await Dialog.wait({
+					title: `${game.i18n.localize("CHOICE !LOCALIZEME")}: ${title}`,
+					content: await renderTemplate("systems/pbta/templates/dialog/choice-dialog.hbs", { choices: validChoices, desc, parent: this.parent }),
+					default: "ok",
+					// close: () => {},
+					buttons: {
+						skip: {
+							label: game.i18n.localize("SKIP !LOCALIZEME"),
+							icon: '<i class="fas fa-undo"></i>',
+							callback: () => this.configure({ ownership: undefined })
+						},
+						ok: {
+							label: game.i18n.localize("OK !LOCALIZEME"),
+							icon: '<i class="fas fa-check"></i>',
+							callback: async (html) => {
+								const fd = new FormDataExtended(html.querySelector(".pbta-choice-dialog"));
+								validChoices.forEach((i) => {
+									if (fd.object[i.uuid]) {
+										const index = choices.findIndex((c) => c.uuid === i.uuid);
+										choiceSet.choices[index].granted = true;
+									}
+								});
+							}
+						}
+					}
+				}, { jQuery: false });
+			}
+		}
+		return { "system.choiceSets": data.system.choiceSets };
 	}
 
 	_onCreate(data, options, userId) {

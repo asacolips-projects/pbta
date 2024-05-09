@@ -42,6 +42,7 @@ export default class PlaybookData extends ItemTemplateData {
 					grantOn: new foundry.data.fields.NumberField({
 						required: true, integer: true, min: 0, initial: 0, nullable: false
 					}),
+					granted: new foundry.data.fields.BooleanField({ initial: false }),
 					advancement: new foundry.data.fields.NumberField({
 						required: true, integer: true, min: 0, initial: 0, nullable: false
 					})

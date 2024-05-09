@@ -940,7 +940,10 @@ export async function preloadHandlebarsTemplates() {
 		"systems/pbta/templates/items/parts/playbook-choicesets.hbs",
 
 		// Chat Cards
-		"systems/pbta/templates/chat/stat-shift.hbs"
+		"systems/pbta/templates/chat/stat-shift.hbs",
+
+		// Dialog partials
+		"systems/pbta/templates/dialog/choice-dialog.hbs"
 	];
 
 	const paths = {};
