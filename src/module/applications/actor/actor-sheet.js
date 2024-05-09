@@ -756,7 +756,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				slug: item.slug ?? item.name.slugify(),
 				uuid: item.uuid
 			} });
-			return false;
+			// @todo remove previous playbooks
 		}
 
 		// Create the owned item
