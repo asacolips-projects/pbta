@@ -25,8 +25,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			0: "On Drop",
 			1: "Advancement"
 		};
-		// @todo rename
-		context.grantsByAdvancement = this.item.choicesByAdvancement;
+		context.choicesByAdvancement = this.item.choicesByAdvancement;
 		return context;
 	}
 
