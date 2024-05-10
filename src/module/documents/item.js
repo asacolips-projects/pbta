@@ -215,22 +215,24 @@ export default class ItemPbta extends Item {
 	async handleChoices(data) {
 		if (data.system?.choiceSets?.length > 0) {
 			for (const choiceSet of data.system.choiceSets) {
-				// if (choiceSet.choice !== null) continue;
 				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
 				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
-				const validChoices = choices.filter((c) => !c.granted && c.advancement <= this.parent.advancement);
+				const validChoices = choices.filter((c) => !c.granted && c.advancement <= this.parent.advancements);
 				if (!validChoices.length) continue;
 
 				await Dialog.wait({
 					title: `${game.i18n.localize("CHOICE !LOCALIZEME")}: ${title}`,
 					content: await renderTemplate("systems/pbta/templates/dialog/choice-dialog.hbs", { choices: validChoices, desc, parent: this.parent }),
 					default: "ok",
+					// @todo add some warning about pending grants
 					// close: () => {},
 					buttons: {
 						skip: {
 							label: game.i18n.localize("SKIP !LOCALIZEME"),
 							icon: '<i class="fas fa-undo"></i>',
-							callback: () => this.configure({ ownership: undefined })
+							callback: () => {
+								// @todo add some warning about pending grants
+							}
 						},
 						ok: {
 							label: game.i18n.localize("OK !LOCALIZEME"),
