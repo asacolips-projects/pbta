@@ -350,6 +350,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			if (currPlaybook.uuid) {
 				const deleted = await this.actor.items.find((i) => i.type === "playbook")?.delete();
 				if (!deleted) {
+					event.target.value = currPlaybook.uuid;
 					event.stopPropagation();
 					return;
 				}
@@ -754,8 +755,9 @@ export default class PbtaActorSheet extends ActorSheet {
 			return this._onSortItem(event, itemData);
 		}
 
-		if (item.type === "playbook" && this.actor.system.playbook) {
-			// @todo remove previous playbooks
+		if (item.type === "playbook" && this.actor.system.playbook.name) {
+			const deleted = await this.actor.items.find((i) => i.type === "playbook")?.delete();
+			if (!deleted) return false;
 		}
 
 		// Create the owned item
