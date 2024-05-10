@@ -339,18 +339,22 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".rollable, .showable").on("click", this._onRollable.bind(this));
 
 		// // View playbook.
-		html.find(".charplaybook").on("change", (event) => {
-			const currPlaybook = this.actor.playbook.slug;
-			if (currPlaybook) {
-				this.options.classes = this.options.classes.filter((c) => c !== `playbook-${currPlaybook}`);
+		html.find(".charplaybook").on("change", async (event) => {
+			const currPlaybook = this.actor.playbook;
+			if (currPlaybook.slug) {
+				this.options.classes = this.options.classes.filter((c) => c !== `playbook-${currPlaybook.slug}`);
 			}
 
 			const selected = CONFIG.PBTA.playbooks.find((p) => p.uuid === event.target.value);
-			this.actor.update({ "system.playbook": {
-				name: selected?.name ?? "",
-				slug: selected?.slug ?? selected?.name.slugify() ?? "",
-				uuid: selected?.uuid ?? ""
-			} });
+			// @todo change stats
+			if (currPlaybook.uuid) {
+				const deleted = await this.actor.items.find((i) => i.type === "playbook")?.delete();
+				if (!deleted) {
+					event.stopPropagation();
+					return;
+				}
+			}
+			if (selected) await this.actor.createEmbeddedDocuments("Item", [await fromUuid(selected.uuid)], { originalUuid: selected.uuid });
 		});
 		html.find(".view-playbook").on("click", this._onViewPlaybook.bind(this));
 
@@ -751,11 +755,6 @@ export default class PbtaActorSheet extends ActorSheet {
 		}
 
 		if (item.type === "playbook" && this.actor.system.playbook) {
-			this.actor.update({ "system.playbook": {
-				name: item.name,
-				slug: item.slug ?? item.name.slugify(),
-				uuid: item.uuid
-			} });
 			// @todo remove previous playbooks
 		}
 
