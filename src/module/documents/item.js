@@ -191,7 +191,10 @@ export default class ItemPbta extends Item {
 				if (Object.keys(choiceUpdate).length > 0) {
 					this.updateSource(choiceUpdate);
 					const items = await Promise.all(
-						choiceUpdate["system.choiceSets"].flatMap((set) => set.choices.map((i) => fromUuid(i.uuid)))
+						choiceUpdate["system.choiceSets"].flatMap(
+							(set) => set.choices.filter((i) => i.granted)
+								.map((i) => fromUuid(i.uuid))
+						)
 					);
 					const grantedItems = await ItemPbta.createDocuments(
 						items.map((i) => i.toObject()),
