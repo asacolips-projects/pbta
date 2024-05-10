@@ -32,6 +32,7 @@ PBTA:
   Formula: "Custom Roll Formula"
   Forward: "Forward"
   ItemGrants: "Item Grants"
+  KeepItems: "Keep Items"
   Modifier: "Modifier"
   MoveGroup: "Move Group"
   MoveGroupHelp: "Multiple moves with the same move-group will be either/or selections when creating a new character using the character builder."
@@ -193,6 +194,8 @@ PBTA:
       up: "{stat} Shifts Up"
       down: "{stat} Shifts Down"
   Warnings:
+    Playbook:
+      DeleteWarning: "This {type} will be permanently deleted, cannot be recovered, and will remove {num} granted items."
     Macro:
       NoActorSelected: "No selected or assigned actor could be found to target with macro."
       MissingTargetWarn: "Your controlled actor '{actor}' does not have an item with name '{name}'."

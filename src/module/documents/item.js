@@ -172,13 +172,8 @@ export default class ItemPbta extends Item {
 			this.updateSource({ "system.actorType": this.actor?.system?.customType ?? this.actor.type });
 		}
 
-		// Handle everything else if not imported from compendiums
 		const sourceId = this.getFlag("core", "sourceId");
-		if (sourceId?.startsWith("Compendium.")) return;
 		if (this.type === "playbook") {
-			if (!this.system.slug) {
-				this.updateSource({ "system.slug": this.name.slugify() });
-			}
 			const actorTypes = this.getActorTypes();
 			if (Object.keys(actorTypes).length) {
 				const actorType = Object.keys(actorTypes)[0];
@@ -204,10 +199,19 @@ export default class ItemPbta extends Item {
 						}
 					);
 					const created = grantedItems.map((i) => i.id);
-					this.updateSource({
-						"flags.pbta": { granted: created }
-					});
+					this.updateSource({ "flags.pbta": { grantedItems: created } });
 				}
+				await this.parent.update({
+					"system.playbook": { name: this.name, slug: this.system.slug, uuid: sourceId ?? options.originalUuid }
+				});
+			}
+		}
+
+		// Handle everything else if not imported from compendiums
+		if (sourceId?.startsWith("Compendium.")) return;
+		if (this.type === "playbook") {
+			if (!this.system.slug) {
+				this.updateSource({ "system.slug": this.name.slugify() });
 			}
 		}
 	}
@@ -312,7 +316,7 @@ export default class ItemPbta extends Item {
 	}
 
 	_onCreate(data, options, userId) {
-		if (this.type === "playbook") {
+		if (this.type === "playbook" && !this.parent) {
 			CONFIG.PBTA.playbooks.push({
 				name: this.name,
 				slug: this.system.slug,
@@ -337,7 +341,7 @@ export default class ItemPbta extends Item {
 	}
 
 	_onDelete(options, userId) {
-		if (this.type === "playbook") {
+		if (this.type === "playbook" && !this.parent) {
 			CONFIG.PBTA.playbooks = CONFIG.PBTA.playbooks.filter((p) => p.uuid !== this.uuid);
 		}
 		super._onDelete(options, userId);
