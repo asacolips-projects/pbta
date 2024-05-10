@@ -25,7 +25,13 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			0: "On Drop",
 			1: "Advancement"
 		};
-		context.choicesByAdvancement = this.item.choicesByAdvancement;
+		const choicesByAdvancement = {};
+		this.item.system.choiceSets.forEach((cs, index) => {
+			if (!choicesByAdvancement[cs.advancement]) choicesByAdvancement[cs.advancement] = {};
+			if (!choicesByAdvancement[cs.advancement][index]) choicesByAdvancement[cs.advancement][index] = [];
+			choicesByAdvancement[cs.advancement][index].push(cs);
+		});
+		context.choicesByAdvancement = choicesByAdvancement;
 		return context;
 	}
 
