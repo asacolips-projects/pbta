@@ -254,6 +254,63 @@ export default class ItemPbta extends Item {
 		return { "system.choiceSets": data.system.choiceSets };
 	}
 
+	async _preDelete(options, user) {
+		if (this.type ==="playbook" && this.parent) {
+			const grantedItems = this.getFlag("pbta", "grantedItems") ?? [];
+
+			const type = game.i18n.localize(this.constructor.metadata.label);
+			const buttons = {
+				yes: {
+					icon: '<i class="fas fa-check"></i>',
+					label: game.i18n.localize("Yes"),
+					callback: async () => {
+						if (grantedItems.length) {
+							const granted = new Set(
+								grantedItems.filter((grant) => this.parent?.items.has(grant))
+							);
+							await this.parent.deleteEmbeddedDocuments("Item", Array.from(granted));
+						}
+						await this.parent.update({ "system.playbook": { name: "", slug: "", uuid: "" } });
+						await this.unsetFlag("pbta", "grantedItems");
+						return true;
+					}
+				},
+				keepItems: {
+					icon: '<i class="fas fa-floppy-disk"></i>',
+					label: game.i18n.localize("PBTA.KeepItems"),
+					callback: async () => {
+						await this.parent.update({ "system.playbook": { name: "", slug: "", uuid: "" } });
+						await this.unsetFlag("pbta", "grantedItems");
+						return true;
+					}
+				},
+				no: {
+					icon: '<i class="fas fa-times"></i>',
+					label: game.i18n.localize("No"),
+					callback: () => {
+						return false;
+					}
+				}
+			};
+			if (!grantedItems.length) {
+				buttons.yes.callback();
+			} else {
+				const confirm = await Dialog.wait({
+					title: `${game.i18n.format("DOCUMENT.Delete", { type })}: ${this.name}`,
+					content: `<h4>${game.i18n.localize("AreYouSure")}</h4><p>${game.i18n.format("PBTA.Warnings.Playbook.DeleteWarning", { type, num: grantedItems.length })}</p>`,
+					focus: true,
+					default: "yes",
+					close: () => {
+						return null;
+					},
+					buttons
+				});
+				if (!confirm) return false;
+			}
+		}
+		await super._preDelete(options, user);
+	}
+
 	_onCreate(data, options, userId) {
 		if (this.type === "playbook") {
 			CONFIG.PBTA.playbooks.push({
