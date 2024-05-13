@@ -296,6 +296,7 @@ export default class ItemPbta extends Item {
 					}
 				}
 			};
+			// @todo check if the items are still there, just length isn't enough
 			if (!grantedItems.length) {
 				buttons.yes.callback();
 			} else {
@@ -345,17 +346,6 @@ export default class ItemPbta extends Item {
 			CONFIG.PBTA.playbooks = CONFIG.PBTA.playbooks.filter((p) => p.uuid !== this.uuid);
 		}
 		super._onDelete(options, userId);
-	}
-
-	toDragData() {
-		const dragData = { type: this.documentName };
-		if (this.id) {
-			dragData.uuid = this.uuid;
-			dragData.name = this.name;
-			dragData.img = this.img;
-			dragData.subtype = this.type;
-		} else dragData.data = this.toObject();
-		return dragData;
 	}
 
 	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {

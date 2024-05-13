@@ -105,11 +105,35 @@ export default class PlaybookSheet extends PbtaItemSheet {
 
 	/* -------------------------------------------- */
 
+	async _onDragStart(event) {
+		const li = event.currentTarget;
+		if (event.target.classList.contains("content-link")) return;
+		if (!li.closest(".choiceset-item").dataset.uuid) return super._onDragStart(event);
+
+		const dragData = this._getEntryDragData(li.closest(".choiceset-item").dataset.uuid);
+		if (!dragData) return;
+
+		// Set data transfer
+		event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+	}
+
+	_getEntryDragData(entryId) {
+		const entry = this.item.system.choiceSets.findIndex(
+			(cs) => cs.choices
+				.find((c) => c.uuid === entryId)
+		);
+		if (Number.isNumeric(entry)) {
+			return {
+				choiceSet: entry,
+				type: "Item",
+				uuid: entryId
+			};
+		}
+	}
+
 	async _onDrop(event) {
 		const data = TextEditor.getDragEventData(event);
-		if (!["Item", "Folder"].includes(data.type) || this.unsupportedItemTypes.has(data.subtype)) {
-			return super._onDrop(event, data);
-		}
+		if (!["Item", "Folder"].includes(data.type)) return super._onDrop(event, data);
 
 		if (data.type === "Folder") return this._onDropFolder(event, data);
 		return await this._onDropItem(event, data);
@@ -128,9 +152,22 @@ export default class PlaybookSheet extends PbtaItemSheet {
 
 	async _onDropItem(event, data) {
 		// @todo add sorting
+		const item = await Item.implementation.fromDropData(data);
+		const { img, name, type, uuid } = item;
+
 		const { id: setId } = event.target.closest(".choiceset").dataset;
 		const choiceSets = this.item.system.choiceSets;
-		const { img, name, uuid } = data;
+
+		if (this.unsupportedItemTypes.has(type)) return false;
+		if (data.choiceSet === Number(setId)) return this._onSortItem(event, item, setId);
+		if (choiceSets[setId].choices.find((c) => c.uuid === uuid)) {
+			ui.notifications.warn("Choice Set already has the granted item."); // !LOCALIZEME
+			return false;
+		}
+		if ("choiceSet" in data && data.choiceSet !== Number(setId)) {
+			choiceSets[data.choiceSet].choices = choiceSets[data.choiceSet].choices
+				.filter((c) => c.uuid !== uuid);
+		}
 		choiceSets[setId].choices.push({
 			name,
 			img,
@@ -139,5 +176,30 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			advancement: 0
 		});
 		return await this.item.update({ "system.choiceSets": choiceSets });
+	}
+
+	_onSortItem(event, item, setId) {
+		const newPos = event.target.closest(".choiceset-item");
+		if (!newPos) return false;
+		const choiceSets = this.item.system.choiceSets;
+		const choices = choiceSets[setId].choices;
+		const oldIndex = choices.findIndex((c) => c.uuid === item.uuid);
+		const newIndex = Number(newPos.dataset.id);
+		if (
+			oldIndex === newIndex
+			|| choices[oldIndex].advancement > choices[newIndex].advancement
+		) return false;
+		this._sortArray(choices, newIndex, oldIndex);
+		return this.item.update({ "system.choiceSets": choiceSets });
+	}
+
+	_sortArray(array, newIndex, oldIndex) {
+		if (newIndex >= array.length) {
+			let k = newIndex - array.length + 1;
+			while (k--) {
+				array.push(undefined);
+			}
+		}
+		array.splice(newIndex, 0, array.splice(oldIndex, 1)[0]);
 	}
 }
