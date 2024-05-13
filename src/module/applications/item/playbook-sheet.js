@@ -148,6 +148,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		const choiceSets = this.item.system.choiceSets;
 
 		if (this.unsupportedItemTypes.has(type)) return false;
+		if (data.choiceSet === Number(setId)) return false; // return this._onSortItem(event, item, setId);
 		if (choiceSets[setId].choices.find((c) => c.uuid === uuid)) {
 			ui.notifications.warn("Choice Set already has the granted item."); // !LOCALIZEME
 			return false;
@@ -163,6 +164,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			granted: false,
 			advancement: 0
 		});
+		choiceSets[setId].choices.sort(this.item._sortItemAdvancement);
 		return await this.item.update({ "system.choiceSets": choiceSets });
 	}
 
