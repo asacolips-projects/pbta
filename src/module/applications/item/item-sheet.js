@@ -138,7 +138,8 @@ export default class PbtaItemSheet extends ItemSheet {
 	async activateListeners(html) {
 		super.activateListeners(html);
 		if (this.item.type === "equipment") {
-			this._tagify(html);
+			const tagify = this._tagify(html);
+			tagify.on("edit:start", ({ detail: { tag, data } }) => game.pbta.utils.TagHandler.onEdit(tagify, { tag, data }));
 		}
 		html.find(".regenerate-slug").on("click", this._onItemRegenerateSlug.bind(this));
 	}
@@ -151,8 +152,9 @@ export default class PbtaItemSheet extends ItemSheet {
 	/**
 	 * Add tagging widget.
 	 * @param {HTMLElement} html
+	 * @returns {Tagify | undefined}
 	 */
-	async _tagify(html) {
+	_tagify(html) {
 		let $input = html.find('input[name="system.tags"]');
 		if ($input.length > 0) {
 			if (!this.isEditable) {
@@ -161,14 +163,15 @@ export default class PbtaItemSheet extends ItemSheet {
 			const whitelist = game.pbta.utils.getTagList(this.item, "item");
 
 			// init Tagify script on the above inputs
-			new Tagify($input[0], {
+			return new Tagify($input[0], {
 				whitelist,
 				dropdown: {
 					maxItems: 20,           // <- mixumum allowed rendered suggestions
 					classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
 					enabled: 0,             // <- show suggestions on focus
 					closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
-				}
+				},
+				...game.pbta.utils.TagHandler.config
 			});
 		}
 	}
