@@ -92,17 +92,6 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		this.item.update({ "system.choiceSets": choiceSets });
 	}
 
-	_onItemGrantAdvancementChange(event) {
-		event.preventDefault();
-		const { id: index } = event.target.closest(".choiceset-item").dataset;
-		const { id } = event.target.closest(".choiceset").dataset;
-		if (!index || !id) return;
-		if (!Number.isNumeric(event.target.value)) return;
-		const choiceSets = this.item.system.choiceSets;
-		choiceSets[id].choices[index].advancement = Number(event.target.value);
-		this.item.update({ "system.choiceSets": choiceSets });
-	}
-
 	/* -------------------------------------------- */
 
 	async _onDragStart(event) {
@@ -159,7 +148,6 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		const choiceSets = this.item.system.choiceSets;
 
 		if (this.unsupportedItemTypes.has(type)) return false;
-		if (data.choiceSet === Number(setId)) return this._onSortItem(event, item, setId);
 		if (choiceSets[setId].choices.find((c) => c.uuid === uuid)) {
 			ui.notifications.warn("Choice Set already has the granted item."); // !LOCALIZEME
 			return false;

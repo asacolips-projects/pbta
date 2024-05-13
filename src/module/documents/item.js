@@ -258,6 +258,22 @@ export default class ItemPbta extends Item {
 		return { "system.choiceSets": data.system.choiceSets };
 	}
 
+	async _preUpdate(changed, options, user) {
+		if (this.type === "playbook") {
+			if (changed.system?.choiceSets) {
+				changed.system.choiceSets.forEach((cs) => {
+					if (cs.choices) cs.choices.sort(this._sortItemAdvancement);
+				});
+			}
+		}
+		await super._preUpdate(changed, options, user);
+	}
+
+	_sortItemAdvancement(a, b) {
+		if (a.advancement - b.advancement) return a.advancement - b.advancement;
+		return a.name.localeCompare(b.name);
+	}
+
 	async _preDelete(options, user) {
 		if (this.type ==="playbook" && this.parent) {
 			const grantedItems = this.getFlag("pbta", "grantedItems") ?? [];
