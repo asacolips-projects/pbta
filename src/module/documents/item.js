@@ -291,7 +291,6 @@ export default class ItemPbta extends Item {
 							await this.parent.deleteEmbeddedDocuments("Item", Array.from(granted));
 						}
 						await this.parent.update({ "system.playbook": { name: "", slug: "", uuid: "" } });
-						await this.unsetFlag("pbta", "grantedItems");
 						return true;
 					}
 				},
@@ -300,7 +299,6 @@ export default class ItemPbta extends Item {
 					label: game.i18n.localize("PBTA.KeepItems"),
 					callback: async () => {
 						await this.parent.update({ "system.playbook": { name: "", slug: "", uuid: "" } });
-						await this.unsetFlag("pbta", "grantedItems");
 						return true;
 					}
 				},
