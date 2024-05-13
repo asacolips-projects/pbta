@@ -340,6 +340,11 @@ export default class ItemPbta extends Item {
 				uuid: this.uuid,
 				actorType: this.system.actorType
 			});
+			if (this.system.choiceSets.length) {
+				this.system.choiceSets.forEach((cs) => {
+					if (cs.choices) cs.choices.forEach((c) => c.granted = false);
+				});
+			}
 		}
 		super._onCreate(data, options, userId);
 	}
