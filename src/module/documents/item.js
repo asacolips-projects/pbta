@@ -185,21 +185,27 @@ export default class ItemPbta extends Item {
 				const choiceUpdate = await this.handleChoices(data);
 				if (Object.keys(choiceUpdate).length > 0) {
 					this.updateSource(choiceUpdate);
-					const items = await Promise.all(
-						choiceUpdate["system.choiceSets"].flatMap(
-							(set) => set.choices.filter((i) => i.granted)
-								.map((i) => fromUuid(i.uuid))
-						)
-					);
-					const grantedItems = await ItemPbta.createDocuments(
-						items.map((i) => i.toObject()),
-						{
-							parent: this.parent,
-							renderSheet: null
+					const items = [];
+					const grantedItems = [];
+					for (const set of choiceUpdate["system.choiceSets"]) {
+						for (const choice of set.choices) {
+							if (choice.granted) {
+								const item = fromUuidSync(choice.uuid);
+								if (item) {
+									items.push(item.toObject());
+									grantedItems.push(item.id);
+								} else {
+									console.warn("Item is missing !LOCALIZEME");
+								}
+							}
 						}
-					);
-					const created = grantedItems.map((i) => i.id);
-					this.updateSource({ "flags.pbta": { grantedItems: created } });
+					}
+					await ItemPbta.createDocuments(items, {
+						keepId: true,
+						parent: this.parent,
+						renderSheet: null
+					});
+					this.updateSource({ "flags.pbta": { grantedItems } });
 				}
 				await this.parent.update({
 					"system.playbook": { name: this.name, slug: this.system.slug, uuid: compendiumSource ?? options.originalUuid }
@@ -221,7 +227,15 @@ export default class ItemPbta extends Item {
 			for (const choiceSet of data.system.choiceSets) {
 				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
 				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
-				const validChoices = choices.filter((c) => !c.granted && c.advancement <= this.parent.advancements);
+				const validChoices = choices.filter(
+					(c) => {
+						const item = fromUuidSync(c.uuid);
+						console.log(item);
+						return !c.granted
+							&& c.advancement <= this.parent.advancements
+							&& !this.actor.items.has(item.id);
+					}
+				);
 				if (!validChoices.length) continue;
 
 				await Dialog.wait({
@@ -260,9 +274,15 @@ export default class ItemPbta extends Item {
 
 	async _preUpdate(changed, options, user) {
 		if (this.type === "playbook") {
-			if (changed.system?.choiceSets) {
+			if (Object.keys(changed?.system?.choiceSets ?? {}).length) {
+				if (!Array.isArray(changed.system.choiceSets)) {
+					changed.system.choiceSets = Object.values(changed.system.choiceSets);
+				}
 				changed.system.choiceSets.forEach((cs) => {
-					if (cs.choices) cs.choices.sort(this._sortItemAdvancement);
+					if (Object.keys(cs.choices).length) {
+						if (Array.isArray(cs.choices)) cs.choices.sort(this._sortItemAdvancement);
+						else cs.choices = Object.values(cs.choices).sort(this._sortItemAdvancement);
+					}
 				});
 			}
 		}
