@@ -358,7 +358,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			// @todo replace for slug
 			if (selected) await this.actor.createEmbeddedDocuments("Item", [await fromUuid(selected.uuid)], { keepId: true, originalUuid: selected.uuid });
 		});
-		html.find(".view-playbook").on("click", this._onViewPlaybook.bind(this));
+		html.find(".view-playbook[data-playbook]").on("click", this._onViewPlaybook.bind(this));
 
 		// // Toggle look.
 		html.find(".toggle--look").on("click", this._toggleLook.bind(this, html));

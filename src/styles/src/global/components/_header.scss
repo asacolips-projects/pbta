@@ -140,10 +140,13 @@
     text-align: center;
     opacity: 0.5;
     transition: all ease-in-out 0.25s;
-    cursor: pointer;
 
-    &:hover {
-      opacity: 1;
+    &[data-playbook] {
+      cursor: pointer;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     i {
