@@ -264,8 +264,8 @@ export default class ActorPbta extends Actor {
 		const changes = {
 			system: this.applyBaseTemplate()
 		};
-		const sourceId = this.getFlag("core", "sourceId");
-		if (!sourceId?.startsWith("Compendium.")) {
+		const compendiumSource = this._stats.compendiumSource;
+		if (!compendiumSource?.startsWith("Compendium.")) {
 			if (this.baseType === "character") {
 				changes.prototypeToken = {
 					actorLink: true,
@@ -325,6 +325,28 @@ export default class ActorPbta extends Actor {
 		return systemData;
 	}
 
+	static getLabel(type) {
+		const pbtaLabel = game.pbta.sheetConfig.actorTypes[type].label;
+		const label = CONFIG[this.metadata.name]?.typeLabels?.[type] ?? type;
+		if (pbtaLabel) return pbtaLabel;
+		return game.i18n.has(label) ? game.i18n.localize(label) : type;
+	}
+
+	static defaultName({ type, parent, pack }={}) {
+		const documentName = this.metadata.name;
+		let collection;
+		if (parent) collection = parent.getEmbeddedCollection(documentName);
+		else if (pack) collection = game.packs.get(pack);
+		else collection = game.collections.get(documentName);
+		const takenNames = new Set();
+		for (const document of collection) takenNames.add(document.name);
+		const baseName = this.getLabel(type);
+		let name = baseName;
+		let index = 1;
+		while (takenNames.has(name)) name = `${baseName} (${++index})`;
+		return name;
+	}
+
 	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
 		const documentName = this.metadata.name;
 		const types = Object.keys(game.pbta.sheetConfig.actorTypes);
@@ -336,6 +358,7 @@ export default class ActorPbta extends Actor {
 		const folders = collection?._formatFolderSelectOptions() ?? [];
 		const label = game.i18n.localize(this.metadata.label);
 		const title = game.i18n.format("DOCUMENT.Create", { type: label });
+
 		// Render the document creation form
 		const html = await renderTemplate("templates/sidebar/document-create.html", {
 			folders,
@@ -344,10 +367,7 @@ export default class ActorPbta extends Actor {
 			hasFolders: folders.length >= 1,
 			type: data.type || CONFIG[documentName]?.defaultType || types[0],
 			types: types.reduce((obj, t) => {
-				const pbtaLabel = game.pbta.sheetConfig.actorTypes[t].label;
-				const label = CONFIG[documentName]?.typeLabels?.[t] ?? t;
-				if (pbtaLabel) obj[t] = pbtaLabel;
-				else obj[t] = game.i18n.has(label) ? game.i18n.localize(label) : t;
+				obj[t] = this.getLabel(t);
 				return obj;
 			}, {}),
 			hasTypes: types.length > 1
@@ -364,7 +384,7 @@ export default class ActorPbta extends Actor {
 				foundry.utils.mergeObject(data, fd.object, { inplace: true });
 				if (!data.folder) delete data.folder;
 				if (types.length === 1) data.type = types[0];
-				if (!data.name?.trim()) data.name = this.defaultName({type: data.type, parent, pack});
+				if (!data.name?.trim()) data.name = this.defaultName({ type: data.type, parent, pack });
 
 				// First we need to find the base actor type to model this after.
 				if (!["character", "npc"].includes(data.type)) {

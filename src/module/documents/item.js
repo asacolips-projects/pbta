@@ -172,7 +172,7 @@ export default class ItemPbta extends Item {
 			this.updateSource({ "system.actorType": this.actor?.system?.customType ?? this.actor.type });
 		}
 
-		const sourceId = this.getFlag("core", "sourceId");
+		const compendiumSource = this._stats.compendiumSource;
 		if (this.type === "playbook") {
 			const actorTypes = this.getActorTypes();
 			if (Object.keys(actorTypes).length) {
@@ -202,13 +202,13 @@ export default class ItemPbta extends Item {
 					this.updateSource({ "flags.pbta": { grantedItems: created } });
 				}
 				await this.parent.update({
-					"system.playbook": { name: this.name, slug: this.system.slug, uuid: sourceId ?? options.originalUuid }
+					"system.playbook": { name: this.name, slug: this.system.slug, uuid: compendiumSource ?? options.originalUuid }
 				});
 			}
 		}
 
 		// Handle everything else if not imported from compendiums
-		if (sourceId?.startsWith("Compendium.")) return;
+		if (compendiumSource?.startsWith("Compendium.")) return;
 		if (this.type === "playbook") {
 			if (!this.system.slug) {
 				this.updateSource({ "system.slug": this.name.slugify() });
@@ -406,7 +406,7 @@ export default class ItemPbta extends Item {
 				foundry.utils.mergeObject(data, fd.object, { inplace: true });
 				if (!data.folder) delete data.folder;
 				if (types.length === 1) data.type = types[0];
-				if (!data.name?.trim()) data.name = this.defaultName({type: data.type, parent, pack});
+				if (!data.name?.trim()) data.name = this.defaultName({ type: data.type, parent, pack });
 				return this.create(data, { parent, pack, renderSheet: true });
 			},
 			rejectClose: false,
