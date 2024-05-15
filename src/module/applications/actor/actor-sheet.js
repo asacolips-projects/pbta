@@ -132,8 +132,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				.length > 1;
 			context.playbooks = CONFIG.PBTA.playbooks
 				.filter((p) => !hasMultipleCharacterTypes
-					|| p.actorType === (this.actor.sheetType ?? this.actor.baseType)
-					|| p.actorType === "")
+					|| [this.actor.sheetType ?? this.actor.baseType, ""].includes(p.actorType))
 				.map((p) => {
 					return { name: p.name, uuid: p.uuid };
 				});
@@ -758,8 +757,16 @@ export default class PbtaActorSheet extends ActorSheet {
 		}
 
 		if (item.type === "playbook") {
+			const hasMultipleCharacterTypes = Object.keys(game.pbta.sheetConfig.actorTypes)
+				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
+				.length > 1;
+			if (
+				hasMultipleCharacterTypes
+				&& ![this.actor.sheetType ?? this.actor.baseType, ""].includes(item.system.actorType)
+			) return false;
+
 			const currPlaybook = this.actor.items.find((i) => i.type === "playbook");
-			if (item.system.slug === currPlaybook.system.slug) {
+			if (currPlaybook && item.system.slug === currPlaybook.system.slug) {
 				// @todo update sets and valid, non-granted choices
 				return false;
 			}
