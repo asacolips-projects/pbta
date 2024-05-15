@@ -756,9 +756,19 @@ export default class PbtaActorSheet extends ActorSheet {
 			return this._onSortItem(event, itemData);
 		}
 
-		if (item.type === "playbook" && this.actor.system.playbook.name) {
-			const deleted = await this.actor.items.find((i) => i.type === "playbook")?.delete();
-			if (!deleted) return false;
+		if (item.type === "playbook") {
+			const currPlaybook = this.actor.items.find((i) => i.type === "playbook");
+			if (item.system.slug === currPlaybook.system.slug) {
+				// @todo update sets and valid, non-granted choices
+				return false;
+			}
+			/**
+			 * @todo create a replacePlaybook method with this and @see activateListeners() also handle stats
+			 */
+			if (item.type === "playbook" && currPlaybook) {
+				const deleted = await currPlaybook.delete();
+				if (!deleted) return false;
+			}
 		}
 
 		// Create the owned item
