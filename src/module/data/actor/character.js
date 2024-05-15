@@ -9,6 +9,7 @@ export default class CharacterData extends ActorDataTemplate {
 			advancements: new foundry.data.fields.NumberField({
 				required: true, integer: true, min: 0, initial: 0, nullable: false
 			}),
+			// @todo consider removal
 			playbook: new foundry.data.fields.SchemaField({
 				name: new foundry.data.fields.StringField({ initial: "" }),
 				slug: new foundry.data.fields.StringField({ initial: "" }),

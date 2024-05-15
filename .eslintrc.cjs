@@ -226,6 +226,7 @@ module.exports = {
 		CodeMirror: false,
 		Color: false,
 		DocumentSheetConfig: false,
+		fromUuidSync: false,
 		globalThis: false,
 		NumericTerm: false,
 		OperatorTerm: false,

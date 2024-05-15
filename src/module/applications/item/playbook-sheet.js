@@ -20,9 +20,10 @@ export default class PlaybookSheet extends PbtaItemSheet {
 
 	/** @override */
 	async getData() {
+		// @todo add warnings about repeat grants
 		const context = await super.getData();
 		context.grantOptions = {
-			0: "On Drop",
+			0: "On Drop", // !LOCALIZEME
 			1: "Advancement"
 		};
 		const choicesByAdvancement = {};
@@ -44,6 +45,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		html.find("[data-action='add-choiceset']").on("click", this._onAddChoiceSet.bind(this));
 		html.find("[data-action='delete-choiceset']").on("click", this._onDeleteChoiceSet.bind(this));
 		html.find("[data-action='delete-item']").on("click", this._onDeleteItem.bind(this));
+		// @todo add click event on item's img/label to render the item
 	}
 
 	_onChangeStats(event) {

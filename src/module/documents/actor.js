@@ -61,6 +61,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	get playbook() {
+		// @todo refactor to return this.items.find((i) => i.type === "playbook"), use slug to compare
 		return this.system?.playbook ?? { name: "", slug: "", uuid: "" };
 	}
 
