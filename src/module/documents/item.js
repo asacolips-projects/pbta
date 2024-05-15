@@ -174,12 +174,6 @@ export default class ItemPbta extends Item {
 
 		const compendiumSource = this._stats.compendiumSource;
 		if (this.type === "playbook") {
-			const actorTypes = this.getActorTypes();
-			if (Object.keys(actorTypes).length) {
-				const actorType = Object.keys(actorTypes)[0];
-				const stats = game.pbta.sheetConfig?.actorTypes[actorType]?.stats;
-				this.updateSource({ "system.stats": stats });
-			}
 
 			if (this.parent) {
 				const choiceUpdate = await this.handleChoices(data);
@@ -207,9 +201,23 @@ export default class ItemPbta extends Item {
 					});
 					this.updateSource({ "flags.pbta": { grantedItems } });
 				}
-				await this.parent.update({
+
+				const changes = {
 					"system.playbook": { name: this.name, slug: this.system.slug, uuid: compendiumSource ?? options.originalUuid }
-				});
+				};
+				if (this.system.actorType) {
+					const stats = foundry.utils.duplicate(this.parent.system.stats);
+					Object.entries(this.system.stats).forEach(([key, data]) => stats[key].value = data.value);
+					changes["system.stats"] = stats;
+				}
+				await this.parent.update(changes);
+			} else {
+				const actorTypes = this.getActorTypes();
+				if (Object.keys(actorTypes).length) {
+					const actorType = Object.keys(actorTypes)[0];
+					const stats = game.pbta.sheetConfig?.actorTypes[actorType]?.stats;
+					this.updateSource({ "system.stats": stats });
+				}
 			}
 		}
 
