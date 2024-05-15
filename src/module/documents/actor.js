@@ -330,11 +330,8 @@ export default class ActorPbta extends Actor {
 		const types = Object.keys(game.pbta.sheetConfig.actorTypes);
 		let collection;
 		if (!parent) {
-			if (pack) {
-				collection = game.packs.get(pack);
-			} else {
-				collection = game.collections.get(documentName);
-			}
+			if (pack) collection = game.packs.get(pack);
+			else collection = game.collections.get(documentName);
 		}
 		const folders = collection?._formatFolderSelectOptions() ?? [];
 		const label = game.i18n.localize(this.metadata.label);
@@ -349,11 +346,8 @@ export default class ActorPbta extends Actor {
 			types: types.reduce((obj, t) => {
 				const pbtaLabel = game.pbta.sheetConfig.actorTypes[t].label;
 				const label = CONFIG[documentName]?.typeLabels?.[t] ?? t;
-				if (pbtaLabel) {
-					obj[t] = pbtaLabel;
-				} else {
-					obj[t] = game.i18n.has(label) ? game.i18n.localize(label) : t;
-				}
+				if (pbtaLabel) obj[t] = pbtaLabel;
+				else obj[t] = game.i18n.has(label) ? game.i18n.localize(label) : t;
 				return obj;
 			}, {}),
 			hasTypes: types.length > 1
@@ -368,15 +362,9 @@ export default class ActorPbta extends Actor {
 				const form = html[0].querySelector("form");
 				const fd = new FormDataExtended(form);
 				foundry.utils.mergeObject(data, fd.object, { inplace: true });
-				if (!data.folder) {
-					delete data.folder;
-				}
-				if (types.length === 1) {
-					data.type = types[0];
-				}
-				if (!data.name?.trim()) {
-					data.name = this.defaultName();
-				}
+				if (!data.folder) delete data.folder;
+				if (types.length === 1) data.type = types[0];
+				if (!data.name?.trim()) data.name = this.defaultName({type: data.type, parent, pack});
 
 				// First we need to find the base actor type to model this after.
 				if (!["character", "npc"].includes(data.type)) {
