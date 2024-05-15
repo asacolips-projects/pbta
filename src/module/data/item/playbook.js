@@ -2,8 +2,9 @@ import { ItemTemplateData } from "./templates/item.js";
 
 export default class PlaybookData extends ItemTemplateData {
 	static defineSchema() {
+		const superFields = super.defineSchema();
 		return {
-			description: new foundry.data.fields.HTMLField({ initial: "" }),
+			...superFields,
 			slug: new foundry.data.fields.StringField({
 				required: true,
 				validate: (value) => {
