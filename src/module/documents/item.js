@@ -243,7 +243,9 @@ export default class ItemPbta extends Item {
 					content: await renderTemplate("systems/pbta/templates/dialog/choice-dialog.hbs", { choices: validChoices, desc, parent: this.parent }),
 					default: "ok",
 					// @todo add some warning about pending grants
-					// close: () => {},
+					close: () => {
+						return false;
+					},
 					buttons: {
 						skip: {
 							label: game.i18n.localize("SKIP !LOCALIZEME"),
