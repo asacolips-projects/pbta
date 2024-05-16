@@ -35,7 +35,7 @@
     }
 
     .cell__title {
-      font-size: 20px;
+      font-size: var(--font-size-20);
       text-transform: uppercase;
       line-height: 1;
       margin: 0;
