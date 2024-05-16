@@ -127,9 +127,12 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Add playbooks.
 		if (this.actor.baseType === "character") {
-			const hasMultipleCharacterTypes = Object.keys(game.pbta.sheetConfig.actorTypes)
-				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
-				.length > 1;
+			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
+			const validCharacterTypes = Object.fromEntries(
+				Object.entries(sheetConfig.actorTypes)
+					.filter(([k, v]) => [k, v?.baseType].includes("character"))
+			);
+			const hasMultipleCharacterTypes = Object.keys(validCharacterTypes).length > 1;
 			context.playbooks = CONFIG.PBTA.playbooks
 				.filter((p) => !hasMultipleCharacterTypes
 					|| [this.actor.sheetType ?? this.actor.baseType, ""].includes(p.actorType))
@@ -137,7 +140,6 @@ export default class PbtaActorSheet extends ActorSheet {
 					return { name: p.name, uuid: p.uuid };
 				});
 
-			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
 			context.statToggle = sheetConfig?.statToggle ?? false;
 			context.statToken = sheetConfig?.statToken ?? false;
 			context.statClock = sheetConfig?.statClock ?? false;
