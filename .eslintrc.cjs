@@ -223,8 +223,10 @@ module.exports = {
 	},
 
 	globals: {
+		AdaptiveLightingShader: false,
 		CodeMirror: false,
 		Color: false,
+		DetectionMode: false,
 		DocumentSheetConfig: false,
 		fromUuidSync: false,
 		globalThis: false,
