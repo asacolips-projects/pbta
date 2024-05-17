@@ -376,6 +376,15 @@ export function convertSheetConfig(sheetConfig) {
 				actorType.attrLeft = convertAttr(v.attributesLeft);
 			}
 
+			Object.defineProperty(actorType, "attributes", {
+				get() {
+					return {
+						...actorType.attrTop,
+						...actorType.attrLeft
+					};
+				}
+			});
+
 			if (v.moveTypes) {
 				actorType.moveTypes = {};
 				for (let [mtKey, mtValue] of Object.entries(v.moveTypes)) {
@@ -989,6 +998,7 @@ export async function preloadHandlebarsTemplates() {
 
 		// Item partials
 		"systems/pbta/templates/items/parts/move-description.hbs",
+		"systems/pbta/templates/items/parts/playbook-attributes.hbs",
 		"systems/pbta/templates/items/parts/playbook-choicesets.hbs",
 
 		// Chat Cards
