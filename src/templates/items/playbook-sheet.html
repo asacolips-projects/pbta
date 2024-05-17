@@ -14,6 +14,7 @@
     <!-- <a class="item" data-tab="moves">{{localize "PBTA.Moves" }}</a> -->
     {{#if isGM}}
     <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
+    <a class="item" data-tab="attributes">{{localize "PBTA.Attributes" }}</a>
     <a class="item" data-tab="item-grants">{{ localize "PBTA.ItemGrants" }}</a>
     {{/if}}
   </nav>
@@ -63,6 +64,12 @@
       {{/if}}
     </div>
 
+    {{!-- Attributes Tab --}}
+    <div class="tab" data-group="primary" data-tab="attributes">
+      {{> "pbta.playbook-attributes" }}
+    </div>
+
+    {{!-- Item Grants Tab --}}
     <div class="tab" data-group="primary" data-tab="item-grants">
       {{> "pbta.playbook-choicesets" }}
     </div>

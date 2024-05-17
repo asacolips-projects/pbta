@@ -188,7 +188,16 @@ export default class ItemPbta extends Item {
 					.filter(([a, v]) => this._filterActorTypes([a, v])));
 				if (Object.keys(actorTypes).length) {
 					const actorType = Object.keys(actorTypes)[0];
-					const attributes = actorTypes[actorType]?.attributes;
+					const filtered = (obj) => {
+						// @todo REVERT THIS BEFORE RELEASE
+						// return Object.fromEntries(Object.entries(obj).filter(([key, data]) => data.playbook));
+						return Object.fromEntries(Object.entries(obj));
+					};
+					const attributes = {
+						...filtered(actorTypes[actorType]?.attrTop),
+						...filtered(actorTypes[actorType]?.attrLeft),
+						...filtered(actorTypes[actorType]?.details)
+					};
 					const stats = actorTypes[actorType]?.stats;
 					this.updateSource({
 						"system.attributes": attributes,

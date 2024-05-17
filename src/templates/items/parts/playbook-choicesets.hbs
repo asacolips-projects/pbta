@@ -1,71 +1,69 @@
-<div>
-	{{!-- !LOCALIZEME entire file --}}
-	<ol>
+{{!-- !LOCALIZEME entire file --}}
+<ol>
 	{{#each choicesByAdvancement as | advancement |}}
-		<li>
-			<div>
-				{{#if (gt @key 0)}}
-				Advancement {{@key}}
-				{{else}}
-				Starting Grants
-				{{/if}}
-			</div>
-			{{#each advancement as | grant |}}
-			<ol class="choiceset" data-id="{{@key}}">
-				{{#each grant}}
-				<div class="form-group">
-					<label>Label</label>
-					<div class="form-fields">
-						<input type="text" name="system.choiceSets.{{@../key}}.title" value="{{this.title}}" />
-						<a style="flex: 0; margin: 3px;" type="button" data-action="delete-choiceset">
-							<i class="fa fa-trash"></i>
-						</a>
-					</div>
-				</div>
-				<div class="form-group">
-					<label>Description</label>
-					<div class="form-fields">
-						<input type="text" name="system.choiceSets.{{@../key}}.desc" value="{{this.desc}}">
-					</div>
-				</div>
-				<div class="form-group">
-					<label>Grant On</label>
-					<div class="form-fields">
-						<select name="system.choiceSets.{{@../key}}.grantOn">
-							{{ selectOptions @root.grantOptions selected=this.grantOn}}
-						</select>
-						<label>Advancement</label>
-						<input type="number" name="system.choiceSets.{{@../key}}.advancement" value="{{this.advancement}}" {{disabled (not this.grantOn)}}>
-					</div>
-				</div>
-				<hr>
-				{{#each this.choices}}
-				<li class="form-group choiceset-item" data-uuid="{{this.uuid}}" data-id="{{@index}}">
-					<div class="item flexrow">
-						<img style="flex: 0; margin-right: 3px;" src="{{this.img}}" height="32" width="32">
-						<label>{{this.name}}</label>
-					</div>
-					<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.uuid" value="{{this.uuid}}" hidden>
-					<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.img" value="{{this.img}}" hidden>
-					<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.name" value="{{this.name}}" hidden>
-					<input type="checkbox" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.granted" {{checked this.granted}} hidden>
-					<input type="number" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.advancement" value="{{this.advancement}}">
-					<a style="flex: 0; margin: 3px;" data-action="delete-item">
+	<li>
+		<div>
+			{{#if (gt @key 0)}}
+			Advancement {{@key}}
+			{{else}}
+			Starting Grants
+			{{/if}}
+		</div>
+		{{#each advancement as | grant |}}
+		<ol class="choiceset" data-id="{{@key}}">
+			{{#each grant}}
+			<div class="form-group">
+				<label>Label</label>
+				<div class="form-fields">
+					<input type="text" name="system.choiceSets.{{@../key}}.title" value="{{this.title}}" />
+					<a style="flex: 0; margin: 3px;" type="button" data-action="delete-choiceset">
 						<i class="fa fa-trash"></i>
 					</a>
-				</li>
-				<hr>
-				{{/each}}
-				<div style="margin: 3px; text-align: center;">Drop your items here</div>
-				{{/each}}
-			</ol>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Description</label>
+				<div class="form-fields">
+					<input type="text" name="system.choiceSets.{{@../key}}.desc" value="{{this.desc}}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Grant On</label>
+				<div class="form-fields">
+					<select name="system.choiceSets.{{@../key}}.grantOn">
+						{{ selectOptions @root.grantOptions selected=this.grantOn}}
+					</select>
+					<label>Advancement</label>
+					<input type="number" name="system.choiceSets.{{@../key}}.advancement" value="{{this.advancement}}" {{disabled (not this.grantOn)}}>
+				</div>
+			</div>
+			<hr>
+			{{#each this.choices}}
+			<li class="form-group choiceset-item" data-uuid="{{this.uuid}}" data-id="{{@index}}">
+				<div class="item flexrow">
+					<img style="flex: 0; margin-right: 3px;" src="{{this.img}}" height="32" width="32">
+					<label>{{this.name}}</label>
+				</div>
+				<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.uuid" value="{{this.uuid}}" hidden>
+				<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.img" value="{{this.img}}" hidden>
+				<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.name" value="{{this.name}}" hidden>
+				<input type="checkbox" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.granted" {{checked this.granted}} hidden>
+				<input type="number" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.advancement" value="{{this.advancement}}">
+				<a style="flex: 0; margin: 3px;" data-action="delete-item">
+					<i class="fa fa-trash"></i>
+				</a>
+			</li>
+			<hr>
 			{{/each}}
-		</li>
+			<div style="margin: 3px; text-align: center;">Drop your items here</div>
+			{{/each}}
+		</ol>
+		{{/each}}
+	</li>
 	{{/each}}
-	</ol>
-	<footer>
-		<a type="button" data-action="add-choiceset">
-			<i class="fa fa-plus"></i>Add Item Grant
-		</a>
-	</footer>
-</div>
+</ol>
+<footer>
+	<a type="button" data-action="add-choiceset">
+		<i class="fa fa-plus"></i>Add Item Grant
+	</a>
+</footer>
