@@ -34,34 +34,6 @@ export default class ItemPbta extends Item {
 	}
 
 	/**
-	 * Returns a list of valid actor types for the item.
-	 * @returns {object}
-	 */
-	getActorTypes() {
-		const sheetConfig = game.pbta.sheetConfig;
-		const filters = (a) => {
-			switch (this.type) {
-				case "equipment":
-					return sheetConfig.actorTypes[a]?.equipmentTypes;
-				case "move":
-				case "playbook":
-					return a === "character" || sheetConfig.actorTypes[a]?.baseType === "character";
-				case "npcMove":
-					return a === "npc" || sheetConfig.actorTypes[a]?.baseType === "npc";
-				default:
-					return false;
-			}
-		};
-		return Object.fromEntries(Object.entries(sheetConfig.actorTypes)
-			.filter(([a, v]) => filters(a))
-			.map(([a, v]) => {
-				const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
-				const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
-				return [a, { label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a) }];
-			}));
-	}
-
-	/**
 	 * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
 	 * @param {object} options
 	 * @param {boolean} options.descriptionOnly
@@ -212,11 +184,16 @@ export default class ItemPbta extends Item {
 				}
 				await this.parent.update(changes);
 			} else {
-				const actorTypes = this.getActorTypes();
+				const actorTypes = Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
+					.filter(([a, v]) => this._filterActorTypes([a, v])));
 				if (Object.keys(actorTypes).length) {
 					const actorType = Object.keys(actorTypes)[0];
-					const stats = game.pbta.sheetConfig?.actorTypes[actorType]?.stats;
-					this.updateSource({ "system.stats": stats });
+					const attributes = actorTypes[actorType]?.attributes;
+					const stats = actorTypes[actorType]?.stats;
+					this.updateSource({
+						"system.attributes": attributes,
+						"system.stats": stats
+					});
 				}
 			}
 		}
@@ -238,7 +215,6 @@ export default class ItemPbta extends Item {
 				const validChoices = choices.filter(
 					(c) => {
 						const item = fromUuidSync(c.uuid);
-						console.log(item);
 						return !c.granted
 							&& c.advancement <= this.parent.advancements
 							&& !this.actor.items.has(item.id);
@@ -544,6 +520,22 @@ export default class ItemPbta extends Item {
 		}
 		if (choices) {
 			choices.style.display = choices.style.display === "none" ? "" : "none";
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	_filterActorTypes([key, data]) {
+		switch (this.type) {
+			case "equipment":
+				return data?.equipmentTypes;
+			case "move":
+			case "playbook":
+				return [key, data?.baseType].includes("character");
+			case "npcMove":
+				return [key, data?.baseType].includes("npc");
+			default:
+				return false;
 		}
 	}
 }

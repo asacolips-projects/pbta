@@ -63,7 +63,13 @@ export default class PbtaItemSheet extends ItemSheet {
 		const sheetConfig = game.pbta.sheetConfig;
 		const actorType = this.actor?.system?.customType || this.actor?.baseType || this.item.system?.actorType;
 		if (!this.actor && this.item.system.actorType !== undefined) {
-			context.actorTypes = this.item.getActorTypes();
+			context.actorTypes = Object.fromEntries(Object.entries(sheetConfig.actorTypes)
+				.filter(([a, v]) => this.item._filterActorTypes([a, v]))
+				.map(([a, v]) => {
+					const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
+					const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
+					return [a, { label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a) }];
+				}));
 		}
 		if (this.item.type === "move" || this.item.type === "npcMove") {
 			context.system.moveTypes = {};
