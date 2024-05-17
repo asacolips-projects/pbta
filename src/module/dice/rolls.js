@@ -6,7 +6,11 @@ export default class RollPbtA extends Roll {
 	 * @type {boolean}
 	 */
 	get hasAdvantage() {
-		return this.options.rollMode === "adv";
+		const { modifier } = game.pbta.sheetConfig.statToggle;
+		const toggle = this.data.stats[this.options.stat]?.toggle;
+		if (this.options.rollMode === "adv") return true;
+		if (modifier === "adv") return toggle;
+		return false;
 	}
 
 	/* -------------------------------------------- */
@@ -16,7 +20,11 @@ export default class RollPbtA extends Roll {
 	 * @type {boolean}
 	 */
 	get hasDisadvantage() {
-		return this.options.rollMode === "dis";
+		const { modifier } = game.pbta.sheetConfig.statToggle;
+		const toggle = this.data.stats[this.options.stat]?.toggle;
+		if (this.options.rollMode === "dis") return true;
+		if (modifier === "dis") return toggle;
+		return false;
 	}
 
 	/** @override */

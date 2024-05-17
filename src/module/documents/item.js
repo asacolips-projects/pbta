@@ -84,6 +84,7 @@ export default class ItemPbta extends Item {
 				speaker: ChatMessage.getSpeaker({ actor: this.actor })
 			});
 		} else {
+			let statToggleModifier = game.pbta.sheetConfig.statToggle.modifier;
 			let formula = "@formula";
 			let stat = "";
 			let { rollFormula, rollMod, rollType = "move" } = this.system;
@@ -92,9 +93,8 @@ export default class ItemPbta extends Item {
 			} else if (!["ask", "prompt", "formula"].includes(rollType)) {
 				stat = rollType;
 				formula += `+ @stats.${stat}.value`;
-				if (this.actor.system.stats[stat].toggle) {
-					const { modifier } = game.pbta.sheetConfig.statToggle;
-					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
+				if (this.actor.system.stats[stat].toggle && !["adv", "dis"].includes(statToggleModifier)) {
+					formula += `${statToggleModifier >= 0 ? "+" : ""} ${statToggleModifier}`;
 				}
 			}
 			if (rollMod) {
