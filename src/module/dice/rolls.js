@@ -55,7 +55,7 @@ export default class RollPbtA extends Roll {
 		// Prepare chat data
 		messageData = foundry.utils.mergeObject({
 			user: game.user.id,
-			type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+			type: CONST.CHAT_MESSAGE_STYLES.IC,
 			content: String(this.total),
 			sound: CONFIG.sounds.dice,
 
