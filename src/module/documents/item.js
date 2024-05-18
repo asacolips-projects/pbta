@@ -61,11 +61,15 @@ export default class ItemPbta extends Item {
 			options = foundry.utils.mergeObject(options, {
 				choices: this.system.choices,
 				details: this.system.description,
+				moveResults: this.system.moveResults,
+				resources: this.actor?.system.resources,
+				// rollType,
+				sheetType: this.actor?.sheetType
+			});
+			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), options);
+			delete options.stat;
+			delete options.rollMode;
 			const choice = await r.configureDialog({
-				templateData: {
-					title: this.name,
-					details: this.system.description,
-					moveResults: this.system.moveResults,
 				templateData: options,
 				title: game.i18n.format("PBTA.RollLabel", { label: this.name })
 			});
