@@ -112,6 +112,10 @@ export default class PbtaItemSheet extends ItemSheet {
 						context.system.stats = foundry.utils.duplicate(stats);
 					}
 				}
+				Object.entries(context.system.stats).forEach(([stat, data]) => {
+					data.group = game.i18n.localize("PBTA.Stat.labelPl")
+					data.value = stat;
+				});
 				context.system.stats.prompt = { label: game.i18n.localize("PBTA.Prompt") };
 				if (Object.keys(context.system.stats).length > 1) {
 					context.system.stats.ask = { label: game.i18n.localize("PBTA.Ask") };

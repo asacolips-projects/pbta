@@ -66,12 +66,7 @@
         <div class="form-group">
           <label>{{localize "PBTA.Playbook"}}</label>
           <select name="system.playbook">
-            {{#select system.playbook}}
-              <option value="">—</option>
-              {{#each playbooks as |playbook id|}}
-              <option value="{{playbook}}">{{playbook}}</option>
-              {{/each}}
-            {{/select}}
+            {{selectOptions playbooks selected=system.playbook blank="—" }}
           </select>
         </div>
         {{/if}}

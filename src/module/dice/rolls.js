@@ -23,9 +23,7 @@ export default class RollPbtA extends Roll {
 	async toMessage(messageData={}, { rollMode, create=true }={}) {
 
 		// Perform the roll, if it has not yet been rolled
-		if (!this._evaluated) {
-			await this.evaluate({ async: true });
-		}
+		if (!this._evaluated) await this.evaluate();
 
 		const resultRanges = game.pbta.sheetConfig.rollResults;
 		let resultLabel = null;
