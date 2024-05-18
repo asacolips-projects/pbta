@@ -619,7 +619,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			user: game.user.id,
 			content: content,
 			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-			type: CONST.CHAT_MESSAGE_TYPES.OTHER
+			type: CONST.CHAT_MESSAGE_STYLES.OTHER
 		});
 	}
 
