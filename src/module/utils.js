@@ -286,15 +286,15 @@ export function convertSheetConfig(sheetConfig) {
 						// If there's only one digit, assume it's N+ or N-.
 						if (end === null) {
 							rollResult = {
-								start: rollSetting.range.includes("-") ? null : start,
-								end: rollSetting.range.includes("+") ? null : start,
+								start: rollSetting.range.includes("-") ? -Infinity : start,
+								end: rollSetting.range.includes("+") ? Infinity : start,
 								label: rollSetting.label
 							};
 						} else {
 							// Otherwise, set the full range.
 							rollResult = {
-								start: start,
-								end: end,
+								start,
+								end,
 								label: rollSetting.label
 							};
 						}
