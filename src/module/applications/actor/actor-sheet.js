@@ -250,10 +250,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		const moveType = this.actor.baseType === "npc" ? "npcMove" : "move";
 
 		const sheetConfig = game.pbta.sheetConfig;
-		const moveTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.moveTypes
-			?? sheetConfig.actorTypes?.[this.actor.baseType].moveTypes;
-		const equipmentTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.equipmentTypes
-			?? sheetConfig.actorTypes?.[this.actor.baseType]?.equipmentTypes;
+		const moveTypes = sheetConfig.actorTypes?.[this.actor?.sheetType ?? this.actor.baseType]?.moveTypes;
+		const equipmentTypes = sheetConfig.actorTypes?.[this.actor?.sheetType ?? this.actor.baseType]?.equipmentTypes;
 
 		context.moveTypes = {};
 		context.moves = {};
@@ -707,18 +705,18 @@ export default class PbtaActorSheet extends ActorSheet {
 		const type = header.dataset.type;
 		const dataset = foundry.utils.duplicate(header.dataset);
 		const system = {};
-		if (dataset.movetype) {
-			system.moveType = dataset.movetype;
+		if (dataset.moveType) {
+			system.moveType = dataset.moveType;
 		}
-		if (dataset.equipmenttype) {
-			system.equipmentType = dataset.equipmenttype;
+		if (dataset.equipmentType) {
+			system.equipmentType = dataset.equipmentType;
 		}
 		const itemData = {
-			name: `New ${type.capitalize()}`,
+			name: type.capitalize(),
 			type: type,
 			system: system
 		};
-		await this.actor.createEmbeddedDocuments("Item", [itemData], {});
+		await this.actor.createEmbeddedDocuments("Item", [itemData], { renderSheet: true });
 	}
 
 	/* -------------------------------------------- */
