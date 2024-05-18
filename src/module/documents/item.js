@@ -19,11 +19,11 @@ export default class ItemPbta extends Item {
 		if (this.actor && this.actor.system?.stats) {
 			rollData = foundry.utils.mergeObject(rollData, this.actor.getRollData());
 		}
-		rollData.formula = this.getRollFormula();
+		rollData.formula = this.getFormula();
 		return rollData;
 	}
 
-	getRollFormula(defaultFormula = "2d6") {
+	getFormula(defaultFormula = "2d6") {
 		if (this.system.rollType === "formula") {
 			const rollFormula = this.system.rollFormula;
 			if (rollFormula && Roll.validate(rollFormula)) {
@@ -56,36 +56,17 @@ export default class ItemPbta extends Item {
 				speaker: ChatMessage.getSpeaker({ actor: this.actor })
 			});
 		} else {
-			let formula = "@formula";
-			let stat = "";
-			let { rollFormula, rollMod, rollType = "move" } = this.system;
-			if (this.type === "npcMove" || rollType === "formula") {
-				formula = rollFormula;
-			} else if (!["ask", "prompt", "formula"].includes(rollType)) {
-				stat = rollType;
-				formula += `+ @stats.${stat}.value`;
-				if (this.actor.system.stats[stat].toggle) {
-					const { modifier } = game.pbta.sheetConfig.statToggle;
-					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
-				}
-			}
-			if (rollMod) {
-				formula += " + @rollMod";
-			}
-			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
-				rollType: this.type,
-				sheetType: this.actor?.baseType,
-				stat
-			}));
+			delete options.descriptionOnly;
+			const formula = this._getRollFormula(options);
+			options = foundry.utils.mergeObject(options, {
+				choices: this.system.choices,
+				details: this.system.description,
 			const choice = await r.configureDialog({
 				templateData: {
 					title: this.name,
 					details: this.system.description,
 					moveResults: this.system.moveResults,
-					choices: this.system?.choices,
-					sheetType: this.actor?.baseType,
-					rollType
-				},
+				templateData: options,
 				title: game.i18n.format("PBTA.RollLabel", { label: this.name })
 			});
 			if (choice === null) {
@@ -109,6 +90,31 @@ export default class ItemPbta extends Item {
 			await this.actor?.clearForwardAdv();
 			await this.actor.updateCombatMoveCount();
 		}
+	}
+
+	_getRollFormula(options = {}) {
+		let formula = "@formula";
+		const { rollFormula, rollMod, rollType } = this.system;
+		options.rollType = rollType;
+		if (this.type === "npcMove" || rollType === "formula") {
+			formula = rollFormula;
+		} else if (!["ask", "prompt", "formula"].includes(rollType)) {
+			const { label, value, toggle } = this.actor.system.stats[rollType];
+			options.stat = {
+				label,
+				value
+			};
+			formula += `+ @stats.${rollType}.value`;
+			if (toggle) {
+				const { modifier } = game.pbta.sheetConfig.statToggle;
+				formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
+				options.stat.value = modifier;
+			}
+		}
+		if (rollMod) {
+			formula += " + @rollMod";
+		}
+		return formula;
 	}
 
 	/** @inheritdoc */
@@ -189,9 +195,16 @@ export default class ItemPbta extends Item {
 				if (Object.keys(actorTypes).length) {
 					const actorType = Object.keys(actorTypes)[0];
 					const filtered = (obj) => {
-						// @todo REVERT THIS BEFORE RELEASE
-						// return Object.fromEntries(Object.entries(obj).filter(([key, data]) => data.playbook));
-						return Object.fromEntries(Object.entries(obj));
+						return Object.fromEntries(
+							Object.entries(obj)
+								// @todo REVERT THIS BEFORE RELEASE
+								// .filter(([key, data]) => data.playbook)
+								.map(([key, data]) => {
+									data.choices = [];
+									data.custom = false;
+									return [key, data];
+								})
+						);
 					};
 					const attributes = {
 						...filtered(actorTypes[actorType]?.attrTop),

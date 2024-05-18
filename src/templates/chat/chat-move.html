@@ -7,8 +7,8 @@
 
     <div class="card-content">
       {{!-- Stat label. --}}
-      {{#if stat}}
-        <div class="row"><em>{{localize "PBTA.RolledStat" stat=stat}}{{#if statMod includeZero=true}} ({{numberFormat statMod decimals=0 sign=true}}){{/if}}</em></div>
+      {{#if stat.value}}
+        <div class="row"><em>{{localize "PBTA.RolledStat" stat=stat.label}}{{#if stat.value includeZero=true}} ({{numberFormat stat.value decimals=0 sign=true}}){{/if}}</em></div>
       {{/if}}
       {{#if originalMod includeZero=true}}
         <div class="row"><em>{{localize "PBTA.RollFormulaHardCap" value=(numberFormat originalMod decimals=0 sign=true)}}</em></div>
@@ -36,7 +36,16 @@
     {{/if}}
 
     {{!-- Roll results, color coded to match the result type label. --}}
-    {{#if rollPbta}}<div class="roll{{#if result}} {{result}}{{/if}}">{{{rollPbta}}}</div>{{/if}}
+    <div class="dice-roll">
+      {{#if flavor}}
+      <div class="dice-flavor">{{flavor}}</div>
+      {{/if}}
+      <div class="dice-result">
+        <div class="dice-formula">{{formula}}</div>
+        {{{tooltip}}}
+        <h4 class="dice-total">{{total}}</h4>
+      </div>
+    </div>
 
     {{!-- Conditions --}}
     {{#if conditions}}

@@ -180,7 +180,7 @@ export default class ActorPbta extends Actor {
 		const formula = this._getStatFormula(stat);
 		const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 			rollType: "stat",
-			sheetType: this.baseType,
+			sheetType: this.sheetType,
 			stat
 		}));
 		const choice = await r.configureDialog({
@@ -203,7 +203,7 @@ export default class ActorPbta extends Actor {
 		const formula = this._getStatFormula();
 		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 			rollType: "stat",
-			sheetType: this.baseType
+			sheetType: this.sheetType
 		}));
 		const choice = await roll.configureDialog({
 			templateData: {
@@ -215,7 +215,7 @@ export default class ActorPbta extends Actor {
 		if (choice === true || choice === null) {
 			return;
 		}
-		const tokenUsed = choice.terms.find((t) => t instanceof NumericTerm)?.number;
+		const tokenUsed = choice.terms.find((t) => t instanceof foundry.dice.terms.NumericTerm)?.number;
 		const updates = {
 			[`system.stats.${stat}.value`]: this.system.stats[stat].value - tokenUsed
 		};

@@ -230,8 +230,6 @@ module.exports = {
 		DocumentSheetConfig: false,
 		fromUuidSync: false,
 		globalThis: false,
-		NumericTerm: false,
-		OperatorTerm: false,
 		toml: false,
 		Tagify: false
 	},
