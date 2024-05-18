@@ -487,19 +487,9 @@ export function convertAttr(attrGroup) {
 
 			case "Clock":
 			case "Xp":
-				attr.value = attrValue.default ?? 0;
-				attr.max = attrValue.max ?? 0;
-				attr.steps = [];
-				if (attr.max) {
-					for (let i = 0; i < attr.max; i++) {
-						attr.steps.push(i < attr.value);
-					}
-				}
-				break;
-
 			case "Resource":
 				attr.value = attrValue.default ?? 0;
-				attr.max = attrValue.max ?? 0;
+				attr.max = attrValue.max ?? 1;
 				break;
 
 			case "Text":

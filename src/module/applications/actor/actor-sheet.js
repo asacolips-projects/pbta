@@ -411,27 +411,21 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	async _onClockClick(event) {
 		event.preventDefault();
-		const $self = $(event.currentTarget);
+		const dataset = event.currentTarget.dataset;
 		// Get the clicked value.
-		let step = Number($self.data("step")) + 1; // Adjust for 1-index
-		const stepValue = $self.attr("checked") !== undefined;
+		let index = Number(dataset.step) + 1; // Adjust for 1-index
 
 		// Retrieve the attribute.
-		const prop = $self.data("name");
+		const prop = dataset.name;
 		const attr = foundry.utils.deepClone(foundry.utils.getProperty(this.actor, prop));
 
 		// Handle clicking the same checkbox to unset its value.
-		if (stepValue && attr.value === step) {
-			step--;
+		if (!event.target.checked && attr.value === index) {
+			index--;
 		}
 
 		// Update the stored value.
-		attr.value = step;
-
-		// Update the steps.
-		for (let i = 0; i < attr.max; i++) {
-			attr.steps[i] = i < attr.value;
-		}
+		attr.value = index;
 
 		// Update the actor/token.
 		await this.actor.update({ [prop]: attr });

@@ -401,26 +401,4 @@ export default class ActorPbta extends Actor {
 			options
 		});
 	}
-
-	async modifyTokenAttribute(attribute, value, isDelta, isBar) {
-		const current = foundry.utils.getProperty(this.system, attribute);
-		if (current.type === "Clock") {
-			if (isDelta) value = Math.clamped(0, Number(current.value) + value, current.max);
-			const steps = new Array(current.max)
-				.fill(true, 0, value)
-				.fill(false, value);
-			const updates = {
-				[`system.${attribute}.value`]: value,
-				[`system.${attribute}.steps`]: steps
-			};
-			const allowed = Hooks.call("modifyTokenAttribute", {
-				attribute: "attributes.hp",
-				value,
-				isDelta,
-				isBar
-			}, updates);
-			return allowed !== false ? this.update(updates) : this;
-		}
-		return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
-	}
 }
