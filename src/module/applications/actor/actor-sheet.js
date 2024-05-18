@@ -400,7 +400,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		// If there's an action and target attribute, update it.
 		if (action && attr) {
 			const system = {
-				[attr]: Number(getProperty(this.actor.system, attr))
+				[attr]: Number(foundry.utils.getProperty(this.actor.system, attr))
 			};
 			if (action === "decrease" || action === "increase") {
 				system[attr] += (action === "decrease" ? -1 : 1);
@@ -418,7 +418,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Retrieve the attribute.
 		const prop = $self.data("name");
-		const attr = foundry.utils.deepClone(getProperty(this.actor, prop));
+		const attr = foundry.utils.deepClone(foundry.utils.getProperty(this.actor, prop));
 
 		// Handle clicking the same checkbox to unset its value.
 		if (stepValue && attr.value === step) {
@@ -465,7 +465,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		let value = parseInt($self.data("value"));
 		let prop = $self.data("name");
 
-		let attr = getProperty(this.actor, prop);
+		let attr = foundry.utils.getProperty(this.actor, prop);
 		attr.value = value;
 		if (value === 0) {
 			attr.positive.value = 0;
@@ -489,7 +489,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		let step = parseInt($self.data("step"));
 		let prop = $self.data("name");
 
-		let attr = getProperty(this.actor, prop);
+		let attr = foundry.utils.getProperty(this.actor, prop);
 		if (value > 0) {
 			let newValue = ((value - 1) * attr.positive.steps) + step + 1;
 			if (attr.positive.value === newValue && newValue === 1) {
@@ -555,7 +555,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		const { min, max } = game.pbta.sheetConfig.statToken;
 		if (action && attr) {
 			const system = {
-				[attr]: Number(getProperty(this.actor.system, attr))
+				[attr]: Number(foundry.utils.getProperty(this.actor.system, attr))
 			};
 			if ((action === "decrease" && system[attr] > min)
 				|| (action === "increase" && system[attr] < max)) {
@@ -574,7 +574,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Retrieve the attribute.
 		const prop = $self.data("name");
-		const attr = foundry.utils.deepClone(getProperty(this.actor, prop));
+		const attr = foundry.utils.deepClone(foundry.utils.getProperty(this.actor, prop));
 
 		// Handle clicking the same checkbox to unset its value.
 		if (stepValue) {
@@ -646,7 +646,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		const item = this.actor.items.get(itemId);
 
 		if (item) {
-			const originalAmount = Number(getProperty(item.toObject(), property)) || 0;
+			const originalAmount = Number(foundry.utils.getProperty(item.toObject(), property)) || 0;
 			if (originalAmount + delta >= 0) {
 				await item.update({ [property]: originalAmount + delta });
 				this.render();
