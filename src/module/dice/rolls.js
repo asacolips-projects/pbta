@@ -27,16 +27,23 @@ export default class RollPbtA extends Roll {
 
 		const resultRanges = game.pbta.sheetConfig.rollResults;
 		let resultType = null;
+		let maxValue = -Infinity;
+		let highest;
 
 		// Iterate through each result range until we find a match.
 		for (let [resultKey, resultRange] of Object.entries(resultRanges)) {
 			let { start, end } = resultRange;
+			if (this.total > end && maxValue < end) {
+				maxValue = end;
+				highest = resultKey;
+			}
 			if ((!start || this.total >= start) && (!end || this.total <= end)) {
 				resultType = resultKey;
 				break;
 			}
 		}
 
+		if (!resultType) resultType = highest;
 		this.options.resultType = resultType;
 
 		const chatData = {
