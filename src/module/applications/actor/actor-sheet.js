@@ -712,7 +712,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			system.equipmentType = dataset.equipmentType;
 		}
 		const itemData = {
-			name: type.capitalize(),
+			name: CONFIG.Item.documentClass.defaultName({ type, parent: this.actor }),
 			type: type,
 			system: system
 		};
