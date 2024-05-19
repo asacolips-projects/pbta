@@ -497,7 +497,7 @@ export default class ItemPbta extends Item {
 
 			if (
 				rollShiftNumericTerm.number === 1
-				&& (originalValue === 0)
+				&& originalValue === 0
 				&& rollShiftOperatorTerm.operator !== shiftMap[shift]
 			) {
 				rollShiftOperatorTerm.operator = shiftMap[shift];
