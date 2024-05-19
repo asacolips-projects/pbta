@@ -466,10 +466,11 @@ export default class ItemPbta extends Item {
 			if (!message) return;
 
 			const action = button.dataset.action;
-			const rolls = message.rolls;
-			const oldRoll = rolls.at(0);
 			const shift = action === "shiftUp" ? 1 : -1;
 			const shiftMap = { 1: "+", "-1": "-"};
+
+			const rolls = message.rolls;
+			let oldRoll = rolls.at(0);
 
 			let rollShiftOperatorTerm = oldRoll.terms
 				.find((term) => term instanceof foundry.dice.terms.OperatorTerm && term.options.rollShifting);
@@ -505,7 +506,7 @@ export default class ItemPbta extends Item {
 			}
 
 			oldRoll.resetFormula();
-			oldRoll._evaluate();
+			oldRoll = await oldRoll._evaluate();
 
 			await message.update({ rolls });
 		} catch(err) {
