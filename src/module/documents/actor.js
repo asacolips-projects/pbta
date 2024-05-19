@@ -180,7 +180,6 @@ export default class ActorPbta extends Actor {
 		const formula = this._getStatFormula(stat);
 		const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 			rollType: "stat",
-			sheetType: this.sheetType,
 			stat
 		}));
 		const choice = await r.configureDialog({
@@ -201,10 +200,7 @@ export default class ActorPbta extends Actor {
 
 	async _onRollToken(stat, label, options={}) {
 		const formula = this._getStatFormula();
-		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
-			rollType: "stat",
-			sheetType: this.sheetType
-		}));
+		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, { rollType: "stat" }));
 		const choice = await roll.configureDialog({
 			templateData: {
 				isStatToken: true,

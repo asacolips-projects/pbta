@@ -62,9 +62,7 @@ export default class ItemPbta extends Item {
 				choices: this.system.choices,
 				details: this.system.description,
 				moveResults: this.system.moveResults,
-				resources: this.actor?.system.resources,
-				// rollType,
-				sheetType: this.actor?.sheetType
+				resources: this.actor?.system.resources
 			});
 			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), options);
 			delete options.stat;
@@ -468,58 +466,48 @@ export default class ItemPbta extends Item {
 			if (!message) return;
 
 			const action = button.dataset.action;
-			let content = foundry.utils.duplicate(message.content);
-			let rolls = foundry.utils.deepClone(message.rolls);
+			const rolls = message.rolls;
+			const oldRoll = rolls.at(0);
+			const shift = action === "shiftUp" ? 1 : -1;
+			const shiftMap = { 1: "+", "-1": "-"};
 
-			const plusMinusReg = /([+-]\s*\d)/;
-			const diceFormulaReg = /<div class="dice-formula">(.*)<\/div>/;
-			const diceTotalReg = /<h4 class="dice-total">(.*)<\/h4>/;
-
-			if (diceFormulaReg.test(content)) {
-				const diceFormula = content.match(diceFormulaReg);
-				let roll = diceFormula[1];
-				const plusMinusMatch = roll.match(plusMinusReg);
-				const value = plusMinusMatch ? plusMinusMatch[1] : "";
-				const shift = action === "shiftUp" ? 1 : -1;
-				const newValue = Roll.safeEval(`${value} + ${shift}`);
-				const updatedValue = newValue >= 0 ? `+ ${newValue}` : `- ${Math.abs(newValue)}`;
-
-				roll = plusMinusMatch ? roll.replace(plusMinusReg, updatedValue) : `${roll} ${updatedValue}`;
-				content = content.replace(diceFormula[1], roll);
-
-				const diceTotal = content.match(diceTotalReg);
-				let total = Roll.safeEval(`${diceTotal[1]} + ${shift}`);
-				content = content.replace(diceTotalReg, `<h4 class="dice-total">${total}</h4>`);
-
-				const { rollResults } = game.pbta.sheetConfig;
-				const { resultType, rollType } = message.rolls[0].options;
-				const { start, end } = rollResults?.[resultType] ?? {};
-
-				if ((action === "shiftUp" && end && end < total) || (action === "shiftDown" && start && start > total)) {
-					const newResult = Object.keys(rollResults)
-						.filter((k) => k !== resultType)
-						.find((k) => {
-							const { start, end } = rollResults[k];
-							return (!start || total >= start) && (!end || total <= end);
-						});
-
-					rolls[0].options.resultType = newResult;
-
-					if (rollType === "move" || rollType === "npcMove") {
-						const itemUuid = message.getFlag("pbta", "itemUuid");
-						const item = await fromUuid(itemUuid);
-						if (item && item.system.moveResults) {
-							const moveResult = item.system.moveResults[newResult];
-							content = content.replace(/<div class="row result (.*?)">/, `<div class="row result ${newResult}">`);
-							content = content.replace(/<div class="roll (.*?)">/, `<div class="roll ${newResult}">`);
-							content = content.replace(/<div class="result-label">(.*?)<\/div>/, `<div class="result-label">${moveResult.label}</div>`);
-							content = content.replace(/<div class="result-details">[\s\S]*?<\/div>/, `<div class="result-details">${moveResult.value}</div>`);
-						}
-					}
-				}
-
-				await message.update({ content, rolls });
+			let rollShiftOperatorTerm = oldRoll.terms
+				.find((term) => term instanceof foundry.dice.terms.OperatorTerm && term.options.rollShifting);
+			let rollShiftNumericTerm = oldRoll.terms
+				.find((term) => term instanceof foundry.dice.terms.NumericTerm && term.options.rollShifting);
+			let originalValue = `${rollShiftOperatorTerm?.operator ?? ""}${rollShiftNumericTerm?.number ?? ""}`;
+			if (Number.isNumeric(originalValue)) originalValue = Number(originalValue);
+			if (!rollShiftNumericTerm) {
+				oldRoll.terms.push(
+					rollShiftOperatorTerm = new foundry.dice.terms.OperatorTerm({
+						operator: shiftMap[shift],
+						options: { rollShifting: true }
+					}),
+					rollShiftNumericTerm = new foundry.dice.terms.NumericTerm({
+						number: 1,
+						options: { rollShifting: true }
+					})
+				);
+			} else {
+				rollShiftNumericTerm.number = Math.abs(
+					Roll.safeEval(`${rollShiftOperatorTerm.operator}${rollShiftNumericTerm.number} + ${shift}`)
+				);
 			}
+
+			if (
+				rollShiftNumericTerm.number === 1
+				&& (originalValue === 0)
+				&& rollShiftOperatorTerm.operator !== shiftMap[shift]
+			) {
+				rollShiftOperatorTerm.operator = shiftMap[shift];
+			} else if (rollShiftNumericTerm.number === 0) {
+				rollShiftOperatorTerm.operator = "+";
+			}
+
+			oldRoll.resetFormula();
+			oldRoll._evaluate();
+
+			await message.update({ rolls });
 		} catch(err) {
 			console.error("Error handling chat card action:", err);
 		} finally {
