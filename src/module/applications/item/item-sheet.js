@@ -113,7 +113,7 @@ export default class PbtaItemSheet extends ItemSheet {
 					}
 				}
 				Object.entries(context.system.stats).forEach(([stat, data]) => {
-					data.group = game.i18n.localize("PBTA.Stat.labelPl")
+					data.group = game.i18n.localize("PBTA.Stat.labelPl");
 					data.value = stat;
 				});
 				context.system.stats.prompt = { label: game.i18n.localize("PBTA.Prompt") };
