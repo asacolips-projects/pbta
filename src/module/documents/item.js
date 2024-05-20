@@ -467,7 +467,7 @@ export default class ItemPbta extends Item {
 
 			const action = button.dataset.action;
 			const shift = action === "shiftUp" ? 1 : -1;
-			const shiftMap = { 1: "+", "-1": "-"};
+			const shiftMap = { 1: "+", "-1": "-" };
 
 			const rolls = message.rolls;
 			let oldRoll = rolls.at(0);
