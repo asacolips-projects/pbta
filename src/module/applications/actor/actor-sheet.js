@@ -664,13 +664,7 @@ export default class PbtaActorSheet extends ActorSheet {
 	async _onViewPlaybook(event) {
 		// Initialize variables.
 		event.preventDefault();
-		// @todo update to show the playbook item in the actor
-		const a = event.currentTarget;
-		const playbookUuid = a.getAttribute("data-playbook");
-		const playbook = await fromUuid(playbookUuid);
-		if (playbook) {
-			playbook.sheet.render(true);
-		}
+		this.actor.items.find((i) => i.type === "playbook")?.sheet.render(true);
 	}
 
 	/**

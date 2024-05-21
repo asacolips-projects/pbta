@@ -33,6 +33,13 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			choicesByAdvancement[cs.advancement][index].push(cs);
 		});
 		context.choicesByAdvancement = choicesByAdvancement;
+		for (let [k, v] of Object.entries(context.system.attributes)) {
+			if (["Details", "LongText"].includes(v.type)) {
+				for (const choice of context.system.attributes[k].choices) {
+					choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", context.enrichmentOptions);
+				}
+			}
+		}
 		return context;
 	}
 
@@ -46,6 +53,8 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		html.find("[data-action='delete-choiceset']").on("click", this._onDeleteChoiceSet.bind(this));
 		html.find("[data-action='delete-item']").on("click", this._onDeleteItem.bind(this));
 		// @todo add click event on item's img/label to render the item
+		html.find("[data-tab='attributes'] [data-action='add-attribute-choice']").on("click", this._onAddAttributeChoice.bind(this));
+		html.find("[data-tab='attributes'] [data-action='delete-attribute-choice']").on("click", this._onDeleteAttributeChoice.bind(this));
 	}
 
 	_onChangeStats(event) {
@@ -92,6 +101,25 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		const choiceSets = this.item.system.choiceSets;
 		choiceSets[id].choices = choiceSets[id].choices.filter((item, _index) => _index !== Number(index));
 		this.item.update({ "system.choiceSets": choiceSets });
+	}
+
+	_onAddAttributeChoice(event) {
+		event.preventDefault();
+		const { key, type } = event.target.closest(".attribute-set").dataset;
+		const attributes = this.item.system.attributes;
+		const { value, max } = attributes[key];
+		if (type === "Resource") attributes[key].choices.push({ value, max });
+		else attributes[key].choices.push({ value });
+		this.item.update({ "system.attributes": attributes });
+	}
+
+	_onDeleteAttributeChoice(event) {
+		event.preventDefault();
+		const { key } = event.target.closest(".attribute-set").dataset;
+		const { id } = event.target.closest(".form-group").dataset;
+		const attributes = this.item.system.attributes;
+		attributes[key].choices = attributes[key].choices.filter((item, index) => index !== Number(id));
+		this.item.update({ "system.attributes": attributes });
 	}
 
 	/* -------------------------------------------- */

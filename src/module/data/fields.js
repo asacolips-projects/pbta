@@ -3,6 +3,22 @@
  * Original file: https://github.com/foundryvtt/dnd5e/blob/677c6ae127aa885bd4cb9a83f95180a655a8623b/module/data/fields.mjs
  */
 
+export class AttributeChoiceValueField extends foundry.data.fields.DataField {
+	_cast(value) {
+		if (typeof value !== "string") return value;
+		if (["true", "false"].includes(value)) return value === "true";
+		if (Number.isNumeric(value)) return Number(value);
+		return value;
+	}
+
+	_validateType(value, options = {}) {
+		const validTypes = ["string", "number", "boolean"];
+		if (!value && !validTypes.includes(foundry.utils.getType(value))) {
+			throw new Error("must be String, Number, or Boolean");
+		}
+	}
+}
+
 /**
  * Special case StringField which represents a formula.
  *
@@ -112,7 +128,7 @@ export class MappingField extends foundry.data.fields.ObjectField {
 		}
 		const errors = this._validateValues(value, options);
 		if (!foundry.utils.isEmpty(errors)) {
-			throw new foundry.data.fields.ModelValidationError(errors);
+			throw new foundry.data.fields.DataModelValidationError(errors);
 		}
 	}
 

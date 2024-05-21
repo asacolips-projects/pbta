@@ -389,18 +389,10 @@ export function convertSheetConfig(sheetConfig) {
 				actorType.moveTypes = {};
 				for (let [mtKey, mtValue] of Object.entries(v.moveTypes)) {
 					if (typeof mtValue === "string") {
-						actorType.moveTypes[cleanClass(mtKey, false)] = {
-							label: mtValue,
-							moves: []
-						};
+						actorType.moveTypes[cleanClass(mtKey, false)] = { label: mtValue };
 					} else {
 						const { label, playbook = false, creation = false } = mtValue;
-						actorType.moveTypes[cleanClass(mtKey, false)] = {
-							label,
-							playbook,
-							creation,
-							moves: [] // @todo add support for moves
-						};
+						actorType.moveTypes[cleanClass(mtKey, false)] = { label, playbook, creation };
 					}
 				}
 			}
@@ -995,6 +987,7 @@ export async function preloadHandlebarsTemplates() {
 		"systems/pbta/templates/chat/stat-shift.hbs",
 
 		// Dialog partials
+		"systems/pbta/templates/dialog/attributes-dialog.hbs",
 		"systems/pbta/templates/dialog/choice-dialog.hbs"
 	];
 

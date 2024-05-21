@@ -1,3 +1,4 @@
+import { AttributeChoiceValueField, MappingField } from "../fields.js";
 import { ItemTemplateData } from "./templates/item.js";
 
 export default class PlaybookData extends ItemTemplateData {
@@ -20,7 +21,25 @@ export default class PlaybookData extends ItemTemplateData {
 			actorType: new foundry.data.fields.StringField({ initial: "" }), // @todo MIGRATION TO SET A VALID DEFAULT
 			stats: new foundry.data.fields.ObjectField(), // @todo MIGRATION TO SET A VALID DEFAULT BASED ON actorType
 			statsDetail: new foundry.data.fields.StringField({ initial: "" }),
-			attributes: new foundry.data.fields.ObjectField(), // @todo migration
+			// attributes: new foundry.data.fields.ObjectField(), // @todo migration
+			attributes: new MappingField(
+				new foundry.data.fields.SchemaField({
+					label: new foundry.data.fields.StringField({ initial: "", required: true }),
+					value: new AttributeChoiceValueField({ initial: "", required: true }),
+					max: new AttributeChoiceValueField({ initial: null, nullable: true }),
+					custom: new foundry.data.fields.BooleanField({ initial: false, required: true }),
+					type: new foundry.data.fields.StringField({
+						initial: "Details",
+						choices: ["Details", "Number", "Resource", "Text", "LongText"],
+						required: true
+					}),
+					choices: new foundry.data.fields.ArrayField(
+						new foundry.data.fields.SchemaField({
+							value: new foundry.data.fields.HTMLField({ initial: "" })
+						})
+					)
+				})
+			), // @todo migration
 			choiceSets: new foundry.data.fields.ArrayField(
 				new foundry.data.fields.SchemaField({
 					title: new foundry.data.fields.StringField({ initial: "", required: true }),

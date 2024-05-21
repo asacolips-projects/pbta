@@ -156,6 +156,7 @@ export default class ItemPbta extends Item {
 		if (this.type === "playbook") {
 
 			if (this.parent) {
+				const attributesUpdate = await this.handleAttributes(data);
 				const choiceUpdate = await this.handleChoices(data);
 				if (Object.keys(choiceUpdate).length > 0) {
 					this.updateSource(choiceUpdate);
@@ -182,9 +183,9 @@ export default class ItemPbta extends Item {
 					this.updateSource({ "flags.pbta": { grantedItems } });
 				}
 
-				const changes = {
+				const changes = foundry.utils.mergeObject({
 					"system.playbook": { name: this.name, slug: this.system.slug, uuid: compendiumSource ?? options.originalUuid }
-				};
+				}, attributesUpdate);
 				if (this.system.actorType) {
 					const stats = foundry.utils.duplicate(this.parent.system.stats);
 					Object.entries(this.system.stats).forEach(([key, data]) => stats[key].value = data.value);
@@ -192,17 +193,29 @@ export default class ItemPbta extends Item {
 				}
 				await this.parent.update(changes);
 			} else {
-				const actorTypes = Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
-					.filter(([a, v]) => this._filterActorTypes([a, v])));
+				const actorTypes = foundry.utils.duplicate(
+					Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
+						.filter(([a, v]) => this._filterActorTypes([a, v])))
+				);
 				if (Object.keys(actorTypes).length) {
 					const actorType = Object.keys(actorTypes)[0];
+					const validAttributes = ["Number", "Resource", "Text", "LongText"];
 					const filtered = (obj) => {
 						return Object.fromEntries(
 							Object.entries(obj)
-								// @todo REVERT THIS BEFORE RELEASE
-								// .filter(([key, data]) => data.playbook)
+								.filter(
+									([key, data]) =>
+										(!data.type || validAttributes.includes(data.type))
+										// @todo UNCOMMENT
+										/** && data.playbook */
+								)
 								.map(([key, data]) => {
-									data.choices = [];
+									data.type ??= "Details";
+									if (data.type === "Resource") {
+										data.choices = [{ value: data.value, max: data.max }];
+									} else if (data.value) {
+										data.choices = [{ value: data.value }];
+									} else data.choices = [];
 									data.custom = false;
 									return [key, data];
 								})
@@ -228,6 +241,67 @@ export default class ItemPbta extends Item {
 			if (!this.system.slug) {
 				this.updateSource({ "system.slug": this.name.slugify() });
 			}
+		}
+	}
+
+	async handleAttributes(data) {
+		if (Object.keys(data.system?.attributes ?? {}).length > 0) {
+			const selected = {};
+			for (const attribute in data.system.attributes) {
+				const { label, choices, custom, type } = data.system.attributes[attribute];
+				const attrOrDetail = type === "Details" ? "details" : "attributes";
+				if (choices.length > 1 || custom) {
+					if (["Details", "LongText"].includes(type)) {
+						for (const choice of choices) {
+							choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", {
+								async: true,
+								secrets: this.isOwner,
+								rollData: this?.getRollData() ?? {},
+								relativeTo: this
+							});
+						}
+					}
+					await Dialog.wait({
+						title: `${game.i18n.localize("ATTRIBUTE !LOCALIZEME")}: ${label}`,
+						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", { attribute, choices, custom, type }),
+						default: "ok",
+						// @todo add some warning about pending grants
+						close: () => {
+							return false;
+						},
+						buttons: {
+							skip: {
+								label: game.i18n.localize("SKIP !LOCALIZEME"),
+								icon: '<i class="fas fa-undo"></i>',
+								callback: () => {
+									// @todo add some warning about pending grants
+								}
+							},
+							ok: {
+								label: game.i18n.localize("OK !LOCALIZEME"),
+								icon: '<i class="fas fa-check"></i>',
+								callback: async (html) => {
+									const fd = new FormDataExtended(html.querySelector(".pbta-choice-dialog"));
+									const choice = fd.object[attribute];
+									const { value, max } = choices[choice];
+									if (value) selected[`system.${attrOrDetail}.${attribute}.value`] = value;
+									if (max) selected[[`system.${attrOrDetail}.${attribute}.max`]] = max;
+								}
+							}
+						}
+					}, { jQuery: false });
+				} else if (!attribute.custom) {
+					let { value, max } = data.system.attributes[attribute];
+					if (data.system.attributes[attribute].choices.length) {
+						const choice = data.system.attributes[attribute].choices[0];
+						value = choice.value;
+						max = choice.max ?? max;
+					}
+					if (value) selected[`system.${attrOrDetail}.${attribute}.value`] = value;
+					if (max) selected[[`system.${attrOrDetail}.${attribute}.max`]] = max;
+				}
+			}
+			return selected;
 		}
 	}
 
