@@ -48,7 +48,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 	/** @override */
 	async activateListeners(html) {
 		super.activateListeners(html);
-		html.find("select[name='system.actorType']").on("change", this._onChangeStats.bind(this));
+		html.find("select[name='system.actorType']").on("change", this._onChangeActorType.bind(this));
 		html.find("[data-action='add-choiceset']").on("click", this._onAddChoiceSet.bind(this));
 		html.find("[data-action='delete-choiceset']").on("click", this._onDeleteChoiceSet.bind(this));
 		html.find("[data-action='delete-item']").on("click", this._onDeleteItem.bind(this));
@@ -57,14 +57,20 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		html.find("[data-tab='attributes'] [data-action='delete-attribute-choice']").on("click", this._onDeleteAttributeChoice.bind(this));
 	}
 
-	_onChangeStats(event) {
+	_onChangeActorType(event) {
 		event.preventDefault();
 		const actorType = event.target.value;
-		const stats = foundry.utils.deepClone(game.pbta.sheetConfig?.actorTypes[actorType]?.stats);
+		const stats = {};
 		const prevStats = this.item.system.stats;
-		Object.keys(prevStats).forEach((k) => stats[`-=${k}`] = null);
+		const newStats = foundry.utils.deepClone(game.pbta.sheetConfig?.actorTypes[actorType]?.stats ?? {});
+		Object.keys(newStats).forEach((k) => stats[`${k}`] = newStats[k]);
+		Object.keys(prevStats).forEach((k) => {
+			if (!stats[k]) stats[`-=${k}`] = null;
+		});
+		const attributes = this.item._getValidAttributes(actorType);
 		this.item.update({
 			"system.actorType": actorType,
+			"system.attributes": attributes,
 			"system.stats": stats
 		});
 	}

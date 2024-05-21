@@ -128,7 +128,7 @@ export class MappingField extends foundry.data.fields.ObjectField {
 		}
 		const errors = this._validateValues(value, options);
 		if (!foundry.utils.isEmpty(errors)) {
-			throw new foundry.data.fields.DataModelValidationError(errors);
+			throw new foundry.data.validation.DataModelValidationError(errors);
 		}
 	}
 

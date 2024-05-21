@@ -154,7 +154,6 @@ export default class ItemPbta extends Item {
 
 		const compendiumSource = this._stats.compendiumSource;
 		if (this.type === "playbook") {
-
 			if (this.parent) {
 				const attributesUpdate = await this.handleAttributes(data);
 				const choiceUpdate = await this.handleChoices(data);
@@ -199,34 +198,8 @@ export default class ItemPbta extends Item {
 				);
 				if (Object.keys(actorTypes).length) {
 					const actorType = Object.keys(actorTypes)[0];
-					const validAttributes = ["Number", "Resource", "Text", "LongText"];
-					const filtered = (obj) => {
-						return Object.fromEntries(
-							Object.entries(obj)
-								.filter(
-									([key, data]) =>
-										(!data.type || validAttributes.includes(data.type))
-										// @todo UNCOMMENT
-										/** && data.playbook */
-								)
-								.map(([key, data]) => {
-									data.type ??= "Details";
-									if (data.type === "Resource") {
-										data.choices = [{ value: data.value, max: data.max }];
-									} else if (data.value) {
-										data.choices = [{ value: data.value }];
-									} else data.choices = [];
-									data.custom = false;
-									return [key, data];
-								})
-						);
-					};
-					const attributes = {
-						...filtered(actorTypes[actorType]?.attrTop),
-						...filtered(actorTypes[actorType]?.attrLeft),
-						...filtered(actorTypes[actorType]?.details)
-					};
-					const stats = actorTypes[actorType]?.stats;
+					const attributes = this._getValidAttributes(this.system.actorType);
+					const stats = actorTypes[this.system.actorType || actorType]?.stats;
 					this.updateSource({
 						"system.attributes": attributes,
 						"system.stats": stats
@@ -291,7 +264,7 @@ export default class ItemPbta extends Item {
 						}
 					}, { jQuery: false });
 				} else if (!attribute.custom) {
-					let { value, max } = data.system.attributes[attribute];
+					let { value, max = null } = data.system.attributes[attribute];
 					if (data.system.attributes[attribute].choices.length) {
 						const choice = data.system.attributes[attribute].choices[0];
 						value = choice.value;
@@ -614,8 +587,45 @@ export default class ItemPbta extends Item {
 
 	/* -------------------------------------------- */
 
-	_filterActorTypes([key, data]) {
-		switch (this.type) {
+	_getValidAttributes(actorType, actorTypes) {
+		actorTypes ??= foundry.utils.duplicate(
+			Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
+				.filter(([a, v]) => this._filterActorTypes([a, v])))
+		);
+		if (Object.keys(actorTypes).length) {
+			actorType ||= Object.keys(actorTypes)[0];
+			const validAttributes = ["Number", "Resource", "Text", "LongText"];
+			const filtered = (obj) => {
+				return Object.fromEntries(
+					Object.entries(obj)
+						.filter(([key, data]) => {
+							const isValidType = !data.type || validAttributes.includes(data.type);
+							const hasPlaybook = data.playbook;
+							return isValidType && hasPlaybook;
+						})
+						.map(([key, data]) => {
+							data.type ??= "Details";
+							if (data.type === "Resource") {
+								data.choices = [{ value: data.value, max: data.max }];
+							} else if (data.value) {
+								data.choices = [{ value: data.value }];
+							} else data.choices = [];
+							data.custom = false;
+							return [key, data];
+						})
+				);
+			};
+			return {
+				...filtered(actorTypes[actorType]?.attrTop ?? {}),
+				...filtered(actorTypes[actorType]?.attrLeft ?? {}),
+				...filtered(actorTypes[actorType]?.details ?? {})
+			};
+		}
+	}
+
+	_filterActorTypes([key, data], type) {
+		type ??= this.type;
+		switch (type) {
 			case "equipment":
 				return data?.equipmentTypes;
 			case "move":

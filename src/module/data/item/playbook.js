@@ -18,10 +18,9 @@ export default class PlaybookData extends ItemTemplateData {
 					}
 				}
 			}),
-			actorType: new foundry.data.fields.StringField({ initial: "" }), // @todo MIGRATION TO SET A VALID DEFAULT
-			stats: new foundry.data.fields.ObjectField(), // @todo MIGRATION TO SET A VALID DEFAULT BASED ON actorType
+			actorType: new foundry.data.fields.StringField({ initial: "" }),
+			stats: new foundry.data.fields.ObjectField(),
 			statsDetail: new foundry.data.fields.StringField({ initial: "" }),
-			// attributes: new foundry.data.fields.ObjectField(), // @todo migration
 			attributes: new MappingField(
 				new foundry.data.fields.SchemaField({
 					label: new foundry.data.fields.StringField({ initial: "", required: true }),
@@ -39,7 +38,7 @@ export default class PlaybookData extends ItemTemplateData {
 						})
 					)
 				})
-			), // @todo migration
+			),
 			choiceSets: new foundry.data.fields.ArrayField(
 				new foundry.data.fields.SchemaField({
 					title: new foundry.data.fields.StringField({ initial: "", required: true }),

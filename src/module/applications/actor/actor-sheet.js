@@ -345,7 +345,6 @@ export default class PbtaActorSheet extends ActorSheet {
 			}
 
 			const selected = CONFIG.PBTA.playbooks.find((p) => p.uuid === event.target.value);
-			// @todo change stats
 			if (currPlaybook.uuid) {
 				const deleted = await this.actor.items.find((i) => i.type === "playbook")?.delete();
 				if (!deleted) {
