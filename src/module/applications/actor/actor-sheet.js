@@ -149,10 +149,15 @@ export default class PbtaActorSheet extends ActorSheet {
 			}
 
 			if (game.pbta.sheetConfig.statShifting) {
+				const stats = {};
+				Object.entries(context.system.stats).forEach(([stat, data]) => {
+					stats[stat] = { label: data.label, value: stat };
+				});
 				context.statShifting = {
 					...foundry.utils.duplicate(game.pbta.sheetConfig.statShifting),
 					up: this._statShifting?.up,
-					down: this._statShifting?.down
+					down: this._statShifting?.down,
+					stats
 				};
 			}
 
@@ -619,7 +624,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			user: game.user.id,
 			content: content,
 			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-			type: CONST.CHAT_MESSAGE_TYPES.OTHER
+			type: CONST.CHAT_MESSAGE_STYLES.OTHER
 		});
 	}
 
