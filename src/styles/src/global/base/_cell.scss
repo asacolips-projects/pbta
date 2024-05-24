@@ -244,6 +244,11 @@
     }
 
   }
+
+  .cell--roll-resources label, 
+  .cell--conditions label {
+    align-items: center;
+  }
 }
 
 .cell__track {
