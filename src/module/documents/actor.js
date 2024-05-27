@@ -190,7 +190,9 @@ export default class ActorPbta extends Actor {
 			title: label ?? "",
 			rollMode: game.settings.get("core", "rollMode")
 		});
-		await this.clearForwardAdv();
+		if (choice.options.conditionsConsumed.includes("forward") ?? false) {
+			await this.clearForwardAdv();
+		}
 		await this.updateCombatMoveCount();
 	}
 
@@ -220,7 +222,9 @@ export default class ActorPbta extends Actor {
 			rollMode: game.settings.get("core", "rollMode")
 		});
 		await this.update(updates);
-		await this.clearForwardAdv();
+		if (choice.options.conditionsConsumed.includes("forward") ?? false) {
+			await this.clearForwardAdv();
+		}
 		await this.updateCombatMoveCount();
 	}
 
