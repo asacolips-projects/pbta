@@ -89,7 +89,9 @@ export default class ItemPbta extends Item {
 					}
 				}
 			});
-			await this.actor?.clearForwardAdv();
+			if (choice.options.conditionsConsumed.includes("forward") ?? false) {
+				await this.actor?.clearForwardAdv();
+			}
 			await this.actor.updateCombatMoveCount();
 		}
 	}

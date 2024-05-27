@@ -81,6 +81,10 @@ PBTA:
   Dialog:
     Ask1: "Choose a stat for this move."
     ChooseConditions: "Choose all conditional modifiers that apply:"
+    ChooseSituationalModifiersTitle: "Situational Modifiers"
+    ChooseSituationalModifiers: "Choose all situational modifiers that apply:"
+    ForwardMessage: "Use <strong>{value}</strong> Forward."
+    OngoingMessage: "Use <strong>{value}</strong> Ongoing."
     Prompt1: "Choose the modifier for this move."
     HowManyToken: "How many token would you like to use?"
     ErrorAboveMax: "You can't spend more token than you have."
