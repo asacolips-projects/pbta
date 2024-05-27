@@ -92,7 +92,7 @@ export default class ItemPbta extends Item {
 			} else if (!["ask", "prompt", "formula"].includes(rollType)) {
 				stat = rollType;
 				formula += `+ @stats.${stat}.value`;
-				if (this.actor.system.stats[stat].toggle) {
+				if (this.actor.system.stats[stat]?.toggle) {
 					const { modifier } = game.pbta.sheetConfig.statToggle;
 					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
 				}
