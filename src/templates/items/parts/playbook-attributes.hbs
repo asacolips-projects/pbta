@@ -1,4 +1,7 @@
 {{!-- !LOCALIZEME entire file --}}
+{{#if numOfAttributes}}
+<a type="button" data-action="update-attributes">Update Attributes</a>
+{{/if}}
 <ol>
 	{{#each system.attributes as | attribute key | }}
 	<li class="attribute-set" data-type="{{attribute.type}}" data-key="{{key}}">

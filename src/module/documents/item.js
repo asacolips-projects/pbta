@@ -435,6 +435,10 @@ export default class ItemPbta extends Item {
 				uuid: this.uuid,
 				actorType: this.system.actorType
 			};
+			if (changed?.system?.slug !== undefined) {
+				const attributes = this._getUpdatedAttributes();
+				this.updateSource({ "system.attributes": attributes });
+			}
 		}
 		super._onUpdate(changed, options, userId);
 	}
@@ -589,6 +593,29 @@ export default class ItemPbta extends Item {
 
 	/* -------------------------------------------- */
 
+	static VALID_ATTRIBUTES = ["Number", "Resource", "Text", "LongText"];
+
+	_filterAttributes(attributes) {
+		return Object.fromEntries(
+			Object.entries(attributes)
+				.filter(([key, data]) => {
+					const isValidType = !data.type || ItemPbta.VALID_ATTRIBUTES.includes(data.type);
+					const hasPlaybook = data.playbook === true || data.playbook === this.system.slug;
+					return isValidType && hasPlaybook;
+				})
+				.map(([key, data]) => {
+					data.type ??= "Details";
+					if (data.type === "Resource") {
+						data.choices = [{ value: data.value, max: data.max }];
+					} else if (data.value) {
+						data.choices = [{ value: data.value }];
+					} else data.choices = [];
+					data.custom = false;
+					return [key, data];
+				})
+		);
+	}
+
 	_getValidAttributes(actorType, actorTypes) {
 		actorTypes ??= foundry.utils.duplicate(
 			Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
@@ -596,33 +623,30 @@ export default class ItemPbta extends Item {
 		);
 		if (Object.keys(actorTypes).length) {
 			actorType ||= Object.keys(actorTypes)[0];
-			const validAttributes = ["Number", "Resource", "Text", "LongText"];
-			const filtered = (obj) => {
-				return Object.fromEntries(
-					Object.entries(obj)
-						.filter(([key, data]) => {
-							const isValidType = !data.type || validAttributes.includes(data.type);
-							const hasPlaybook = data.playbook;
-							return isValidType && hasPlaybook;
-						})
-						.map(([key, data]) => {
-							data.type ??= "Details";
-							if (data.type === "Resource") {
-								data.choices = [{ value: data.value, max: data.max }];
-							} else if (data.value) {
-								data.choices = [{ value: data.value }];
-							} else data.choices = [];
-							data.custom = false;
-							return [key, data];
-						})
-				);
-			};
 			return {
-				...filtered(actorTypes[actorType]?.attrTop ?? {}),
-				...filtered(actorTypes[actorType]?.attrLeft ?? {}),
-				...filtered(actorTypes[actorType]?.details ?? {})
+				...this._filterAttributes(actorTypes[actorType]?.attrTop ?? {}),
+				...this._filterAttributes(actorTypes[actorType]?.attrLeft ?? {}),
+				...this._filterAttributes(actorTypes[actorType]?.details ?? {})
 			};
 		}
+	}
+
+	_getUpdatedAttributes() {
+		const attributes = foundry.utils.duplicate(this.system.attributes);
+		const validAttributes = this._getValidAttributes(this.system.actorType);
+		if (Object.keys(validAttributes).length > Object.keys(attributes).length) {
+			Object.entries(validAttributes).forEach(([key, data]) => {
+				if (!attributes[key]) attributes[key] = data;
+			});
+		} else if (Object.keys(validAttributes).length < Object.keys(attributes).length) {
+			Object.keys(attributes).forEach((key) => {
+				if (!validAttributes[key]) {
+					delete attributes[key];
+					attributes[`-=${key}`] = null;
+				}
+			});
+		}
+		return attributes;
 	}
 
 	_filterActorTypes([key, data], type) {

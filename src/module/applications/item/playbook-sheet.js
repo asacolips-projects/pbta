@@ -40,6 +40,9 @@ export default class PlaybookSheet extends PbtaItemSheet {
 				}
 			}
 		}
+		const numOfAttributes = Object.keys(this.item.system.attributes).length;
+		const numOfValidAttributes = Object.keys(this.item._getValidAttributes(this.item.system.actorType)).length;
+		context.numOfAttributes = Math.abs(numOfAttributes - numOfValidAttributes);
 		return context;
 	}
 
@@ -53,6 +56,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		html.find("[data-action='delete-choiceset']").on("click", this._onDeleteChoiceSet.bind(this));
 		html.find("[data-action='delete-item']").on("click", this._onDeleteItem.bind(this));
 		// @todo add click event on item's img/label to render the item
+		html.find("[data-action='update-attributes']").on("click", this._onUpdateAttributes.bind(this));
 		html.find("[data-tab='attributes'] [data-action='add-attribute-choice']").on("click", this._onAddAttributeChoice.bind(this));
 		html.find("[data-tab='attributes'] [data-action='delete-attribute-choice']").on("click", this._onDeleteAttributeChoice.bind(this));
 	}
@@ -107,6 +111,12 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		const choiceSets = this.item.system.choiceSets;
 		choiceSets[id].choices = choiceSets[id].choices.filter((item, _index) => _index !== Number(index));
 		this.item.update({ "system.choiceSets": choiceSets });
+	}
+
+	_onUpdateAttributes(event) {
+		event.preventDefault();
+		const attributes = this.item._getUpdatedAttributes();
+		this.item.update({ "system.attributes": attributes });
 	}
 
 	_onAddAttributeChoice(event) {
