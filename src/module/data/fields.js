@@ -1,8 +1,3 @@
-/**
- * The code in this file was taken from the dnd5e system by Andrew Clayton and is licensed under the MIT license.
- * Original file: https://github.com/foundryvtt/dnd5e/blob/677c6ae127aa885bd4cb9a83f95180a655a8623b/module/data/fields.mjs
- */
-
 export class AttributeChoiceValueField extends foundry.data.fields.DataField {
 	_cast(value) {
 		if (typeof value !== "string") return value;
@@ -18,6 +13,11 @@ export class AttributeChoiceValueField extends foundry.data.fields.DataField {
 		}
 	}
 }
+
+/**
+ * The code belowwas taken from the dnd5e system by Andrew Clayton and is licensed under the MIT license.
+ * Original file: https://github.com/foundryvtt/dnd5e/blob/677c6ae127aa885bd4cb9a83f95180a655a8623b/module/data/fields.mjs
+ */
 
 /**
  * Special case StringField which represents a formula.
