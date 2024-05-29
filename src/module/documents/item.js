@@ -223,9 +223,14 @@ export default class ItemPbta extends Item {
 		if (Object.keys(data.system?.attributes ?? {}).length > 0) {
 			const selected = {};
 			for (const attribute in data.system.attributes) {
-				const { label, choices, custom, type } = data.system.attributes[attribute];
+				const { label, choices, custom, max, type, value } = data.system.attributes[attribute];
 				const attrOrDetail = type === "Details" ? "details" : "attributes";
 				if (choices.length > 1 || custom) {
+					if (custom) {
+						const choice = { custom, value };
+						if (max !== undefined) choice.max = max;
+						choices.push(choice);
+					}
 					if (["Details", "LongText"].includes(type)) {
 						for (const choice of choices) {
 							choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", {
@@ -238,7 +243,7 @@ export default class ItemPbta extends Item {
 					}
 					await Dialog.wait({
 						title: `${game.i18n.localize("ATTRIBUTE !LOCALIZEME")}: ${label}`,
-						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", { attribute, choices, custom, type }),
+						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", { attribute, choices, type }),
 						default: "ok",
 						// @todo add some warning about pending grants
 						close: () => {
@@ -258,7 +263,8 @@ export default class ItemPbta extends Item {
 								callback: async (html) => {
 									const fd = new FormDataExtended(html.querySelector(".pbta-choice-dialog"));
 									const choice = fd.object[attribute];
-									const { value, max } = choices[choice];
+									let { custom, max, value } = choices[choice];
+									if (custom) value = fd.object.custom;
 									if (value) selected[`system.${attrOrDetail}.${attribute}.value`] = value;
 									if (max) selected[[`system.${attrOrDetail}.${attribute}.max`]] = max;
 								}

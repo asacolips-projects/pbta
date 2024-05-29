@@ -4,7 +4,11 @@
         <li class="flexrow" data-uuid="{{@index}}">
             <input style="flex: 0;" type="radio" name="{{../attribute}}" value="{{@index}}" data-dtype="Number" {{checked (eq @index 0)}}>
 			{{#if (or (eq ../type "LongText") (eq ../type "Details"))}}
-			{{editor this.enriched button=false editable=false}}
+				{{#if this.custom}}
+					<input type="text" name="custom" data-dtype="String">
+				{{else}}
+					{{editor this.enriched editable=false}}
+				{{/if}}
 
 			{{else if (eq attribute.type "Number")}}
 			<input type="number" value="{{this.value}}" data-dtype="Number"/>
