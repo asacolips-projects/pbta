@@ -1,6 +1,9 @@
-{{!-- !LOCALIZEME entire file --}}
 {{#if numOfAttributes}}
-<a type="button" data-action="update-attributes">Update Attributes</a>
+<a data-action="update-attributes">
+	<div class="cell__title warning small-text">
+		{{localize "PBTA.Warnings.Playbook.UpdateAttributes"}}
+	</div>
+</a>
 {{/if}}
 <ol>
 	{{#each system.attributes as | attribute key | }}

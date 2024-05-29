@@ -171,7 +171,7 @@ export default class ItemPbta extends Item {
 									items.push(item.toObject());
 									grantedItems.push(item.id);
 								} else {
-									console.warn("Item is missing !LOCALIZEME");
+									console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
 								}
 							}
 						}
@@ -242,7 +242,7 @@ export default class ItemPbta extends Item {
 						}
 					}
 					await Dialog.wait({
-						title: `${game.i18n.localize("ATTRIBUTE !LOCALIZEME")}: ${label}`,
+						title: `${game.i18n.localize("PBTA.Attribute")}: ${label}`,
 						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", { attribute, choices, type }),
 						default: "ok",
 						// @todo add some warning about pending grants
@@ -251,14 +251,14 @@ export default class ItemPbta extends Item {
 						},
 						buttons: {
 							skip: {
-								label: game.i18n.localize("SKIP !LOCALIZEME"),
+								label: game.i18n.localize("Cancel"),
 								icon: '<i class="fas fa-undo"></i>',
 								callback: () => {
 									// @todo add some warning about pending grants
 								}
 							},
 							ok: {
-								label: game.i18n.localize("OK !LOCALIZEME"),
+								label: game.i18n.localize("Confirm"),
 								icon: '<i class="fas fa-check"></i>',
 								callback: async (html) => {
 									const fd = new FormDataExtended(html.querySelector(".pbta-choice-dialog"));
@@ -302,7 +302,7 @@ export default class ItemPbta extends Item {
 				if (!validChoices.length) continue;
 
 				await Dialog.wait({
-					title: `${game.i18n.localize("CHOICE !LOCALIZEME")}: ${title}`,
+					title: `${game.i18n.localize("PBTA.Choice")}: ${title}`,
 					content: await renderTemplate("systems/pbta/templates/dialog/choice-dialog.hbs", { choices: validChoices, desc, parent: this.parent }),
 					default: "ok",
 					// @todo add some warning about pending grants
@@ -311,14 +311,14 @@ export default class ItemPbta extends Item {
 					},
 					buttons: {
 						skip: {
-							label: game.i18n.localize("SKIP !LOCALIZEME"),
+							label: game.i18n.localize("Cancel"),
 							icon: '<i class="fas fa-undo"></i>',
 							callback: () => {
 								// @todo add some warning about pending grants
 							}
 						},
 						ok: {
-							label: game.i18n.localize("OK !LOCALIZEME"),
+							label: game.i18n.localize("Confirm"),
 							icon: '<i class="fas fa-check"></i>',
 							callback: async (html) => {
 								const fd = new FormDataExtended(html.querySelector(".pbta-choice-dialog"));

@@ -1103,6 +1103,7 @@ export function registerHandlebarsHelpers() {
 		objLen: PbtAHandlebarsHelpers.objLen,
 		getLabel: PbtAHandlebarsHelpers.getLabel,
 		getValue: PbtAHandlebarsHelpers.getValue,
+		hidden: (value) => value ? "hidden" : "",
 		times: PbtAHandlebarsHelpers.times,
 		math: PbtAHandlebarsHelpers.math,
 		// eslint-disable-next-line eqeqeq

@@ -23,8 +23,8 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		// @todo add warnings about repeat grants
 		const context = await super.getData();
 		context.grantOptions = {
-			0: "On Drop", // !LOCALIZEME
-			1: "Advancement"
+			0: "PBTA.PlaybookGrantOnDrop",
+			1: "PBTA.Advancement"
 		};
 		const choicesByAdvancement = {};
 		this.item.system.choiceSets.forEach((cs, index) => {
@@ -211,7 +211,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		if (this.unsupportedItemTypes.has(type)) return false;
 		if (data.choiceSet === Number(setId)) return false; // return this._onSortItem(event, item, setId);
 		if (choiceSets[setId].choices.find((c) => c.uuid === uuid)) {
-			ui.notifications.warn("Choice Set already has the granted item."); // !LOCALIZEME
+			ui.notifications.warn("PBTA.Warnings.Playbook.ChoiceSetAlreadyGrant", { localize: true });
 			return false;
 		}
 		if ("choiceSet" in data && data.choiceSet !== Number(setId)) {

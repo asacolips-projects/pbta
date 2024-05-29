@@ -1,19 +1,18 @@
-{{!-- !LOCALIZEME entire file --}}
 <ol>
 	{{#each choicesByAdvancement as | advancement |}}
 	<li>
 		<div>
 			{{#if (gt @key 0)}}
-			Advancement {{@key}}
+			{{localize "PBTA.AdvancementNumber" number=@key}}
 			{{else}}
-			Starting Grants
+			{{localize "PBTA.StartingGrants"}}
 			{{/if}}
 		</div>
 		{{#each advancement as | grant |}}
 		<ol class="choiceset" data-id="{{@key}}">
 			{{#each grant}}
 			<div class="form-group">
-				<label>Label</label>
+				<label>{{localize "PBTA.Title"}}</label>
 				<div class="form-fields">
 					<input type="text" name="system.choiceSets.{{@../key}}.title" value="{{this.title}}" />
 					<a style="flex: 0; margin: 3px;" type="button" data-action="delete-choiceset">
@@ -22,26 +21,25 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label>Description</label>
+				<label>{{localize "PBTA.Common.Description"}}</label>
 				<div class="form-fields">
 					<input type="text" name="system.choiceSets.{{@../key}}.desc" value="{{this.desc}}">
 				</div>
 			</div>
 			<div class="form-group">
-				<label>Grant On</label>
+				<label>{{localize "PBTA.PlaybookGrantOn"}}</label>
 				<div class="form-fields">
 					<select name="system.choiceSets.{{@../key}}.grantOn">
-						{{ selectOptions @root.grantOptions selected=this.grantOn}}
+						{{ selectOptions @root.grantOptions selected=this.grantOn localize=true}}
 					</select>
-					<label>Advancement</label>
-					<input type="number" name="system.choiceSets.{{@../key}}.advancement" value="{{this.advancement}}" {{disabled (not this.grantOn)}}>
+					<input type="number" name="system.choiceSets.{{@../key}}.advancement" value="{{this.advancement}}" {{hidden (not this.grantOn)}}>
 				</div>
 			</div>
 			<hr>
 			{{#if this.choices.length}}
 			<li class="form-group choiceset-item" data-uuid="{{this.uuid}}" data-id="{{@index}}">
-				<div>Item</div>
-				<div>Advancement</div>
+				<div>{{localize "DOCUMENT.Item"}}</div>
+				<div>{{localize "PBTA.Advancement"}}</div>
 			</li>
 			{{/if}}
 			{{#each this.choices}}
@@ -61,7 +59,7 @@
 			</li>
 			<hr>
 			{{/each}}
-			<div style="margin: 3px; text-align: center;">Drop your items here</div>
+			<div style="margin: 3px; text-align: center;">{{localize "PBTA.DropItemsHere"}}</div>
 			{{/each}}
 		</ol>
 		{{/each}}
@@ -70,6 +68,6 @@
 </ol>
 <footer>
 	<a type="button" data-action="add-choiceset">
-		<i class="fa fa-plus"></i>Add Item Grant
+		<i class="fa fa-plus"></i>{{localize "PBTA.ItemGrantAdd"}}
 	</a>
 </footer>
