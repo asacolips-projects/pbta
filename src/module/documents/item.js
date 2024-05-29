@@ -338,7 +338,7 @@ export default class ItemPbta extends Item {
 					changed.system.choiceSets = Object.values(changed.system.choiceSets);
 				}
 				changed.system.choiceSets.forEach((cs) => {
-					if (Object.keys(cs.choices).length) {
+					if (cs.choices && Object.keys(cs.choices).length) {
 						if (Array.isArray(cs.choices)) cs.choices.sort(this._sortItemAdvancement);
 						else cs.choices = Object.values(cs.choices).sort(this._sortItemAdvancement);
 					}
