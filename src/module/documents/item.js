@@ -366,7 +366,7 @@ export default class ItemPbta extends Item {
 			const buttons = {
 				yes: {
 					icon: '<i class="fas fa-check"></i>',
-					label: game.i18n.localize("Yes"),
+					label: game.i18n.localize("Confirm"),
 					callback: async () => {
 						if (grantedItems.length) {
 							const granted = new Set(
@@ -388,7 +388,7 @@ export default class ItemPbta extends Item {
 				},
 				no: {
 					icon: '<i class="fas fa-times"></i>',
-					label: game.i18n.localize("No"),
+					label: game.i18n.localize("Cancel"),
 					callback: () => {
 						return false;
 					}
@@ -440,10 +440,6 @@ export default class ItemPbta extends Item {
 				uuid: this.uuid,
 				actorType: this.system.actorType
 			};
-			if (changed?.system?.slug !== undefined) {
-				const attributes = this._getUpdatedAttributes();
-				this.updateSource({ "system.attributes": attributes });
-			}
 		}
 		super._onUpdate(changed, options, userId);
 	}
