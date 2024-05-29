@@ -1,7 +1,7 @@
 &.playbook {
 	.choiceset {
 		&:nth-child(even of .choiceset) {
-			background-color: #bbb;
+			background-color: rgba(188, 188, 188, 0.4);
 		}
 	}
 }

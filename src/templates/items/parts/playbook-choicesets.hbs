@@ -38,6 +38,12 @@
 				</div>
 			</div>
 			<hr>
+			{{#if this.choices.length}}
+			<li class="form-group choiceset-item" data-uuid="{{this.uuid}}" data-id="{{@index}}">
+				<div>Item</div>
+				<div>Advancement</div>
+			</li>
+			{{/if}}
 			{{#each this.choices}}
 			<li class="form-group choiceset-item" data-uuid="{{this.uuid}}" data-id="{{@index}}">
 				<div class="item flexrow">
