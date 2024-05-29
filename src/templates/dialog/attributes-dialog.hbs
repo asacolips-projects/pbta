@@ -1,8 +1,8 @@
-<form class="pbta-choice-dialog">
+<form class="pbta-attribute-dialog">
     <ol>
         {{#each choices}}
         <li class="flexrow" data-uuid="{{@index}}">
-            <input style="flex: 0;" type="radio" name="{{../attribute}}" value="{{@index}}" data-dtype="Number" {{checked (eq @index 0)}}>
+            <input class="choice" type="radio" name="{{../attribute}}" value="{{@index}}" data-dtype="Number" {{checked (eq @index 0)}}>
 			{{#if (or (eq ../type "LongText") (eq ../type "Details"))}}
 				{{#if this.custom}}
 					<input type="text" name="custom" data-dtype="String">

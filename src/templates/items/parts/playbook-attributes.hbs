@@ -10,9 +10,11 @@
 	<li class="attribute-set" data-type="{{attribute.type}}" data-key="{{key}}">
 		<div class="flexrow">
 			<span>{{attribute.label}}</span>
-			<a style="flex: 0; margin: 3px;" data-action="add-attribute-choice">
-				<i class="fa fa-plus"></i>
-			</a>
+			<div class="item-controls">
+				<a data-action="add-attribute-choice">
+					<i class="fa fa-plus"></i>
+				</a>
+			</div>
 		</div>
 		<ol>
 			{{#each this.choices}}
@@ -29,9 +31,11 @@
 				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.max" value="{{this.max}}" data-dtype="Number"/>
 
 				{{/if}}
-				<a style="flex: 0; margin: 3px;" data-action="delete-attribute-choice">
-					<i class="fa fa-trash"></i>
-				</a>
+				<div class="item-controls">
+					<a data-action="delete-attribute-choice">
+						<i class="fa fa-trash"></i>
+					</a>
+				</div>
 			</li>
 			{{/each}}
 		</ol>
