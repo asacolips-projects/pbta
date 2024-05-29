@@ -369,8 +369,6 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Attributes.
 		html.find(".attr-clock, .attr-xp").on("click", this._onClockClick.bind(this));
-		html.find(".attr-track-value").on("click", this._onTrackValueClick.bind(this));
-		html.find(".attr-track-step").on("click", this._onTrackStepClick.bind(this));
 
 		// Stats.
 		html.find(".stat-clock").on("click", this._onStatClockClick.bind(this));
@@ -431,83 +429,6 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Update the actor/token.
 		await this.actor.update({ [prop]: attr });
-	}
-
-	async updateTrackThreshold(attr) {
-		// eslint-disable-next-line no-constant-condition
-		while (true) {
-			let negativeThreshold = (-Math.min(attr.value, 0) + 1) * attr.negative.steps;
-			let positiveThreshold = (Math.max(attr.value, 0) + 1) * attr.positive.steps;
-
-			if (attr.negative.value >= negativeThreshold && -attr.value < attr.negative.max) {
-				attr.negative.value -= negativeThreshold;
-				attr.value--;
-				continue;
-			}
-			if (attr.positive.value >= positiveThreshold && attr.value < attr.positive.max) {
-				attr.positive.value -= positiveThreshold;
-				attr.value++;
-				continue;
-			}
-
-			break;
-		}
-	}
-
-	async _onTrackValueClick(event) {
-		event.preventDefault();
-		const $self = $(event.currentTarget);
-
-		let value = parseInt($self.data("value"));
-		let prop = $self.data("name");
-
-		let attr = getProperty(this.actor, prop);
-		attr.value = value;
-		if (value === 0) {
-			attr.positive.value = 0;
-			attr.negative.value = 0;
-		} else {
-			this.updateTrackThreshold(attr);
-		}
-		game.pbta.utils.updateAttrCellTrackDisplay(attr);
-
-		let update = {};
-		update[prop] = attr;
-
-		this.actor.update(update);
-	}
-
-	async _onTrackStepClick(event) {
-		event.preventDefault();
-		const $self = $(event.currentTarget);
-
-		let value = parseInt($self.data("value"));
-		let step = parseInt($self.data("step"));
-		let prop = $self.data("name");
-
-		let attr = getProperty(this.actor, prop);
-		if (value > 0) {
-			let newValue = ((value - 1) * attr.positive.steps) + step + 1;
-			if (attr.positive.value === newValue && newValue === 1) {
-				attr.positive.value = 0;
-			} else {
-				attr.positive.value = newValue;
-			}
-		} else {
-			let newValue = -((value + 1) * attr.negative.steps) + step + 1;
-			if (attr.negative.value === newValue && newValue === 1) {
-				attr.negative.value = 0;
-			} else {
-				attr.negative.value = newValue;
-			}
-		}
-		this.updateTrackThreshold(attr);
-		game.pbta.utils.updateAttrCellTrackDisplay(attr);
-
-		let update = {};
-		update[prop] = attr;
-
-		this.actor.update(update);
 	}
 
 	// @todo add a _shrinked set to persist shrinking, similar to the _expanded set.

@@ -422,24 +422,6 @@ export function convertSheetConfig(sheetConfig) {
 }
 
 /**
- * Updates a Track's display.
- * @param {object} attr
- */
-export function updateAttrCellTrackDisplay(attr) {
-	for (let s of attr.steps) {
-		if (s.isValue) {
-			s.checked = s.value === attr.value;
-			continue;
-		}
-		if (s.value > 0) {
-			s.checked = (attr.positive.steps * (s.value - 1)) + s.step + 1 <= attr.positive.value;
-		} else {
-			s.checked = (attr.negative.steps * -(s.value + 1)) + s.step + 1 <= attr.negative.value;
-		}
-	}
-}
-
-/**
  * Validades an Attribute Group.
  * @param {object} attrGroup
  * @returns {object}
@@ -514,46 +496,6 @@ export function convertAttr(attrGroup) {
 				attr.options = getListOptions(attrValue, true);
 				attr.sort = attrValue.sort ?? false;
 				attr.value = attrValue.default ?? "0";
-				break;
-
-			case "Track":
-				// based on Faction Reputation of Root RPG
-				attr.value = attrValue.default ?? 0;
-
-				attr.negative = {
-					value: attrValue.negative?.default ?? 0,
-					steps: attrValue.negative?.steps ?? 3,
-					max: attrValue.negative?.max ?? 3,
-					label: attrValue.negative?.label
-				};
-				attr.positive = {
-					value: attrValue.positive?.default ?? 0,
-					steps: attrValue.positive?.steps ?? 5,
-					max: attrValue.positive?.max ?? 5,
-					label: attrValue.positive?.label
-				};
-
-				// Rendering helper for Track
-				attr.steps = [];
-				for (let i = attr.negative.max - 1; i >= 0; i--) {
-					attr.steps.push({ isValue: true, label: `-${i + 1}`, value: -(i + 1) });
-					for (let j = attr.negative.steps - 1; j >= 0; j--) {
-						attr.steps.push({ isValue: false, step: j, value: -(i + 1) });
-					}
-				}
-				attr.steps.push({ isValue: true, label: "+0", value: 0 });
-				for (let i = 0; i < attr.positive.max; i++) {
-					for (let j = 0; j < attr.positive.steps; j++) {
-						attr.steps.push({ isValue: false, step: j, value: i + 1 });
-					}
-					attr.steps.push({ isValue: true, label: `+${i + 1}`, value: i + 1 });
-				}
-				// used to display the label
-				attr.stepsNegative = (attr.negative.max * attr.negative.steps) + attr.negative.max;
-				attr.stepsPositive = (attr.positive.max * attr.positive.steps) + attr.positive.max;
-
-				updateAttrCellTrackDisplay(attr);
-
 				break;
 
 			default:

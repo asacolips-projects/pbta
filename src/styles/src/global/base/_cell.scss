@@ -69,10 +69,6 @@
   }
 }
 
-.cell--Track .cell__title:empty {
-  display: none;
-}
-
 .cell {
   input.input--cell-title[type="text"] {
     text-align: left;
@@ -245,49 +241,8 @@
 
   }
 
-  .cell--roll-resources label, 
+  .cell--roll-resources label,
   .cell--conditions label {
     align-items: center;
-  }
-}
-
-.cell__track {
-  display: grid;
-  grid-auto-rows: 1fr;
-  grid-auto-columns: 1fr;
-  grid-auto-flow: row;
-  align-items: center;
-  justify-items: center;
-  text-align: center;
-  gap: 2px;
-
-  > input[type=checkbox] {
-    width: 14px;
-    height: 14px;
-    zoom: unset;
-    margin-right: unset;
-  }
-
-  .attr-track-value {
-    width: 24px;
-    height: 24px;
-    line-height: 22px;
-    border: 2px solid transparent;
-    border-radius: 50%;
-
-    &[aria-checked="true"] {
-      border-color: #4878a8;
-    }
-  }
-
-  .cell__track__element {
-    grid-row: 1;
-  }
-
-  .cell__track__label {
-    grid-row: 2;
-    border-top: 3px solid #4878a8;
-    color: #4878a8;
-    justify-self: stretch;
   }
 }
