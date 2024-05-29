@@ -223,8 +223,7 @@ export default class ItemPbta extends Item {
 		if (Object.keys(data.system?.attributes ?? {}).length > 0) {
 			const selected = {};
 			for (const attribute in data.system.attributes) {
-				const { label, choices, custom, max, type, value } = data.system.attributes[attribute];
-				const attrOrDetail = type === "Details" ? "details" : "attributes";
+				const { label, choices, custom, max, path, type, value } = data.system.attributes[attribute];
 				if (choices.length > 1 || custom) {
 					if (custom) {
 						const choice = { custom, value };
@@ -261,12 +260,12 @@ export default class ItemPbta extends Item {
 								label: game.i18n.localize("Confirm"),
 								icon: '<i class="fas fa-check"></i>',
 								callback: async (html) => {
-									const fd = new FormDataExtended(html.querySelector(".pbta-choice-dialog"));
+									const fd = new FormDataExtended(html.querySelector(".pbta-attribute-dialog"));
 									const choice = fd.object[attribute];
 									let { custom, max, value } = choices[choice];
 									if (custom) value = fd.object.custom;
-									if (value) selected[`system.${attrOrDetail}.${attribute}.value`] = value;
-									if (max) selected[[`system.${attrOrDetail}.${attribute}.max`]] = max;
+									if (value) selected[`system.${path}.${attribute}.value`] = value;
+									if (max) selected[[`system.${path}.${attribute}.max`]] = max;
 								}
 							}
 						}
@@ -278,8 +277,8 @@ export default class ItemPbta extends Item {
 						value = choice.value;
 						max = choice.max ?? max;
 					}
-					if (value) selected[`system.${attrOrDetail}.${attribute}.value`] = value;
-					if (max) selected[[`system.${attrOrDetail}.${attribute}.max`]] = max;
+					if (value) selected[`system.${path}.${attribute}.value`] = value;
+					if (max) selected[[`system.${path}.${attribute}.max`]] = max;
 				}
 			}
 			return selected;
@@ -601,7 +600,7 @@ export default class ItemPbta extends Item {
 
 	static VALID_ATTRIBUTES = ["Number", "Resource", "Text", "LongText"];
 
-	_filterAttributes(attributes) {
+	_filterAttributes(attributes, path = "details") {
 		return Object.fromEntries(
 			Object.entries(attributes)
 				.filter(([key, data]) => {
@@ -617,6 +616,7 @@ export default class ItemPbta extends Item {
 						data.choices = [{ value: data.value }];
 					} else data.choices = [];
 					data.custom = false;
+					data.path = path;
 					return [key, data];
 				})
 		);
@@ -630,8 +630,8 @@ export default class ItemPbta extends Item {
 		if (Object.keys(actorTypes).length) {
 			actorType ||= Object.keys(actorTypes)[0];
 			return {
-				...this._filterAttributes(actorTypes[actorType]?.attrTop ?? {}),
-				...this._filterAttributes(actorTypes[actorType]?.attrLeft ?? {}),
+				...this._filterAttributes(actorTypes[actorType]?.attrTop ?? {}, "attrTop"),
+				...this._filterAttributes(actorTypes[actorType]?.attrLeft ?? {}, "attrLeft"),
 				...this._filterAttributes(actorTypes[actorType]?.details ?? {})
 			};
 		}
