@@ -62,7 +62,7 @@
 
     .result-label {
       text-align: center;
-      font-size: 18px;
+      font-size: var(--font-size-18);
       font-weight: bold;
       border: 1px solid #ccc;
       margin: 0;
@@ -107,14 +107,10 @@
     }
   }
 
-  .message-sender {
-    font-size: 12px;
-  }
-
   .cell__title {
     font-family: $font-stack-secondary;
     font-weight: bold;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     border-bottom: 2px solid $c-black;
     margin-bottom: 15px;
 
@@ -133,7 +129,7 @@
   }
 
   .row {
-    font-size: 13px;
+    font-size: var(--font-size-13);
   }
 
   .row--border {

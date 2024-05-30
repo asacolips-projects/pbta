@@ -41,7 +41,7 @@
 
     label {
       flex: 1;
-      font-size: 18px;
+      font-size: var(--font-size-18);
     }
 
     input {
@@ -57,7 +57,7 @@
       bottom: 0;
       margin: auto;
       text-align: center;
-      font-size: 18px;
+      font-size: var(--font-size-18);
       line-height: 18px;
 
       // &:hover,

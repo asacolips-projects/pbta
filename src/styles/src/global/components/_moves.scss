@@ -91,7 +91,7 @@
       text-align: center;
       color: $c-white;
       background: $c-black;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       opacity: 0.5;
 
       &:hover {
@@ -115,7 +115,7 @@
       background: $c-black;
       color: $c-white;
       opacity: 0;
-      font-size: 14px;
+      font-size: var(--font-size-14);
 
       &:hover {
         // transform: scale(1.2);
@@ -130,7 +130,7 @@
   }
 
   .item-name {
-    font-size: 18px;
+    font-size: var(--font-size-18);
     font-weight: bold;
     text-transform: uppercase;
     flex: auto;
