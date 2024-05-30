@@ -55,7 +55,8 @@ export default class RollPbtA extends Roll {
 			resultDetails: this.options?.moveResults?.[resultType]?.value,
 			resultLabel: resultRanges[resultType]?.label ?? resultType,
 			resultRanges,
-			stat: this.options.stat
+			stat: this.options.stat,
+			title: this.options.title
 		};
 		return renderTemplate(template, chatData);
 	}
@@ -114,6 +115,7 @@ export default class RollPbtA extends Roll {
 	 *                                          dialog was closed
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
+		this.options.title = title;
 		this.options.conditions = [];
 		this.options.conditionsConsumed = [];
 		const hasSituationalMods = this.data.resources.forward.value !== 0 || this.data.resources.ongoing.value !== 0;
@@ -135,7 +137,7 @@ export default class RollPbtA extends Roll {
 
 			const content = await renderTemplate(template ?? this.constructor.EVALUATION_TEMPLATE, templateData);
 			return new Promise((resolve) => {
-				title ??= game.i18n.localize("PBTA.RollMove");
+				title = title ? game.i18n.format("PBTA.RollLabel", { label: title }) : game.i18n.localize("PBTA.RollMove");
 				let buttons = {
 					submit: {
 						label: game.i18n.localize("PBTA.Roll"),

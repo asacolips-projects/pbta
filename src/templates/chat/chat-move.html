@@ -35,6 +35,7 @@
       </div>
     {{/if}}
 
+    {{#unless noRoll}}
     {{!-- Roll results, color coded to match the result type label. --}}
     <div class="dice-roll">
       {{#if flavor}}
@@ -46,6 +47,7 @@
         <h4 class="dice-total">{{total}}</h4>
       </div>
     </div>
+    {{/unless}}
 
     {{!-- Conditions --}}
     {{#if conditions}}

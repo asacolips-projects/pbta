@@ -48,7 +48,8 @@ export default class ItemPbta extends Item {
 				image: this.img,
 				title: this.name,
 				details: this.system.description,
-				tags: this.system.tags
+				tags: this.system.tags,
+				noRoll: true
 			});
 			ChatMessage.create({
 				user: game.user.id,
@@ -69,7 +70,7 @@ export default class ItemPbta extends Item {
 			delete options.rollMode;
 			const choice = await r.configureDialog({
 				templateData: options,
-				title: game.i18n.format("PBTA.RollLabel", { label: this.name })
+				title: this.name
 			});
 			if (choice === null) {
 				return;
@@ -81,7 +82,6 @@ export default class ItemPbta extends Item {
 
 				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 				image: this.img,
-				title: this.name,
 				rollMode: game.settings.get("core", "rollMode"),
 				flags: {
 					pbta: {

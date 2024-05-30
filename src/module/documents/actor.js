@@ -183,7 +183,7 @@ export default class ActorPbta extends Actor {
 			stat
 		}));
 		const choice = await r.configureDialog({
-			title: label ? game.i18n.format("PBTA.RollLabel", { label }) : game.i18n.format("PBTA.Roll")
+			title: label ?? game.i18n.format("PBTA.Roll")
 		});
 		if (choice === null) {
 			return;
@@ -191,7 +191,6 @@ export default class ActorPbta extends Actor {
 		await r.toMessage({
 			actor: this,
 			speaker: ChatMessage.getSpeaker({ actor: this }),
-			title: label ?? "",
 			rollMode: game.settings.get("core", "rollMode")
 		});
 		if (r.options.conditionsConsumed.includes("forward")) {
@@ -208,7 +207,7 @@ export default class ActorPbta extends Actor {
 				isStatToken: true,
 				numOfToken: this.system.stats[stat].value
 			},
-			title: game.i18n.format("PBTA.RollLabel", { label })
+			title: label
 		});
 		if (choice === true || choice === null) {
 			return;
@@ -219,7 +218,6 @@ export default class ActorPbta extends Actor {
 		};
 		await roll.toMessage({
 			speaker: ChatMessage.getSpeaker({ actor: this }),
-			title: label ?? "",
 			rollMode: game.settings.get("core", "rollMode")
 		});
 		await this.update(updates);
