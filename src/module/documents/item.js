@@ -39,7 +39,11 @@ export default class ItemPbta extends Item {
 	 * @param {boolean} options.descriptionOnly
 	 */
 	async roll(options = { descriptionOnly: false }) {
-		if (options.descriptionOnly || this.type === "equipment" || (this.type !== "npcMove" && !this.system.rollType)) {
+		if (
+			options.descriptionOnly
+			|| this.type === "equipment"
+			|| (this.type !== "npcMove" && !this.system.rollType)
+		) {
 			const content = await renderTemplate("systems/pbta/templates/chat/chat-move.html", {
 				actor: this.actor,
 				tokenId: this.actor?.token?.uuid || null,
@@ -451,8 +455,7 @@ export default class ItemPbta extends Item {
 		super._onDelete(options, userId);
 	}
 
-	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
-
+	static async createDialog(data = {}, { parent = null, pack = null, ...options } = {}) {
 		// Collect data
 		const documentName = this.metadata.name;
 		const types = game.documentTypes[documentName].filter((t) => t !== CONST.BASE_DOCUMENT_TYPE && t !== "tag");
