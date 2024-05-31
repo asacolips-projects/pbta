@@ -1,2 +1,18 @@
 &.playbook {
+	.choiceset {
+		.drop-zone {
+			text-align: center;
+		}
+
+		&:nth-child(even of .choiceset) {
+			background-color: rgba(188, 188, 188, 0.4);
+		}
+	}
+
+	ol {
+		&.attributes,
+		&.choicesets {
+			list-style-type: none;
+		}
+	}
 }

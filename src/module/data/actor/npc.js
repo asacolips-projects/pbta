@@ -5,6 +5,7 @@ export default class NpcData extends ActorDataTemplate {
 		const superFields = super.defineSchema();
 		return {
 			...superFields,
+			// @todo consider removal if tags are added to ActorDataTemplate
 			tags: new foundry.data.fields.StringField({ initial: "" })
 		};
 	}

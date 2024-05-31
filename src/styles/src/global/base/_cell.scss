@@ -40,7 +40,7 @@
   &.error,
   &.warning {
     background: #d68888;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-family: $font-stack-base;
     font-weight: normal;
     justify-content: center;
@@ -56,7 +56,7 @@
     }
 
     &.small-text {
-      font-size: 13px;
+      font-size: var(--font-size-13);
     }
   }
 
@@ -179,7 +179,7 @@
 }
 
 .cell__description--attr {
-  font-size: 12px;
+  font-size: var(--font-size-12);
 }
 
 .cell {
@@ -245,7 +245,7 @@
 
   }
 
-  .cell--roll-resources label, 
+  .cell--roll-resources label,
   .cell--conditions label {
     align-items: center;
   }

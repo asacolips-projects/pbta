@@ -34,7 +34,7 @@
   }
 
   input {
-    font-size: 18px;
+    font-size: var(--font-size-18);
   }
 
   .cell__title {
@@ -103,7 +103,7 @@
     }
 
     label.checkbox {
-      font-size: 14px;
+      font-size: var(--font-size-14);
     }
   }
 }

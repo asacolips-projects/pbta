@@ -286,15 +286,15 @@ export function convertSheetConfig(sheetConfig) {
 						// If there's only one digit, assume it's N+ or N-.
 						if (end === null) {
 							rollResult = {
-								start: rollSetting.range.includes("-") ? null : start,
-								end: rollSetting.range.includes("+") ? null : start,
+								start: rollSetting.range.includes("-") ? -Infinity : start,
+								end: rollSetting.range.includes("+") ? Infinity : start,
 								label: rollSetting.label
 							};
 						} else {
 							// Otherwise, set the full range.
 							rollResult = {
-								start: start,
-								end: end,
+								start,
+								end,
 								label: rollSetting.label
 							};
 						}
@@ -376,22 +376,23 @@ export function convertSheetConfig(sheetConfig) {
 				actorType.attrLeft = convertAttr(v.attributesLeft);
 			}
 
+			Object.defineProperty(actorType, "attributes", {
+				get() {
+					return {
+						...actorType.attrTop,
+						...actorType.attrLeft
+					};
+				}
+			});
+
 			if (v.moveTypes) {
 				actorType.moveTypes = {};
 				for (let [mtKey, mtValue] of Object.entries(v.moveTypes)) {
 					if (typeof mtValue === "string") {
-						actorType.moveTypes[cleanClass(mtKey, false)] = {
-							label: mtValue,
-							moves: []
-						};
+						actorType.moveTypes[cleanClass(mtKey, false)] = { label: mtValue };
 					} else {
 						const { label, playbook = false, creation = false } = mtValue;
-						actorType.moveTypes[cleanClass(mtKey, false)] = {
-							label,
-							playbook,
-							creation,
-							moves: [] // @todo add support for moves
-						};
+						actorType.moveTypes[cleanClass(mtKey, false)] = { label, playbook, creation };
 					}
 				}
 			}
@@ -478,19 +479,9 @@ export function convertAttr(attrGroup) {
 
 			case "Clock":
 			case "Xp":
-				attr.value = attrValue.default ?? 0;
-				attr.max = attrValue.max ?? 0;
-				attr.steps = [];
-				if (attr.max) {
-					for (let i = 0; i < attr.max; i++) {
-						attr.steps.push(i < attr.value);
-					}
-				}
-				break;
-
 			case "Resource":
 				attr.value = attrValue.default ?? 0;
-				attr.max = attrValue.max ?? 0;
+				attr.max = attrValue.max ?? 1;
 				break;
 
 			case "Text":
@@ -989,9 +980,15 @@ export async function preloadHandlebarsTemplates() {
 
 		// Item partials
 		"systems/pbta/templates/items/parts/move-description.hbs",
+		"systems/pbta/templates/items/parts/playbook-attributes.hbs",
+		"systems/pbta/templates/items/parts/playbook-choicesets.hbs",
 
 		// Chat Cards
-		"systems/pbta/templates/chat/stat-shift.hbs"
+		"systems/pbta/templates/chat/stat-shift.hbs",
+
+		// Dialog partials
+		"systems/pbta/templates/dialog/attributes-dialog.hbs",
+		"systems/pbta/templates/dialog/choice-dialog.hbs"
 	];
 
 	const paths = {};
@@ -1006,54 +1003,110 @@ export async function preloadHandlebarsTemplates() {
 }
 
 /**
- * Register custom Handlebars helpers.
+ * A collection of Handlebars template helpers which can be used within HTML templates.
  */
-export function registerHandlebarsHelpers() {
-	Handlebars.registerHelper("pbtaTags", function (tagsInput) {
+class PbtAHandlebarsHelpers {
+	static pbtaTags(tagsInput) {
 		const tags = JSON.parse(tagsInput);
 		const tagList = tags.map((tag) => `<div class="tag">${tag.value}</div>`).join("");
 		const output = `<div class="tags">${tagList}</div>`;
 		return output;
-	});
-
-	/**
-	 * Similar to Foundry's eq, except "1" == 1 is truthy.
-	 */
-	Handlebars.registerHelper("softEq", function (arg1, arg2, options) {
-		// eslint-disable-next-line eqeqeq
-		return (arg1 == arg2);
-	});
+	}
 
 	/**
 	 * Returns length of Object's keys.
+	 * @param {object} json
+	 * @returns {number}
 	 */
-	Handlebars.registerHelper("objLen", function (json) {
+	static objLen(json) {
 		if (!json) return 0;
 		return Object.keys(json).length;
-	});
+	}
 
-	Handlebars.registerHelper("getLabel", function (obj, key) {
+	/**
+	 * Returns the label of a given object.
+	 * @param {object} obj	Object that should contains either the key property or an object with a label property.
+	 * @param {string} key	The key for which to retrieve the label.
+	 * @returns {string|number}
+	 */
+	static getLabel(obj, key) {
 		const result = obj[key]?.label || obj[key] || key;
 		return result.length > 0 ? result : key;
-	});
+	}
 
-	Handlebars.registerHelper("getValue", function (obj, key) {
+	/**
+	 * Returns the value property of a given object.
+	 * @param {object} obj	Object that should contains the key property or an object with a value property.
+	 * @param {string} key	The key for which to retrieve the value.
+	 * @returns {string|null}
+	 */
+	static getValue(obj, key) {
 		const result = obj?.[key]?.value || obj?.[key] || "";
 		return result.length > 0 ? result : null;
-	});
+	}
 
-	Handlebars.registerHelper("times", function (n, options) {
+	/**
+	 * Repeats a given block N-times.
+	 * @param {number} n	The number of times the block is repeated.
+	 * @param {object} options	Helper options
+	 * @param {number} [options.start]	The starting index number.
+	 * @param {boolean} [options.reverse] Invert the index number.
+	 * @returns {string}
+	 */
+	static times(n, options) {
 		let accum = "";
 		let data;
 		if (options.data) {
 			data = Handlebars.createFrame(options.data);
 		}
+		let { start = 0, reverse = false } = options.hash;
 		for (let i = 0; i < n; ++i) {
 			if (data) {
-				data.index = i;
+				data.index = reverse ? (n - i - 1 + start) : (i + start);
+				data.first = i === 0;
+				data.last = i === (n - 1);
 			}
 			accum += options.fn(i, { data: data });
 		}
 		return accum;
+	}
+
+	/**
+	 * Calculates a math expression and then returns the result or a boolean if compared with a given number.
+	 * @param {number} v1
+	 * @param {"+"|"-"|"*"|"/"|"%"} operator
+	 * @param {number} v2
+	 * @param {object} options	Helper options
+	 * @param {number} [options.equals]	Optional value to compare with the result.
+	 * @returns {number|boolean}
+	 */
+	static math(v1, operator, v2, options) {
+		const { equals } = options.hash;
+		const result = {
+			"+": v1 + v2,
+			"-": v1 - v2,
+			"*": v1 * v2,
+			"/": v1 / v2,
+			"%": v1 % v2
+		}[operator];
+		if (typeof equals !== "undefined") return result === equals;
+		return result;
+	}
+}
+
+/**
+ * Register custom Handlebars helpers.
+ */
+export function registerHandlebarsHelpers() {
+	Handlebars.registerHelper({
+		pbtaTags: PbtAHandlebarsHelpers.pbtaTags,
+		objLen: PbtAHandlebarsHelpers.objLen,
+		getLabel: PbtAHandlebarsHelpers.getLabel,
+		getValue: PbtAHandlebarsHelpers.getValue,
+		hidden: (value) => value ? "hidden" : "",
+		times: PbtAHandlebarsHelpers.times,
+		math: PbtAHandlebarsHelpers.math,
+		// eslint-disable-next-line eqeqeq
+		softEq: (v1, v2) => v1 == v2
 	});
 }

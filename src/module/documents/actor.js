@@ -14,6 +14,10 @@ export default class ActorPbta extends Actor {
 		}
 	}
 
+	get advancements() {
+		return this.system?.advancements ?? null;
+	}
+
 	/**
 	 * Returns all active conditions.
 	 * @returns {object[]}
@@ -57,6 +61,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	get playbook() {
+		// @todo refactor to return this.items.find((i) => i.type === "playbook"), use slug to compare
 		return this.system?.playbook ?? { name: "", slug: "", uuid: "" };
 	}
 
@@ -175,11 +180,10 @@ export default class ActorPbta extends Actor {
 		const formula = this._getStatFormula(stat);
 		const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
 			rollType: "stat",
-			sheetType: this.baseType,
 			stat
 		}));
 		const choice = await r.configureDialog({
-			title: label ? game.i18n.format("PBTA.RollLabel", { label }) : game.i18n.format("PBTA.Roll")
+			title: label ?? game.i18n.format("PBTA.Roll")
 		});
 		if (choice === null) {
 			return;
@@ -187,10 +191,9 @@ export default class ActorPbta extends Actor {
 		await r.toMessage({
 			actor: this,
 			speaker: ChatMessage.getSpeaker({ actor: this }),
-			title: label ?? "",
 			rollMode: game.settings.get("core", "rollMode")
 		});
-		if (choice.options.conditionsConsumed.includes("forward") ?? false) {
+		if (r.options.conditionsConsumed.includes("forward")) {
 			await this.clearForwardAdv();
 		}
 		await this.updateCombatMoveCount();
@@ -198,31 +201,27 @@ export default class ActorPbta extends Actor {
 
 	async _onRollToken(stat, label, options={}) {
 		const formula = this._getStatFormula();
-		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
-			rollType: "stat",
-			sheetType: this.baseType
-		}));
+		const roll = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, { rollType: "stat" }));
 		const choice = await roll.configureDialog({
 			templateData: {
 				isStatToken: true,
 				numOfToken: this.system.stats[stat].value
 			},
-			title: game.i18n.format("PBTA.RollLabel", { label })
+			title: label
 		});
 		if (choice === true || choice === null) {
 			return;
 		}
-		const tokenUsed = choice.terms.find((t) => t instanceof NumericTerm)?.number;
+		const tokenUsed = choice.terms.find((t) => t instanceof foundry.dice.terms.NumericTerm)?.number;
 		const updates = {
 			[`system.stats.${stat}.value`]: this.system.stats[stat].value - tokenUsed
 		};
 		await roll.toMessage({
 			speaker: ChatMessage.getSpeaker({ actor: this }),
-			title: label ?? "",
 			rollMode: game.settings.get("core", "rollMode")
 		});
 		await this.update(updates);
-		if (choice.options.conditionsConsumed.includes("forward") ?? false) {
+		if (roll.options.conditionsConsumed.includes("forward")) {
 			await this.clearForwardAdv();
 		}
 		await this.updateCombatMoveCount();
@@ -264,8 +263,8 @@ export default class ActorPbta extends Actor {
 		const changes = {
 			system: this.applyBaseTemplate()
 		};
-		const sourceId = this.getFlag("core", "sourceId");
-		if (!sourceId?.startsWith("Compendium.")) {
+		const compendiumSource = this._stats.compendiumSource;
+		if (!compendiumSource?.startsWith("Compendium.")) {
 			if (this.baseType === "character") {
 				changes.prototypeToken = {
 					actorLink: true,
@@ -325,20 +324,40 @@ export default class ActorPbta extends Actor {
 		return systemData;
 	}
 
+	static getLabel(type) {
+		const pbtaLabel = game.pbta.sheetConfig.actorTypes[type].label;
+		const label = CONFIG[this.metadata.name]?.typeLabels?.[type] ?? type;
+		if (pbtaLabel) return pbtaLabel;
+		return game.i18n.has(label) ? game.i18n.localize(label) : type;
+	}
+
+	static defaultName({ type, parent, pack }={}) {
+		const documentName = this.metadata.name;
+		let collection;
+		if (parent) collection = parent.getEmbeddedCollection(documentName);
+		else if (pack) collection = game.packs.get(pack);
+		else collection = game.collections.get(documentName);
+		const takenNames = new Set();
+		for (const document of collection) takenNames.add(document.name);
+		const baseName = this.getLabel(type);
+		let name = baseName;
+		let index = 1;
+		while (takenNames.has(name)) name = `${baseName} (${++index})`;
+		return name;
+	}
+
 	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
 		const documentName = this.metadata.name;
 		const types = Object.keys(game.pbta.sheetConfig.actorTypes);
 		let collection;
 		if (!parent) {
-			if (pack) {
-				collection = game.packs.get(pack);
-			} else {
-				collection = game.collections.get(documentName);
-			}
+			if (pack) collection = game.packs.get(pack);
+			else collection = game.collections.get(documentName);
 		}
 		const folders = collection?._formatFolderSelectOptions() ?? [];
 		const label = game.i18n.localize(this.metadata.label);
 		const title = game.i18n.format("DOCUMENT.Create", { type: label });
+
 		// Render the document creation form
 		const html = await renderTemplate("templates/sidebar/document-create.html", {
 			folders,
@@ -347,13 +366,7 @@ export default class ActorPbta extends Actor {
 			hasFolders: folders.length >= 1,
 			type: data.type || CONFIG[documentName]?.defaultType || types[0],
 			types: types.reduce((obj, t) => {
-				const pbtaLabel = game.pbta.sheetConfig.actorTypes[t].label;
-				const label = CONFIG[documentName]?.typeLabels?.[t] ?? t;
-				if (pbtaLabel) {
-					obj[t] = pbtaLabel;
-				} else {
-					obj[t] = game.i18n.has(label) ? game.i18n.localize(label) : t;
-				}
+				obj[t] = this.getLabel(t);
 				return obj;
 			}, {}),
 			hasTypes: types.length > 1
@@ -368,15 +381,9 @@ export default class ActorPbta extends Actor {
 				const form = html[0].querySelector("form");
 				const fd = new FormDataExtended(form);
 				foundry.utils.mergeObject(data, fd.object, { inplace: true });
-				if (!data.folder) {
-					delete data.folder;
-				}
-				if (types.length === 1) {
-					data.type = types[0];
-				}
-				if (!data.name?.trim()) {
-					data.name = this.defaultName();
-				}
+				if (!data.folder) delete data.folder;
+				if (types.length === 1) data.type = types[0];
+				if (!data.name?.trim()) data.name = this.defaultName({ type: data.type, parent, pack });
 
 				// First we need to find the base actor type to model this after.
 				if (!["character", "npc"].includes(data.type)) {
@@ -391,27 +398,5 @@ export default class ActorPbta extends Actor {
 			rejectClose: false,
 			options
 		});
-	}
-
-	async modifyTokenAttribute(attribute, value, isDelta, isBar) {
-		const current = foundry.utils.getProperty(this.system, attribute);
-		if (current.type === "Clock") {
-			if (isDelta) value = Math.clamped(0, Number(current.value) + value, current.max);
-			const steps = new Array(current.max)
-				.fill(true, 0, value)
-				.fill(false, value);
-			const updates = {
-				[`system.${attribute}.value`]: value,
-				[`system.${attribute}.steps`]: steps
-			};
-			const allowed = Hooks.call("modifyTokenAttribute", {
-				attribute: "attributes.hp",
-				value,
-				isDelta,
-				isBar
-			}, updates);
-			return allowed !== false ? this.update(updates) : this;
-		}
-		return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
 	}
 }

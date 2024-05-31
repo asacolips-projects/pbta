@@ -51,8 +51,12 @@ export default class PbtaActorSheet extends ActorSheet {
 		return `${path}/actor-sheet.html`;
 	}
 
+	/**
+	 * Blocklist of item types that shouldn't be added to the actor.
+	 * @returns {Set<string>}
+	 */
 	get unsupportedItemTypes() {
-		return new Set(["npcMove", "playbook", "tag"]);
+		return new Set(["npcMove", "tag"]);
 	}
 
 	/* -------------------------------------------- */
@@ -123,18 +127,19 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Add playbooks.
 		if (this.actor.baseType === "character") {
-			const hasMultipleCharacterTypes = Object.keys(game.pbta.sheetConfig.actorTypes)
-				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
-				.length > 1;
+			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
+			const validCharacterTypes = Object.fromEntries(
+				Object.entries(sheetConfig.actorTypes)
+					.filter(([k, v]) => [k, v?.baseType].includes("character"))
+			);
+			const hasMultipleCharacterTypes = Object.keys(validCharacterTypes).length > 1;
 			context.playbooks = CONFIG.PBTA.playbooks
 				.filter((p) => !hasMultipleCharacterTypes
-					|| p.actorType === (this.actor.sheetType ?? this.actor.baseType)
-					|| p.actorType === "")
+					|| [this.actor.sheetType ?? this.actor.baseType, ""].includes(p.actorType))
 				.map((p) => {
 					return { name: p.name, uuid: p.uuid };
 				});
 
-			const sheetConfig = foundry.utils.duplicate(game.pbta.sheetConfig);
 			context.statToggle = sheetConfig?.statToggle ?? false;
 			context.statToken = sheetConfig?.statToken ?? false;
 			context.statClock = sheetConfig?.statClock ?? false;
@@ -250,10 +255,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		const moveType = this.actor.baseType === "npc" ? "npcMove" : "move";
 
 		const sheetConfig = game.pbta.sheetConfig;
-		const moveTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.moveTypes
-			?? sheetConfig.actorTypes?.[this.actor.baseType].moveTypes;
-		const equipmentTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.equipmentTypes
-			?? sheetConfig.actorTypes?.[this.actor.baseType]?.equipmentTypes;
+		const moveTypes = sheetConfig.actorTypes?.[this.actor?.sheetType ?? this.actor.baseType]?.moveTypes;
+		const equipmentTypes = sheetConfig.actorTypes?.[this.actor?.sheetType ?? this.actor.baseType]?.equipmentTypes;
 
 		context.moveTypes = {};
 		context.moves = {};
@@ -340,20 +343,25 @@ export default class PbtaActorSheet extends ActorSheet {
 		html.find(".rollable, .showable").on("click", this._onRollable.bind(this));
 
 		// // View playbook.
-		html.find(".charplaybook").on("change", (event) => {
-			const currPlaybook = this.actor.playbook.slug;
-			if (currPlaybook) {
-				this.options.classes = this.options.classes.filter((c) => c !== `playbook-${currPlaybook}`);
+		html.find(".charplaybook").on("change", async (event) => {
+			const currPlaybook = this.actor.playbook;
+			if (currPlaybook.slug) {
+				this.options.classes = this.options.classes.filter((c) => c !== `playbook-${currPlaybook.slug}`);
 			}
 
 			const selected = CONFIG.PBTA.playbooks.find((p) => p.uuid === event.target.value);
-			this.actor.update({ "system.playbook": {
-				name: selected?.name ?? "",
-				slug: selected?.slug ?? selected?.name.slugify() ?? "",
-				uuid: selected?.uuid ?? ""
-			} });
+			if (currPlaybook.uuid) {
+				const deleted = await this.actor.items.find((i) => i.type === "playbook")?.delete();
+				if (!deleted) {
+					event.target.value = currPlaybook.uuid;
+					event.stopPropagation();
+					return;
+				}
+			}
+			// @todo replace for slug
+			if (selected) await this.actor.createEmbeddedDocuments("Item", [await fromUuid(selected.uuid)], { keepId: true, originalUuid: selected.uuid });
 		});
-		html.find(".view-playbook").on("click", this._onViewPlaybook.bind(this));
+		html.find(".view-playbook[data-playbook]").on("click", this._onViewPlaybook.bind(this));
 
 		// // Toggle look.
 		html.find(".toggle--look").on("click", this._toggleLook.bind(this, html));
@@ -396,7 +404,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		// If there's an action and target attribute, update it.
 		if (action && attr) {
 			const system = {
-				[attr]: Number(getProperty(this.actor.system, attr))
+				[attr]: Number(foundry.utils.getProperty(this.actor.system, attr))
 			};
 			if (action === "decrease" || action === "increase") {
 				system[attr] += (action === "decrease" ? -1 : 1);
@@ -407,27 +415,21 @@ export default class PbtaActorSheet extends ActorSheet {
 
 	async _onClockClick(event) {
 		event.preventDefault();
-		const $self = $(event.currentTarget);
+		const dataset = event.currentTarget.dataset;
 		// Get the clicked value.
-		let step = Number($self.data("step")) + 1; // Adjust for 1-index
-		const stepValue = $self.attr("checked") !== undefined;
+		let index = Number(dataset.step) + 1; // Adjust for 1-index
 
 		// Retrieve the attribute.
-		const prop = $self.data("name");
-		const attr = foundry.utils.deepClone(getProperty(this.actor, prop));
+		const prop = dataset.name;
+		const attr = foundry.utils.deepClone(foundry.utils.getProperty(this.actor, prop));
 
 		// Handle clicking the same checkbox to unset its value.
-		if (stepValue && attr.value === step) {
-			step--;
+		if (!event.target.checked && attr.value === index) {
+			index--;
 		}
 
 		// Update the stored value.
-		attr.value = step;
-
-		// Update the steps.
-		for (let i = 0; i < attr.max; i++) {
-			attr.steps[i] = i < attr.value;
-		}
+		attr.value = index;
 
 		// Update the actor/token.
 		await this.actor.update({ [prop]: attr });
@@ -461,7 +463,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		let value = parseInt($self.data("value"));
 		let prop = $self.data("name");
 
-		let attr = getProperty(this.actor, prop);
+		let attr = foundry.utils.getProperty(this.actor, prop);
 		attr.value = value;
 		if (value === 0) {
 			attr.positive.value = 0;
@@ -485,7 +487,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		let step = parseInt($self.data("step"));
 		let prop = $self.data("name");
 
-		let attr = getProperty(this.actor, prop);
+		let attr = foundry.utils.getProperty(this.actor, prop);
 		if (value > 0) {
 			let newValue = ((value - 1) * attr.positive.steps) + step + 1;
 			if (attr.positive.value === newValue && newValue === 1) {
@@ -551,7 +553,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		const { min, max } = game.pbta.sheetConfig.statToken;
 		if (action && attr) {
 			const system = {
-				[attr]: Number(getProperty(this.actor.system, attr))
+				[attr]: Number(foundry.utils.getProperty(this.actor.system, attr))
 			};
 			if ((action === "decrease" && system[attr] > min)
 				|| (action === "increase" && system[attr] < max)) {
@@ -570,7 +572,7 @@ export default class PbtaActorSheet extends ActorSheet {
 
 		// Retrieve the attribute.
 		const prop = $self.data("name");
-		const attr = foundry.utils.deepClone(getProperty(this.actor, prop));
+		const attr = foundry.utils.deepClone(foundry.utils.getProperty(this.actor, prop));
 
 		// Handle clicking the same checkbox to unset its value.
 		if (stepValue) {
@@ -642,7 +644,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		const item = this.actor.items.get(itemId);
 
 		if (item) {
-			const originalAmount = Number(getProperty(item.toObject(), property)) || 0;
+			const originalAmount = Number(foundry.utils.getProperty(item.toObject(), property)) || 0;
 			if (originalAmount + delta >= 0) {
 				await item.update({ [property]: originalAmount + delta });
 				this.render();
@@ -666,12 +668,7 @@ export default class PbtaActorSheet extends ActorSheet {
 	async _onViewPlaybook(event) {
 		// Initialize variables.
 		event.preventDefault();
-		const a = event.currentTarget;
-		const playbookUuid = a.getAttribute("data-playbook");
-		const playbook = await fromUuid(playbookUuid);
-		if (playbook) {
-			playbook.sheet.render(true);
-		}
+		this.actor.items.find((i) => i.type === "playbook")?.sheet.render(true);
 	}
 
 	/**
@@ -700,18 +697,18 @@ export default class PbtaActorSheet extends ActorSheet {
 		const type = header.dataset.type;
 		const dataset = foundry.utils.duplicate(header.dataset);
 		const system = {};
-		if (dataset.movetype) {
-			system.moveType = dataset.movetype;
+		if (dataset.moveType) {
+			system.moveType = dataset.moveType;
 		}
-		if (dataset.equipmenttype) {
-			system.equipmentType = dataset.equipmenttype;
+		if (dataset.equipmentType) {
+			system.equipmentType = dataset.equipmentType;
 		}
 		const itemData = {
-			name: `New ${type.capitalize()}`,
+			name: CONFIG.Item.documentClass.defaultName({ type, parent: this.actor }),
 			type: type,
 			system: system
 		};
-		await this.actor.createEmbeddedDocuments("Item", [itemData], {});
+		await this.actor.createEmbeddedDocuments("Item", [itemData], { renderSheet: true });
 	}
 
 	/* -------------------------------------------- */
@@ -751,13 +748,27 @@ export default class PbtaActorSheet extends ActorSheet {
 			return this._onSortItem(event, itemData);
 		}
 
-		if (item.type === "playbook" && this.actor.system.playbook) {
-			this.actor.update({ "system.playbook": {
-				name: item.name,
-				slug: item.slug ?? item.name.slugify(),
-				uuid: item.uuid
-			} });
-			return false;
+		if (item.type === "playbook") {
+			const hasMultipleCharacterTypes = Object.keys(game.pbta.sheetConfig.actorTypes)
+				.filter((a) => a === "character" || game.pbta.sheetConfig.actorTypes[a]?.baseType === "character")
+				.length > 1;
+			if (
+				hasMultipleCharacterTypes
+				&& ![this.actor.sheetType ?? this.actor.baseType, ""].includes(item.system.actorType)
+			) return false;
+
+			const currPlaybook = this.actor.items.find((i) => i.type === "playbook");
+			if (currPlaybook && item.system.slug === currPlaybook.system.slug) {
+				// @todo update sets and valid, non-granted choices
+				return false;
+			}
+			/**
+			 * @todo create a replacePlaybook method with this and @see activateListeners() also handle stats
+			 */
+			if (item.type === "playbook" && currPlaybook) {
+				const deleted = await currPlaybook.delete();
+				if (!deleted) return false;
+			}
 		}
 
 		// Create the owned item

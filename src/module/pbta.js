@@ -85,6 +85,12 @@ Hooks.once("init", async function () {
 		makeDefault: true,
 		label: "PBTA.SheetClassItem"
 	});
+	Items.unregisterSheet("pbta", applications.item.PbtaItemSheet, { types: ["playbook"] });
+	Items.registerSheet("pbta", applications.item.PlaybookSheet, {
+		makeDefault: true,
+		types: ["playbook"],
+		label: "PBTA.SheetClassPlaybook"
+	});
 	DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, "core", TokenConfig);
 	DocumentSheetConfig.registerSheet(TokenDocument, "core", applications.token.PbtaTokenConfig, {
 		makeDefault: true,
@@ -248,7 +254,7 @@ Hooks.once("ready", async function () {
 	const cv = game.settings.get("pbta", "systemMigrationVersion");
 	const totalDocuments = game.actors.size + game.scenes.size + game.items.size;
 	if (!cv && totalDocuments === 0) return game.settings.set("pbta", "systemMigrationVersion", game.system.version);
-	if (cv && !isNewerVersion(game.system.flags.needsMigrationVersion, cv)) return;
+	if (cv && !foundry.utils.isNewerVersion(game.system.flags.needsMigrationVersion, cv)) return;
 
 	// Perform the migration
 	migrations.migrateWorld();

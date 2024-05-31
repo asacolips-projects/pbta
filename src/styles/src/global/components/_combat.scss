@@ -279,7 +279,7 @@
   }
 
   .directory-item--labels {
-    font-size: 12px;
+    font-size: var(--font-size-12);
     background: rgba($c-navy-up, 0.25);
     text-transform: uppercase;
     font-weight: bold;

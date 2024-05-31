@@ -22,7 +22,7 @@
   select,
   textarea {
     font-family: $font-stack-base;
-    font-size: 14px;
+    font-size: var(--font-size-14);
     background: $c-white;
     border: 1px solid rgba(0,0,0,0.25);
     // border: 0;
@@ -107,7 +107,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-size: 18px;
+      font-size: var(--font-size-18);
       // text-transform: uppercase;
     }
   }
@@ -158,7 +158,6 @@
     }
 
     button {
-      font-size: 12px;
       padding: 0;
       border: 0;
       background: transparent;
