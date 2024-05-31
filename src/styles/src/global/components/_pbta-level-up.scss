@@ -32,7 +32,7 @@
   .cell__description {
     // font-style: italic;
     // font-family: $font-stack-secondary;
-    font-size: 18px;
+    font-size: var(--font-size-18);
     padding: 10px;
     margin: 10px;
     background: $c-light;
@@ -45,15 +45,15 @@
 
   h1,
   h2 {
-    font-size: 18px;
+    font-size: var(--font-size-18);
   }
 
   h3 {
-    font-size: 16px;
+    font-size: var(--font-size-16);
   }
 
   h4 {
-    font-size: 14px;
+    font-size: var(--font-size-14);
   }
 
   .flexrow {

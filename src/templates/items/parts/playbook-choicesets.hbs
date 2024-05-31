@@ -1,0 +1,77 @@
+<ol class="choicesets">
+	{{#each choicesByAdvancement as | advancement |}}
+	<li>
+		<div>
+			{{#if (gt @key 0)}}
+			{{localize "PBTA.AdvancementNumber" number=@key}}
+			{{else}}
+			{{localize "PBTA.StartingGrants"}}
+			{{/if}}
+		</div>
+		{{#each advancement as | grant |}}
+		<ol class="choiceset" data-id="{{@key}}">
+			{{#each grant}}
+			<div class="form-group">
+				<label>{{localize "PBTA.Title"}}</label>
+				<div class="form-fields">
+					<input type="text" name="system.choiceSets.{{@../key}}.title" value="{{this.title}}" />
+					<div class="item-controls">
+						<a type="button" data-action="delete-choiceset">
+							<i class="fa fa-trash"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>{{localize "PBTA.Common.Description"}}</label>
+				<div class="form-fields">
+					<input type="text" name="system.choiceSets.{{@../key}}.desc" value="{{this.desc}}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label>{{localize "PBTA.PlaybookGrantOn"}}</label>
+				<div class="form-fields">
+					<select name="system.choiceSets.{{@../key}}.grantOn">
+						{{ selectOptions @root.grantOptions selected=this.grantOn localize=true}}
+					</select>
+					<input type="number" name="system.choiceSets.{{@../key}}.advancement" value="{{this.advancement}}" {{hidden (not this.grantOn)}}>
+				</div>
+			</div>
+			<hr>
+			{{#if this.choices.length}}
+			<li class="form-group choiceset-item" data-uuid="{{this.uuid}}" data-id="{{@index}}">
+				<div>{{localize "DOCUMENT.Item"}}</div>
+				<div>{{localize "PBTA.Advancement"}}</div>
+			</li>
+			{{/if}}
+			{{#each this.choices}}
+			<li class="form-group choiceset-item" data-uuid="{{this.uuid}}" data-id="{{@index}}">
+				<div class="item flexrow">
+					<img src="{{this.img}}" height="32" width="32">
+					<label>{{this.name}}</label>
+				</div>
+				<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.uuid" value="{{this.uuid}}" hidden>
+				<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.img" value="{{this.img}}" hidden>
+				<input type="text" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.name" value="{{this.name}}" hidden>
+				<input type="checkbox" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.granted" {{checked this.granted}} hidden>
+				<input type="number" name="system.choiceSets.{{@../../key}}.choices.{{@index}}.advancement" value="{{this.advancement}}">
+				<div class="item-controls">
+					<a data-action="delete-item">
+						<i class="fa fa-trash"></i>
+					</a>
+				</div>
+			</li>
+			<hr>
+			{{/each}}
+			<div class="drop-zone">{{localize "PBTA.DropItemsHere"}}</div>
+			{{/each}}
+		</ol>
+		{{/each}}
+	</li>
+	{{/each}}
+</ol>
+<footer>
+	<a type="button" data-action="add-choiceset">
+		<i class="fa fa-plus"></i>{{localize "PBTA.ItemGrantAdd"}}
+	</a>
+</footer>

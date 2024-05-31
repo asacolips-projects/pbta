@@ -1,4 +1,6 @@
 export default class RollPbtA extends Roll {
+	static CHAT_TEMPLATE = "systems/pbta/templates/chat/chat-move.html";
+
 	static EVALUATION_TEMPLATE = "systems/pbta/templates/chat/roll-dialog.html";
 
 	/**
@@ -20,17 +22,11 @@ export default class RollPbtA extends Roll {
 	}
 
 	/** @override */
-	async toMessage(messageData={}, { rollMode, create=true }={}) {
-
-		// Perform the roll, if it has not yet been rolled
+	async render({ flavor, template=this.constructor.CHAT_TEMPLATE, isPrivate=false }={}) {
 		if (!this._evaluated) await this.evaluate();
 
 		const resultRanges = game.pbta.sheetConfig.rollResults;
-		let resultLabel = null;
-		let resultDetails = null;
 		let resultType = null;
-		let stat = this.options.stat;
-		let statMod;
 
 		// Iterate through each result range until we find a match.
 		for (let [resultKey, resultRange] of Object.entries(resultRanges)) {
@@ -42,51 +38,27 @@ export default class RollPbtA extends Roll {
 		}
 
 		this.options.resultType = resultType;
-		// Update the templateData.
-		resultLabel = resultRanges[resultType]?.label ?? resultType;
-		resultDetails = this.data?.moveResults?.[resultType]?.value ?? null;
 
-		// Add the stat label.
-		if (stat && this.data.stats[stat]) {
-			statMod = this.data.stats[stat].value;
-			stat = game.pbta.sheetConfig.actorTypes[this.options.sheetType]?.stats[stat]?.label ?? stat;
-		}
-
-		// Prepare chat data
-		messageData = foundry.utils.mergeObject({
+		const chatData = {
+			formula: isPrivate ? "???" : this._formula,
+			flavor: isPrivate ? null : flavor ?? this.options.flavor,
 			user: game.user.id,
-			type: CONST.CHAT_MESSAGE_STYLES.IC,
-			content: String(this.total),
-			sound: CONFIG.sounds.dice,
+			tooltip: isPrivate ? "" : await this.getTooltip(),
+			total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
+
 			conditionsConsumed: this.options.conditionsConsumed,
 			conditions: this.options.conditions,
-			choices: this.data.choices,
-			details: this.data.description,
+			choices: this.options.choices,
+			details: this.options.details,
 			originalMod: this.options.originalMod,
 			result: resultType,
-			resultDetails,
-			resultLabel,
+			resultDetails: this.options?.moveResults?.[resultType]?.value,
+			resultLabel: resultRanges[resultType]?.label ?? resultType,
 			resultRanges,
-			stat,
-			statMod
-		}, messageData);
-		messageData.rolls = [this];
-
-		// These are abominations from the refactoring but I couldn't figure out how to merge everything into a single ChatMessage.create call
-		messageData.rollPbta = await this.render();
-		messageData.content = await renderTemplate("systems/pbta/templates/chat/chat-move.html", messageData);
-
-		// Either create the message or just return the chat data
-		const cls = getDocumentClass("ChatMessage");
-		const msg = new cls(messageData);
-
-		// Either create or return the data
-		if (create) {
-			return cls.create(msg.toObject(), { rollMode });
-		} else if (rollMode) {
-			msg.applyRollMode(rollMode);
-		}
-		return msg.toObject();
+			stat: this.options.stat,
+			title: this.options.title
+		};
+		return renderTemplate(template, chatData);
 	}
 
 	/**
@@ -143,6 +115,7 @@ export default class RollPbtA extends Roll {
 	 *                                          dialog was closed
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
+		this.options.title = title;
 		this.options.conditions = [];
 		this.options.conditionsConsumed = [];
 		const hasSituationalMods = this.data.resources.forward.value !== 0 || this.data.resources.ongoing.value !== 0;
@@ -164,7 +137,7 @@ export default class RollPbtA extends Roll {
 
 			const content = await renderTemplate(template ?? this.constructor.EVALUATION_TEMPLATE, templateData);
 			return new Promise((resolve) => {
-				title ??= game.i18n.localize("PBTA.RollMove");
+				title = title ? game.i18n.format("PBTA.RollLabel", { label: title }) : game.i18n.localize("PBTA.RollMove");
 				let buttons = {
 					submit: {
 						label: game.i18n.localize("PBTA.Roll"),
@@ -219,15 +192,19 @@ export default class RollPbtA extends Roll {
 
 		const addToFormula = (val) => {
 			const statBonus = new Roll(val, this.data);
-			if (!(statBonus.terms[0] instanceof OperatorTerm)) {
-				this.terms.push(new OperatorTerm({ operator: "+" }));
+			if (!(statBonus.terms[0] instanceof foundry.dice.terms.OperatorTerm)) {
+				this.terms.push(new foundry.dice.terms.OperatorTerm({ operator: "+" }));
 			}
 			this.terms = this.terms.concat(statBonus.terms);
 		};
 
 		// Append a situational bonus term
 		if (stat) {
-			this.options.stat = stat;
+			const { label, value } = this.data.stats[stat];
+			this.options.stat = {
+				label,
+				value
+			};
 			addToFormula(`@stats.${stat}.value`);
 		}
 
@@ -238,8 +215,8 @@ export default class RollPbtA extends Roll {
 
 		if (form?.forward && form?.forward.checked) {
 			const fRoll = new Roll(`${form.forward.dataset.mod}`, this.data);
-			if (!(fRoll.terms[0] instanceof OperatorTerm)) {
-				this.terms.push(new OperatorTerm({ operator: "+" }));
+			if (!(fRoll.terms[0] instanceof foundry.dice.terms.OperatorTerm)) {
+				this.terms.push(new foundry.dice.terms.OperatorTerm({ operator: "+" }));
 			}
 			this.terms = this.terms.concat(fRoll.terms);
 			this.options.conditions.push(`${game.i18n.localize("PBTA.Forward")} (${form.forward.dataset.mod >= 0 ? "+" : ""} ${form.forward.dataset.mod})`);
@@ -248,8 +225,8 @@ export default class RollPbtA extends Roll {
 
 		if (form?.ongoing && form?.ongoing.checked) {
 			const oRoll = new Roll(`${form.ongoing.dataset.mod}`, this.data);
-			if (!(oRoll.terms[0] instanceof OperatorTerm)) {
-				this.terms.push(new OperatorTerm({ operator: "+" }));
+			if (!(oRoll.terms[0] instanceof foundry.dice.terms.OperatorTerm)) {
+				this.terms.push(new foundry.dice.terms.OperatorTerm({ operator: "+" }));
 			}
 			this.terms = this.terms.concat(oRoll.terms);
 			this.options.conditions.push(`${game.i18n.localize("PBTA.Ongoing")} (${form.ongoing.dataset.mod >= 0 ? "+" : ""} ${form.ongoing.dataset.mod})`);

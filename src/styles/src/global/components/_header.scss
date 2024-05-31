@@ -41,7 +41,7 @@
 
     label {
       flex: 1;
-      font-size: 18px;
+      font-size: var(--font-size-18);
     }
 
     input {
@@ -57,7 +57,7 @@
       bottom: 0;
       margin: auto;
       text-align: center;
-      font-size: 18px;
+      font-size: var(--font-size-18);
       line-height: 18px;
 
       // &:hover,
@@ -140,10 +140,13 @@
     text-align: center;
     opacity: 0.5;
     transition: all ease-in-out 0.25s;
-    cursor: pointer;
 
-    &:hover {
-      opacity: 1;
+    &[data-playbook] {
+      cursor: pointer;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     i {

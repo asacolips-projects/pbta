@@ -42,12 +42,16 @@
       &:first-child {
         padding-top: 0;
       }
+
+      &.flexrow {
+        gap: 4px;
+        align-items: center;
+      }
     }
   }
 
   .item-controls {
-    text-align: right;
-    flex: 0 0 40px;
+    flex: 0 0 auto;
   }
 
   .item-description {
@@ -71,7 +75,6 @@
     height: 32px;
     position: relative;
     border-radius: 4px;
-    margin-right: 4px;
     overflow: hidden;
 
     .showable {
@@ -88,7 +91,7 @@
       text-align: center;
       color: $c-white;
       background: $c-black;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       opacity: 0.5;
 
       &:hover {
@@ -112,7 +115,7 @@
       background: $c-black;
       color: $c-white;
       opacity: 0;
-      font-size: 14px;
+      font-size: var(--font-size-14);
 
       &:hover {
         // transform: scale(1.2);
@@ -127,7 +130,7 @@
   }
 
   .item-name {
-    font-size: 18px;
+    font-size: var(--font-size-18);
     font-weight: bold;
     text-transform: uppercase;
     flex: auto;
@@ -135,6 +138,7 @@
     display: flex;
     align-items: stretch;
     justify-content: flex-start;
+    gap: 4px;
   }
 
   .item-icon {
@@ -168,6 +172,7 @@
   .item-label {
     border-left: 2px solid;
     padding-left: 4px;
+    align-content: center;
 
     &::after {
       display: block;
