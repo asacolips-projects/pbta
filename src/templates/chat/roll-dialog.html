@@ -4,23 +4,24 @@
     {{/if}}
     {{#if hasPrompt}}
     <div class="cell cell--prompt">
-        <p>{{localize "PBTA.Dialog.Prompt1"}}</p>
         <div class="form-group">
             <label><strong>{{localize "PBTA.Prompt"}}</strong></label>
             <input type="text" name="prompt" value="{{prompt}}" placeholder="e.g. 1" data-dtype="Number" />
+            <p class="notes">{{localize "PBTA.Dialog.Prompt1"}}</p>
         </div>
     </div>
     {{/if}}
     {{#if conditionGroups}}
     <div class="cell cell--conditions">
-        <p>{{localize "PBTA.Dialog.ChooseConditions"}}</p>
         <ul class="no-bullets">
         {{#each conditionGroups as |conditionGroup groupKey|}}
-            <li><strong>{{conditionGroup.label}}</strong>
+            <li>
+                <strong>{{conditionGroup.label}}</strong>
+                <p class="notes">{{localize "PBTA.Dialog.ChooseConditions"}}</p>
                 <ul>
                 {{#each conditionGroup.conditions as |condition key|}}
                     <li>
-                        <label><input type="checkbox" name="condition" data-mod="{{condition.mod}}" data-content="{{condition.label}}" />{{condition.label}}</label>
+                        <label class="flexrow"><input type="checkbox" name="condition" data-mod="{{condition.mod}}" data-content="{{condition.label}}" />{{condition.label}}</label>
                     </li>
                 {{/each}}
                 </ul>
@@ -35,6 +36,18 @@
         <div class="cell__wrapper">
             <input type="number" name="prompt" value="{{numOfToken}}" min="0" max="{{numOfToken}}" data-dtype="Number" />
         </div>
+    </div>
+    {{/if}}
+    {{#if hasSituationalMods}}
+    <div class="cell cell--roll-resources">
+        <strong>{{localize "PBTA.Dialog.ChooseSituationalModifiersTitle"}}</strong>
+        <p class="notes">{{localize "PBTA.Dialog.ChooseSituationalModifiers"}}</p>
+        {{#if resources.forward.value}}
+        <label class="flexrow"><input type="checkbox" name="forward" data-mod="{{resources.forward.value}}" data-content="forward" /><span>{{{localize "PBTA.Dialog.ForwardMessage" value=resources.forward.value}}}</span></label>
+        {{/if}}
+        {{#if resources.ongoing.value}}
+        <label class="flexrow"><input type="checkbox" name="ongoing" data-mod="{{resources.ongoing.value}}" data-content="ongoing" /><span>{{{localize "PBTA.Dialog.OngoingMessage" value=resources.ongoing.value}}}</span></label>
+        {{/if}}
     </div>
     {{/if}}
 </form>

@@ -52,13 +52,15 @@ export default class ItemPbta extends Item {
 					return false;
 			}
 		};
-		return Object.fromEntries(Object.entries(sheetConfig.actorTypes)
-			.filter(([a, v]) => filters(a))
-			.map(([a, v]) => {
-				const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
-				const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
-				return [a, { label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a) }];
-			}));
+		return Object.fromEntries(
+			Object.entries(sheetConfig.actorTypes)
+				.filter(([a, v]) => filters(a))
+				.map(([a, v]) => {
+					const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
+					const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
+					return [a, { label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a) }];
+				})
+		);
 	}
 
 	/**
@@ -67,7 +69,11 @@ export default class ItemPbta extends Item {
 	 * @param {boolean} options.descriptionOnly
 	 */
 	async roll(options = { descriptionOnly: false }) {
-		if (options.descriptionOnly || this.type === "equipment" || (this.type !== "npcMove" && !this.system.rollType)) {
+		if (
+			options.descriptionOnly
+			|| this.type === "equipment"
+			|| (this.type !== "npcMove" && !this.system.rollType)
+		) {
 			const content = await renderTemplate("systems/pbta/templates/chat/chat-move.html", {
 				actor: this.actor,
 				tokenId: this.actor?.token?.uuid || null,
@@ -84,7 +90,6 @@ export default class ItemPbta extends Item {
 				speaker: ChatMessage.getSpeaker({ actor: this.actor })
 			});
 		} else {
-			let statToggleModifier = game.pbta.sheetConfig.statToggle.modifier;
 			let formula = "@formula";
 			let stat = "";
 			let { rollFormula, rollMod, rollType = "move" } = this.system;
@@ -93,18 +98,23 @@ export default class ItemPbta extends Item {
 			} else if (!["ask", "prompt", "formula"].includes(rollType)) {
 				stat = rollType;
 				formula += `+ @stats.${stat}.value`;
-				if (this.actor.system.stats[stat].toggle && !["adv", "dis"].includes(statToggleModifier)) {
-					formula += `${statToggleModifier >= 0 ? "+" : ""} ${statToggleModifier}`;
+				const { modifier } = game.pbta.sheetConfig.statToggle;
+				if (this.actor.system.stats[stat]?.toggle && !["adv", "dis"].includes(modifier)) {
+					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
 				}
 			}
 			if (rollMod) {
 				formula += " + @rollMod";
 			}
-			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
-				rollType: this.type,
-				sheetType: this.actor?.baseType,
-				stat
-			}));
+			const r = new CONFIG.Dice.RollPbtA(
+				formula,
+				this.getRollData(),
+				foundry.utils.mergeObject(options, {
+					rollType: this.type,
+					sheetType: this.actor?.baseType,
+					stat
+				})
+			);
 			const choice = await r.configureDialog({
 				templateData: {
 					title: this.name,
@@ -134,7 +144,9 @@ export default class ItemPbta extends Item {
 					}
 				}
 			});
-			await this.actor?.clearForwardAdv();
+			if (choice.options.conditionsConsumed.includes("forward") ?? false) {
+				await this.actor?.clearForwardAdv();
+			}
 			await this.actor.updateCombatMoveCount();
 		}
 	}
@@ -214,8 +226,7 @@ export default class ItemPbta extends Item {
 		super._onDelete(options, userId);
 	}
 
-	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
-
+	static async createDialog(data = {}, { parent = null, pack = null, ...options } = {}) {
 		// Collect data
 		const documentName = this.metadata.name;
 		const types = game.documentTypes[documentName].filter((t) => t !== CONST.BASE_DOCUMENT_TYPE && t !== "tag");
@@ -319,7 +330,10 @@ export default class ItemPbta extends Item {
 				const { resultType, rollType } = message.rolls[0].options;
 				const { start, end } = rollResults?.[resultType] ?? {};
 
-				if ((action === "shiftUp" && end && end < total) || (action === "shiftDown" && start && start > total)) {
+				if (
+					(action === "shiftUp" && end && end < total)
+					|| (action === "shiftDown" && start && start > total)
+				) {
 					const newResult = Object.keys(rollResults)
 						.filter((k) => k !== resultType)
 						.find((k) => {
@@ -334,10 +348,19 @@ export default class ItemPbta extends Item {
 						const item = await fromUuid(itemUuid);
 						if (item && item.system.moveResults) {
 							const moveResult = item.system.moveResults[newResult];
-							content = content.replace(/<div class="row result (.*?)">/, `<div class="row result ${newResult}">`);
+							content = content.replace(
+								/<div class="row result (.*?)">/,
+								`<div class="row result ${newResult}">`
+							);
 							content = content.replace(/<div class="roll (.*?)">/, `<div class="roll ${newResult}">`);
-							content = content.replace(/<div class="result-label">(.*?)<\/div>/, `<div class="result-label">${moveResult.label}</div>`);
-							content = content.replace(/<div class="result-details">[\s\S]*?<\/div>/, `<div class="result-details">${moveResult.value}</div>`);
+							content = content.replace(
+								/<div class="result-label">(.*?)<\/div>/,
+								`<div class="result-label">${moveResult.label}</div>`
+							);
+							content = content.replace(
+								/<div class="result-details">[\s\S]*?<\/div>/,
+								`<div class="result-details">${moveResult.value}</div>`
+							);
 						}
 					}
 				}

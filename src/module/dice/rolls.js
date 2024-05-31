@@ -31,9 +31,7 @@ export default class RollPbtA extends Roll {
 	async toMessage(messageData={}, { rollMode, create=true }={}) {
 
 		// Perform the roll, if it has not yet been rolled
-		if (!this._evaluated) {
-			await this.evaluate({ async: true });
-		}
+		if (!this._evaluated) await this.evaluate();
 
 		const resultRanges = game.pbta.sheetConfig.rollResults;
 		let resultLabel = null;
@@ -65,10 +63,10 @@ export default class RollPbtA extends Roll {
 		// Prepare chat data
 		messageData = foundry.utils.mergeObject({
 			user: game.user.id,
-			type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+			type: CONST.CHAT_MESSAGE_STYLES.IC,
 			content: String(this.total),
 			sound: CONFIG.sounds.dice,
-
+			conditionsConsumed: this.options.conditionsConsumed,
 			conditions: this.options.conditions,
 			choices: this.data.choices,
 			details: this.data.description,
@@ -119,24 +117,6 @@ export default class RollPbtA extends Roll {
 			this.options.conditions.push(game.i18n.localize("PBTA.Disadvantage"));
 		}
 
-		const { forward, ongoing } = this.data?.resources ?? {};
-		if (forward?.value) {
-			const fRoll = new Roll(`${forward.value}`, this.data);
-			if (!(fRoll.terms[0] instanceof OperatorTerm)) {
-				this.terms.push(new OperatorTerm({ operator: "+" }));
-			}
-			this.terms = this.terms.concat(fRoll.terms);
-			this.options.conditions.push(`${game.i18n.localize("PBTA.Forward")} (${forward.value >= 0 ? "+" : ""} ${forward.value})`);
-		}
-		if (ongoing?.value) {
-			const oRoll = new Roll(`${ongoing.value}`, this.data);
-			if (!(oRoll.terms[0] instanceof OperatorTerm)) {
-				this.terms.push(new OperatorTerm({ operator: "+" }));
-			}
-			this.terms = this.terms.concat(oRoll.terms);
-			this.options.conditions.push(`${game.i18n.localize("PBTA.Ongoing")} (${ongoing.value >= 0 ? "+" : ""} ${ongoing.value})`);
-		}
-
 		// Re-compile the underlying formula
 		this._formula = this.constructor.getFormula(this.terms);
 
@@ -172,16 +152,22 @@ export default class RollPbtA extends Roll {
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
 		this.options.conditions = [];
+		this.options.conditionsConsumed = [];
+		const hasSituationalMods = this.data.resources.forward.value !== 0 || this.data.resources.ongoing.value !== 0;
+
 		const needsDialog =
 			this.data.rollType === "ask"
 			|| this.data.rollType === "prompt"
+			|| hasSituationalMods
 			|| this.data.conditionGroups.length > 0
 			|| (templateData.isStatToken && templateData.numOfToken);
 
 		if (needsDialog) {
 			templateData = foundry.utils.mergeObject(templateData, {
 				conditionGroups: this.data.conditionGroups,
-				hasPrompt: this.data.rollType === "prompt"
+				hasPrompt: this.data.rollType === "prompt",
+				hasSituationalMods: hasSituationalMods,
+				resources: this.data.resources
 			});
 
 			const content = await renderTemplate(template ?? this.constructor.EVALUATION_TEMPLATE, templateData);
@@ -256,6 +242,25 @@ export default class RollPbtA extends Roll {
 		// Customize the modifier
 		if (form?.prompt?.value) {
 			addToFormula(`${form.prompt.value}`);
+		}
+
+		if (form?.forward && form?.forward.checked) {
+			const fRoll = new Roll(`${form.forward.dataset.mod}`, this.data);
+			if (!(fRoll.terms[0] instanceof OperatorTerm)) {
+				this.terms.push(new OperatorTerm({ operator: "+" }));
+			}
+			this.terms = this.terms.concat(fRoll.terms);
+			this.options.conditions.push(`${game.i18n.localize("PBTA.Forward")} (${form.forward.dataset.mod >= 0 ? "+" : ""} ${form.forward.dataset.mod})`);
+			this.options.conditionsConsumed.push("forward");
+		}
+
+		if (form?.ongoing && form?.ongoing.checked) {
+			const oRoll = new Roll(`${form.ongoing.dataset.mod}`, this.data);
+			if (!(oRoll.terms[0] instanceof OperatorTerm)) {
+				this.terms.push(new OperatorTerm({ operator: "+" }));
+			}
+			this.terms = this.terms.concat(oRoll.terms);
+			this.options.conditions.push(`${game.i18n.localize("PBTA.Ongoing")} (${form.ongoing.dataset.mod >= 0 ? "+" : ""} ${form.ongoing.dataset.mod})`);
 		}
 
 		if (form?.condition) {

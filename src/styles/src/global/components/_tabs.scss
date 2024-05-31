@@ -8,11 +8,11 @@
     border-radius: 4px 4px 0 0;
     background: $c-navy-up;
     color: $c-white;
-    margin: 0 10px;
+    margin: 0 4px;
     padding: 4px;
     line-height: 1.6;
     text-transform: uppercase;
-    font-size: 18px;
+    font-size: var(--font-size-16);
     flex: 1;
 
     &:hover,
