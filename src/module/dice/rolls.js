@@ -8,9 +8,12 @@ export default class RollPbtA extends Roll {
 	 * @type {boolean}
 	 */
 	get hasAdvantage() {
-		if (this.data.stats[this.options.stat].toggle) {
+		let stat = "";
+		if (typeof this.options.stat === "object") stat = this.options.stat.key;
+		else stat = this.options.stat ?? this.options.rollType;
+		if (this.data.stats[stat]?.toggle) {
 			const { modifier } = game.pbta.sheetConfig.statToggle;
-			if (modifier === "adv") return this.data.stats[this.options.stat].toggle;
+			if (modifier === "adv") return this.data.stats[stat].toggle;
 		}
 		return this.options.rollMode === "adv";
 	}
@@ -22,7 +25,10 @@ export default class RollPbtA extends Roll {
 	 * @type {boolean}
 	 */
 	get hasDisadvantage() {
-		if (this.data.stats[this.options.stat].toggle) {
+		let stat = "";
+		if (typeof this.options.stat === "object") stat = this.options.stat.key;
+		else stat = this.options.stat ?? this.options.rollType;
+		if (this.data.stats[stat]?.toggle) {
 			const { modifier } = game.pbta.sheetConfig.statToggle;
 			if (modifier === "dis") return this.data.stats[this.options.stat].toggle;
 		}
@@ -209,10 +215,7 @@ export default class RollPbtA extends Roll {
 		// Append a situational bonus term
 		if (stat) {
 			const { label, value } = this.data.stats[stat];
-			this.options.stat = {
-				label,
-				value
-			};
+			this.options.stat = { key: stat, label, value };
 			addToFormula(`@stats.${stat}.value`);
 		}
 
