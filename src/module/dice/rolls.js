@@ -8,14 +8,7 @@ export default class RollPbtA extends Roll {
 	 * @type {boolean}
 	 */
 	get hasAdvantage() {
-		let stat = "";
-		if (typeof this.options.stat === "object") stat = this.options.stat.key;
-		else stat = this.options.stat ?? this.options.rollType;
-		if (this.data.stats[stat]?.toggle) {
-			const { modifier } = game.pbta.sheetConfig.statToggle;
-			if (modifier === "adv") return this.data.stats[stat].toggle;
-		}
-		return this.options.rollMode === "adv";
+		return this.checkAdvDis("adv");
 	}
 
 	/* -------------------------------------------- */
@@ -25,14 +18,22 @@ export default class RollPbtA extends Roll {
 	 * @type {boolean}
 	 */
 	get hasDisadvantage() {
+		return this.checkAdvDis("dis");
+	}
+
+	checkAdvDis(type) {
 		let stat = "";
-		if (typeof this.options.stat === "object") stat = this.options.stat.key;
-		else stat = this.options.stat ?? this.options.rollType;
+		if (typeof this.options.stat === "object") {
+			stat = this.options.stat.key;
+		} else {
+			stat = this.options.stat ?? this.options.rollType;
+		}
 		if (this.data.stats[stat]?.toggle) {
 			const { modifier } = game.pbta.sheetConfig.statToggle;
-			if (modifier === "dis") return this.data.stats[this.options.stat].toggle;
+			if (modifier === type) return true;
 		}
-		return this.options.rollMode === "dis";
+
+		return this.options.rollMode === type;
 	}
 
 	/** @override */
