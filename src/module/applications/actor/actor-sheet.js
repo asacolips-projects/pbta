@@ -424,7 +424,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		const attr = foundry.utils.deepClone(foundry.utils.getProperty(this.actor, prop));
 
 		// Handle clicking the same checkbox to unset its value.
-		if (!event.target.checked && attr.value === index) {
+		const unset = event.currentTarget.attributes.checked !== undefined;
+		if (unset && attr.value === index) {
 			index--;
 		}
 
