@@ -796,7 +796,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		event.preventDefault();
 		const li = event.currentTarget.closest(".item");
 		let item = this.actor.items.get(li.dataset.itemId);
-		item.delete();
+		item.deleteDialog();
 	}
 
 	/* -------------------------------------------- */
