@@ -19,11 +19,11 @@ export default class ItemPbta extends Item {
 		if (this.actor && this.actor.system?.stats) {
 			rollData = foundry.utils.mergeObject(rollData, this.actor.getRollData());
 		}
-		rollData.formula = this.getRollFormula();
+		rollData.formula = this.getFormula();
 		return rollData;
 	}
 
-	getRollFormula(defaultFormula = "2d6") {
+	getFormula(defaultFormula = "2d6") {
 		if (this.system.rollType === "formula") {
 			const rollFormula = this.system.rollFormula;
 			if (rollFormula && Roll.validate(rollFormula)) {
@@ -34,40 +34,16 @@ export default class ItemPbta extends Item {
 	}
 
 	/**
-	 * Returns a list of valid actor types for the item.
-	 * @returns {object}
-	 */
-	getActorTypes() {
-		const sheetConfig = game.pbta.sheetConfig;
-		const filters = (a) => {
-			switch (this.type) {
-				case "equipment":
-					return sheetConfig.actorTypes[a]?.equipmentTypes;
-				case "move":
-				case "playbook":
-					return a === "character" || sheetConfig.actorTypes[a]?.baseType === "character";
-				case "npcMove":
-					return a === "npc" || sheetConfig.actorTypes[a]?.baseType === "npc";
-				default:
-					return false;
-			}
-		};
-		return Object.fromEntries(Object.entries(sheetConfig.actorTypes)
-			.filter(([a, v]) => filters(a))
-			.map(([a, v]) => {
-				const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
-				const label = CONFIG.Actor?.typeLabels?.[a] ?? a;
-				return [a, { label: pbtaLabel ?? (game.i18n.has(label) ? game.i18n.localize(label) : a) }];
-			}));
-	}
-
-	/**
 	 * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
 	 * @param {object} options
 	 * @param {boolean} options.descriptionOnly
 	 */
 	async roll(options = { descriptionOnly: false }) {
-		if (options.descriptionOnly || this.type === "equipment" || (this.type !== "npcMove" && !this.system.rollType)) {
+		if (
+			options.descriptionOnly
+			|| this.type === "equipment"
+			|| (this.type !== "npcMove" && !this.system.rollType)
+		) {
 			const content = await renderTemplate("systems/pbta/templates/chat/chat-move.html", {
 				actor: this.actor,
 				tokenId: this.actor?.token?.uuid || null,
@@ -76,7 +52,8 @@ export default class ItemPbta extends Item {
 				image: this.img,
 				title: this.name,
 				details: this.system.description,
-				tags: this.system.tags
+				tags: this.system.tags,
+				noRoll: true
 			});
 			ChatMessage.create({
 				user: game.user.id,
@@ -84,37 +61,20 @@ export default class ItemPbta extends Item {
 				speaker: ChatMessage.getSpeaker({ actor: this.actor })
 			});
 		} else {
-			let formula = "@formula";
-			let stat = "";
-			let { rollFormula, rollMod, rollType = "move" } = this.system;
-			if (this.type === "npcMove" || rollType === "formula") {
-				formula = rollFormula;
-			} else if (!["ask", "prompt", "formula"].includes(rollType)) {
-				stat = rollType;
-				formula += `+ @stats.${stat}.value`;
-				if (this.actor.system.stats[stat]?.toggle) {
-					const { modifier } = game.pbta.sheetConfig.statToggle;
-					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
-				}
-			}
-			if (rollMod) {
-				formula += " + @rollMod";
-			}
-			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), foundry.utils.mergeObject(options, {
-				rollType: this.type,
-				sheetType: this.actor?.baseType,
-				stat
-			}));
+			delete options.descriptionOnly;
+			const formula = this._getRollFormula(options);
+			options = foundry.utils.mergeObject(options, {
+				choices: this.system.choices,
+				details: this.system.description,
+				moveResults: this.system.moveResults,
+				resources: this.actor?.system.resources
+			});
+			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), options);
+			delete options.stat;
+			delete options.rollMode;
 			const choice = await r.configureDialog({
-				templateData: {
-					title: this.name,
-					details: this.system.description,
-					moveResults: this.system.moveResults,
-					choices: this.system?.choices,
-					sheetType: this.actor?.baseType,
-					rollType
-				},
-				title: game.i18n.format("PBTA.RollLabel", { label: this.name })
+				templateData: options,
+				title: this.name
 			});
 			if (choice === null) {
 				return;
@@ -126,7 +86,6 @@ export default class ItemPbta extends Item {
 
 				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 				image: this.img,
-				title: this.name,
 				rollMode: game.settings.get("core", "rollMode"),
 				flags: {
 					pbta: {
@@ -134,11 +93,36 @@ export default class ItemPbta extends Item {
 					}
 				}
 			});
-			if (choice.options.conditionsConsumed.includes("forward") ?? false) {
+			if (r.options.conditionsConsumed.includes("forward")) {
 				await this.actor?.clearForwardAdv();
 			}
 			await this.actor.updateCombatMoveCount();
 		}
+	}
+
+	_getRollFormula(options = {}) {
+		let formula = "@formula";
+		const { rollFormula, rollMod, rollType } = this.system;
+		options.rollType = rollType;
+		if (this.type === "npcMove" || rollType === "formula") {
+			formula = rollFormula;
+		} else if (!["ask", "prompt", "formula"].includes(rollType)) {
+			const { label, value, toggle } = this.actor.system.stats[rollType];
+			options.stat = {
+				label,
+				value
+			};
+			formula += `+ @stats.${rollType}.value`;
+			if (toggle) {
+				const { modifier } = game.pbta.sheetConfig.statToggle;
+				formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
+				options.stat.value = modifier;
+			}
+		}
+		if (rollMod) {
+			formula += " + @rollMod";
+		}
+		return formula;
 	}
 
 	/** @inheritdoc */
@@ -174,9 +158,64 @@ export default class ItemPbta extends Item {
 			this.updateSource({ "system.actorType": this.actor?.system?.customType ?? this.actor.type });
 		}
 
+		const compendiumSource = this._stats.compendiumSource;
+		if (this.type === "playbook") {
+			if (this.parent) {
+				const attributesUpdate = await this.handleAttributes(data);
+				const choiceUpdate = await this.handleChoices(data);
+				if (Object.keys(choiceUpdate).length > 0) {
+					this.updateSource(choiceUpdate);
+					const items = [];
+					const grantedItems = [];
+					for (const set of choiceUpdate["system.choiceSets"]) {
+						for (const choice of set.choices) {
+							if (choice.granted) {
+								const item = fromUuidSync(choice.uuid);
+								if (item) {
+									items.push(item.toObject());
+									grantedItems.push(item.id);
+								} else {
+									console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
+								}
+							}
+						}
+					}
+					await ItemPbta.createDocuments(items, {
+						keepId: true,
+						parent: this.parent,
+						renderSheet: null
+					});
+					this.updateSource({ "flags.pbta": { grantedItems } });
+				}
+
+				const changes = foundry.utils.mergeObject({
+					"system.playbook": { name: this.name, slug: this.system.slug, uuid: compendiumSource ?? options.originalUuid }
+				}, attributesUpdate);
+				if (this.system.actorType) {
+					const stats = foundry.utils.duplicate(this.parent.system.stats);
+					Object.entries(this.system.stats).forEach(([key, data]) => stats[key].value = data.value);
+					changes["system.stats"] = stats;
+				}
+				await this.parent.update(changes);
+			} else {
+				const actorTypes = foundry.utils.duplicate(
+					Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
+						.filter(([a, v]) => this._filterActorTypes([a, v])))
+				);
+				if (Object.keys(actorTypes).length) {
+					const actorType = Object.keys(actorTypes)[0];
+					const attributes = this._getValidAttributes(this.system.actorType);
+					const stats = actorTypes[this.system.actorType || actorType]?.stats;
+					this.updateSource({
+						"system.attributes": attributes,
+						"system.stats": stats
+					});
+				}
+			}
+		}
+
 		// Handle everything else if not imported from compendiums
-		const sourceId = this.getFlag("core", "sourceId");
-		if (sourceId?.startsWith("Compendium.")) return;
+		if (compendiumSource?.startsWith("Compendium.")) return;
 		if (this.type === "playbook") {
 			if (!this.system.slug) {
 				this.updateSource({ "system.slug": this.name.slugify() });
@@ -184,14 +223,214 @@ export default class ItemPbta extends Item {
 		}
 	}
 
-	_onCreate(data, options, userId) {
+	async handleAttributes(data) {
+		if (Object.keys(data.system?.attributes ?? {}).length > 0) {
+			const selected = {};
+			for (const attribute in data.system.attributes) {
+				const { label, choices, custom, max, path, type, value } = data.system.attributes[attribute];
+				if (choices.length > 1 || custom) {
+					if (custom) {
+						const choice = { custom, value };
+						if (max !== undefined) choice.max = max;
+						choices.push(choice);
+					}
+					if (["Details", "LongText"].includes(type)) {
+						for (const choice of choices) {
+							choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", {
+								async: true,
+								secrets: this.isOwner,
+								rollData: this?.getRollData() ?? {},
+								relativeTo: this
+							});
+						}
+					}
+					await Dialog.wait({
+						title: `${game.i18n.localize("PBTA.Attribute")}: ${label}`,
+						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", { attribute, choices, type }),
+						default: "ok",
+						// @todo add some warning about pending grants
+						close: () => {
+							return false;
+						},
+						buttons: {
+							skip: {
+								label: game.i18n.localize("Cancel"),
+								icon: '<i class="fas fa-undo"></i>',
+								callback: () => {
+									// @todo add some warning about pending grants
+								}
+							},
+							ok: {
+								label: game.i18n.localize("Confirm"),
+								icon: '<i class="fas fa-check"></i>',
+								callback: async (html) => {
+									const fd = new FormDataExtended(html.querySelector(".pbta-attribute-dialog"));
+									const choice = fd.object[attribute];
+									let { custom, max, value } = choices[choice];
+									if (custom) value = fd.object.custom;
+									if (value) selected[`system.${path}.${attribute}.value`] = value;
+									if (max) selected[[`system.${path}.${attribute}.max`]] = max;
+								}
+							}
+						}
+					}, { jQuery: false });
+				} else if (!attribute.custom) {
+					let { value, max = null } = data.system.attributes[attribute];
+					if (data.system.attributes[attribute].choices.length) {
+						const choice = data.system.attributes[attribute].choices[0];
+						value = choice.value;
+						max = choice.max ?? max;
+					}
+					if (value) selected[`system.${path}.${attribute}.value`] = value;
+					if (max) selected[[`system.${path}.${attribute}.max`]] = max;
+				}
+			}
+			return selected;
+		}
+	}
+
+	async handleChoices(data) {
+		if (data.system?.choiceSets?.length > 0) {
+			for (const choiceSet of data.system.choiceSets) {
+				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
+				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
+				const validChoices = choices.filter(
+					(c) => {
+						const item = fromUuidSync(c.uuid);
+						return !c.granted
+							&& c.advancement <= this.parent.advancements
+							&& !this.actor.items.has(item.id);
+					}
+				);
+				if (!validChoices.length) continue;
+
+				await Dialog.wait({
+					title: `${game.i18n.localize("PBTA.Choice")}: ${title}`,
+					content: await renderTemplate("systems/pbta/templates/dialog/choice-dialog.hbs", { choices: validChoices, desc, parent: this.parent }),
+					default: "ok",
+					// @todo add some warning about pending grants
+					close: () => {
+						return false;
+					},
+					buttons: {
+						skip: {
+							label: game.i18n.localize("Cancel"),
+							icon: '<i class="fas fa-undo"></i>',
+							callback: () => {
+								// @todo add some warning about pending grants
+							}
+						},
+						ok: {
+							label: game.i18n.localize("Confirm"),
+							icon: '<i class="fas fa-check"></i>',
+							callback: async (html) => {
+								const fd = new FormDataExtended(html.querySelector(".pbta-choice-dialog"));
+								validChoices.forEach((i) => {
+									if (fd.object[i.uuid]) {
+										const index = choices.findIndex((c) => c.uuid === i.uuid);
+										choiceSet.choices[index].granted = true;
+									}
+								});
+							}
+						}
+					}
+				}, { jQuery: false });
+			}
+		}
+		return { "system.choiceSets": data.system.choiceSets };
+	}
+
+	async _preUpdate(changed, options, user) {
 		if (this.type === "playbook") {
+			if (Object.keys(changed?.system?.choiceSets ?? {}).length) {
+				if (!Array.isArray(changed.system.choiceSets)) {
+					changed.system.choiceSets = Object.values(changed.system.choiceSets);
+				}
+				changed.system.choiceSets.forEach((cs) => {
+					if (cs.choices && Object.keys(cs.choices).length) {
+						if (Array.isArray(cs.choices)) cs.choices.sort(this._sortItemAdvancement);
+						else cs.choices = Object.values(cs.choices).sort(this._sortItemAdvancement);
+					}
+				});
+			}
+		}
+		await super._preUpdate(changed, options, user);
+	}
+
+	_sortItemAdvancement(a, b) {
+		if (a.advancement - b.advancement) return a.advancement - b.advancement;
+		return a.name.localeCompare(b.name);
+	}
+
+	async _preDelete(options, user) {
+		if (this.type ==="playbook" && this.parent) {
+			const grantedItems = this.getFlag("pbta", "grantedItems") ?? [];
+
+			const type = game.i18n.localize(this.constructor.metadata.label);
+			const buttons = {
+				yes: {
+					icon: '<i class="fas fa-check"></i>',
+					label: game.i18n.localize("Confirm"),
+					callback: async () => {
+						if (grantedItems.length) {
+							const granted = new Set(
+								grantedItems.filter((grant) => this.parent?.items.has(grant))
+							);
+							await this.parent.deleteEmbeddedDocuments("Item", Array.from(granted));
+						}
+						await this.parent.update({ "system.playbook": { name: "", slug: "", uuid: "" } });
+						return true;
+					}
+				},
+				keepItems: {
+					icon: '<i class="fas fa-floppy-disk"></i>',
+					label: game.i18n.localize("PBTA.KeepItems"),
+					callback: async () => {
+						await this.parent.update({ "system.playbook": { name: "", slug: "", uuid: "" } });
+						return true;
+					}
+				},
+				no: {
+					icon: '<i class="fas fa-times"></i>',
+					label: game.i18n.localize("Cancel"),
+					callback: () => {
+						return false;
+					}
+				}
+			};
+			// @todo check if the items are still there, just length isn't enough
+			if (!grantedItems.length) {
+				buttons.yes.callback();
+			} else {
+				const confirm = await Dialog.wait({
+					title: `${game.i18n.format("DOCUMENT.Delete", { type })}: ${this.name}`,
+					content: `<h4>${game.i18n.localize("AreYouSure")}</h4><p>${game.i18n.format("PBTA.Warnings.Playbook.DeleteWarning", { type, num: grantedItems.length })}</p>`,
+					focus: true,
+					default: "yes",
+					close: () => {
+						return null;
+					},
+					buttons
+				});
+				if (!confirm) return false;
+			}
+		}
+		await super._preDelete(options, user);
+	}
+
+	_onCreate(data, options, userId) {
+		if (this.type === "playbook" && !this.parent) {
 			CONFIG.PBTA.playbooks.push({
 				name: this.name,
 				slug: this.system.slug,
 				uuid: this.uuid,
 				actorType: this.system.actorType
 			});
+			if (this.system.choiceSets.length) {
+				this.system.choiceSets.forEach((cs) => {
+					if (cs.choices) cs.choices.forEach((c) => c.granted = false);
+				});
+			}
 		}
 		super._onCreate(data, options, userId);
 	}
@@ -210,24 +449,20 @@ export default class ItemPbta extends Item {
 	}
 
 	_onDelete(options, userId) {
-		if (this.type === "playbook") {
+		if (this.type === "playbook" && !this.parent) {
 			CONFIG.PBTA.playbooks = CONFIG.PBTA.playbooks.filter((p) => p.uuid !== this.uuid);
 		}
 		super._onDelete(options, userId);
 	}
 
-	static async createDialog(data={}, { parent=null, pack=null, ...options }={}) {
-
+	static async createDialog(data = {}, { parent = null, pack = null, ...options } = {}) {
 		// Collect data
 		const documentName = this.metadata.name;
 		const types = game.documentTypes[documentName].filter((t) => t !== CONST.BASE_DOCUMENT_TYPE && t !== "tag");
 		let collection;
 		if (!parent) {
-			if (pack) {
-				collection = game.packs.get(pack);
-			} else {
-				collection = game.collections.get(documentName);
-			}
+			if (pack) collection = game.packs.get(pack);
+			else collection = game.collections.get(documentName);
 		}
 		const folders = collection?._formatFolderSelectOptions() ?? [];
 		const label = game.i18n.localize(this.metadata.label);
@@ -256,15 +491,9 @@ export default class ItemPbta extends Item {
 				const form = html[0].querySelector("form");
 				const fd = new FormDataExtended(form);
 				foundry.utils.mergeObject(data, fd.object, { inplace: true });
-				if (!data.folder) {
-					delete data.folder;
-				}
-				if (types.length === 1) {
-					data.type = types[0];
-				}
-				if (!data.name?.trim()) {
-					data.name = this.defaultName();
-				}
+				if (!data.folder) delete data.folder;
+				if (types.length === 1) data.type = types[0];
+				if (!data.name?.trim()) data.name = this.defaultName({ type: data.type, parent, pack });
 				return this.create(data, { parent, pack, renderSheet: true });
 			},
 			rejectClose: false,
@@ -294,58 +523,49 @@ export default class ItemPbta extends Item {
 			if (!message) return;
 
 			const action = button.dataset.action;
-			let content = foundry.utils.duplicate(message.content);
-			let rolls = foundry.utils.deepClone(message.rolls);
+			const shift = action === "shiftUp" ? 1 : -1;
+			const shiftMap = { 1: "+", "-1": "-" };
 
-			const plusMinusReg = /([+-]\s*\d)/;
-			const diceFormulaReg = /<div class="dice-formula">(.*)<\/div>/;
-			const diceTotalReg = /<h4 class="dice-total">(.*)<\/h4>/;
+			const rolls = message.rolls;
+			let oldRoll = rolls.at(0);
 
-			if (diceFormulaReg.test(content)) {
-				const diceFormula = content.match(diceFormulaReg);
-				let roll = diceFormula[1];
-				const plusMinusMatch = roll.match(plusMinusReg);
-				const value = plusMinusMatch ? plusMinusMatch[1] : "";
-				const shift = action === "shiftUp" ? 1 : -1;
-				const newValue = Roll.safeEval(`${value} + ${shift}`);
-				const updatedValue = newValue >= 0 ? `+ ${newValue}` : `- ${Math.abs(newValue)}`;
-
-				roll = plusMinusMatch ? roll.replace(plusMinusReg, updatedValue) : `${roll} ${updatedValue}`;
-				content = content.replace(diceFormula[1], roll);
-
-				const diceTotal = content.match(diceTotalReg);
-				let total = Roll.safeEval(`${diceTotal[1]} + ${shift}`);
-				content = content.replace(diceTotalReg, `<h4 class="dice-total">${total}</h4>`);
-
-				const { rollResults } = game.pbta.sheetConfig;
-				const { resultType, rollType } = message.rolls[0].options;
-				const { start, end } = rollResults?.[resultType] ?? {};
-
-				if ((action === "shiftUp" && end && end < total) || (action === "shiftDown" && start && start > total)) {
-					const newResult = Object.keys(rollResults)
-						.filter((k) => k !== resultType)
-						.find((k) => {
-							const { start, end } = rollResults[k];
-							return (!start || total >= start) && (!end || total <= end);
-						});
-
-					rolls[0].options.resultType = newResult;
-
-					if (rollType === "move" || rollType === "npcMove") {
-						const itemUuid = message.getFlag("pbta", "itemUuid");
-						const item = await fromUuid(itemUuid);
-						if (item && item.system.moveResults) {
-							const moveResult = item.system.moveResults[newResult];
-							content = content.replace(/<div class="row result (.*?)">/, `<div class="row result ${newResult}">`);
-							content = content.replace(/<div class="roll (.*?)">/, `<div class="roll ${newResult}">`);
-							content = content.replace(/<div class="result-label">(.*?)<\/div>/, `<div class="result-label">${moveResult.label}</div>`);
-							content = content.replace(/<div class="result-details">[\s\S]*?<\/div>/, `<div class="result-details">${moveResult.value}</div>`);
-						}
-					}
-				}
-
-				await message.update({ content, rolls });
+			let rollShiftOperatorTerm = oldRoll.terms
+				.find((term) => term instanceof foundry.dice.terms.OperatorTerm && term.options.rollShifting);
+			let rollShiftNumericTerm = oldRoll.terms
+				.find((term) => term instanceof foundry.dice.terms.NumericTerm && term.options.rollShifting);
+			let originalValue = `${rollShiftOperatorTerm?.operator ?? ""}${rollShiftNumericTerm?.number ?? ""}`;
+			if (Number.isNumeric(originalValue)) originalValue = Number(originalValue);
+			if (!rollShiftNumericTerm) {
+				oldRoll.terms.push(
+					rollShiftOperatorTerm = new foundry.dice.terms.OperatorTerm({
+						operator: shiftMap[shift],
+						options: { rollShifting: true }
+					}),
+					rollShiftNumericTerm = new foundry.dice.terms.NumericTerm({
+						number: 1,
+						options: { rollShifting: true }
+					})
+				);
+			} else {
+				rollShiftNumericTerm.number = Math.abs(
+					Roll.safeEval(`${rollShiftOperatorTerm.operator}${rollShiftNumericTerm.number} + ${shift}`)
+				);
 			}
+
+			if (
+				rollShiftNumericTerm.number === 1
+				&& originalValue === 0
+				&& rollShiftOperatorTerm.operator !== shiftMap[shift]
+			) {
+				rollShiftOperatorTerm.operator = shiftMap[shift];
+			} else if (rollShiftNumericTerm.number === 0) {
+				rollShiftOperatorTerm.operator = "+";
+			}
+
+			oldRoll.resetFormula();
+			oldRoll = await oldRoll._evaluate();
+
+			await message.update({ rolls });
 		} catch(err) {
 			console.error("Error handling chat card action:", err);
 		} finally {
@@ -372,6 +592,80 @@ export default class ItemPbta extends Item {
 		}
 		if (choices) {
 			choices.style.display = choices.style.display === "none" ? "" : "none";
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	static VALID_ATTRIBUTES = ["Number", "Resource", "Text", "LongText"];
+
+	_filterAttributes(attributes, path = "details") {
+		return Object.fromEntries(
+			Object.entries(attributes)
+				.filter(([key, data]) => {
+					const isValidType = !data.type || ItemPbta.VALID_ATTRIBUTES.includes(data.type);
+					const hasPlaybook = data.playbook === true || data.playbook === this.system.slug;
+					return isValidType && hasPlaybook;
+				})
+				.map(([key, data]) => {
+					data.type ??= "Details";
+					if (data.type === "Resource") {
+						data.choices = [{ value: data.value, max: data.max }];
+					} else if (data.value) {
+						data.choices = [{ value: data.value }];
+					} else data.choices = [];
+					data.custom = false;
+					data.path = path;
+					return [key, data];
+				})
+		);
+	}
+
+	_getValidAttributes(actorType, actorTypes) {
+		actorTypes ??= foundry.utils.duplicate(
+			Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
+				.filter(([a, v]) => this._filterActorTypes([a, v])))
+		);
+		if (Object.keys(actorTypes).length) {
+			actorType ||= Object.keys(actorTypes)[0];
+			return {
+				...this._filterAttributes(actorTypes[actorType]?.attrTop ?? {}, "attrTop"),
+				...this._filterAttributes(actorTypes[actorType]?.attrLeft ?? {}, "attrLeft"),
+				...this._filterAttributes(actorTypes[actorType]?.details ?? {})
+			};
+		}
+	}
+
+	_getUpdatedAttributes() {
+		const attributes = foundry.utils.duplicate(this.system.attributes);
+		const validAttributes = this._getValidAttributes(this.system.actorType);
+		if (Object.keys(validAttributes).length > Object.keys(attributes).length) {
+			Object.entries(validAttributes).forEach(([key, data]) => {
+				if (!attributes[key]) attributes[key] = data;
+			});
+		} else if (Object.keys(validAttributes).length < Object.keys(attributes).length) {
+			Object.keys(attributes).forEach((key) => {
+				if (!validAttributes[key]) {
+					delete attributes[key];
+					attributes[`-=${key}`] = null;
+				}
+			});
+		}
+		return attributes;
+	}
+
+	_filterActorTypes([key, data], type) {
+		type ??= this.type;
+		switch (type) {
+			case "equipment":
+				return data?.equipmentTypes;
+			case "move":
+			case "playbook":
+				return [key, data?.baseType].includes("character");
+			case "npcMove":
+				return [key, data?.baseType].includes("npc");
+			default:
+				return false;
 		}
 	}
 }

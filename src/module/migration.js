@@ -1,3 +1,5 @@
+import ItemPbta from "./documents/item.js";
+
 /**
  * Perform a system migration for the entire World, applying migrations for Actors, Items, and Compendium packs
  */
@@ -116,11 +118,19 @@ export function migrateActorData(actor, migrationData, flags={}) {
 	const updateData = {};
 
 	// Migrate Owned Items
+	if (actor.system.advancements === undefined) updateData["system.advancements"] = 0;
+	for (const attribute in actor.system.attrLeft) {
+		if (actor.system.attrLeft[attribute].steps) updateData[`system.attrLeft.${attribute}.-=steps`] = null;
+	}
+	for (const attribute in actor.system.attrTop) {
+		if (actor.system.attrTop[attribute].steps) updateData[`system.attrTop.${attribute}.-=steps`] = null;
+	}
+
 	if (!actor.items) return updateData;
 	const items = actor.items.reduce((arr, i) => {
 		// Migrate the Owned Item
 		const itemData = i instanceof CONFIG.Item.documentClass ? i.toObject() : i;
-		const itemFlags = { persistSourceMigration: false };
+		const itemFlags = { actor, persistSourceMigration: false };
 
 		let itemUpdate = migrateItemData(itemData, migrationData, itemFlags);
 
@@ -218,6 +228,28 @@ export function migrateItemData(item, migrationData, flags={}) {
 	if (foundry.utils.getProperty(item, "flags.pbta.persistSourceMigration")) {
 		flags.persistSourceMigration = true;
 		updateData["flags.pbta.-=persistSourceMigration"] = null;
+	}
+	const actorTypes = foundry.utils.duplicate(
+		Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
+			.filter(([a, v]) => ItemPbta.prototype._filterActorTypes([a, v], item.type))
+		)
+	);
+	if (Object.keys(actorTypes).length) {
+		const actorType = Object.keys(actorTypes)[0];
+		if (item.system.actorType === "" && flags.actor) {
+			updateData["system.actorType"] = actorType;
+		}
+		if (item.type === "playbook") {
+			if (!item.system.attributes) {
+				updateData["system.attributes"] = ItemPbta.prototype._getValidAttributes(actorType, actorTypes);
+			}
+			if (!item.system.stats) {
+				const stats = actorTypes[actorType]?.stats;
+				updateData["system.stats"] = stats;
+				updateData["system.statsDetail"] = "";
+			}
+			if (!item.system.choiceSets) updateData["system.statsDetail"] = [];
+		}
 	}
 
 	return updateData;

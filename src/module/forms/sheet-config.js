@@ -236,13 +236,6 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 								configDiff.max.push(`${actorType}.${attrGroup}.${attr}`);
 								updatesDiff[actorType][`system.${attrGroup}.${attr}.max`] = newGroup[attr].max;
 								updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].default ?? 0;
-
-								// Handle types that have steps.
-								if (newGroup[attr].steps) {
-									updatesDiff[actorType][`system.${attrGroup}.${attr}.steps`] = newGroup[attr].steps;
-								} else {
-									updatesDiff[actorType][`system.${attrGroup}.${attr}.-=steps`] = null;
-								}
 							}
 						}
 						// Handle type changes.

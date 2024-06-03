@@ -29,20 +29,16 @@
 			{{!-- TODO: Replace this with stylized checkboxes per xp pip. --}}
 			{{else if (eq attr.type "Xp")}}
 				<div class="cell__clock flexrow">
-					{{#if attr.steps}}
-						{{#each attr.steps as |step stepKey|}}
-							<input type="radio" class="attr-xp" data-name="system.{{../../group}}.{{key}}" data-step="{{stepKey}}" {{checked step}}>
-						{{/each}}
-					{{/if}}
+					{{#times attr.max}}
+					<input type="radio" class="attr-xp" data-name="system.{{../../group}}.{{key}}" data-step="{{@index}}" {{checked (gt attr.value @index)}}>
+					{{/times}}
 				</div>
 			{{!-- TODO: Replace this with checkboxes per clock pip. --}}
 			{{else if (eq attr.type "Clock")}}
 				<div class="cell__clock flexrow">
-					{{#if attr.steps}}
-						{{#each attr.steps as |step stepKey|}}
-							<input type="checkbox" class="attr-clock" data-name="system.{{../../group}}.{{key}}" data-step="{{stepKey}}" {{checked step}}>
-						{{/each}}
-					{{/if}}
+					{{#times attr.max}}
+					<input type="checkbox" class="attr-clock" data-name="system.{{../../group}}.{{key}}" data-step="{{@index}}" {{checked (gt attr.value @index)}}>
+					{{/times}}
 				</div>
 			{{else if (eq attr.type "ListMany") }}
 				<ul class="cell__checkboxes flexcol">

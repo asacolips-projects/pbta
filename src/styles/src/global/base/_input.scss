@@ -1,7 +1,7 @@
 .input,
 .input--title {
   font-weight: bold;
-  font-size: 18px;
+  font-size: var(--font-size-18);
   font-family: $font-stack-secondary;
 }
 

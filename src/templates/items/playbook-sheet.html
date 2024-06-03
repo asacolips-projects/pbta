@@ -14,6 +14,8 @@
     <!-- <a class="item" data-tab="moves">{{localize "PBTA.Moves" }}</a> -->
     {{#if isGM}}
     <a class="item" data-tab="details">{{localize "PBTA.Common.Details" }}</a>
+    <a class="item" data-tab="attributes">{{localize "PBTA.Attributes" }}</a>
+    <a class="item" data-tab="item-grants">{{ localize "PBTA.ItemGrants" }}</a>
     {{/if}}
   </nav>
 
@@ -25,12 +27,12 @@
       {{editor enriched.description target="system.description" button=true owner=owner editable=editable}}
     </div>
 
-    {{!-- Details Tab --}}
     {{#if isGM}}
+    {{!-- Details Tab --}}
     <div class="tab" data-group="primary" data-tab="details">
       <div class="form-group">
         <label class="control-label">{{localize "PBTA.Slug.label" }}</label>
-        <div class="flexrow">
+        <div class="form-fields">
           <input type="text" name='system.slug' value='{{ system.slug }}'/>
           <div class="item-controls">
             <a class="regenerate-slug" data-tooltip="PBTA.Slug.tooltip">
@@ -43,10 +45,33 @@
       <div class="form-group">
         <label>{{localize "PBTA.ActorType"}}</label>
         <select name="system.actorType">
-          {{selectOptions actorTypes selected=system.actorType labelAttr="label" blank="" sort=true}}
+          {{selectOptions actorTypes selected=system.actorType labelAttr="label" sort=true}}
         </select>
       </div>
       {{/if}}
+      {{#if (gt (objLen system.stats) 0)}}
+      <h3>{{ localize "PBTA.Stat.labelPl" }}</h3>
+      {{#each system.stats}}
+      <div class="form-group">
+        <label>{{ this.label }}</label>
+        <input type="number" name='{{concat "system.stats." @key ".value"}}' value='{{ this.value }}' />
+      </div>
+      {{/each}}
+      <div class="form-group">
+        <label>{{ localize "PBTA.Details" }}</label>
+        <input type="text" name='system.statsDetail' value='{{ system.statsDetail }}' />
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- Attributes Tab --}}
+    <div class="tab" data-group="primary" data-tab="attributes">
+      {{> "pbta.playbook-attributes" }}
+    </div>
+
+    {{!-- Item Grants Tab --}}
+    <div class="tab" data-group="primary" data-tab="item-grants">
+      {{> "pbta.playbook-choicesets" }}
     </div>
     {{/if}}
   </section>

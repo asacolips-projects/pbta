@@ -228,9 +228,8 @@ module.exports = {
 		Color: false,
 		DetectionMode: false,
 		DocumentSheetConfig: false,
+		fromUuidSync: false,
 		globalThis: false,
-		NumericTerm: false,
-		OperatorTerm: false,
 		toml: false,
 		Tagify: false
 	},
