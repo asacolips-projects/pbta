@@ -71,7 +71,6 @@ export default class ItemPbta extends Item {
 			});
 			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), options);
 			delete options.stat;
-			delete options.rollMode;
 			const choice = await r.configureDialog({
 				templateData: options,
 				title: this.name
