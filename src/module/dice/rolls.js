@@ -29,7 +29,7 @@ export default class RollPbtA extends Roll {
 			stat = this.options.stat ?? this.options.rollType;
 		}
 		if (this.data.stats[stat]?.toggle) {
-			const { modifier } = game.pbta.sheetConfig.statToggle;
+			const { modifier } = game.pbta.sheetConfig?.statToggle || {};
 			if (modifier === type) return true;
 		}
 

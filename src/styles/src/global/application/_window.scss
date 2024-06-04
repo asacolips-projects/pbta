@@ -1,3 +1,12 @@
+
+&.theme-dark {
+  #reload-world-confirm {
+    .window-content {
+      background: initial;
+    }
+  }
+}
+
 .window-app {
   background: $c-navy;
 
