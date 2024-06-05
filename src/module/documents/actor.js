@@ -232,7 +232,7 @@ export default class ActorPbta extends Actor {
 		if (stat) {
 			formula += `+ @stats.${stat}.value`;
 			if (this.system.stats[stat].toggle) {
-				const { modifier } = game.pbta.sheetConfig.statToggle;
+				const { modifier } = game.pbta.sheetConfig?.statToggle || {};
 				if (!["dis", "adv"].includes(modifier)) {
 					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
 				}
