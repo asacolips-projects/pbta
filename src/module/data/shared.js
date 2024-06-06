@@ -18,6 +18,12 @@ export function createActorResources() {
 				integer: true
 			})
 		}),
+		hold: new foundry.data.fields.SchemaField({
+			value: new foundry.data.fields.NumberField({
+				initial: 0,
+				integer: true
+			})
+		}),
 		rollFormula: new FormulaField({ initial: "" })
 	});
 }

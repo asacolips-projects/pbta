@@ -49,6 +49,7 @@ PBTA:
   Normal: "Normal"
   NoTemplate: "No Template"
   Ongoing: "Ongoing"
+  Hold: "Hold"
   partial: "Partial Success"
   Playbook: "Playbook"
   PlaybookGrantOn: "Grant On"
@@ -95,6 +96,7 @@ PBTA:
     ChooseSituationalModifiers: "Choose all situational modifiers that apply:"
     ForwardMessage: "Use <strong>{value}</strong> Forward."
     OngoingMessage: "Use <strong>{value}</strong> Ongoing."
+    HoldMessage: "Use <strong>{value}</strong> Hold."
     Prompt1: "Choose the modifier for this move."
     HowManyToken: "How many token would you like to use?"
     ErrorAboveMax: "You can't spend more token than you have."
@@ -149,6 +151,9 @@ PBTA:
     hideOngoing:
       name: "Hide ongoing"
       hint: "Hides ongoing input on character sheets."
+    hideHold:
+      name: "Hide hold"
+      hint: "Hides hold input on character sheets."
     hideRollMode:
       name: "Hide roll mode"
       hint: "Hides roll mode override (normal/advantage/disadvantage) on character sheets."

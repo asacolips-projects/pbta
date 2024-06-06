@@ -125,6 +125,15 @@ export default class ActorPbta extends Actor {
 		}
 	}
 
+	async decrementHold() {
+		let hold = this.system?.resources?.hold?.value;
+		if (hold) {
+			const updates = {};
+			updates["system.resources.hold.value"] = --hold;
+			await this.update(updates);
+		}
+	}
+
 	async updateCombatMoveCount() {
 		if (game.combat && game.combat.combatants) {
 			let combatant = game.combat.combatants.find((c) => c.actor.id === this.id);
@@ -196,6 +205,9 @@ export default class ActorPbta extends Actor {
 		if (r.options.conditionsConsumed.includes("forward")) {
 			await this.clearForwardAdv();
 		}
+		if (r.options.conditionsConsumed.includes("hold")) {
+			await this.decrementHold();
+		}
 		await this.updateCombatMoveCount();
 	}
 
@@ -223,6 +235,9 @@ export default class ActorPbta extends Actor {
 		await this.update(updates);
 		if (roll.options.conditionsConsumed.includes("forward")) {
 			await this.clearForwardAdv();
+		}
+		if (roll.options.conditionsConsumed.includes("hold")) {
+			await this.decrementHold();
 		}
 		await this.updateCombatMoveCount();
 	}

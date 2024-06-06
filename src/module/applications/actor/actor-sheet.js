@@ -109,6 +109,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				"hideRollFormula",
 				"hideForward",
 				"hideOngoing",
+				"hideHold",
 				"hideRollMode",
 				"hideUses"
 			].reduce((obj, key) => {

@@ -95,6 +95,9 @@ export default class ItemPbta extends Item {
 			if (r.options.conditionsConsumed.includes("forward")) {
 				await this.actor?.clearForwardAdv();
 			}
+			if (r.options.conditionsConsumed.includes("hold")) {
+				await this.actor?.decrementHold();
+			}
 			await this.actor.updateCombatMoveCount();
 		}
 	}
