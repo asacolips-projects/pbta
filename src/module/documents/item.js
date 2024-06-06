@@ -160,40 +160,42 @@ export default class ItemPbta extends Item {
 		const compendiumSource = this._stats.compendiumSource;
 		if (this.type === "playbook") {
 			if (this.parent) {
-				const attributesUpdate = await this.handleAttributes(data);
-				const choiceUpdate = await this.handleChoices(data);
-				if (Object.keys(choiceUpdate).length > 0) {
-					this.updateSource(choiceUpdate);
-					const items = [];
-					const grantedItems = [];
-					for (const set of choiceUpdate["system.choiceSets"]) {
-						for (const choice of set.choices) {
-							if (choice.granted) {
-								const item = fromUuidSync(choice.uuid);
-								if (item) {
-									items.push(item.toObject());
-									grantedItems.push(item.id);
-								} else {
-									console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
+				const changes = {
+					"system.playbook": { name: this.name, slug: this.system.slug, uuid: compendiumSource ?? options.originalUuid }
+				};
+				if (!game.pbta.sheetConfig.skipAttributeGrant) {
+					const attributesUpdate = await this.handleAttributes(data);
+					const choiceUpdate = await this.handleChoices(data);
+					if (Object.keys(choiceUpdate).length > 0) {
+						this.updateSource(choiceUpdate);
+						const items = [];
+						const grantedItems = [];
+						for (const set of choiceUpdate["system.choiceSets"]) {
+							for (const choice of set.choices) {
+								if (choice.granted) {
+									const item = fromUuidSync(choice.uuid);
+									if (item) {
+										items.push(item.toObject());
+										grantedItems.push(item.id);
+									} else {
+										console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
+									}
 								}
 							}
 						}
+						await ItemPbta.createDocuments(items, {
+							keepId: true,
+							parent: this.parent,
+							renderSheet: null
+						});
+						this.updateSource({ "flags.pbta": { grantedItems } });
 					}
-					await ItemPbta.createDocuments(items, {
-						keepId: true,
-						parent: this.parent,
-						renderSheet: null
-					});
-					this.updateSource({ "flags.pbta": { grantedItems } });
-				}
-
-				const changes = foundry.utils.mergeObject({
-					"system.playbook": { name: this.name, slug: this.system.slug, uuid: compendiumSource ?? options.originalUuid }
-				}, attributesUpdate);
-				if (this.system.actorType) {
-					const stats = foundry.utils.duplicate(this.parent.system.stats);
-					Object.entries(this.system.stats).forEach(([key, data]) => stats[key].value = data.value);
-					changes["system.stats"] = stats;
+					foundry.utils.mergeObject(changes, attributesUpdate);
+					if (this.system.actorType) {
+						const stats = foundry.utils.duplicate(this.parent.system.stats);
+						Object.entries(this.system.stats).forEach(([key, data]) => stats[key].value = data.value);
+						changes["system.stats"] = stats;
+					}
 				}
 				await this.parent.update(changes);
 			} else {

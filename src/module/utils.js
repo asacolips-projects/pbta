@@ -269,6 +269,8 @@ export function convertSheetConfig(sheetConfig) {
 			}
 		} else if (k === "statClock") {
 			newConfig.statClock = v;
+		} else if (k === "skipAttributeGrant") {
+			newConfig.skipAttributeGrant = v;
 		} else if (k === "rollResults") {
 			newConfig.rollResults = {};
 			// Set result ranges.
