@@ -39,6 +39,17 @@
 			</div>
 			{{/if}}
 
+			{{#if (not sheetSettings.hideHold)}}
+			<div class="cell cell--hold">
+				<label class="cell__title">{{localize "PBTA.Hold"}}</label>
+				<div class="cell__wrapper">
+					<button type="button" class="resource-control resource-decrease" data-action="decrease" data-attr="resources.hold.value">-</button>
+					<input type="number" name="system.resources.hold.value" value="{{system.resources.hold.value}}" data-dtype="Number"/>
+					<button type="button" class="resource-control resource-increase" data-action="increase" data-attr="resources.hold.value">+</button>
+				</div>
+			</div>
+			{{/if}}
+
 			{{#if (not sheetSettings.hideRollMode)}}
 			<div class="cell cell--roll-mode">
 				<label class="cell__title">{{localize "PBTA.RollMode"}}</label>
