@@ -70,7 +70,6 @@ export default class ItemPbta extends Item {
 				resources: this.actor?.system.resources
 			});
 			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), options);
-			delete options.stat;
 			const choice = await r.configureDialog({
 				templateData: options,
 				title: this.name
@@ -117,8 +116,10 @@ export default class ItemPbta extends Item {
 			formula += `+ @stats.${rollType}.value`;
 			if (toggle) {
 				const { modifier } = game.pbta.sheetConfig?.statToggle || {};
-				formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
-				options.stat.value = modifier;
+				if (!["dis", "adv"].includes(modifier)) {
+					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
+					options.stat.value = modifier;
+				}
 			}
 		}
 		if (rollMod) {
