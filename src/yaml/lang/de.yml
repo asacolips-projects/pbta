@@ -1,25 +1,51 @@
 ---
 Powered by the Apocalypse: Powered by the Apocalypse
+TYPES:
+  Actor:
+    character: "Charakter"
+    npc: "NPC"
+    other: "Sonstiges"
+  Item:
+    move: "Spielzug"
+    npcMove: "NPC Spielzug"
+    equipment: "Ausrüstung"
+    playbook: "Charakterbuch"
+    tag: "Tag"
 PBTA:
+  ActorType: "Actor Type"
+  Advancement: "Advancement"
+  AdvancementNumber: "Advancement {number}"
   Advantage: Vorteil
   Ask: Wähle
   AskTitle: Wähle ein Attribut
+  Attribute: "Attribute"
+  Attributes: "Attributes"
   Biography: Biographie
+  Category: "Kategorie"
+  ClearMoves: "Leere Spielzüge"
+  ChatMessage:
+    ShiftUp: "Shift Up"
+    ShiftDown: "Shift Down"
+  Choice: "Auswahl"
   Choices: Auswahl
   ConditionsApplied: 'Aktive Zustände:'
   Create: Erstelle
   Description: Beschreibung
-  description: Leite Spiele für jedes PbtA System mit FoundryVTT!
+  Details: "Details"
   Disadvantage: Nachteil
+  DropItemsHere: "Ziehe Gegenstände hierher:"
   Equipment: Ausrüstung
   EquipmentType: Ausrüstungsart
   failure: Schwierigkeiten (markiere XP)
-  Formula: Maßgeschneiderter Würfelwurf
+  Formula: Benutzerdefinierte Würfelformel
   Forward: Einmalig
+  ItemGrantAdd: "Add Item Grant"
+  ItemGrants: "Item Grants"
+  KeepItems: "Behalte Gegenstände"
   Modifier: Modifikator
   MoveGroup: Spielzuggruppe
   MoveGroupHelp: Mehrere Spielzüge aus der gleichen Spielzuggruppe werden, bei der
-    erstellung neuer Charaktere, als entweder/oder Auswahl bei der Charaktererstellung
+    erstellung neuer Charaktere, als entweder/ oder Auswahl bei der Charaktererstellung
     angeboten.
   Moves: Spielzug
   MoveType: Spielzugart
@@ -28,47 +54,64 @@ PBTA:
   Normal: Normal
   NoTemplate: Ohne Vorlage
   Ongoing: Dauerhaft
+  Hold: "Halten"
   partial: Teilerfolg
   Playbook: Charakterbuch
-  Prompt: Prompt
-  PromptTitle: Bitte Modifikatoren eingeben
+  PlaybookGrantOn: "Grant On"
+  PlaybookGrantOnDrop: "On Drop"
+  Prompt: Abfrage
+  PromptTitle: Bitte Würfel-Modifikatoren eingeben
   Qty: Anz
   Quantity: Anzahl
+  Resource: "Ressource"
   RequiresMove: Benötigt Spielzug
   Roll: Würfle
-  RollFormula: Würfelmodus
-  RollFormulaOverride: Überschreibung des Würfelmodus
+  RollFormula: Würfelformel
+  RollFormulaOverride: Überschreien der Würfelformel
+  RollFormulaHardCap: "Originaler Würfel-Modifikator, {value}, ist geschützt."
+  RollLabel: "Würfle {label}"
   RollMove: Führe einen Spielzug aus
-  RollMode: "Würfelmodus"
+  RollMode: "Würfelformel"
+  RolledStat: "Attribut: {stat}"
+  SheetClassCharacter: "Standard PbtA Charakterbogen"
+  SheetClassNPC: "Standard PbtA NPC-Bogen"
+  SheetClassOther: "Standard PbtA Sonstiges-Bogen"
+  SheetClassItem: "Standard PbtA Gegenstandsbogen"
+  SheetClassPlaybook: "Standard PbtA Charakterbuch-Bogen"
+  StartingGrants: "Starting Grants"
   success: Erfolg
   Tags: Tags
-  TagsHelp: "(Nutze Tab zur Autovervollständigung, Kommas um neue Tags zu erstellen
-    und Doppelklick um einen Tag zu editieren.)"
+  TagsHelp: "(Nutze Tab zur Vervollständigung, Kommas, um neue Tags zu erstellen,
+    und Doppelklick um einen Tag zu bearbeiten.)"
   title: Powered by the Apocalypse
   Type: "Typ"
   Uses: Nutzungen
-  ViewPlaybook: "View playbook"
+  ViewPlaybook: "Charakterbücher anzeigen"
   Weight: Gewicht
-  Wt: Wt
+  Wt: Gew
   Common:
     Description: Beschreibung
     Details: Details
     Name: Name
   Dialog:
-    Ask1: 'Wähle ein Attribut aus für den: '
+    Ask1: 'Wähle ein Attribut aus für den '
     Ask2: Spielzug.
-    ChooseConditions: 'Wähle alle sizuationsbedingten Modifikatoren, die anzuwenden
+    ChooseConditions: 'Wähle alle situationsbedingten Würfel-Modifikatoren, die anzuwenden
       sind:'
-    Prompt1: 'Wähle den Modifikator für den: '
-    Prompt2: Spielzug.
-    HowManyToken: "How many token would you like to use?"
-    ErrorAboveMax: "You can't spend more token than you have."
+    ChooseSituationalModifiersTitle: "Situative Würfel-Modifikatoren"
+    ChooseSituationalModifiers: "Wähle alle situativen Würfel-Modifikatoren, die Anwendung finden:"
+    ForwardMessage: "Nutze <strong>{value}</strong> Einmalig."
+    OngoingMessage: "Nutze <strong>{value}</strong> Dauerhaft."
+    HoldMessage: "Nutze <strong>{value}</strong> Halten."
+    Prompt1: 'Wähle den Würfel-Modifikator für den Spielzug: '
+    HowManyToken: "Wie viele Spielsteine möchtest du nutzen?"
+    ErrorAboveMax: "Du kannst nicht mehr Spielsteine nutzen als du hast."
   Messages:
     sheetConfig:
       actorTypeRequired: Akteurstyp erforderlich.
       attribute: Attribut
       attributeMax: muss einen Maximalwert enthalten.
-      attributeOptions: muss eine Gruppe "Optionen" enthalten
+      attributeOptions: muss die Gruppe "Optionen" enthalten
       attributeOptionsEmpty: muss mindestens eine Option aus der Gruppe "Optionen"
         enthalten.
       attributeType: 'muss eine der folgenden sein:'
@@ -77,61 +120,74 @@ PBTA:
       groupAttributes: muss eine Attributsgruppe sein.
       moveTypes: ist erforderlich und muss mindestens einen Spielzugtyp haben.
       noConfig: Es wurde keine Konfiguration eingegeben.
+      overrideRemoved: "PbtA-Modul Bogen-Überschreibungen gelöscht."
+      previousSettingRestored: "Vorherige PbtA Bogen-Einstellungen wieder hergestellt."
       reset: Konfiguration zurücksetzen.
-      rollFormulaRequired: "'Würfelmodus' ist erforderlich."
-      rollResultsIncorrect: "'rollResults' entered incorrectly."
-      rollResultsRequired: "'rollResults' is required"
-      statsRequired1: "'stats' are required for"
-      statsRequired2: group.
+      rollFormulaRequired: "'rollFormula' ist erforderlich."
+      rollResultsIncorrect: "'rollResults' falsch angegeben."
+      rollResultsRequired: "'rollResults' ist erforderlich."
+      statsRequired1: "'stats' ist erforderlich für Gruppe "
       statString1: Attribut
-      statString2: muss eine Buchstabenfolge sein, z.B. "Schneid"
+      statString2: muss eine Buchstabenfolge sein, z.B. "Schneiden"
       tomlError: Es gibt einen Syntaxfehler in Ihrer TOML-Konfiguration in Zeile {line}
         in Spalte {column}. Siehe Konsole für weitere Details.
+  Migration:
+    Begin: "Wende PbtA-System-Migration für Version {version} an. Bitte habe etwas Geduld und beende dein Spiel oder den Server nicht."
+    Complete: "PbtA-System-Migration auf Version {version} beendet!"
   Settings:
     button:
       help: PbtA System Hilfe & Tutorial
     stats:
       name: Attribute
-      hint: Geben Sie eine durch Komma getrennte Liste von Attributen/Fähigkeiten
-        ein, z. B. "St,Ges,Kon,Int,Weis,Cha"
+      hint: Geben Sie eine durch Komma getrennte Liste von Attributen
+        ein, z. B. "Sta,Ges,Kon,Int,Weis,Cha"
+    AutoCollapseCard:
+      name: "Klappe Gegenstands-/Spielzugbeschreibungen im Chat ein."
+      hint: "Klappe Gegenstands-/Spielzugbeschreibungen im Chat-Verlauf automatisch ein."
+    AutoCollapseCardResult:
+      name: "Klappe Gegenstands-/Spielzugergebnisse im Chat ein."
+      hint: "Klappe Gegenstands-/Spielzugergebnisse im Chat-Verlauf automatisch ein."
     advForward:
-      name: Vorteil/Nachteil nach Wurf zurücksetzen
+      name: Vorteil/ Nachteil nach Wurf zurücksetzen
       hint: Wenn diese Funktion aktiviert ist, werden die Vor- und Nachteile auf dem
         Charakterbogen nach jedem Wurf auf den normalen Wert zurückgesetzt (ähnlich
         wie bei Einmalig).
     hideRollFormula:
-      name: Verbirg benutzerdefinierten Würfelformeln
+      name: Verbirg 'Benutzerdefinierten Würfelformeln'
       hint: Verbirgt die Eingabe von benutzerdefinierten Würfelformeln auf Charakterbögen.
     hideForward:
-      name: Verbirg Einmalig
+      name: Verbirg 'Einmalig'
       hint: Verbirgt die Einmalig-Eingabe auf Charakterbögen.
     hideOngoing:
-      name: Verbirg Dauerhaft
+      name: Verbirg 'Dauerhaft'
       hint: Verbirgt die Dauerhaft-Eingabe auf Charakterbögen.
+    hideHold:
+      name: "Verbirg 'Halten'"
+      hint: "Verbirgt die Halten-Eingabe auf Charakterbögen."
     hideRollMode:
-      name: Würfelmodus verbergen
-      hint: Versteckt die Überschreibung des Würfelmodus (normal/vorteil/nachteil)
+      name: Würfel-Modifikator verbergen
+      hint: Versteckt die Überschreibung des Würfel-Modifikator (Normal/Vorteil/Nachteil)
         auf Charakterbögen.
     hideUses:
       name: Verbleibende Nutzung verbergen
       hint: Verbirgt die verbleibende Nutzung für jeden Zug in der Zugübersicht
         für Charaktere und NPCs.
     itemIcons:
-      name: Enable Item Icons
-      hint: Aktiviere visuelle Symbole für Bewegungen, Zauber und Ausrüstung in
+      name: Aktiviere Gegenstandssymbole
+      hint: Aktiviere visuelle Symbole für Gegenstände, Spielzüge, usw. in
         Charakterbögen (erfordert einen Neustart des Browsers).
     sheetConfig:
-      label: PbtA Charakterbogen Konfiguration
-      name: Charakterbogen konfigurieren
+      label: PbtA Charakterbogen Einstellungen
+      name: Charakterbogen-Einstellungen
       hint: Wählen Sie die Datenstruktur für Charakterbögen, wie z.B. Werte, Fähigkeiten
         und Details.
-      additions: 'Additions:'
+      additions: 'Zusätze:'
       confirm: Bestätigen
       confirmChanges: Änderungen bestätigen
       confirmUpdate: Bestätigen und Aktualisieren
       cosmetic: 'Kosmetische Änderungen (Label oder Beschreibung):'
       deletions: 'Gelöscht:'
-      maxValue: 'Max Wert geändert:'
+      maxValue: 'Max-Wert geändert:'
       noteCancel: Abbrechen ohne Speichern
       noteChangesDetected: 'Es wurden Änderungen an einem oder mehreren Ihrer Akteurstypen
         festgestellt. Überprüfen Sie die Änderungen unten und wählen Sie dann
@@ -150,9 +206,49 @@ PBTA:
         Für Fragen und Hilfestellung steht außerdem der #powered-by-the-apocalypse
         Kanal im offiziellen Foundry VTT Discord zur Verfügung.'
       options: 'Listenoptionen geändert (Werte werden beibehalten):'
+      values: "Wert in Radio-Listen entfernt (Wert wird auf das erste Element zurückgesetzt):"
       resetDefaults: Standardeinstellungen zurücksetzen
       saveConfiguration: Speichern
-      title: Charakterbogen konfigurieren
+      title: Charakterbogen-Einstellungen
       type: 'Typ geändert:'
       typeReset: 'Typ geändert (Attribute werden zurückgesetzt):'
-PBTA_OTHER: Andere
+      sheetConfigDisabledModule: "Charakterbogen-Einstellungen wurden deaktiviert, da ein Modul diese definiert."
+    tagConfig:
+      label: "Tag Einstellungen"
+      name: "Bearabeite Tags"
+      hint: "Wähle Tags für Charakter und Gegenstände."
+      Labels:
+        Actors: "Actor-Tags"
+        Items: "Gegenstands-Tags"
+        General: "Generelle Tags"
+        Module: "Modul-Tags"
+        World: "Welt-Tags"
+        all: "Alle {documentType}"
+      title: "Bearbeite Tags"
+  Slug:
+    label: "PbtA ID"
+    tooltip: "Generiere PbtA ID neu"
+  Stat:
+    label: "Attribut"
+    labelPl: "Attribute"
+    Shifting:
+      fail: "Shifting failed."
+      label: "{stat} Shift"
+      shifts: "{actor} shifts {stats}"
+      up: "{stat} Shifts Up"
+      down: "{stat} Shifts Down"
+  Warnings:
+    Playbook:
+      ChoiceSetAlreadyGrant: "Choice Set already has the granted item."
+      DeleteWarning: "This {type} will be permanently deleted, cannot be recovered, and will remove {num} granted items."
+      ItemMissing: "Gegenstand fehlt"
+      UpdateAttributes: "There is a mismatch between the attributes in this playbook and those available to this actor type. You can click this warning to update the attributes, but be aware that old attributes in this playbook might be removed if they are no longer available."
+    Macro:
+      NoActorSelected: "No selected or assigned actor could be found to target with macro."
+      MissingTargetWarn: "Your controlled actor '{actor}' does not have an item with name '{name}'."
+      MultipleTargetsWarn: "Your controlled actor '{actor}' has more than one item with name '{name}'. The first match will be chosen."
+    TagDeprecation: "Tags as items have been deprecated, use the Tag Configuration menu on the game settings to create your tags."
+    UnlinkedToken:
+      Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
+      Moves: "Moves cannot be rearranged while this token is not linked to an actor."
+PBTA_OTHER: Sonstige
