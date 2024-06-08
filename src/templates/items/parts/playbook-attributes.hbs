@@ -30,6 +30,9 @@
 				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{this.value}}" data-dtype="Number"/>
 				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.max" value="{{this.max}}" data-dtype="Number"/>
 
+				{{else}}
+				<input type="text" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{this.value}}" data-dtype="String"/>
+
 				{{/if}}
 				<div class="item-controls">
 					<a data-action="delete-attribute-choice">

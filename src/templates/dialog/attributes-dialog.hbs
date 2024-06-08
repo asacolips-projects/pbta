@@ -5,7 +5,7 @@
             <input class="choice" type="radio" name="{{../attribute}}" value="{{@index}}" data-dtype="Number" {{checked (eq @index 0)}}>
 			{{#if (or (eq ../type "LongText") (eq ../type "Details"))}}
 				{{#if this.custom}}
-					<input type="text" name="custom" data-dtype="String">
+					<input type="text" name="custom" data-dtype="String"/>
 				{{else}}
 					{{editor this.enriched editable=false}}
 				{{/if}}
@@ -16,6 +16,10 @@
 			{{else if (eq attribute.type "Resource")}}
 			<input type="number" value="{{this.value}}" data-dtype="Number"/>
 			<input type="number" value="{{this.max}}" data-dtype="Number"/>
+
+			{{else}}
+			<input type="text" value="{{this.value}}" data-dtype="String"/>
+
 			{{/if}}
         </li>
         {{/each}}
