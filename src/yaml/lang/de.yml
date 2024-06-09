@@ -13,8 +13,8 @@ TYPES:
     tag: "Tag"
 PBTA:
   ActorType: "Actor Type"
-  Advancement: "Advancement"
-  AdvancementNumber: "Advancement {number}"
+  Advancement: "Weiterentwicklung"
+  AdvancementNumber: "Weiterentwicklung {number}"
   Advantage: Vorteil
   Ask: Wähle
   AskTitle: Wähle ein Attribut
@@ -39,8 +39,8 @@ PBTA:
   failure: Schwierigkeiten (markiere XP)
   Formula: Benutzerdefinierte Würfelformel
   Forward: Einmalig
-  ItemGrantAdd: "Add Item Grant"
-  ItemGrants: "Item Grants"
+  ItemGrantAdd: "Füge Freien Gegenstand hinzu"
+  ItemGrants: "Freie Gegenstände"
   KeepItems: "Behalte Gegenstände"
   Modifier: Modifikator
   MoveGroup: Spielzuggruppe
@@ -232,23 +232,23 @@ PBTA:
     label: "Attribut"
     labelPl: "Attribute"
     Shifting:
-      fail: "Shifting failed."
-      label: "{stat} Shift"
-      shifts: "{actor} shifts {stats}"
-      up: "{stat} Shifts Up"
-      down: "{stat} Shifts Down"
+      fail: "Verändern fehlgeschlagen."
+      label: "{stat} Veränderung"
+      shifts: "{actor} verändert {stats}"
+      up: "{stat} Veränderung (hoch)"
+      down: "{stat} Veränderung (runter)"
   Warnings:
     Playbook:
-      ChoiceSetAlreadyGrant: "Choice Set already has the granted item."
-      DeleteWarning: "This {type} will be permanently deleted, cannot be recovered, and will remove {num} granted items."
+      ChoiceSetAlreadyGrant: "Auswahl hat bereits den freien Gegenstand."
+      DeleteWarning: "{type} wird endgültig gelöscht, kann nicht wieder hergestellt werden und entfernt {num} freie Gegenstände."
       ItemMissing: "Gegenstand fehlt"
-      UpdateAttributes: "There is a mismatch between the attributes in this playbook and those available to this actor type. You can click this warning to update the attributes, but be aware that old attributes in this playbook might be removed if they are no longer available."
+      UpdateAttributes: "Die Attribute in diesem Charakterbuch stimmen nicht mit denen des ActorTyp überein. Du kannst diese Warnung anklicken, um die Attribute zu aktualisieren, aber es kann sein, dass alte Attribute in diesem Charakterbuch entfernt werden können."
     Macro:
       NoActorSelected: "No selected or assigned actor could be found to target with macro."
       MissingTargetWarn: "Your controlled actor '{actor}' does not have an item with name '{name}'."
       MultipleTargetsWarn: "Your controlled actor '{actor}' has more than one item with name '{name}'. The first match will be chosen."
     TagDeprecation: "Tags as items have been deprecated, use the Tag Configuration menu on the game settings to create your tags."
     UnlinkedToken:
-      Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
-      Moves: "Moves cannot be rearranged while this token is not linked to an actor."
+      Equipment: "Ausrüstung kann nicht neu geordnet werden, solange der Spielstein nicht mit dem Actor verknüpft ist."
+      Moves: "Spielzüge können nicht neu geordnet werden, solange der Spielstein nicht mit dem Actor verknüpft ist."
 PBTA_OTHER: Sonstige
