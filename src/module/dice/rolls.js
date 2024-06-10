@@ -52,7 +52,7 @@ export default class RollPbtA extends Roll {
 			}
 		}
 
-		this.options.resultType = resultType;
+		const resultDetails = this.options?.moveResults?.[resultType]?.value;
 
 		const chatData = {
 			formula: isPrivate ? "???" : this._formula,
@@ -63,11 +63,11 @@ export default class RollPbtA extends Roll {
 
 			conditionsConsumed: this.options.conditionsConsumed,
 			conditions: this.options.conditions,
-			choices: this.options.choices,
-			details: this.options.details,
+			choices: await TextEditor.enrichHTML(this.options.choices),
+			details: await TextEditor.enrichHTML(this.options.details),
 			originalMod: this.options.originalMod,
 			result: resultType,
-			resultDetails: this.options?.moveResults?.[resultType]?.value,
+			resultDetails: await TextEditor.enrichHTML(resultDetails),
 			resultLabel: resultRanges[resultType]?.label ?? resultType,
 			resultRanges,
 			stat: this.options.stat,
