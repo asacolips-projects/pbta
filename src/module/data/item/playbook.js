@@ -64,8 +64,8 @@ export default class PlaybookData extends ItemTemplateData {
 								integer: true,
 								min: 0,
 								initial: 0,
-								nullable: false,
-							}),
+								nullable: false
+							})
 						})
 					),
 					grantOn: new foundry.data.fields.NumberField({
@@ -73,7 +73,7 @@ export default class PlaybookData extends ItemTemplateData {
 						integer: true,
 						min: 0,
 						initial: 0,
-						nullable: false,
+						nullable: false
 					}),
 					granted: new foundry.data.fields.BooleanField({ initial: false }),
 					advancement: new foundry.data.fields.NumberField({
@@ -81,10 +81,10 @@ export default class PlaybookData extends ItemTemplateData {
 						integer: true,
 						min: 0,
 						initial: 0,
-						nullable: false,
-					}),
+						nullable: false
+					})
 				})
-			),
+			)
 		};
 	}
 }
