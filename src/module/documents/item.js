@@ -197,7 +197,9 @@ export default class ItemPbta extends Item {
 					foundry.utils.mergeObject(changes, attributesUpdate);
 					if (this.system.actorType) {
 						const stats = foundry.utils.duplicate(this.parent.system.stats);
-						Object.entries(this.system.stats).forEach(([key, data]) => stats[key].value = data.value);
+						Object.entries(this.system.stats)
+							.filter(([key, data]) => key in stats)
+							.forEach(([key, data]) => stats[key].value = data.value);
 						changes["system.stats"] = stats;
 					}
 				}
@@ -271,10 +273,11 @@ export default class ItemPbta extends Item {
 								callback: async (html) => {
 									const fd = new FormDataExtended(html.querySelector(".pbta-attribute-dialog"));
 									const choice = fd.object[attribute];
-									let { custom, max, value } = choices[choice];
+									let { custom, max, options, value } = choices[choice];
 									if (custom) value = fd.object.custom;
 									if (value) selected[`system.${path}.${attribute}.value`] = value;
 									if (max) selected[[`system.${path}.${attribute}.max`]] = max;
+									if (options) selected[`system.${path}.${attribute}.options`] = options;
 								}
 							}
 						}
@@ -602,16 +605,10 @@ export default class ItemPbta extends Item {
 
 	/* -------------------------------------------- */
 
-	static VALID_ATTRIBUTES = ["Number", "Resource", "Text", "LongText"];
-
 	_filterAttributes(attributes, path = "details") {
 		return Object.fromEntries(
 			Object.entries(attributes)
-				.filter(([key, data]) => {
-					const isValidType = !data.type || ItemPbta.VALID_ATTRIBUTES.includes(data.type);
-					const hasPlaybook = data.playbook === true || data.playbook === this.system.slug;
-					return isValidType && hasPlaybook;
-				})
+				.filter(([key, data]) => data.playbook === true || data.playbook === this.system.slug)
 				.map(([key, data]) => {
 					data.type ??= "Details";
 					if (data.type === "Resource") {

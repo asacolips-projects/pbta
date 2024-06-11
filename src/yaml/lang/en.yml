@@ -54,6 +54,7 @@ PBTA:
   Playbook: "Playbook"
   PlaybookGrantOn: "Grant On"
   PlaybookGrantOnDrop: "On Drop"
+  PlaybookAddNewListOption: "Add New option"
   Prompt: "Prompt"
   PromptTitle: "{name}: Enter a Modifier"
   Qty: "Qty"
