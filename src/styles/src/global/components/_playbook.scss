@@ -1,4 +1,15 @@
 &.playbook {
+	.attribute-set {
+		&[data-type="ListMany"],
+		&[data-type="ListOne"] {
+			.form-group {
+				.item-controls {
+					flex: 0 0 100%;
+				}
+			}
+		}
+	}
+
 	.choiceset {
 		.drop-zone {
 			text-align: center;

@@ -1,24 +1,33 @@
 <form class="pbta-attribute-dialog">
     <ol>
-        {{#each choices}}
+        {{#each choices as |choice|}}
         <li class="flexrow" data-uuid="{{@index}}">
             <input class="choice" type="radio" name="{{../attribute}}" value="{{@index}}" data-dtype="Number" {{checked (eq @index 0)}}>
 			{{#if (or (eq ../type "LongText") (eq ../type "Details"))}}
-				{{#if this.custom}}
+				{{#if choice.custom}}
 					<input type="text" name="custom" data-dtype="String"/>
 				{{else}}
-					{{editor this.enriched editable=false}}
+					{{editor choice.enriched editable=false}}
 				{{/if}}
 
-			{{else if (eq attribute.type "Number")}}
-			<input type="number" value="{{this.value}}" data-dtype="Number"/>
+			{{else if (eq ../type "Number")}}
+			<input type="number" value="{{choice.value}}" data-dtype="Number" readonly/>
 
-			{{else if (eq attribute.type "Resource")}}
-			<input type="number" value="{{this.value}}" data-dtype="Number"/>
-			<input type="number" value="{{this.max}}" data-dtype="Number"/>
+			{{else if (eq ../type "Resource")}}
+			<input type="number" value="{{choice.value}}" data-dtype="Number" readonly/>
+			<input type="number" value="{{choice.max}}" data-dtype="Number" readonly/>
+
+			{{else if (or (eq ../type "ListMany") (eq ../type "ListOne")) }}
+			<ul class="cell__checkboxes flexcol">
+				{{#each choice.options as |option optionKey|}}
+					<label class="flexrow">
+						<input type="text" class="input input-title" value="{{option.label}}" readonly>
+					</label>
+				{{/each}}
+			</ul>
 
 			{{else}}
-			<input type="text" value="{{this.value}}" data-dtype="String"/>
+			<input type="text" value="{{choice.value}}" data-dtype="String" readonly/>
 
 			{{/if}}
         </li>

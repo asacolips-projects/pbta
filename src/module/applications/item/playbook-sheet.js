@@ -59,6 +59,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		html.find("[data-action='update-attributes']").on("click", this._onUpdateAttributes.bind(this));
 		html.find("[data-tab='attributes'] [data-action='add-attribute-choice']").on("click", this._onAddAttributeChoice.bind(this));
 		html.find("[data-tab='attributes'] [data-action='delete-attribute-choice']").on("click", this._onDeleteAttributeChoice.bind(this));
+		html.find("[data-tab='attributes'] [data-action='add-list-option']").on("click", this._onAddNewOption.bind(this));
 	}
 
 	_onChangeActorType(event) {
@@ -123,9 +124,11 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		event.preventDefault();
 		const { key, type } = event.target.closest(".attribute-set").dataset;
 		const attributes = this.item.system.attributes;
-		const { value, max } = attributes[key];
+		const { value, options, max } = attributes[key];
 		if (type === "Resource") attributes[key].choices.push({ value, max });
-		else attributes[key].choices.push({ value });
+		else if (["ListMany", "ListOne"].includes(type)) {
+			attributes[key].choices.push({ options });
+		} else attributes[key].choices.push({ value });
 		this.item.update({ "system.attributes": attributes });
 	}
 
@@ -135,6 +138,16 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		const { id } = event.target.closest(".form-group").dataset;
 		const attributes = this.item.system.attributes;
 		attributes[key].choices = attributes[key].choices.filter((item, index) => index !== Number(id));
+		this.item.update({ "system.attributes": attributes });
+	}
+
+	_onAddNewOption(event) {
+		event.preventDefault();
+		const { key } = event.target.closest(".attribute-set").dataset;
+		const { id } = event.target.closest(".form-group").dataset;
+		const attributes = this.item.system.attributes;
+		const next = Object.keys(attributes[key].choices[id].options).length;
+		attributes[key].choices[id].options[next] = {};
 		this.item.update({ "system.attributes": attributes });
 	}
 
