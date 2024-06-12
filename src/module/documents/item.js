@@ -102,7 +102,7 @@ export default class ItemPbta extends Item {
 	}
 
 	_getRollFormula(options = {}) {
-		let formula = "@formula";
+		let formula = this.parent.getRollFormula();
 		const { rollFormula, rollMod, rollType } = this.system;
 		options.rollType = rollType;
 		if (this.type === "npcMove" || rollType === "formula") {
