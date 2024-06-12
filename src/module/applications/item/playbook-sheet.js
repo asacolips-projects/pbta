@@ -23,8 +23,8 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		// @todo add warnings about repeat grants
 		const context = await super.getData();
 		context.grantOptions = {
-			0: "PBTA.PlaybookGrantOnDrop",
-			1: "PBTA.Advancement"
+			0: "PBTA.PlaybookGrantOnInstantly",
+			1: "PBTA.PlaybookGrantOnAdvancement"
 		};
 		const choicesByAdvancement = {};
 		this.item.system.choiceSets.forEach((cs, index) => {
