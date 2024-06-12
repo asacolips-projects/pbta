@@ -313,6 +313,13 @@ export default class ItemPbta extends Item {
 					}
 				);
 				if (!validChoices.length) continue;
+				if (choiceSet.grantOn === 0) {
+					validChoices.forEach((i) => {
+						const index = choices.findIndex((c) => c.uuid === i.uuid);
+						choiceSet.choices[index].granted = true;
+					});
+					continue;
+				}
 
 				await Dialog.wait({
 					title: `${game.i18n.localize("PBTA.Choice")}: ${title}`,
