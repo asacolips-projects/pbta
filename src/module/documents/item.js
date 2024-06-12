@@ -283,14 +283,16 @@ export default class ItemPbta extends Item {
 						}
 					}, { jQuery: false });
 				} else if (!attribute.custom) {
-					let { value, max = null } = data.system.attributes[attribute];
+					let { value, max = null, options = null } = data.system.attributes[attribute];
 					if (data.system.attributes[attribute].choices.length) {
 						const choice = data.system.attributes[attribute].choices[0];
 						value = choice.value;
 						max = choice.max ?? max;
+						options = choice.options ?? options;
 					}
 					if (value) selected[`system.${path}.${attribute}.value`] = value;
 					if (max) selected[[`system.${path}.${attribute}.max`]] = max;
+					if (options) selected[[`system.${path}.${attribute}.options`]] = options;
 				}
 			}
 			return selected;
