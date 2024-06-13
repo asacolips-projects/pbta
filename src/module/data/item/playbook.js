@@ -27,11 +27,7 @@ export default class PlaybookData extends ItemTemplateData {
 					value: new AttributeChoiceValueField({ initial: "", required: true, nullable: true }),
 					max: new AttributeChoiceValueField({ initial: null, nullable: true }),
 					custom: new foundry.data.fields.BooleanField(),
-					path: new foundry.data.fields.StringField({
-						initial: "details",
-						choices: ["attrLeft", "attrTop", "details"],
-						required: true
-					}),
+					path: new foundry.data.fields.StringField({ initial: "details", required: true }),
 					type: new foundry.data.fields.StringField({
 						initial: "Details",
 						required: true

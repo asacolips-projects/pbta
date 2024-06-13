@@ -280,6 +280,14 @@ export default class ActorPbta extends Actor {
 		this.updateSource(changes);
 	}
 
+	toObject(source=true) {
+		const data = {
+			...super.toObject(source),
+			baseType: this.baseType
+		};
+		return this.constructor.shimData(data);
+	}
+
 	/**
 	 * Applies the actor's model to its data, such as
 	 * the Sheet Config's Stats and Attributes.

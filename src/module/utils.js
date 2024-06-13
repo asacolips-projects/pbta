@@ -371,21 +371,17 @@ export function convertSheetConfig(sheetConfig) {
 				}
 			}
 
+			if (v.attributes) {
+				actorType.attributes = convertAttr(v.attributes);
+			} else {
+				actorType.attributes = {};
+			}
 			if (v.attributesTop) {
-				actorType.attrTop = convertAttr(v.attributesTop);
+				foundry.utils.mergeObject(actorType.attributes, convertAttr(v.attributesTop, "top"));
 			}
 			if (v.attributesLeft) {
-				actorType.attrLeft = convertAttr(v.attributesLeft);
+				foundry.utils.mergeObject(actorType.attributes, convertAttr(v.attributesLeft, "left"));
 			}
-
-			Object.defineProperty(actorType, "attributes", {
-				get() {
-					return {
-						...actorType.attrTop,
-						...actorType.attrLeft
-					};
-				}
-			});
 
 			if (v.moveTypes) {
 				actorType.moveTypes = {};
@@ -402,10 +398,7 @@ export function convertSheetConfig(sheetConfig) {
 			if (v.equipmentTypes) {
 				actorType.equipmentTypes = {};
 				for (let [etKey, etLabel] of Object.entries(v.equipmentTypes)) {
-					actorType.equipmentTypes[cleanClass(etKey, false)] = {
-						label: etLabel,
-						moves: []
-					};
+					actorType.equipmentTypes[cleanClass(etKey, false)] = { label: etLabel };
 				}
 			}
 
@@ -445,9 +438,10 @@ export function updateAttrCellTrackDisplay(attr) {
 /**
  * Validades an Attribute Group.
  * @param {object} attrGroup
+ * @param {string} position
  * @returns {object}
  */
-export function convertAttr(attrGroup) {
+export function convertAttr(attrGroup, position) {
 	let attrs = {};
 	for (let [attrKey, attrValue] of Object.entries(attrGroup)) {
 		let attr = {};
@@ -458,6 +452,7 @@ export function convertAttr(attrGroup) {
 		attr.userLabel = attr.customLabel ? attr.label : false;
 		attr.playbook = attrValue.playbook ?? null;
 		attr.limited = attrValue.limited ?? false;
+		attr.position = attrValue.position ?? position;
 
 		if (!attrValue.type) {
 			// If an object structure was used and no type was specified, it's invalid.
@@ -586,11 +581,16 @@ export function applyActorTemplates(clear = false) {
 			if (v.stats) {
 				template.stats = v.stats;
 			}
+			if (v.attributes) {
+				template.attributes = v.attributes;
+			} else {
+				template.attributes = {};
+			}
 			if (v.attrTop) {
-				template.attrTop = v.attrTop;
+				foundry.utils.mergeObject(template.attributes, v.attrTop);
 			}
 			if (v.attrLeft) {
-				template.attrLeft = v.attrLeft;
+				foundry.utils.mergeObject(template.attributes, v.attrLeft);
 			}
 			if (v.details) {
 				template.details = v.details;

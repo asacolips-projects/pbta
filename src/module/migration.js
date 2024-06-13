@@ -117,11 +117,24 @@ export function migrateActorData(actor, migrationData, flags={}) {
 
 	// Migrate Owned Items
 	if (actor.system.advancements === undefined) updateData["system.advancements"] = 0;
-	for (const attribute in actor.system.attrLeft) {
-		if (actor.system.attrLeft[attribute].steps) updateData[`system.attrLeft.${attribute}.-=steps`] = null;
-	}
-	for (const attribute in actor.system.attrTop) {
-		if (actor.system.attrTop[attribute].steps) updateData[`system.attrTop.${attribute}.-=steps`] = null;
+	const baseType = actor.baseType;
+	const actorConfig = game.pbta.sheetConfig.actorTypes[baseType];
+	if (actorConfig) {
+		const attrLeftSize = Object.values(actorConfig.attributes)
+			.filter((data) => data.position === "left").length;
+		const attrTopSize = Object.values(actorConfig.attributes)
+			.filter((data) => data.position === "top").length;
+		if (attrLeftSize + attrTopSize !== Object.keys(actor.system.attributes).length) {
+			for (const path of ["left", "top"]) {
+				const attrPath = `attr${path.capitalize()}`;
+				for (const attribute in actor.system[attrPath]) {
+					const data = actor.system[attrPath][attribute];
+					if (data.steps) delete data.steps;
+					if (!data.position) data.position = path;
+					updateData[`system.attributes.${attribute}`] = data;
+				}
+			}
+		}
 	}
 
 	if (!actor.items) return updateData;

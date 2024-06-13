@@ -4,19 +4,13 @@ export class ActorDataTemplate extends foundry.abstract.TypeDataModel {
 	static defineSchema() {
 		return {
 			stats: new foundry.data.fields.ObjectField(),
-			attrTop: new foundry.data.fields.ObjectField(),
-			attrLeft: new foundry.data.fields.ObjectField(),
+			attributes: new foundry.data.fields.ObjectField(),
+			attrLeft: new foundry.data.fields.ObjectField({ readonly: true }),
+			attrTop: new foundry.data.fields.ObjectField({ readonly: true }),
 			details: new MappingField(new foundry.data.fields.SchemaField({
 				label: new foundry.data.fields.StringField({ initial: "" }),
 				value: new foundry.data.fields.HTMLField({ initial: "" })
 			}))
-		};
-	}
-
-	get attributes() {
-		return {
-			...this.attrTop,
-			...this.attrLeft
 		};
 	}
 

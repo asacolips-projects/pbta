@@ -640,8 +640,7 @@ export default class ItemPbta extends Item {
 		if (Object.keys(actorTypes).length) {
 			actorType ||= Object.keys(actorTypes)[0];
 			return {
-				...this._filterAttributes(actorTypes[actorType]?.attrTop ?? {}, "attrTop"),
-				...this._filterAttributes(actorTypes[actorType]?.attrLeft ?? {}, "attrLeft"),
+				...this._filterAttributes(actorTypes[actorType]?.attributes ?? {}, "attributes"),
 				...this._filterAttributes(actorTypes[actorType]?.details ?? {}, "details")
 			};
 		}
