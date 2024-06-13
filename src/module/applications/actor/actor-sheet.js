@@ -136,7 +136,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			const hasMultipleCharacterTypes = Object.keys(validCharacterTypes).length > 1;
 			context.playbooks = CONFIG.PBTA.playbooks
 				.filter((p) => !hasMultipleCharacterTypes
-					|| [this.actor.sheetType ?? this.actor.baseType, ""].includes(p.actorType))
+					|| [this.actor.sheetType, ""].includes(p.actorType))
 				.map((p) => {
 					return { name: p.name, uuid: p.uuid };
 				});
@@ -232,7 +232,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Iterate through the groups that need to be sorted.
 		for (let group of groups) {
 			// Confirm the keys exist, and assign them to a sorting array if so.
-			const type = this.actor.sheetType ?? this.actor.baseType;
+			const type = this.actor.sheetType;
 			const sortKeys = Object.keys(game.pbta.sheetConfig.actorTypes?.[type]?.[group] ?? {});
 			if (!sortKeys) continue;
 			context.system[group] = Object.keys(context.system[group])
@@ -260,8 +260,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		const moveType = this.actor.baseType === "npc" ? "npcMove" : "move";
 
 		const sheetConfig = game.pbta.sheetConfig;
-		const moveTypes = sheetConfig.actorTypes?.[this.actor?.sheetType ?? this.actor.baseType]?.moveTypes;
-		const equipmentTypes = sheetConfig.actorTypes?.[this.actor?.sheetType ?? this.actor.baseType]?.equipmentTypes;
+		const moveTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.moveTypes;
+		const equipmentTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.equipmentTypes;
 
 		context.moveTypes = {};
 		context.moves = {};
@@ -760,7 +760,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				.length > 1;
 			if (
 				hasMultipleCharacterTypes
-				&& ![this.actor.sheetType ?? this.actor.baseType, ""].includes(item.system.actorType)
+				&& ![this.actor.sheetType, ""].includes(item.system.actorType)
 			) return false;
 
 			const currPlaybook = this.actor.items.find((i) => i.type === "playbook");

@@ -52,7 +52,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	get sheetType() {
-		return this.system?.customType ?? null;
+		return this.system.customType ?? this.type;
 	}
 
 	get baseType() {
@@ -288,7 +288,7 @@ export default class ActorPbta extends Actor {
 				};
 			}
 		}
-		const sheetData = game.pbta.sheetConfig.actorTypes?.[this.type];
+		const sheetData = game.pbta.sheetConfig.actorTypes?.[this.sheetType];
 		if (sheetData?.moveTypes) {
 			const validCreationMoveType = Object.keys(sheetData.moveTypes)
 				.filter((mt) => sheetData.moveTypes[mt].creation);
@@ -297,13 +297,18 @@ export default class ActorPbta extends Actor {
 				let moves = [];
 				for (let mt of validCreationMoveType) {
 					moves = game.items
-						.filter((item) => item.type === "move" && item.system.moveType === mt)
+						.filter(
+							(item) => item.type === "move"
+								&& item.system.moveType === mt
+								&& [this.sheetType, ""].includes(item.system.actorType)
+						)
 						.map((item) => item.toObject(false));
 					const itemCompendiums = game.packs
 						.filter((c) => c.metadata?.type === "Item")
 						.map((c) => c.metadata.id);
 					for (let c of itemCompendiums) {
 						const items = (await game.packs.get(c).getDocuments({ type: "move", system: { moveType: mt } }))
+							.filter((item) => [this.sheetType, ""].includes(item.system.actorType))
 							.flatMap((item) => item.toObject(false));
 						moves = moves.concat(items);
 					}

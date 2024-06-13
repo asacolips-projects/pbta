@@ -937,7 +937,7 @@ export async function updateActors(newConfig) {
 					// We need to load the actor to get the actor type.
 					let prototypeActor = game.actors.get(t.actorId);
 					if (prototypeActor) {
-						const sheetType = prototypeActor?.sheetType;
+						const sheetType = prototypeActor.sheetType;
 						// Build the update and append to the scene's update array.
 						let tokenUpdate = foundry.utils.duplicate(newTokenConfig[sheetType]);
 						tokenUpdate._id = t.id;
