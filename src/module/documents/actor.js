@@ -3,17 +3,6 @@
  * @extends {Actor}
  */
 export default class ActorPbta extends Actor {
-	/**
-	 * Augment the basic actor data with additional dynamic data.
-	 */
-	prepareData() {
-		super.prepareData();
-		// Handle actor types.
-		if (this.baseType === "character") {
-			this._prepareCharacterData();
-		}
-	}
-
 	get advancements() {
 		return this.system?.advancements ?? null;
 	}
@@ -62,33 +51,6 @@ export default class ActorPbta extends Actor {
 	get playbook() {
 		// @todo refactor to return this.items.find((i) => i.type === "playbook"), use slug to compare
 		return this.system?.playbook ?? { name: "", slug: "", uuid: "" };
-	}
-
-	/**
-	 * Prepare Character type specific data
-	 */
-	_prepareCharacterData() {
-		// Handle special attributes.
-		let groups = [
-			"attrTop",
-			"attrLeft"
-		];
-		for (let group of groups) {
-			for (let attrValue of Object.values(this.system[group])) {
-				// ListMany field handling.
-				if (["ListOne", "ListMany"].includes(attrValue.type) && attrValue.options) {
-					// Iterate over options.
-					for (let optV of Object.values(attrValue.options)) {
-						// If there's a multi-value field, we need to propagate its value up
-						// to the parent `value` property.
-						if (optV.values) {
-							const optArray = Object.values(optV.values);
-							optV.value = optArray.some((subOpt) => subOpt.value);
-						}
-					}
-				}
-			}
-		}
 	}
 
 	/** @override */

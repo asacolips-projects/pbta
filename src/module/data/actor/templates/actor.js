@@ -20,6 +20,19 @@ export class ActorDataTemplate extends foundry.abstract.TypeDataModel {
 		};
 	}
 
+	prepareDerivedData() {
+		for (const data of Object.values(this.attributes)) {
+			if (["ListOne", "ListMany"].includes(data.type) && data.options) {
+				for (let optV of Object.values(data.options)) {
+					if (optV.values) {
+						const optArray = Object.values(optV.values);
+						optV.value = optArray.some((subOpt) => subOpt.value);
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * Migrate source data from some prior format into a new specification.
 	 * The source parameter is either original data retrieved from disk or provided by an update operation.
