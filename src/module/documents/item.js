@@ -177,7 +177,7 @@ export default class ItemPbta extends Item {
 						for (const set of choiceUpdate["system.choiceSets"]) {
 							for (const choice of set.choices) {
 								if (choice.granted) {
-									const item = fromUuidSync(choice.uuid);
+									const item = await fromUuid(choice.uuid);
 									if (item) {
 										items.push(item.toObject());
 										grantedItems.push(item.id);
@@ -204,10 +204,10 @@ export default class ItemPbta extends Item {
 					}
 				}
 				await this.parent.update(changes);
-			} else {
+			} else if (!this.system.actorType) {
 				const actorTypes = foundry.utils.duplicate(
 					Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
-						.filter(([a, v]) => this._filterActorTypes([a, v])))
+						.filter(([a, v]) => this.constructor._filterActorTypes([a, v], this.type)))
 				);
 				if (Object.keys(actorTypes).length) {
 					const actorType = Object.keys(actorTypes)[0];
@@ -304,13 +304,13 @@ export default class ItemPbta extends Item {
 			for (const choiceSet of data.system.choiceSets) {
 				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
 				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
-				const validChoices = choices.filter(
-					(c) => {
-						const item = fromUuidSync(c.uuid);
+				const validChoices = await Promise.all(
+					choices.filter(async (c) => {
+						const item = await fromUuid(c.uuid);
 						return !c.granted
 							&& c.advancement <= this.parent.advancements
 							&& !this.actor.items.has(item.id);
-					}
+					})
 				);
 				if (!validChoices.length) continue;
 				if (choiceSet.grantOn === 0) {
@@ -614,7 +614,7 @@ export default class ItemPbta extends Item {
 
 	/* -------------------------------------------- */
 
-	_filterAttributes(attributes, path = "details") {
+	_filterAttributes(attributes, path) {
 		return Object.fromEntries(
 			Object.entries(attributes)
 				.filter(([key, data]) => data.playbook === true || data.playbook === this.system.slug)
@@ -635,14 +635,13 @@ export default class ItemPbta extends Item {
 	_getValidAttributes(actorType, actorTypes) {
 		actorTypes ??= foundry.utils.duplicate(
 			Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
-				.filter(([a, v]) => this._filterActorTypes([a, v])))
+				.filter(([a, v]) => this.constructor._filterActorTypes([a, v], this.type)))
 		);
 		if (Object.keys(actorTypes).length) {
 			actorType ||= Object.keys(actorTypes)[0];
 			return {
-				...this._filterAttributes(actorTypes[actorType]?.attrTop ?? {}, "attrTop"),
-				...this._filterAttributes(actorTypes[actorType]?.attrLeft ?? {}, "attrLeft"),
-				...this._filterAttributes(actorTypes[actorType]?.details ?? {})
+				...this._filterAttributes(actorTypes[actorType]?.attributes ?? {}, "attributes"),
+				...this._filterAttributes(actorTypes[actorType]?.details ?? {}, "details")
 			};
 		}
 	}
@@ -665,8 +664,7 @@ export default class ItemPbta extends Item {
 		return attributes;
 	}
 
-	_filterActorTypes([key, data], type) {
-		type ??= this.type;
+	static _filterActorTypes([key, data], type) {
 		switch (type) {
 			case "equipment":
 				return data?.equipmentTypes;

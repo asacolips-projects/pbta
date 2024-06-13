@@ -19,7 +19,7 @@
 			{{/if}}
 
 			<section class="sheet-attributes-top">
-				{{~> "pbta.actor-attributes" attrs=system.attrTop group="attrTop" class="attributes-top flexrow" owner=owner editable=editable ~}}
+				{{~> "pbta.actor-attributes" attrs=system.attrTop cssClass="cell--attributes-top flexrow" owner=owner editable=editable ~}}
 			</section>
 		</section>
 
@@ -28,7 +28,7 @@
 			{{#if (objLen system.attrLeft)}}
 			<section class="sheet-look">
 				<div class="cell cell--aesthetics">
-					{{> "pbta.actor-attributes" attrs=system.attrLeft group="attrLeft" class="attributes-left" owner=owner editable=editable}}
+					{{> "pbta.actor-attributes" attrs=system.attrLeft cssClass="cell--attributes-left" owner=owner editable=editable}}
 				</div>
 			</section>
 			{{/if}}

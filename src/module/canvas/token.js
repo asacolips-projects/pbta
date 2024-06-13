@@ -8,12 +8,12 @@ export default class TokenPbta extends Token {
 			const type = foundry.utils.getProperty(system, data.attribute).type;
 			if (type === "Clock") {
 				const val = Number(data.max - data.value);
-				const pct = Math.clamped(val, 0, data.max) / data.max;
+				const pct = Math.clamp(val, 0, data.max) / data.max;
 
 				// Determine sizing
 				let h = Math.max((canvas.dimensions.size / 12), 8);
 				const w = this.w;
-				const bs = Math.clamped(h / 8, 1, 2);
+				const bs = Math.clamp(h / 8, 1, 2);
 				if (this.document.height >= 2) h *= 1.6;  // Enlarge the bar for large tokens
 
 				// Determine the color to use

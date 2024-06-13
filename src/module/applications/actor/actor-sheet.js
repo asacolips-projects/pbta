@@ -135,8 +135,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			);
 			const hasMultipleCharacterTypes = Object.keys(validCharacterTypes).length > 1;
 			context.playbooks = CONFIG.PBTA.playbooks
-				.filter((p) => !hasMultipleCharacterTypes
-					|| [this.actor.sheetType ?? this.actor.baseType, ""].includes(p.actorType))
+				.filter((p) => !hasMultipleCharacterTypes || [this.actor.sheetType, ""].includes(p.actorType))
 				.map((p) => {
 					return { name: p.name, uuid: p.uuid };
 				});
@@ -187,27 +186,28 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * @param {object} context Data prop on actor.
 	 */
 	async _prepareAttrs(context) {
-		const groups = ["attrTop", "attrLeft"];
-		for (let group of groups) {
-			for (let [attrKey, attrValue] of Object.entries(context.system[group])) {
-				if (context.limited && !attrValue.limited) {
-					delete context.system[group][attrKey];
-					continue;
-				}
-				const playbook = attrValue.playbook;
-				if (
-					playbook
-					&& typeof playbook !== "boolean"
-					&& ![this.actor.playbook.name, this.actor.playbook.slug].includes(playbook)
-				) {
-					delete context.system[group][attrKey];
-					continue;
-				}
-				if (attrValue.type === "LongText") {
-					context.system[group][attrKey].attrName = `system.${group}.${attrKey}.value`;
-					context.system[group][attrKey].enriched =
-						await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
-				}
+		for (let [attrKey, attrValue] of Object.entries(context.system.attributes)) {
+			if (!attrValue.position) continue;
+			const position = `attr${attrValue.position.capitalize()}`;
+			if (!context.system[position]) context.system[position] = {};
+			if (context.limited && !attrValue.limited) {
+				delete context.system.attributes[attrKey];
+				continue;
+			}
+			const playbook = attrValue.playbook;
+			if (
+				playbook
+				&& typeof playbook !== "boolean"
+				&& ![this.actor.playbook.name, this.actor.playbook.slug].includes(playbook)
+			) {
+				delete context.system.attributes[attrKey];
+				continue;
+			}
+			context.system[position][attrKey] = attrValue;
+			if (attrValue.type === "LongText") {
+				context.system[position][attrKey].attrName = `system..attributes.${attrKey}.value`;
+				context.system[position][attrKey].enriched =
+					await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
 			}
 		}
 	}
@@ -224,15 +224,9 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * @param {object} context Data prop on actor.
 	 */
 	_sortAttrs(context) {
-		let groups = [
-			"stats",
-			"attrTop",
-			"attrLeft"
-		];
-		// Iterate through the groups that need to be sorted.
-		for (let group of groups) {
+		for (let group of ["stats", "attrLeft", "attrTop"]) {
 			// Confirm the keys exist, and assign them to a sorting array if so.
-			const type = this.actor.sheetType ?? this.actor.baseType;
+			const type = this.actor.sheetType;
 			const sortKeys = Object.keys(game.pbta.sheetConfig.actorTypes?.[type]?.[group] ?? {});
 			if (!sortKeys) continue;
 			context.system[group] = Object.keys(context.system[group])
@@ -260,8 +254,8 @@ export default class PbtaActorSheet extends ActorSheet {
 		const moveType = this.actor.baseType === "npc" ? "npcMove" : "move";
 
 		const sheetConfig = game.pbta.sheetConfig;
-		const moveTypes = sheetConfig.actorTypes?.[this.actor?.sheetType ?? this.actor.baseType]?.moveTypes;
-		const equipmentTypes = sheetConfig.actorTypes?.[this.actor?.sheetType ?? this.actor.baseType]?.equipmentTypes;
+		const moveTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.moveTypes;
+		const equipmentTypes = sheetConfig.actorTypes?.[this.actor.sheetType]?.equipmentTypes;
 
 		context.moveTypes = {};
 		context.moves = {};
@@ -760,7 +754,7 @@ export default class PbtaActorSheet extends ActorSheet {
 				.length > 1;
 			if (
 				hasMultipleCharacterTypes
-				&& ![this.actor.sheetType ?? this.actor.baseType, ""].includes(item.system.actorType)
+				&& ![this.actor.sheetType, ""].includes(item.system.actorType)
 			) return false;
 
 			const currPlaybook = this.actor.items.find((i) => i.type === "playbook");

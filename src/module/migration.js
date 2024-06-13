@@ -1,5 +1,3 @@
-import ItemPbta from "./documents/item.js";
-
 /**
  * Perform a system migration for the entire World, applying migrations for Actors, Items, and Compendium packs
  */
@@ -119,11 +117,24 @@ export function migrateActorData(actor, migrationData, flags={}) {
 
 	// Migrate Owned Items
 	if (actor.system.advancements === undefined) updateData["system.advancements"] = 0;
-	for (const attribute in actor.system.attrLeft) {
-		if (actor.system.attrLeft[attribute].steps) updateData[`system.attrLeft.${attribute}.-=steps`] = null;
-	}
-	for (const attribute in actor.system.attrTop) {
-		if (actor.system.attrTop[attribute].steps) updateData[`system.attrTop.${attribute}.-=steps`] = null;
+	const baseType = actor.baseType;
+	const actorConfig = game.pbta.sheetConfig.actorTypes[baseType];
+	if (actorConfig) {
+		const attrLeftSize = Object.values(actorConfig.attributes)
+			.filter((data) => data.position === "left").length;
+		const attrTopSize = Object.values(actorConfig.attributes)
+			.filter((data) => data.position === "top").length;
+		if (attrLeftSize + attrTopSize !== Object.keys(actor.system.attributes).length) {
+			for (const path of ["left", "top"]) {
+				const attrPath = `attr${path.capitalize()}`;
+				for (const attribute in actor.system[attrPath]) {
+					const data = actor.system[attrPath][attribute];
+					if (data.steps) delete data.steps;
+					if (!data.position) data.position = path;
+					updateData[`system.attributes.${attribute}`] = data;
+				}
+			}
+		}
 	}
 
 	if (!actor.items) return updateData;
@@ -231,24 +242,19 @@ export function migrateItemData(item, migrationData, flags={}) {
 	}
 	const actorTypes = foundry.utils.duplicate(
 		Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
-			.filter(([a, v]) => ItemPbta.prototype._filterActorTypes([a, v], item.type))
+			.filter(([a, v]) => CONFIG.Item.documentClass._filterActorTypes([a, v], item.type))
 		)
 	);
 	if (Object.keys(actorTypes).length) {
-		const actorType = Object.keys(actorTypes)[0];
-		if (item.system.actorType === "" && flags.actor) {
+		const actorType = flags.actor?.type ?? Object.keys(actorTypes)[0];
+		if (item.system.actorType === "") {
 			updateData["system.actorType"] = actorType;
 		}
 		if (item.type === "playbook") {
-			if (!item.system.attributes) {
-				updateData["system.attributes"] = ItemPbta.prototype._getValidAttributes(actorType, actorTypes);
-			}
-			if (!item.system.stats) {
-				const stats = actorTypes[actorType]?.stats;
+			if (!Object.keys(item.system.stats).length) {
+				const stats = actorTypes[actorType]?.stats ?? {};
 				updateData["system.stats"] = stats;
-				updateData["system.statsDetail"] = "";
 			}
-			if (!item.system.choiceSets) updateData["system.statsDetail"] = [];
 		}
 	}
 

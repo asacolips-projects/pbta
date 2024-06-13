@@ -290,21 +290,13 @@ function _configureTrackableAttributes() {
 				value: []
 			};
 
-			const processAttributes = (attributes) => {
-				const attr = data[attributes];
-				if (attr) {
-					for (const [attrK, attrV] of Object.entries(attr)) {
-						if (attrV.type === "Clock" || attrV.type === "Resource") {
-							trackableAttributes[key].bar.push(`${attributes}.${attrK}`);
-						} else if (attrV.type === "Number") {
-							trackableAttributes[key].value.push(`${attributes}.${attrK}.value`);
-						}
-					}
+			for (const [attrK, attrV] of Object.entries(data.attributes)) {
+				if (attrV.type === "Clock" || attrV.type === "Resource") {
+					trackableAttributes[key].bar.push(`attributes.${attrK}`);
+				} else if (attrV.type === "Number") {
+					trackableAttributes[key].value.push(`attributes.${attrK}.value`);
 				}
-			};
-
-			processAttributes("attrTop");
-			processAttributes("attrLeft");
+			}
 		}
 	}
 
