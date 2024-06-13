@@ -97,8 +97,7 @@ export default class ActorPbta extends Actor {
 		return {
 			...this.system,
 			conditionCount: this.conditions.length,
-			conditionGroups: this.conditionGroups,
-			formula: this.getRollFormula()
+			conditionGroups: this.conditionGroups
 		};
 	}
 
@@ -243,7 +242,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	_getStatFormula(stat) {
-		let formula = "@formula";
+		let formula = this.getRollFormula();
 		if (stat) {
 			formula += `+ @stats.${stat}.value`;
 			if (this.system.stats[stat].toggle) {

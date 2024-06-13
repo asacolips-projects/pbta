@@ -57,8 +57,6 @@ PBTA:
   Hold: "Halten"
   partial: Teilerfolg
   Playbook: Charakterbuch
-  PlaybookGrantOn: "Grant On"
-  PlaybookGrantOnDrop: "On Drop"
   Prompt: Abfrage
   PromptTitle: Bitte Würfel-Modifikatoren eingeben
   Qty: Anz

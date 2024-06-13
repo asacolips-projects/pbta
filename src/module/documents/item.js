@@ -102,7 +102,7 @@ export default class ItemPbta extends Item {
 	}
 
 	_getRollFormula(options = {}) {
-		let formula = "@formula";
+		let formula = this.parent.getRollFormula();
 		const { rollFormula, rollMod, rollType } = this.system;
 		options.rollType = rollType;
 		if (this.type === "npcMove" || rollType === "formula") {
@@ -283,14 +283,16 @@ export default class ItemPbta extends Item {
 						}
 					}, { jQuery: false });
 				} else if (!attribute.custom) {
-					let { value, max = null } = data.system.attributes[attribute];
+					let { value, max = null, options = null } = data.system.attributes[attribute];
 					if (data.system.attributes[attribute].choices.length) {
 						const choice = data.system.attributes[attribute].choices[0];
 						value = choice.value;
 						max = choice.max ?? max;
+						options = choice.options ?? options;
 					}
 					if (value) selected[`system.${path}.${attribute}.value`] = value;
 					if (max) selected[[`system.${path}.${attribute}.max`]] = max;
+					if (options) selected[[`system.${path}.${attribute}.options`]] = options;
 				}
 			}
 			return selected;
@@ -311,6 +313,13 @@ export default class ItemPbta extends Item {
 					}
 				);
 				if (!validChoices.length) continue;
+				if (choiceSet.grantOn === 0) {
+					validChoices.forEach((i) => {
+						const index = choices.findIndex((c) => c.uuid === i.uuid);
+						choiceSet.choices[index].granted = true;
+					});
+					continue;
+				}
 
 				await Dialog.wait({
 					title: `${game.i18n.localize("PBTA.Choice")}: ${title}`,
