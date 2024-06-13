@@ -1,5 +1,3 @@
-import ItemPbta from "./documents/item.js";
-
 /**
  * Perform a system migration for the entire World, applying migrations for Actors, Items, and Compendium packs
  */
@@ -231,24 +229,19 @@ export function migrateItemData(item, migrationData, flags={}) {
 	}
 	const actorTypes = foundry.utils.duplicate(
 		Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
-			.filter(([a, v]) => ItemPbta.prototype._filterActorTypes([a, v], item.type))
+			.filter(([a, v]) => CONFIG.Item.documentClass._filterActorTypes([a, v], item.type))
 		)
 	);
 	if (Object.keys(actorTypes).length) {
-		const actorType = Object.keys(actorTypes)[0];
-		if (item.system.actorType === "" && flags.actor) {
+		const actorType = flags.actor?.type ?? Object.keys(actorTypes)[0];
+		if (item.system.actorType === "") {
 			updateData["system.actorType"] = actorType;
 		}
 		if (item.type === "playbook") {
-			if (!item.system.attributes) {
-				updateData["system.attributes"] = ItemPbta.prototype._getValidAttributes(actorType, actorTypes);
-			}
-			if (!item.system.stats) {
-				const stats = actorTypes[actorType]?.stats;
+			if (!Object.keys(item.system.stats).length) {
+				const stats = actorTypes[actorType]?.stats ?? {};
 				updateData["system.stats"] = stats;
-				updateData["system.statsDetail"] = "";
 			}
-			if (!item.system.choiceSets) updateData["system.statsDetail"] = [];
 		}
 	}
 
