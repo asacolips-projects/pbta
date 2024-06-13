@@ -107,7 +107,7 @@ export default class RollPbtA extends Roll {
 			// This should be a string of integers joined with + and -. This should be safe to eval.
 			let originalMod = Roll.safeEval(modifierString);
 			if (originalMod < minMod || originalMod > maxMod) {
-				let totalMod = Math.clamped(originalMod, minMod, maxMod);
+				let totalMod = Math.clamp(originalMod, minMod, maxMod);
 				const newFormula = `${baseFormula}+${totalMod}`.replace(/\+\s*-/g, "-");
 				const newTerms = new Roll(newFormula).terms;
 				this.terms = newTerms;
