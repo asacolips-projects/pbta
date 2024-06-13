@@ -177,7 +177,7 @@ export default class ItemPbta extends Item {
 						for (const set of choiceUpdate["system.choiceSets"]) {
 							for (const choice of set.choices) {
 								if (choice.granted) {
-									const item = fromUuidSync(choice.uuid);
+									const item = await fromUuid(choice.uuid);
 									if (item) {
 										items.push(item.toObject());
 										grantedItems.push(item.id);
@@ -304,13 +304,13 @@ export default class ItemPbta extends Item {
 			for (const choiceSet of data.system.choiceSets) {
 				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
 				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
-				const validChoices = choices.filter(
-					(c) => {
-						const item = fromUuidSync(c.uuid);
+				const validChoices = await Promise.all(
+					choices.filter(async (c) => {
+						const item = await fromUuid(c.uuid);
 						return !c.granted
 							&& c.advancement <= this.parent.advancements
 							&& !this.actor.items.has(item.id);
-					}
+					})
 				);
 				if (!validChoices.length) continue;
 				if (choiceSet.grantOn === 0) {
