@@ -135,8 +135,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			);
 			const hasMultipleCharacterTypes = Object.keys(validCharacterTypes).length > 1;
 			context.playbooks = CONFIG.PBTA.playbooks
-				.filter((p) => !hasMultipleCharacterTypes
-					|| [this.actor.sheetType, ""].includes(p.actorType))
+				.filter((p) => !hasMultipleCharacterTypes || [this.actor.sheetType, ""].includes(p.actorType))
 				.map((p) => {
 					return { name: p.name, uuid: p.uuid };
 				});
