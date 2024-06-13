@@ -56,8 +56,7 @@ export default class ActorPbta extends Actor {
 	}
 
 	get baseType() {
-		return game.pbta.sheetConfig.actorTypes[this.sheetType]?.baseType
-			?? (this.type === "other" ? "character" : this.type);
+		return this.system.baseType;
 	}
 
 	get playbook() {
