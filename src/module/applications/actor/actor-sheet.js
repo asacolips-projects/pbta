@@ -170,6 +170,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			context.isToken = this.actor.token !== null;
 		}
 
+		this._sortStats(context);
 		this._sortAttrs(context);
 
 		// Return template data
@@ -212,6 +213,37 @@ export default class PbtaActorSheet extends ActorSheet {
 		}
 	}
 
+	_sortValues(context, sortKeys, dataPath) {
+		const data = context.system[dataPath];
+		context.system[dataPath] = Object.fromEntries(
+			Object.keys(data)
+				.sort((a, b) => sortKeys.indexOf(a) - sortKeys.indexOf(b))
+				.map((key) => [key, data[key]])
+		);
+		for (let [key, value] of Object.entries(data)) {
+			if (value.options && value.sort) {
+				data[key].options = Object.fromEntries(
+					Object.entries(data[key].options)
+						.sort(([, a], [, b]) => a.label.localeCompare(b.label))
+				);
+			}
+		}
+	}
+
+	/**
+	 * Resort stats based on config.
+	 *
+	 * @param {object} context Data prop on actor.
+	 */
+	_sortStats(context) {
+		const type = this.actor.sheetType;
+		// Confirm the keys exist, and assign them to a sorting array if so.
+		const sortKeys = Object.keys(game.pbta.sheetConfig.actorTypes?.[type]?.stats ?? {});
+		if (sortKeys) {
+			this._sortValues(context, sortKeys, "stats");
+		}
+	}
+
 	/**
 	 * Resort attributes based on config.
 	 *
@@ -224,24 +256,12 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * @param {object} context Data prop on actor.
 	 */
 	_sortAttrs(context) {
-		for (let group of ["stats", "attrLeft", "attrTop"]) {
-			// Confirm the keys exist, and assign them to a sorting array if so.
-			const type = this.actor.sheetType;
-			const sortKeys = Object.keys(game.pbta.sheetConfig.actorTypes?.[type]?.[group] ?? {});
-			if (!sortKeys) continue;
-			context.system[group] = Object.keys(context.system[group])
-				.sort((a, b) => sortKeys.indexOf(a) - sortKeys.indexOf(b))
-				.reduce((obj, key) => {
-					obj[key] = context.system[group][key];
-					return obj;
-				}, {});
-			for (let [key, value] of Object.entries(context.system[group])) {
-				if (value.options && value.sort) {
-					context.system[group][key].options = Object.fromEntries(
-						Object.entries(context.system[group][key].options)
-							.sort(([, a], [, b]) => a.label.localeCompare(b.label))
-					);
-				}
+		const type = this.actor.sheetType;
+		// Confirm the keys exist, and assign them to a sorting array if so.
+		const sortKeys = Object.keys(game.pbta.sheetConfig.actorTypes?.[type]?.attributes ?? {});
+		if (sortKeys) {
+			for (let group of ["attrLeft", "attrTop"]) {
+				this._sortValues(context, sortKeys, group);
 			}
 		}
 	}

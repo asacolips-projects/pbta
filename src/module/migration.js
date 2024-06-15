@@ -128,6 +128,7 @@ export function migrateActorData(actor, migrationData, flags={}) {
 			for (const path of ["left", "top"]) {
 				const attrPath = `attr${path.capitalize()}`;
 				for (const attribute in actor.system[attrPath]) {
+					if (actor.system?.attributes?.[attribute]) continue;
 					const data = actor.system[attrPath][attribute];
 					if (data.steps) delete data.steps;
 					if (!data.position) data.position = path;
@@ -254,6 +255,13 @@ export function migrateItemData(item, migrationData, flags={}) {
 			if (!Object.keys(item.system.stats).length) {
 				const stats = actorTypes[actorType]?.stats ?? {};
 				updateData["system.stats"] = stats;
+			}
+			for (const attribute in item.system.attributes) {
+				const data = item.system.attributes[attribute];
+				if (["attrTop", "attrLeft"].includes(data.path)) {
+					const newPath = data.path.replace("attr", "").toLowerCase();
+					updateData[`system.attributes.${attribute}.path`] = newPath;
+				}
 			}
 		}
 	}
