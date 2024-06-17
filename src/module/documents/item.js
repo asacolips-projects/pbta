@@ -282,7 +282,7 @@ export default class ItemPbta extends Item {
 							}
 						}
 					}, { jQuery: false });
-				} else if (!attribute.custom) {
+				} else if (!custom) {
 					let { value, max = null, options = null } = data.system.attributes[attribute];
 					if (data.system.attributes[attribute].choices.length) {
 						const choice = data.system.attributes[attribute].choices[0];
@@ -617,7 +617,7 @@ export default class ItemPbta extends Item {
 	_filterAttributes(attributes, path) {
 		return Object.fromEntries(
 			Object.entries(attributes)
-				.filter(([key, data]) => data.playbook === true || data.playbook === this.system.slug)
+				.filter(([key, data]) => [this.system.slug, this.name, true].includes(data.playbook))
 				.map(([key, data]) => {
 					data.type ??= "Details";
 					if (data.type === "Resource") {
