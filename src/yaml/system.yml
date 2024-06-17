@@ -19,7 +19,7 @@ styles:
   - styles/lib/tagify.css
   - styles/dist/pbta.css
 scripts:
-  - scripts/lib/tagify.min.js
+  - scripts/lib/tagify.js
   - scripts/lib/codemirror.js
   - scripts/lib/codemirror.loadmode.js
   - scripts/lib/toml-node.js
