@@ -238,8 +238,8 @@ Hooks.once("ready", async function () {
 
 	CONFIG.PBTA = PBTA;
 
-	if (game.modules.get("babele")?.active) {
-		Hooks.once("babele.ready", () => utils.getPlaybooks());
+	if (game.modules.get("babele")?.active && game.i18n.lang !== "en") {
+		Hooks.on("babele.ready", () => utils.getPlaybooks());
 	} else {
 		utils.getPlaybooks();
 	}
