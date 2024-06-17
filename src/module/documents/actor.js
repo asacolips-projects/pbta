@@ -296,15 +296,9 @@ export default class ActorPbta extends Actor {
 	applyBaseTemplate() {
 		let systemData = foundry.utils.deepClone(this.toObject(false).system);
 
-		// Determine the actor type.
-		let sheetType = this.type;
-		if (this.type === "other") {
-			sheetType = systemData?.customType ?? "character";
-		}
-
 		// Merge it with the model for that for that actor type to include missing attributes.
-		const model = foundry.utils.deepClone(game.model.Actor[sheetType]
-			?? game.pbta.sheetConfig.actorTypes[sheetType]);
+		const model = foundry.utils.deepClone(game.model.Actor[this.sheetType]
+			?? game.pbta.sheetConfig.actorTypes[this.sheetType]);
 
 		// Prepare and return the systemData.
 		systemData = foundry.utils.mergeObject(model, systemData);
