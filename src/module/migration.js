@@ -258,7 +258,7 @@ export function migrateItemData(item, migrationData, flags={}) {
 			}
 			for (const attribute in item.system.attributes) {
 				const data = item.system.attributes[attribute];
-				if (["attrTop", "attrLeft"].includes(data.path)) {
+				if (["attrTop", "attrLeft", "top", "left"].includes(data.path)) {
 					const newPosition = data.path.replace("attr", "").toLowerCase();
 					updateData[`system.attributes.${attribute}.path`] = "attributes";
 					updateData[`system.attributes.${attribute}.position`] = newPosition;
