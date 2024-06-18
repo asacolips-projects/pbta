@@ -31,7 +31,7 @@ globalThis.pbta = {
 	utils
 };
 
-Hooks.once("init", async function () {
+Hooks.once("init", () => {
 	globalThis.pbta = game.pbta = Object.assign(game.system, globalThis.pbta);
 
 	CONFIG.ui.combat = applications.combat.PbtACombatTracker;
@@ -104,19 +104,24 @@ Hooks.once("init", async function () {
 });
 
 Hooks.on("i18nInit", () => {
+	const activeModules = [...game.modules.entries()].filter(([key, m]) => m.active && m.flags[key]?.["pbta-override"]);
+
+	if (activeModules.length > 1 && game.user.isGM) {
+		const names = activeModules.map(([key, m]) => m.name).join(", ");
+		ui.notifications.warn(game.i18n.format("PBTA.Warnings.TooManyModules", { names }));
+	}
+	game.pbta.moduleConfig = activeModules.length > 0;
+
 	registerSettings();
 
 	// Build out character data structures.
 	const pbtaSettings = game.settings.get("pbta", "sheetConfig");
 
-	// Retrieve overridden config, if enabled.
-	if (pbtaSettings?.overridden && game.settings.get("pbta", "sheetConfigOverride")) {
+	if (pbtaSettings.overridden && game.pbta.moduleConfig) {
 		game.pbta.sheetConfig = pbtaSettings.overridden;
-	} else if (pbtaSettings?.computed) {
-		// Otherwise, retrieve computed config.
+	} else if (pbtaSettings.computed) {
 		game.pbta.sheetConfig = utils.convertSheetConfig(pbtaSettings.computed);
 	} else {
-		// Fallback to empty config.
 		game.pbta.sheetConfig = pbtaSettings;
 	}
 });
@@ -124,7 +129,7 @@ Hooks.on("i18nInit", () => {
 /**
  * This function runs after game data has been requested and loaded from the servers, so documents exist
  */
-Hooks.once("setup", function () {
+Hooks.once("setup", () => {
 	// Localize CONFIG objects once up-front
 	const toLocalize = [];
 	for (let o of toLocalize) {
@@ -134,100 +139,14 @@ Hooks.once("setup", function () {
 		}, {});
 	}
 
-	if (game.user.isGM) {
-		Hooks.on("renderSettings", (app, html) => {
-			const header = document.createElement("h2");
-			header.innerText = game.i18n.localize("Powered by the Apocalypse");
-
-			const pbtaSettings = document.createElement("div");
-			html.find("#settings-game")?.after(header, pbtaSettings);
-
-			const buttons = [
-				{
-					action: (ev) => {
-						ev.preventDefault();
-						let menu = game.settings.menus.get("pbta.sheetConfigMenu");
-						let app = new menu.type();
-						app.render(true);
-					},
-					iconClasses: ["fas", "fa-file-alt"],
-					label: "PBTA.Settings.sheetConfig.label"
-				},
-				{
-					action: (ev) => {
-						ev.preventDefault();
-						window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
-					},
-					iconClasses: ["fas", "fa-question-circle"],
-					label: "PBTA.Settings.button.help"
-				}
-			].map(({ action, iconClasses, label }) => {
-				const button = document.createElement("button");
-				button.type = "button";
-
-				const icon = document.createElement("i");
-				icon.classList.add(...iconClasses);
-
-				button.append(icon, game.i18n.localize(label));
-
-				button.addEventListener("click", action);
-
-				return button;
-			});
-
-			pbtaSettings.append(...buttons);
-		});
+	if (game.modules.get("babele")?.active) {
+		Hooks.on("babele.ready", () => utils.getPlaybooks());
+	} else {
+		utils.getPlaybooks();
 	}
 });
 
-Hooks.once("ready", async function () {
-	// Override sheet config.
-	if (game.user.isGM) {
-		// Force sheet config override off, unless a module changes it.
-		await game.settings.set("pbta", "sheetConfigOverride", false);
-
-		// Allow modules to override the sheet config.
-		Hooks.callAll("pbtaSheetConfig");
-
-		// @todo find something better than this timeout hack.
-		const timeout = 1000;
-		setTimeout(() => {
-			// Retrieve the previous configuration.
-			let existingConfig = game.settings.get("pbta", "sheetConfig") ?? {};
-			// @todo hack to fix the old the default value. Remove in a future update.
-			if (typeof existingConfig !== "object") {
-				existingConfig = {};
-			}
-			// If a module enabled the override, assign it to the config so that player
-			// clients can use it without the GM being logged in.
-			if (game.settings.get("pbta", "sheetConfigOverride")) {
-				existingConfig.overridden = game.pbta.sheetConfig;
-				game.settings.set("pbta", "sheetConfig", existingConfig);
-			} else if (existingConfig?.overridden) {
-				// Otherwise, delete the override config.
-
-				// If not tomlString exists, delete the config outright to prevent
-				// it from being malformed.
-				if (!existingConfig?.tomlString) {
-					ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.overrideRemoved"));
-					existingConfig = null;
-				} else {
-					// Otherwise, restore the previous config.
-
-					// Delete overrides.
-					delete existingConfig.overridden;
-					delete existingConfig.computed;
-					// Restore computed config and reapply.
-					existingConfig.computed = utils.parseTomlString(existingConfig.tomlString);
-					game.pbta.sheetConfig = utils.convertSheetConfig(existingConfig.computed);
-					utils.applyActorTemplates(true);
-					ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.previousSettingRestored"));
-				}
-				game.settings.set("pbta", "sheetConfig", existingConfig);
-			}
-		}, timeout);
-	}
-
+Hooks.once("ready", () => {
 	// Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
 	Hooks.on("hotbarDrop", (bar, data, slot) => {
 		if (["Item"].includes(data.type)) {
@@ -236,12 +155,26 @@ Hooks.once("ready", async function () {
 		}
 	});
 
-	CONFIG.PBTA = PBTA;
+	if (game.user.isGM) {
+		Hooks.callAll("pbta.sheetConfig");
+		let existingConfig = game.settings.get("pbta", "sheetConfig") ?? {};
+		const { overridden, tomlString } = existingConfig;
+		if (game.pbta.moduleConfig) {
+			existingConfig.overridden = game.pbta.sheetConfig;
+		} else if (overridden) {
+			if (!tomlString) {
+				ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.overrideRemoved"));
+				existingConfig = {};
+			} else {
+				delete existingConfig.overridden;
 
-	if (game.modules.get("babele")?.active && game.i18n.lang !== "en") {
-		Hooks.on("babele.ready", () => utils.getPlaybooks());
-	} else {
-		utils.getPlaybooks();
+				existingConfig.computed = utils.parseTomlString(existingConfig.tomlString);
+				game.pbta.sheetConfig = utils.convertSheetConfig(existingConfig.computed);
+				utils.applyActorTemplates(true);
+				ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.previousSettingRestored"));
+			}
+		}
+		game.settings.set("pbta", "sheetConfig", existingConfig);
 	}
 
 	// Apply structure to actor types.
@@ -276,6 +209,52 @@ Hooks.on("renderChatMessage", (data, html, options) => {
 
 Hooks.on("renderChatLog", (app, html, data) => documents.ItemPbta.chatListeners(html));
 Hooks.on("renderChatPopout", (app, html, data) => documents.ItemPbta.chatListeners(html));
+Hooks.on("renderSettings", (app, html) => {
+	if (!game.user.isGM) return;
+	const header = document.createElement("h2");
+	header.innerText = game.i18n.localize("Powered by the Apocalypse");
+
+	const pbtaSettings = document.createElement("div");
+	html.find("#settings-game")?.after(header, pbtaSettings);
+
+	const buttons = [
+		{
+			action: (ev) => {
+				ev.preventDefault();
+				window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
+			},
+			iconClasses: ["fas", "fa-question-circle"],
+			label: "PBTA.Settings.button.help"
+		}
+	];
+	if (!game.pbta.moduleConfig) {
+		buttons.unshift({
+			action: (ev) => {
+				ev.preventDefault();
+				let menu = game.settings.menus.get("pbta.sheetConfigMenu");
+				let app = new menu.type();
+				app.render(true);
+			},
+			iconClasses: ["fas", "fa-file-alt"],
+			label: "PBTA.Settings.sheetConfig.label"
+		});
+	}
+	const formattedButtons = buttons.map(({ action, iconClasses, label }) => {
+		const button = document.createElement("button");
+		button.type = "button";
+
+		const icon = document.createElement("i");
+		icon.classList.add(...iconClasses);
+
+		button.append(icon, game.i18n.localize(label));
+
+		button.addEventListener("click", action);
+
+		return button;
+	});
+
+	pbtaSettings.append(...formattedButtons);
+});
 
 /**
  * Configure explicit lists of attributes that are trackable on the token HUD and in the combat tracker.
