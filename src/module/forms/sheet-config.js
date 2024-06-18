@@ -26,18 +26,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	get sheetOverriden() {
-		return game.settings.get("pbta", "sheetConfigOverride");
-	}
-
-	/* -------------------------------------------- */
-
 	/** @override */
 	async getData(options) {
 		const sheetConfig = game.settings.get("pbta", "sheetConfig") || {};
 		return {
 			...foundry.utils.deepClone(sheetConfig),
-			sheetConfigOverride: this.sheetOverriden,
 			tomlString: sheetConfig.tomlString || ""
 		};
 	}

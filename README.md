@@ -25,8 +25,6 @@ If you would like to create a module that supplies its own sheet out of the box 
 
 ```js
 Hooks.once('pbtaSheetConfig', () => {
-  // Disable the sheet config form.
-  game.settings.set('pbta', 'sheetConfigOverride', true);
   // Define custom tags.
   game.pbta.tagConfigOverride = {
     // Tags available to any actor and item
