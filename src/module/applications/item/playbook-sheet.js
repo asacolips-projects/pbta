@@ -34,7 +34,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		});
 		context.choicesByAdvancement = choicesByAdvancement;
 		for (let [k, v] of Object.entries(context.system.attributes)) {
-			if (["Details", "LongText"].includes(v.type)) {
+			if (["Details", "LongText"].includes(v.type) && context.system.attributes[k].choices) {
 				for (const choice of context.system.attributes[k].choices) {
 					choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", context.enrichmentOptions);
 				}
