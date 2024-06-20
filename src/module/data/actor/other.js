@@ -24,4 +24,8 @@ export default class OtherData extends ActorDataTemplate {
 			tags: new foundry.data.fields.StringField({ initial: "" })
 		};
 	}
+
+	get baseType() {
+		return game.pbta.sheetConfig.actorTypes[this.customType]?.baseType ?? "character";
+	}
 }

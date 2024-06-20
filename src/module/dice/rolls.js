@@ -29,7 +29,7 @@ export default class RollPbtA extends Roll {
 			stat = this.options.stat ?? this.options.rollType;
 		}
 		if (this.data.stats[stat]?.toggle) {
-			const { modifier } = game.pbta.sheetConfig.statToggle;
+			const { modifier } = game.pbta.sheetConfig?.statToggle || {};
 			if (modifier === type) return true;
 		}
 
@@ -52,7 +52,7 @@ export default class RollPbtA extends Roll {
 			}
 		}
 
-		this.options.resultType = resultType;
+		const resultDetails = this.options?.moveResults?.[resultType]?.value;
 
 		const chatData = {
 			formula: isPrivate ? "???" : this._formula,
@@ -63,11 +63,11 @@ export default class RollPbtA extends Roll {
 
 			conditionsConsumed: this.options.conditionsConsumed,
 			conditions: this.options.conditions,
-			choices: this.options.choices,
-			details: this.options.details,
+			choices: await TextEditor.enrichHTML(this.options.choices),
+			details: await TextEditor.enrichHTML(this.options.details),
 			originalMod: this.options.originalMod,
 			result: resultType,
-			resultDetails: this.options?.moveResults?.[resultType]?.value,
+			resultDetails: await TextEditor.enrichHTML(resultDetails),
 			resultLabel: resultRanges[resultType]?.label ?? resultType,
 			resultRanges,
 			stat: this.options.stat,
@@ -107,7 +107,7 @@ export default class RollPbtA extends Roll {
 			// This should be a string of integers joined with + and -. This should be safe to eval.
 			let originalMod = Roll.safeEval(modifierString);
 			if (originalMod < minMod || originalMod > maxMod) {
-				let totalMod = Math.clamped(originalMod, minMod, maxMod);
+				let totalMod = Math.clamp(originalMod, minMod, maxMod);
 				const newFormula = `${baseFormula}+${totalMod}`.replace(/\+\s*-/g, "-");
 				const newTerms = new Roll(newFormula).terms;
 				this.terms = newTerms;
@@ -133,7 +133,9 @@ export default class RollPbtA extends Roll {
 		this.options.title = title;
 		this.options.conditions = [];
 		this.options.conditionsConsumed = [];
-		const hasSituationalMods = this.data.resources.forward.value !== 0 || this.data.resources.ongoing.value !== 0;
+		const hasSituationalMods = this.data.resources.forward.value !== 0
+			|| this.data.resources.ongoing.value !== 0
+			|| this.data.resources.hold.value > 0;
 
 		const needsDialog =
 			this.data.rollType === "ask"
@@ -242,6 +244,16 @@ export default class RollPbtA extends Roll {
 			}
 			this.terms = this.terms.concat(oRoll.terms);
 			this.options.conditions.push(`${game.i18n.localize("PBTA.Ongoing")} (${form.ongoing.dataset.mod >= 0 ? "+" : ""} ${form.ongoing.dataset.mod})`);
+		}
+
+		if (form?.hold && form?.hold.checked) {
+			const oRoll = new Roll(`${form.hold.dataset.mod}`, this.data);
+			if (!(oRoll.terms[0] instanceof foundry.dice.terms.OperatorTerm)) {
+				this.terms.push(new foundry.dice.terms.OperatorTerm({ operator: "+" }));
+			}
+			this.terms = this.terms.concat(oRoll.terms);
+			this.options.conditions.push(`${game.i18n.localize("PBTA.Hold")} (${form.hold.dataset.mod >= 0 ? "+" : ""} ${form.hold.dataset.mod})`);
+			this.options.conditionsConsumed.push("hold");
 		}
 
 		if (form?.condition) {

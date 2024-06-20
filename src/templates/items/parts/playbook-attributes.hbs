@@ -17,25 +17,77 @@
 			</div>
 		</div>
 		<ol>
-			{{#each this.choices}}
+			{{#each attribute.choices as |choice choiceKey|}}
 			<li class="form-group" data-id="{{@index}}">
 				{{#if (or (eq attribute.type "LongText") (eq attribute.type "Details"))}}
-				{{editor this.enriched target=(concat "system.attributes." @../key ".choices." @index ".value") button=true owner=@root.owner editable=@root.editable}}
-				<input type="text" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{this.enriched}}" hidden>
+				{{editor choice.enriched target=(concat "system.attributes." @../key ".choices." @index ".value") button=true owner=@root.owner editable=@root.editable}}
+				<input type="text" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{choice.enriched}}" hidden>
 
 				{{else if (eq attribute.type "Number")}}
-				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{this.value}}" data-dtype="Number"/>
+				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{choice.value}}" data-dtype="Number"/>
 
 				{{else if (eq attribute.type "Resource")}}
-				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{this.value}}" data-dtype="Number"/>
-				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.max" value="{{this.max}}" data-dtype="Number"/>
+				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{choice.value}}" data-dtype="Number"/>
+				<input type="number" name="system.attributes.{{@../key}}.choices.{{@index}}.max" value="{{choice.max}}" data-dtype="Number"/>
+
+				{{else if (eq attribute.type "ListMany") }}
+				<div class="item-controls">
+					<a data-action="add-list-option">
+						<i class="fa fa-plus"
+							data-tooltip="PBTA.PlaybookAddNewListOption"
+							data-tooltip-direction="UP"
+							></i>
+					</a>
+					<a data-action="delete-attribute-choice">
+						<i class="fa fa-trash"></i>
+					</a>
+				</div>
+				<ul class="cell__checkboxes flexcol">
+					{{#each choice.options as |option optionKey|}}
+						<label class="flexrow">
+							{{#if option.values}}
+								{{#each option.values as |suboption suboptionKey|}}
+									<input type="checkbox" class="attr-list" name="system.attributes.{{@../../../../key}}.choices.{{choiceKey}}.options.{{optionKey}}.values.{{suboptionKey}}.value" {{checked suboption.value}}/>
+								{{/each}}
+							{{else}}
+								<input type="checkbox" class="attr-list" name="system.attributes.{{key}}.choices.{{choiceKey}}.options.{{optionKey}}.value" {{checked option.value}}/>
+							{{/if}}
+							<input type="text" class="input input-title" name="system.attributes.{{key}}.choices.{{choiceKey}}.options.{{optionKey}}.label" value="{{option.label}}">
+						</label>
+					{{/each}}
+				</ul>
+
+				{{else if (eq attribute.type "ListOne") }}
+				<div class="item-controls">
+					<a data-action="add-list-option">
+						<i class="fa fa-plus"
+							data-tooltip="PBTA.PlaybookAddNewListOption"
+							data-tooltip-direction="UP"
+							></i>
+					</a>
+					<a data-action="delete-attribute-choice">
+						<i class="fa fa-trash"></i>
+					</a>
+				</div>
+				<ul class="cell__radio flexcol">
+					{{#each choice.options as |option optionKey|}}
+					<label class="flexrow">
+						<input type="text" class="input input-title" name="system.attributes.{{key}}.choices.{{choiceKey}}.options.{{optionKey}}.label" value="{{option.label}}"/>
+					</label>
+					{{/each}}
+				</ul>
+
+				{{else}}
+				<input type="text" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{choice.value}}" data-dtype="String"/>
 
 				{{/if}}
+				{{#if (and (ne attribute.type "ListOne") (ne attribute.type "ListMany"))}}
 				<div class="item-controls">
 					<a data-action="delete-attribute-choice">
 						<i class="fa fa-trash"></i>
 					</a>
 				</div>
+				{{/if}}
 			</li>
 			{{/each}}
 		</ol>

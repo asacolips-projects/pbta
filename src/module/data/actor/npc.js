@@ -9,4 +9,10 @@ export default class NpcData extends ActorDataTemplate {
 			tags: new foundry.data.fields.StringField({ initial: "" })
 		};
 	}
+
+	prepareDerivedData() {}
+
+	get baseType() {
+		return "npc";
+	}
 }

@@ -3,17 +3,6 @@
  * @extends {Actor}
  */
 export default class ActorPbta extends Actor {
-	/**
-	 * Augment the basic actor data with additional dynamic data.
-	 */
-	prepareData() {
-		super.prepareData();
-		// Handle actor types.
-		if (this.baseType === "character") {
-			this._prepareCharacterData();
-		}
-	}
-
 	get advancements() {
 		return this.system?.advancements ?? null;
 	}
@@ -52,12 +41,11 @@ export default class ActorPbta extends Actor {
 	}
 
 	get sheetType() {
-		return this.system?.customType ?? null;
+		return this.system.customType ?? this.type;
 	}
 
 	get baseType() {
-		return game.pbta.sheetConfig.actorTypes[this.sheetType]?.baseType
-			?? (this.type === "other" ? "character" : this.type);
+		return this.system.baseType;
 	}
 
 	get playbook() {
@@ -65,40 +53,12 @@ export default class ActorPbta extends Actor {
 		return this.system?.playbook ?? { name: "", slug: "", uuid: "" };
 	}
 
-	/**
-	 * Prepare Character type specific data
-	 */
-	_prepareCharacterData() {
-		// Handle special attributes.
-		let groups = [
-			"attrTop",
-			"attrLeft"
-		];
-		for (let group of groups) {
-			for (let attrValue of Object.values(this.system[group])) {
-				// ListMany field handling.
-				if (["ListOne", "ListMany"].includes(attrValue.type) && attrValue.options) {
-					// Iterate over options.
-					for (let optV of Object.values(attrValue.options)) {
-						// If there's a multi-value field, we need to propagate its value up
-						// to the parent `value` property.
-						if (optV.values) {
-							const optArray = Object.values(optV.values);
-							optV.value = optArray.some((subOpt) => subOpt.value);
-						}
-					}
-				}
-			}
-		}
-	}
-
 	/** @override */
 	getRollData() {
 		return {
 			...this.system,
 			conditionCount: this.conditions.length,
-			conditionGroups: this.conditionGroups,
-			formula: this.getRollFormula()
+			conditionGroups: this.conditionGroups
 		};
 	}
 
@@ -121,6 +81,15 @@ export default class ActorPbta extends Actor {
 			if (rollModeUsed && game.settings.get("pbta", "advForward")) {
 				updates["flags.pbta.rollMode"] = "def";
 			}
+			await this.update(updates);
+		}
+	}
+
+	async decrementHold() {
+		let hold = this.system?.resources?.hold?.value;
+		if (hold) {
+			const updates = {};
+			updates["system.resources.hold.value"] = --hold;
 			await this.update(updates);
 		}
 	}
@@ -196,6 +165,9 @@ export default class ActorPbta extends Actor {
 		if (r.options.conditionsConsumed.includes("forward")) {
 			await this.clearForwardAdv();
 		}
+		if (r.options.conditionsConsumed.includes("hold")) {
+			await this.decrementHold();
+		}
 		await this.updateCombatMoveCount();
 	}
 
@@ -224,15 +196,18 @@ export default class ActorPbta extends Actor {
 		if (roll.options.conditionsConsumed.includes("forward")) {
 			await this.clearForwardAdv();
 		}
+		if (roll.options.conditionsConsumed.includes("hold")) {
+			await this.decrementHold();
+		}
 		await this.updateCombatMoveCount();
 	}
 
 	_getStatFormula(stat) {
-		let formula = "@formula";
+		let formula = this.getRollFormula();
 		if (stat) {
 			formula += `+ @stats.${stat}.value`;
 			if (this.system.stats[stat].toggle) {
-				const { modifier } = game.pbta.sheetConfig.statToggle;
+				const { modifier } = game.pbta.sheetConfig?.statToggle || {};
 				if (!["dis", "adv"].includes(modifier)) {
 					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
 				}
@@ -274,7 +249,7 @@ export default class ActorPbta extends Actor {
 				};
 			}
 		}
-		const sheetData = game.pbta.sheetConfig.actorTypes?.[this.type];
+		const sheetData = game.pbta.sheetConfig.actorTypes?.[this.sheetType];
 		if (sheetData?.moveTypes) {
 			const validCreationMoveType = Object.keys(sheetData.moveTypes)
 				.filter((mt) => sheetData.moveTypes[mt].creation);
@@ -283,13 +258,18 @@ export default class ActorPbta extends Actor {
 				let moves = [];
 				for (let mt of validCreationMoveType) {
 					moves = game.items
-						.filter((item) => item.type === "move" && item.system.moveType === mt)
+						.filter(
+							(item) => item.type === "move"
+								&& item.system.moveType === mt
+								&& [this.sheetType, ""].includes(item.system.actorType)
+						)
 						.map((item) => item.toObject(false));
 					const itemCompendiums = game.packs
 						.filter((c) => c.metadata?.type === "Item")
 						.map((c) => c.metadata.id);
 					for (let c of itemCompendiums) {
 						const items = (await game.packs.get(c).getDocuments({ type: "move", system: { moveType: mt } }))
+							.filter((item) => [this.sheetType, ""].includes(item.system.actorType))
 							.flatMap((item) => item.toObject(false));
 						moves = moves.concat(items);
 					}
@@ -300,6 +280,14 @@ export default class ActorPbta extends Actor {
 		this.updateSource(changes);
 	}
 
+	toObject(source=true) {
+		const data = {
+			...super.toObject(source),
+			baseType: this.baseType
+		};
+		return this.constructor.shimData(data);
+	}
+
 	/**
 	 * Applies the actor's model to its data, such as
 	 * the Sheet Config's Stats and Attributes.
@@ -308,15 +296,9 @@ export default class ActorPbta extends Actor {
 	applyBaseTemplate() {
 		let systemData = foundry.utils.deepClone(this.toObject(false).system);
 
-		// Determine the actor type.
-		let sheetType = this.type;
-		if (this.type === "other") {
-			sheetType = systemData?.customType ?? "character";
-		}
-
 		// Merge it with the model for that for that actor type to include missing attributes.
-		const model = foundry.utils.deepClone(game.model.Actor[sheetType]
-			?? game.pbta.sheetConfig.actorTypes[sheetType]);
+		const model = foundry.utils.deepClone(game.model.Actor[this.sheetType]
+			?? game.pbta.sheetConfig.actorTypes[this.sheetType]);
 
 		// Prepare and return the systemData.
 		systemData = foundry.utils.mergeObject(model, systemData);

@@ -24,24 +24,21 @@ export default class PlaybookData extends ItemTemplateData {
 			attributes: new MappingField(
 				new foundry.data.fields.SchemaField({
 					label: new foundry.data.fields.StringField({ initial: "", required: true }),
-					value: new AttributeChoiceValueField({ initial: "", required: true }),
+					value: new AttributeChoiceValueField({ initial: "", required: true, nullable: true }),
 					max: new AttributeChoiceValueField({ initial: null, nullable: true }),
-					custom: new foundry.data.fields.BooleanField({ initial: false, required: true }),
-					path: new foundry.data.fields.StringField({
-						initial: "details",
-						choices: ["attrLeft", "attrTop", "details"],
-						required: true
-					}),
+					custom: new foundry.data.fields.BooleanField(),
+					path: new foundry.data.fields.StringField({ initial: "details", required: true }),
 					type: new foundry.data.fields.StringField({
 						initial: "Details",
-						choices: ["Details", "Number", "Resource", "Text", "LongText"],
 						required: true
 					}),
 					choices: new foundry.data.fields.ArrayField(
 						new foundry.data.fields.SchemaField({
-							value: new foundry.data.fields.HTMLField({ initial: "" })
+							value: new foundry.data.fields.HTMLField({ initial: "" }),
+							options: new foundry.data.fields.ObjectField()
 						})
-					)
+					),
+					options: new foundry.data.fields.ObjectField()
 				})
 			),
 			choiceSets: new foundry.data.fields.ArrayField(
@@ -59,16 +56,28 @@ export default class PlaybookData extends ItemTemplateData {
 							name: new foundry.data.fields.StringField({ initial: null, nullable: true }),
 							granted: new foundry.data.fields.BooleanField({ initial: false }),
 							advancement: new foundry.data.fields.NumberField({
-								required: true, integer: true, min: 0, initial: 0, nullable: false
+								required: true,
+								integer: true,
+								min: 0,
+								initial: 0,
+								nullable: false
 							})
 						})
 					),
 					grantOn: new foundry.data.fields.NumberField({
-						required: true, integer: true, min: 0, initial: 0, nullable: false
+						required: true,
+						integer: true,
+						min: 0,
+						initial: 0,
+						nullable: false
 					}),
 					granted: new foundry.data.fields.BooleanField({ initial: false }),
 					advancement: new foundry.data.fields.NumberField({
-						required: true, integer: true, min: 0, initial: 0, nullable: false
+						required: true,
+						integer: true,
+						min: 0,
+						initial: 0,
+						nullable: false
 					})
 				})
 			)

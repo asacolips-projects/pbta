@@ -64,7 +64,7 @@ export default class PbtaItemSheet extends ItemSheet {
 		const actorType = this.actor?.system?.customType || this.actor?.baseType || this.item.system?.actorType;
 		if (!this.actor && this.item.system.actorType !== undefined) {
 			context.actorTypes = Object.fromEntries(Object.entries(sheetConfig.actorTypes)
-				.filter(([a, v]) => this.item._filterActorTypes([a, v]))
+				.filter(([a, v]) => this.item.constructor._filterActorTypes([a, v], this.item.type))
 				.map(([a, v]) => {
 					const pbtaLabel = game.pbta.sheetConfig.actorTypes[a].label;
 					const label = CONFIG.Actor?.typeLabels?.[a] ?? a;

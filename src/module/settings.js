@@ -81,6 +81,15 @@ export function registerSettings() {
 		default: false
 	});
 
+	game.settings.register("pbta", "hideHold", {
+		name: game.i18n.localize("PBTA.Settings.hideHold.name"),
+		hint: game.i18n.localize("PBTA.Settings.hideHold.hint"),
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: false
+	});
+
 	game.settings.register("pbta", "hideOngoing", {
 		name: game.i18n.localize("PBTA.Settings.hideOngoing.name"),
 		hint: game.i18n.localize("PBTA.Settings.hideOngoing.hint"),

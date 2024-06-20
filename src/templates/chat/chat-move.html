@@ -7,7 +7,7 @@
 
     <div class="card-content">
       {{!-- Stat label. --}}
-      {{#if stat.value}}
+      {{#if stat.value includeZero=true}}
         <div class="row"><em>{{localize "PBTA.RolledStat" stat=stat.label}}{{#if stat.value includeZero=true}} ({{numberFormat stat.value decimals=0 sign=true}}){{/if}}</em></div>
       {{/if}}
       {{#if originalMod includeZero=true}}

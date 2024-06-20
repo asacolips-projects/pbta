@@ -48,6 +48,9 @@
         {{#if resources.ongoing.value}}
         <label class="flexrow"><input type="checkbox" name="ongoing" data-mod="{{resources.ongoing.value}}" data-content="ongoing" /><span>{{{localize "PBTA.Dialog.OngoingMessage" value=resources.ongoing.value}}}</span></label>
         {{/if}}
+        {{#if (gt resources.hold.value 0)}}
+        <label class="flexrow"><input type="checkbox" name="hold" data-mod="{{resources.hold.value}}" data-content="hold" /><span>{{{localize "PBTA.Dialog.HoldMessage" value=resources.hold.value}}}</span></label>
+        {{/if}}
     </div>
     {{/if}}
 </form>

@@ -4,8 +4,9 @@ export class ActorDataTemplate extends foundry.abstract.TypeDataModel {
 	static defineSchema() {
 		return {
 			stats: new foundry.data.fields.ObjectField(),
-			attrTop: new foundry.data.fields.ObjectField(),
-			attrLeft: new foundry.data.fields.ObjectField(),
+			attributes: new foundry.data.fields.ObjectField(),
+			attrLeft: new foundry.data.fields.ObjectField({ readonly: true }),
+			attrTop: new foundry.data.fields.ObjectField({ readonly: true }),
 			details: new MappingField(new foundry.data.fields.SchemaField({
 				label: new foundry.data.fields.StringField({ initial: "" }),
 				value: new foundry.data.fields.HTMLField({ initial: "" })
@@ -13,11 +14,17 @@ export class ActorDataTemplate extends foundry.abstract.TypeDataModel {
 		};
 	}
 
-	get attributes() {
-		return {
-			...this.attrTop,
-			...this.attrLeft
-		};
+	prepareDerivedData() {
+		for (const data of Object.values(this.attributes)) {
+			if (["ListOne", "ListMany"].includes(data.type) && data.options) {
+				for (let optV of Object.values(data.options)) {
+					if (optV.values) {
+						const optArray = Object.values(optV.values);
+						optV.value = optArray.some((subOpt) => subOpt.value);
+					}
+				}
+			}
+		}
 	}
 
 	/**

@@ -23,8 +23,8 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		// @todo add warnings about repeat grants
 		const context = await super.getData();
 		context.grantOptions = {
-			0: "PBTA.PlaybookGrantOnDrop",
-			1: "PBTA.Advancement"
+			0: "PBTA.PlaybookGrantOnInstantly",
+			1: "PBTA.PlaybookGrantOnAdvancement"
 		};
 		const choicesByAdvancement = {};
 		this.item.system.choiceSets.forEach((cs, index) => {
@@ -34,7 +34,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		});
 		context.choicesByAdvancement = choicesByAdvancement;
 		for (let [k, v] of Object.entries(context.system.attributes)) {
-			if (["Details", "LongText"].includes(v.type)) {
+			if (["Details", "LongText"].includes(v.type) && context.system.attributes[k].choices) {
 				for (const choice of context.system.attributes[k].choices) {
 					choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", context.enrichmentOptions);
 				}
@@ -59,6 +59,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		html.find("[data-action='update-attributes']").on("click", this._onUpdateAttributes.bind(this));
 		html.find("[data-tab='attributes'] [data-action='add-attribute-choice']").on("click", this._onAddAttributeChoice.bind(this));
 		html.find("[data-tab='attributes'] [data-action='delete-attribute-choice']").on("click", this._onDeleteAttributeChoice.bind(this));
+		html.find("[data-tab='attributes'] [data-action='add-list-option']").on("click", this._onAddNewOption.bind(this));
 	}
 
 	_onChangeActorType(event) {
@@ -123,9 +124,11 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		event.preventDefault();
 		const { key, type } = event.target.closest(".attribute-set").dataset;
 		const attributes = this.item.system.attributes;
-		const { value, max } = attributes[key];
+		const { value, options, max } = attributes[key];
 		if (type === "Resource") attributes[key].choices.push({ value, max });
-		else attributes[key].choices.push({ value });
+		else if (["ListMany", "ListOne"].includes(type)) {
+			attributes[key].choices.push({ options });
+		} else attributes[key].choices.push({ value });
 		this.item.update({ "system.attributes": attributes });
 	}
 
@@ -135,6 +138,16 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		const { id } = event.target.closest(".form-group").dataset;
 		const attributes = this.item.system.attributes;
 		attributes[key].choices = attributes[key].choices.filter((item, index) => index !== Number(id));
+		this.item.update({ "system.attributes": attributes });
+	}
+
+	_onAddNewOption(event) {
+		event.preventDefault();
+		const { key } = event.target.closest(".attribute-set").dataset;
+		const { id } = event.target.closest(".form-group").dataset;
+		const attributes = this.item.system.attributes;
+		const next = Object.keys(attributes[key].choices[id].options).length;
+		attributes[key].choices[id].options[next] = {};
 		this.item.update({ "system.attributes": attributes });
 	}
 

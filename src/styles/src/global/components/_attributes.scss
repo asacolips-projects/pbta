@@ -1,6 +1,7 @@
 .sheet-resources {
   gap: 16px;
-
+  align-items: end;
+  
   .cell {
     text-align: center;
 
@@ -51,6 +52,7 @@
 
   .cell--ongoing,
   .cell--forward,
+  .cell--hold,
   .cell--roll-formula {
     input {
       background-color: $ct-gray;

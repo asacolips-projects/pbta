@@ -1,11 +1,11 @@
 {{#if (objLen attrs)}}
-<div class="cell cell--{{class}}">
+<div class="cell {{cssClass}}">
 	{{#each attrs as |attr key|}}
 		<div class="cell cell--{{key}} cell--attr-{{key}} cell--{{attr.type}}">
 			{{#if attr.customLabel}}
-				<input type="text" class="input--cell-title" name="system.{{../group}}.{{key}}.userLabel" value="{{#if attr.userLabel}}{{attr.userLabel}}{{else}}{{attr.label}}{{/if}}">
+				<input type="text" class="input--cell-title" name="system.attributes.{{key}}.userLabel" value="{{#if attr.userLabel}}{{attr.userLabel}}{{else}}{{attr.label}}{{/if}}">
 			{{else}}
-				<label for="system.{{../group}}.{{key}}.value" class="cell__title">{{attr.label}}</label>
+				<label for="system.attributes.{{key}}.value" class="cell__title">{{attr.label}}</label>
 			{{/if}}
 			{{#if attr.description}}<p class="cell__description cell__description--attr">{{attr.description}}</p>{{/if}}
 			{{!-- Text area --}}
@@ -14,30 +14,30 @@
 			{{!-- Checkbox --}}
 			{{else if (eq attr.type "Checkbox")}}
 				{{#if attr.checkboxLabel}}<label>{{/if}}
-				<input type="checkbox" name="system.{{../group}}.{{key}}.value" {{checked attr.value}}/>
+				<input type="checkbox" name="system.attributes.{{key}}.value" {{checked attr.value}}/>
 				{{#if attr.checkboxLabel}}{{attr.checkboxLabel}}</label>{{/if}}
 			{{!-- Number --}}
 			{{else if (eq attr.type "Number")}}
-				<input type="text" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
+				<input type="text" name="system.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
 			{{!-- Resource with value/max --}}
 			{{else if (eq attr.type "Resource")}}
 				<div class="cell__counter flexrow">
-					<input type="text" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
+					<input type="text" name="system.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number"/>
 					<span> / </span>
-					<input type="text" name="system.{{../group}}.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
+					<input type="text" name="system.attributes.{{key}}.max" value="{{attr.max}}" data-dtype="Number"/>
 				</div>
 			{{!-- TODO: Replace this with stylized checkboxes per xp pip. --}}
 			{{else if (eq attr.type "Xp")}}
 				<div class="cell__clock flexrow">
 					{{#times attr.max}}
-					<input type="radio" class="attr-xp" data-name="system.{{../../group}}.{{key}}" data-step="{{@index}}" {{checked (gt attr.value @index)}}>
+					<input type="radio" class="attr-xp" data-name="system.attributes.{{key}}" data-step="{{@index}}" {{checked (gt attr.value @index)}}>
 					{{/times}}
 				</div>
 			{{!-- TODO: Replace this with checkboxes per clock pip. --}}
 			{{else if (eq attr.type "Clock")}}
 				<div class="cell__clock flexrow">
 					{{#times attr.max}}
-					<input type="checkbox" class="attr-clock" data-name="system.{{../../group}}.{{key}}" data-step="{{@index}}" {{checked (gt attr.value @index)}}>
+					<input type="checkbox" class="attr-clock" data-name="system.attributes.{{key}}" data-step="{{@index}}" {{checked (gt attr.value @index)}}>
 					{{/times}}
 				</div>
 			{{else if (eq attr.type "ListMany") }}
@@ -52,13 +52,13 @@
 						>
 							{{#if option.values}}
 								{{#each option.values as |suboption suboptionKey|}}
-									<input type="checkbox" class="attr-list" name="system.{{../../../group}}.{{key}}.options.{{optionKey}}.values.{{suboptionKey}}.value" {{checked suboption.value}}/>
+									<input type="checkbox" class="attr-list" name="system.attributes.{{key}}.options.{{optionKey}}.values.{{suboptionKey}}.value" {{checked suboption.value}}/>
 								{{/each}}
 							{{else}}
-								<input type="checkbox" class="attr-list" name="system.{{../../group}}.{{key}}.options.{{optionKey}}.value" {{checked option.value}}/>
+								<input type="checkbox" class="attr-list" name="system.attributes.{{key}}.options.{{optionKey}}.value" {{checked option.value}}/>
 							{{/if}}
 							{{#if (eq option.label "[Text]")}}
-								<input type="text" class="input input-title" name="system.{{../../group}}.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
+								<input type="text" class="input input-title" name="system.attributes.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
 							{{else}}
 								{{option.label}}
 							{{/if}}
@@ -75,9 +75,9 @@
 						data-tooltip-direction="UP"
 						{{/if}}
 					>
-						<input type="radio" class="attr-list" value="{{@index}}" name="system.{{../../group}}.{{key}}.value" {{checked (softEq attr.value @index)}} />
+						<input type="radio" class="attr-list" value="{{@index}}" name="system.attributes.{{key}}.value" {{checked (softEq attr.value @index)}} />
 						{{#if (eq option.label "[Text]")}}
-							<input type="text" class="input input-title" id="system.{{../../group}}.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
+							<input type="text" class="input input-title" id="system.attributes.{{key}}.options.{{optionKey}}.userLabel" value="{{option.userLabel}}">
 						{{else}}
 							{{option.label}}
 						{{/if}}
@@ -87,12 +87,12 @@
 			{{else if (eq attr.type "Roll")}}
 				<div class="cell__roll">
 					<span class="attr-icon attr-rollable rollable" data-roll="{{attr.value}}" data-label="{{attr.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
-					<input type="text" class="input input--roll" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}"/>
+					<input type="text" class="input input--roll" name="system.attributes.{{key}}.value" value="{{attr.value}}"/>
 				</div>
 
 			{{!-- Fallback to a text field. --}}
 			{{else}}
-				<input type="text" class="input input--{{key}}" name="system.{{../group}}.{{key}}.value" value="{{attr.value}}"/>
+				<input type="text" class="input input--{{key}}" name="system.attributes.{{key}}.value" value="{{attr.value}}"/>
 			{{/if}}
 		</div>
 	{{/each}}

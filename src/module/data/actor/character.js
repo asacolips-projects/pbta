@@ -18,4 +18,8 @@ export default class CharacterData extends ActorDataTemplate {
 			resources: createActorResources()
 		};
 	}
+
+	get baseType() {
+		return "character";
+	}
 }
