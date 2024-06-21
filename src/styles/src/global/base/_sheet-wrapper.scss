@@ -81,24 +81,6 @@
     column-gap: 16px;
     margin-bottom: 16px;
 
-    .sheet-look {
-      width: auto;
-      // max-width: 100%;
-      height: 100%;
-      position: relative;
-
-      &::before {
-        display: block;
-        content: '';
-        position: absolute;
-        top: 0;
-        right: -9px;
-        bottom: 0;
-        width: 2px;
-        background: $ct-gray;
-      }
-    }
-
     .sheet-main {
       flex: 3;
       width: auto;

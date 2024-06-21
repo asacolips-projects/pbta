@@ -382,9 +382,6 @@ export default class PbtaActorSheet extends ActorSheet {
 		});
 		html.find(".view-playbook[data-playbook]").on("click", this._onViewPlaybook.bind(this));
 
-		// // Toggle look.
-		html.find(".toggle--look").on("click", this._toggleLook.bind(this, html));
-
 		// // Owned Item management
 		html.find(".item-create").on("click", this._onItemCreate.bind(this));
 		html.find(".item-edit").on("click", this._onItemEdit.bind(this));
@@ -689,20 +686,6 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Initialize variables.
 		event.preventDefault();
 		this.actor.items.find((i) => i.type === "playbook")?.sheet.render(true);
-	}
-
-	/**
-	 * Listen for toggling the look column.
-	 * @param {HTMLElement} html
-	 * @param {MouseEvent} event
-	 */
-	_toggleLook(html, event) {
-		// Add a class to the sidebar.
-		html.find(".sheet-look").toggleClass("closed");
-
-		// Add a class to the toggle button.
-		let $look = html.find(".toggle--look");
-		$look.toggleClass("closed");
 	}
 
 	/* -------------------------------------------- */
