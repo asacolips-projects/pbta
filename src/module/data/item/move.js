@@ -8,7 +8,6 @@ export default class MoveData extends ItemTemplateData {
 			...superFields,
 			...createMoveData(),
 			...createItemResources(),
-			playbook: new foundry.data.fields.StringField({ initial: "" }),
 			rollType: new foundry.data.fields.StringField({ initial: "" }),
 			rollMod: new foundry.data.fields.NumberField({
 				initial: 0,

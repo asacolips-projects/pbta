@@ -45,9 +45,6 @@ export default class PbtaItemSheet extends ItemSheet {
 			isGM: game.user.isGM
 		};
 
-		// Add playbooks.
-		context.playbooks = game.pbta.utils.getPlaybookLabels();
-
 		// Handle rich text fields.
 		const enrichmentOptions = {
 			async: true,
@@ -124,11 +121,6 @@ export default class PbtaItemSheet extends ItemSheet {
 
 				if (context.system?.choices) {
 					context.enriched.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
-				}
-				if (Object.keys(context.system.moveTypes) && context.system.moveType) {
-					if (context.system.moveTypes[context.system.moveType]?.playbook) {
-						context.isPlaybookMove = true;
-					}
 				}
 			} else if (this.item.type === "npcMove") {
 				context.system.rollExample = sheetConfig?.rollFormula ?? "2d6";
