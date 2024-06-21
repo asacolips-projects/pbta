@@ -9,12 +9,7 @@
 
   .sheet-header {
     column-gap: 10px;
-    max-height: 80px;
     min-height: 50px;
-
-    .cell--image {
-      flex: 0 0 80px;
-    }
 
     input {
       &::placeholder {
@@ -34,10 +29,6 @@
     .sheet-attributes {
       flex-wrap: nowrap;
       align-items: center;
-
-      .cell--image {
-        flex: 0 0 158px;
-      }
     }
 
     .sheet-attributes-top {
