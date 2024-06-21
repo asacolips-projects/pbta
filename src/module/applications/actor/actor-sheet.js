@@ -206,7 +206,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			}
 			context.system[position][attrKey] = attrValue;
 			if (attrValue.type === "LongText") {
-				context.system[position][attrKey].attrName = `system..attributes.${attrKey}.value`;
+				context.system[position][attrKey].attrName = `system.attributes.${attrKey}.value`;
 				context.system[position][attrKey].enriched =
 					await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
 			}
