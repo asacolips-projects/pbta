@@ -154,7 +154,7 @@
   }
 }
 
-.window-content {
+:not(.image-popout) .window-content {
   background: $c-white url('#{$asset-path}/concrete-seamless.webp');
 
   .tox-tinymce {
