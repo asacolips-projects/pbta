@@ -2,7 +2,7 @@ name: pbta
 id: pbta
 title: Powered by the Apocalypse
 description: Run games for any PbtA system in Foundry VTT!
-version: "1.0.15"
+version: "1.0.16"
 compatibility:
   minimum: "12"
   verified: "12"
