@@ -633,7 +633,13 @@ export default class ItemPbta extends Item {
 	_filterAttributes(attributes, path) {
 		return Object.fromEntries(
 			Object.entries(attributes)
-				.filter(([key, data]) => [this.system.slug, this.name, true].includes(data.playbook))
+				.filter(([key, data]) => {
+					const filtersSet = new Set([this.system.slug, this.name, true]);
+					const playbookSet = Array.isArray(data.playbook)
+						? new Set(data.playbook)
+						: new Set([data.playbook]);
+					return filtersSet.intersection(playbookSet).size;
+				})
 				.map(([key, data]) => {
 					data.type ??= "Details";
 					if (data.type === "Resource") {
