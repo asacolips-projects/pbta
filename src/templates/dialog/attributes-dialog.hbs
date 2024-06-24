@@ -1,5 +1,6 @@
 <form class="pbta-attribute-dialog">
     <ol>
+        {{#if description}}<div>{{description}}</div>{{/if}}
         {{#each choices as |choice|}}
         <li class="flexrow" data-uuid="{{@index}}">
             <input class="choice" type="radio" name="{{../attribute}}" value="{{@index}}" data-dtype="Number" {{checked (eq @index 0)}}>

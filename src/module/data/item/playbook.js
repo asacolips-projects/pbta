@@ -24,6 +24,7 @@ export default class PlaybookData extends ItemTemplateData {
 			attributes: new MappingField(
 				new foundry.data.fields.SchemaField({
 					label: new foundry.data.fields.StringField({ initial: "", required: true }),
+					description: new foundry.data.fields.StringField({ blank: true }),
 					value: new AttributeChoiceValueField({ initial: "", required: true, nullable: true }),
 					max: new AttributeChoiceValueField({ initial: null, nullable: true }),
 					custom: new foundry.data.fields.BooleanField(),

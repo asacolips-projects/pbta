@@ -16,6 +16,12 @@
 				</a>
 			</div>
 		</div>
+		{{#if attribute.choices.length}}
+		<div class="form-group">
+			<label>{{localize "PBTA.Description"}}</label>
+			<input type="text" name="system.attributes.{{key}}.description" value="{{attribute.description}}">
+		</div>
+		{{/if}}
 		<ol>
 			{{#each attribute.choices as |choice choiceKey|}}
 			<li class="form-group" data-id="{{@index}}">
