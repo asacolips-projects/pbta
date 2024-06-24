@@ -361,6 +361,15 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Rollables.
 		html.find(".rollable, .showable").on("click", this._onRollable.bind(this));
 
+		html.find(".profile-img").on("contextmenu", () => {
+			if (!this.actor.img) return;
+			new ImagePopout(this.actor.img, {
+				title: this.actor.name,
+				shareable: this.actor.isOwner ?? game.user?.isGM,
+				uuid: this.actor.uuid
+			}).render(true);
+		});
+
 		// // View playbook.
 		html.find(".charplaybook").on("change", async (event) => {
 			const currPlaybook = this.actor.playbook;

@@ -1,12 +1,3 @@
-
-&.theme-dark {
-  #reload-world-confirm {
-    .window-content {
-      background: initial;
-    }
-  }
-}
-
 .window-app {
   background: $c-navy;
 
@@ -154,7 +145,7 @@
   }
 }
 
-.window-content {
+:not(.application) .window-content {
   background: $c-white url('#{$asset-path}/concrete-seamless.webp');
 
   .tox-tinymce {
