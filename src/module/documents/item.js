@@ -234,7 +234,16 @@ export default class ItemPbta extends Item {
 		if (Object.keys(data.system?.attributes ?? {}).length > 0) {
 			const selected = {};
 			for (const attribute in data.system.attributes) {
-				const { label, choices, custom, max, path, type, value } = data.system.attributes[attribute];
+				const {
+					label,
+					choices,
+					custom,
+					description,
+					max,
+					path,
+					type,
+					value
+				} = data.system.attributes[attribute];
 				if (choices.length > 1 || custom) {
 					if (custom) {
 						const choice = { custom, value };
@@ -253,7 +262,12 @@ export default class ItemPbta extends Item {
 					}
 					await Dialog.wait({
 						title: `${game.i18n.localize("PBTA.Attribute")}: ${label}`,
-						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", { attribute, choices, type }),
+						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", {
+							attribute,
+							choices,
+							description,
+							type
+						}),
 						default: "ok",
 						// @todo add some warning about pending grants
 						close: () => {
@@ -275,6 +289,7 @@ export default class ItemPbta extends Item {
 									const choice = fd.object[attribute];
 									let { custom, max, options, value } = choices[choice];
 									if (custom) value = fd.object.custom;
+									if (description) selected[`system.${path}.${attribute}.description`] = description;
 									if (value) selected[`system.${path}.${attribute}.value`] = value;
 									if (max) selected[[`system.${path}.${attribute}.max`]] = max;
 									if (options) selected[`system.${path}.${attribute}.options`] = options;
@@ -283,13 +298,14 @@ export default class ItemPbta extends Item {
 						}
 					}, { jQuery: false });
 				} else if (!custom) {
-					let { value, max = null, options = null } = data.system.attributes[attribute];
-					if (data.system.attributes[attribute].choices.length) {
-						const choice = data.system.attributes[attribute].choices[0];
+					let { choices, max, options, value } = data.system.attributes[attribute];
+					if (choices.length) {
+						const choice = choices[0];
 						value = choice.value;
 						max = choice.max ?? max;
 						options = choice.options ?? options;
 					}
+					if (description) selected[`system.${path}.${attribute}.description`] = description;
 					if (value) selected[`system.${path}.${attribute}.value`] = value;
 					if (max) selected[[`system.${path}.${attribute}.max`]] = max;
 					if (options) selected[[`system.${path}.${attribute}.options`]] = options;
