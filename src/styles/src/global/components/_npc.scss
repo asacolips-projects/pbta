@@ -1,10 +1,6 @@
 &.npc {
   .sheet-wrapper {
     .sheet-top {
-      // For some reason it grows bigger than the Character sheet because it has no Stats.
-      // The actual fix would be to remove the "height: 100%" .sheet-wrapper, but it breaks editors
-      max-height: 139px;
-
       &:has(> .sheet-attributes-top:empty) {
         display: none;
       }
