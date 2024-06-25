@@ -21,18 +21,23 @@
   button,
   select,
   textarea {
-    font-family: $font-stack-base;
-    font-size: var(--font-size-14);
     background: $c-white;
-    border: 1px solid rgba(0,0,0,0.25);
-    // border: 0;
 
-    &:hover:not(:disabled),
-    &:focus:not(:disabled) {
-      box-shadow: 0 0 5px #38366378;
-      // border: 0;
-      outline: 0;
+    &:not(.fa-classic, .fa-light, .fa-regular, .fa-solid, .fa-thin, .fal, .far, .fas, .fat) {
+      font-family: $font-stack-base;
+      font-size: var(--font-size-14);
     }
+
+    &:not([type="range"], [type="color"])  {
+      border: 1px solid rgba(0,0,0,0.25);
+
+      &:hover:not(:disabled),
+      &:focus:not(:disabled) {
+        box-shadow: 0 0 5px #38366378;
+        outline: 0;
+      }
+    }
+
 
     &:disabled {
       background: #99999940;
@@ -84,12 +89,16 @@
 
   button,
   .button {
-    font-family: $font-stack-base;
+
     background: rgba(0, 0, 0, 0.1);
     border: 1px solid $c-navy-up;
     border-radius: 3px;
     box-shadow: 0 0 2px $c-white inset;
     cursor: pointer;
+
+    &:not(.fa-classic, .fa-light, .fa-regular, .fa-solid, .fa-thin, .fal, .far, .fas, .fat) {
+      font-family: $font-stack-base;
+    }
 
     &:hover,
     &:focus {
@@ -145,9 +154,13 @@
   }
 }
 
-:not(.application, .image-popout) .window-content {
+:not(.application, .journal-sheet, .image-popout) .window-content,
+.journal-entry-page .window-content,
+.window-content .journal-entry-content {
   background: $c-white url('#{$asset-path}/concrete-seamless.webp');
+}
 
+.window-content {
   .tox-tinymce {
     height: 100% !important;
 
