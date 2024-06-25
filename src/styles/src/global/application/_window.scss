@@ -145,9 +145,13 @@
   }
 }
 
-:not(.application, .image-popout) .window-content {
+:not(.application, .journal-sheet, .image-popout) .window-content,
+.journal-entry-page .window-content,
+.window-content .journal-entry-content {
   background: $c-white url('#{$asset-path}/concrete-seamless.webp');
+}
 
+.window-content {
   .tox-tinymce {
     height: 100% !important;
 
