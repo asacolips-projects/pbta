@@ -6,23 +6,3 @@
     padding-right: 10px;
   }
 }
-
-#sidebar {
-  .tabs a {
-    color: $c-white
-  }
-  .directory-header button,
-  .settings-sidebar button {
-    background: $c-white;
-  }
-
-  #chat-controls {
-    .chat-control-icon,
-    .control-buttons {
-      color: $c-white;
-    }
-    .roll-type-select {
-      background: $c-white;
-    }
-  }
-}
