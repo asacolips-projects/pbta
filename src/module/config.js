@@ -10,8 +10,7 @@ PBTA.attrTypes = [
 	"Checkbox",
 	"ListMany",
 	"ListOne",
-	"Roll",
-	"Track"
+	"Roll"
 ];
 
 PBTA.sheetConfigs = [
