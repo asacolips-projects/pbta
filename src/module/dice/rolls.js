@@ -130,26 +130,28 @@ export default class RollPbtA extends Roll {
 	 *                                          dialog was closed
 	 */
 	async configureDialog({ template, templateData = {}, title } = {}, options = {}) {
+		const { conditionGroups, resources, rollType, stats } = this.data;
 		this.options.title = title;
 		this.options.conditions = [];
 		this.options.conditionsConsumed = [];
-		const hasSituationalMods = this.data.resources.forward.value !== 0
-			|| this.data.resources.ongoing.value !== 0
-			|| this.data.resources.hold.value > 0;
+		const hasSituationalMods = resources
+			? resources.forward.value !== 0
+				|| resources.ongoing.value !== 0
+				|| resources.hold.value > 0
+			: false;
 
 		const needsDialog =
-			this.data.rollType === "ask"
-			|| this.data.rollType === "prompt"
+			["ask", "prompt"].includes(rollType)
 			|| hasSituationalMods
-			|| this.data.conditionGroups.length > 0
+			|| conditionGroups.length > 0
 			|| (templateData.isStatToken && templateData.numOfToken);
 
 		if (needsDialog) {
 			templateData = foundry.utils.mergeObject(templateData, {
-				conditionGroups: this.data.conditionGroups,
-				hasPrompt: this.data.rollType === "prompt",
-				hasSituationalMods: hasSituationalMods,
-				resources: this.data.resources
+				conditionGroups,
+				hasPrompt: rollType === "prompt",
+				hasSituationalMods,
+				resources
 			});
 
 			const content = await renderTemplate(template ?? this.constructor.EVALUATION_TEMPLATE, templateData);
@@ -163,9 +165,9 @@ export default class RollPbtA extends Roll {
 						}
 					}
 				};
-				if (this.data.rollType === "ask") {
+				if (rollType === "ask") {
 					title = game.i18n.format("PBTA.AskTitle", { name: templateData.title });
-					buttons = Object.entries(this.data.stats)
+					buttons = Object.entries(stats)
 						.filter((stat) => {
 							return !["ask", "prompt", "formula"].includes(stat[0])
 								&& !(game.pbta.sheetConfig.statToken && stat[0] === "token");
@@ -178,7 +180,7 @@ export default class RollPbtA extends Roll {
 								}
 							};
 						});
-				} else if (this.data.rollType === "prompt") {
+				} else if (rollType === "prompt") {
 					title = game.i18n.format("PBTA.PromptTitle", { name: templateData.title });
 				}
 
