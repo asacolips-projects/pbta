@@ -30,7 +30,7 @@ export default class PbtaItemSheet extends ItemSheet {
 			actor: this.actor,
 			item: this.item,
 			source: source.system,
-			system: this.item.system,
+			system: foundry.utils.duplicate(this.item.system),
 			enriched: {
 				description: this.item.system.description
 			},
