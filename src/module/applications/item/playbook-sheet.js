@@ -213,7 +213,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 
 		if (item.system.moveType) {
 			const moveTypes = (validCharacterTypes[actorType] ?? validCharacterTypes.character).moveTypes;
-			if (moveTypes && moveTypes[item.system.moveType]?.creation) return false;
+			if (moveTypes?.[item.system.moveType]?.creation) return false;
 		}
 
 		const { img, name, type, uuid } = item;
