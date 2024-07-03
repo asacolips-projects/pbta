@@ -62,11 +62,9 @@ export default class PbtaActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	render(force=false, options={}) {
-		if (!this.actor.limited) {
-			const playbook = this.actor.playbook.slug;
-			if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
-				this.options.classes.push(`playbook-${playbook}`);
-			}
+		const playbook = this.actor.playbook.slug;
+		if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
+			this.options.classes.push(`playbook-${playbook}`);
 		}
 		return super.render(force, options);
 	}
