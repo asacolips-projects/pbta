@@ -320,14 +320,16 @@ export default class ItemPbta extends Item {
 			for (const choiceSet of data.system.choiceSets) {
 				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
 				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
-				const validChoices = await Promise.all(
-					choices.filter(async (c) => {
+				const validChoices = (await Promise.all(
+					choices.map(async (c) => {
 						const item = await fromUuid(c.uuid);
-						return !c.granted
+						c.name = item.name;
+						const isValid = !c.granted
 							&& c.advancement <= this.parent.advancements
 							&& !this.actor.items.has(item.id);
-					})
-				);
+						return isValid ? c : null;
+					}))
+				).filter((c) => c);
 				if (!validChoices.length) continue;
 				if (choiceSet.grantOn === 0) {
 					validChoices.forEach((i) => {
