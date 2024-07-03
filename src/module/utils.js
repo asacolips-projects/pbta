@@ -844,6 +844,7 @@ export async function getPlaybooks() {
 				actorType: p.system.actorType
 			};
 		});
+	if (!CONFIG.PBTA.playbooks.length) game.pbta.noPlaybooks = true;
 }
 
 /**
