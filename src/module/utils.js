@@ -209,8 +209,6 @@ export function convertSheetConfig(sheetConfig) {
 			let rollFormula = v.trim();
 			let validRoll = Roll.validate(rollFormula);
 			newConfig.rollFormula = validRoll ? rollFormula : "";
-		} else if (k === "rollShifting") {
-			newConfig.rollShifting = v;
 		} else if (k === "statToggle") {
 			if (!v) {
 				newConfig.statToggle = false;
@@ -267,10 +265,6 @@ export function convertSheetConfig(sheetConfig) {
 					}
 				};
 			}
-		} else if (k === "statClock") {
-			newConfig.statClock = v;
-		} else if (k === "skipAttributeGrant") {
-			newConfig.skipAttributeGrant = v;
 		} else if (k === "rollResults") {
 			newConfig.rollResults = {};
 			// Set result ranges.
@@ -306,11 +300,8 @@ export function convertSheetConfig(sheetConfig) {
 					}
 				}
 			}
-		} else if (k === "minMod") {
-			newConfig.minMod = v;
-
-		} else if (k === "maxMod") {
-			newConfig.maxMod = v;
+		} else if (CONFIG.PBTA.sheetConfigs.find((sc) => sc === k)) {
+			newConfig[k] = v;
 		// eslint-disable-next-line max-len
 		} else if (v.label || v.description || v.stats || v.attributesTop || v.attributesLeft || v.moveTypes || v.equipmentTypes) {
 			// Actors
