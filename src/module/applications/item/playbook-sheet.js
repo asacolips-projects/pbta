@@ -222,7 +222,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			if (moveTypes?.[item.system.moveType]?.creation) return false;
 		}
 
-		const { img, type, uuid } = item;
+		const { img, name, type, uuid } = item;
 
 		const { id: setId } = event.target.closest(".choiceset").dataset;
 		const choiceSets = this.item.system.choiceSets;
@@ -238,6 +238,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 				.filter((c) => c.uuid !== uuid);
 		}
 		choiceSets[setId].choices.push({
+			name,
 			img,
 			uuid,
 			granted: false,
