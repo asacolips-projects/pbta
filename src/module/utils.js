@@ -127,10 +127,12 @@ export function validateSheetConfig(sheetConfig) {
 
 						// Handle list types.
 						if (attrType === "ListMany" || attrType === "ListOne") {
-							if (!attrValue.options) {
-								errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeOptions}`);
-							} else if (typeof attrValue.options !== "object" || Object.keys(attrValue.options).length < 1) {
-								errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeOptionsEmpty}`);
+							if (!attrValue.playbook) {
+								if (!attrValue.options) {
+									errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeOptions}`);
+								} else if (typeof attrValue.options !== "object" || Object.keys(attrValue.options).length < 1) {
+									errors.push(`${t.attribute} '${actorType}.${attrGroup}.${attr}' ${t.attributeOptionsEmpty}`);
+								}
 							}
 						}
 					});
