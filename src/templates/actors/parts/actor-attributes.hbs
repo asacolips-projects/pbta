@@ -86,7 +86,9 @@
 				</ul>
 			{{else if (eq attr.type "Roll")}}
 				<div class="cell__roll">
-					<span class="attr-icon attr-rollable rollable" data-roll="{{attr.value}}" data-label="{{attr.label}}"><i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i></span>
+					<span class="attr-icon attr-rollable rollable" data-roll="{{attr.value}}" data-label="{{attr.label}}" data-show-results="{{attr.showResults}}">
+						<i class="fas fa-dice-d6"></i> <i class="fas fa-dice-d6"></i>
+					</span>
 					<input type="text" class="input input--roll" name="system.attributes.{{key}}.value" value="{{attr.value}}"/>
 				</div>
 			{{else if (eq attr.type "Track")}}

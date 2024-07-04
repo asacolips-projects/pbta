@@ -62,11 +62,9 @@ export default class PbtaActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	render(force=false, options={}) {
-		if (!this.actor.limited) {
-			const playbook = this.actor.playbook.slug;
-			if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
-				this.options.classes.push(`playbook-${playbook}`);
-			}
+		const playbook = this.actor.playbook.slug;
+		if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
+			this.options.classes.push(`playbook-${playbook}`);
 		}
 		return super.render(force, options);
 	}
@@ -134,6 +132,7 @@ export default class PbtaActorSheet extends ActorSheet {
 					.filter(([k, v]) => [k, v?.baseType].includes("character"))
 			);
 			const hasMultipleCharacterTypes = Object.keys(validCharacterTypes).length > 1;
+			if (!CONFIG.PBTA.playbooks.length && !game.pbta.noPlaybooks) await game.pbta.utils.getPlaybooks();
 			context.playbooks = CONFIG.PBTA.playbooks
 				.filter((p) => !hasMultipleCharacterTypes || [this.actor.sheetType, ""].includes(p.actorType))
 				.map((p) => {
@@ -209,6 +208,9 @@ export default class PbtaActorSheet extends ActorSheet {
 				context.system[position][attrKey].attrName = `system.attributes.${attrKey}.value`;
 				context.system[position][attrKey].enriched =
 					await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
+			}
+			if (attrValue.type === "Roll" && attrValue.showResults === undefined) {
+				attrValue.showResults = true;
 			}
 		}
 	}

@@ -54,7 +54,6 @@ export default class PlaybookData extends ItemTemplateData {
 						new foundry.data.fields.SchemaField({
 							uuid: new foundry.data.fields.StringField({ initial: "", required: true }),
 							img: new foundry.data.fields.StringField({ initial: null, nullable: true }),
-							name: new foundry.data.fields.StringField({ initial: null, nullable: true }),
 							granted: new foundry.data.fields.BooleanField({ initial: false }),
 							advancement: new foundry.data.fields.NumberField({
 								required: true,

@@ -124,7 +124,7 @@ export default class ActorPbta extends Actor {
 	 * @param {MouseEvent} event
 	 */
 	async _onRoll(event) {
-		const { label, roll } = event.currentTarget.dataset;
+		const { label, roll, showResults } = event.currentTarget.dataset;
 		const itemId = event.currentTarget.closest(".item")?.dataset.itemId;
 		const options = {};
 		if (!game.settings.get("pbta", "hideRollMode")) {
@@ -137,6 +137,7 @@ export default class ActorPbta extends Actor {
 			if (stat === "token" && game.pbta.sheetConfig.statToken) await this._onRollToken(stat, label, options);
 			else await this._onRollStat(stat, label, options);
 		} else if (event.currentTarget.classList.contains("attr-rollable") && roll) {
+			if (showResults === "false") options.descriptionOnly = true;
 			await this._onRollAttr(roll, label, options);
 		} else if (itemId) {
 			const item = this.items.get(itemId);

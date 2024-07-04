@@ -27,12 +27,18 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			1: "PBTA.PlaybookGrantOnAdvancement"
 		};
 		const choicesByAdvancement = {};
-		this.item.system.choiceSets.forEach((cs, index) => {
+		await Promise.all(this.item.system.choiceSets.map(async (cs, index) => {
+			await Promise.all(cs.choices.map(async (c) => {
+				const { name } = await fromUuid(c.uuid);
+				c.name = name;
+			}));
+
 			if (!choicesByAdvancement[cs.advancement]) choicesByAdvancement[cs.advancement] = {};
 			if (!choicesByAdvancement[cs.advancement][index]) choicesByAdvancement[cs.advancement][index] = [];
 			choicesByAdvancement[cs.advancement][index].push(cs);
-		});
+		}));
 		context.choicesByAdvancement = choicesByAdvancement;
+
 		for (let [k, v] of Object.entries(context.system.attributes)) {
 			if (["Details", "LongText"].includes(v.type) && context.system.attributes[k].choices) {
 				for (const choice of context.system.attributes[k].choices) {
@@ -216,7 +222,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			if (moveTypes?.[item.system.moveType]?.creation) return false;
 		}
 
-		const { img, name, type, uuid } = item;
+		const { img, type, uuid } = item;
 
 		const { id: setId } = event.target.closest(".choiceset").dataset;
 		const choiceSets = this.item.system.choiceSets;
@@ -232,7 +238,6 @@ export default class PlaybookSheet extends PbtaItemSheet {
 				.filter((c) => c.uuid !== uuid);
 		}
 		choiceSets[setId].choices.push({
-			name,
 			img,
 			uuid,
 			granted: false,
