@@ -209,6 +209,9 @@ export default class PbtaActorSheet extends ActorSheet {
 				context.system[position][attrKey].enriched =
 					await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
 			}
+			if (attrValue.type === "Roll" && attrValue.showResults === undefined) {
+				attrValue.showResults = true;
+			}
 		}
 	}
 

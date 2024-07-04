@@ -335,6 +335,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 									updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].value ?? 0;
 									updatesDiff[actorType][`system.${attrGroup}.${attr}.steps`] = newGroup[attr].steps;
 								}
+							} else if (newType === "Roll") {
+								if (newGroup[attr].showResults !== oldGroup[attr].showResults) {
+									configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.showResults`);
+									updatesDiff[actorType][`system.${attrGroup}.${attr}.showResults`] = newGroup[attr].showResults ?? true;
+								}
 							}
 						}
 					}

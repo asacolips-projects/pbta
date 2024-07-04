@@ -36,9 +36,8 @@ export default class ItemPbta extends Item {
 	/**
 	 * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
 	 * @param {object} options
-	 * @param {boolean} options.descriptionOnly
 	 */
-	async roll(options = { descriptionOnly: false }) {
+	async roll(options = {}) {
 		if (
 			options.descriptionOnly
 			|| this.type === "equipment"
@@ -61,7 +60,6 @@ export default class ItemPbta extends Item {
 				speaker: ChatMessage.getSpeaker({ actor: this.actor })
 			});
 		} else {
-			delete options.descriptionOnly;
 			const formula = this._getRollFormula(options);
 			options = foundry.utils.mergeObject(options, {
 				choices: this.system.choices,
