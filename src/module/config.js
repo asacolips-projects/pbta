@@ -20,6 +20,7 @@ PBTA.sheetConfigs = [
 	"rollFormula",
 	"rollResults",
 	"rollShifting",
+	"skipAttributeGrant",
 	"statClock",
 	"statShifting",
 	"statToggle",
