@@ -24,6 +24,7 @@ export default class PlaybookData extends ItemTemplateData {
 			attributes: new MappingField(
 				new foundry.data.fields.SchemaField({
 					label: new foundry.data.fields.StringField({ initial: "", required: true }),
+					description: new foundry.data.fields.StringField({ blank: true }),
 					value: new AttributeChoiceValueField({ initial: "", required: true, nullable: true }),
 					max: new AttributeChoiceValueField({ initial: null, nullable: true }),
 					custom: new foundry.data.fields.BooleanField(),
@@ -53,7 +54,6 @@ export default class PlaybookData extends ItemTemplateData {
 						new foundry.data.fields.SchemaField({
 							uuid: new foundry.data.fields.StringField({ initial: "", required: true }),
 							img: new foundry.data.fields.StringField({ initial: null, nullable: true }),
-							name: new foundry.data.fields.StringField({ initial: null, nullable: true }),
 							granted: new foundry.data.fields.BooleanField({ initial: false }),
 							advancement: new foundry.data.fields.NumberField({
 								required: true,

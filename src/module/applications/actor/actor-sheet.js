@@ -62,11 +62,9 @@ export default class PbtaActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	render(force=false, options={}) {
-		if (!this.actor.limited) {
-			const playbook = this.actor.playbook.slug;
-			if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
-				this.options.classes.push(`playbook-${playbook}`);
-			}
+		const playbook = this.actor.playbook.slug;
+		if (playbook && !(this.options.classes.includes(`playbook-${playbook}`))) {
+			this.options.classes.push(`playbook-${playbook}`);
 		}
 		return super.render(force, options);
 	}
@@ -134,6 +132,7 @@ export default class PbtaActorSheet extends ActorSheet {
 					.filter(([k, v]) => [k, v?.baseType].includes("character"))
 			);
 			const hasMultipleCharacterTypes = Object.keys(validCharacterTypes).length > 1;
+			if (!CONFIG.PBTA.playbooks.length && !game.pbta.noPlaybooks) await game.pbta.utils.getPlaybooks();
 			context.playbooks = CONFIG.PBTA.playbooks
 				.filter((p) => !hasMultipleCharacterTypes || [this.actor.sheetType, ""].includes(p.actorType))
 				.map((p) => {
@@ -206,9 +205,12 @@ export default class PbtaActorSheet extends ActorSheet {
 			}
 			context.system[position][attrKey] = attrValue;
 			if (attrValue.type === "LongText") {
-				context.system[position][attrKey].attrName = `system..attributes.${attrKey}.value`;
+				context.system[position][attrKey].attrName = `system.attributes.${attrKey}.value`;
 				context.system[position][attrKey].enriched =
 					await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
+			}
+			if (attrValue.type === "Roll" && attrValue.showResults === undefined) {
+				attrValue.showResults = true;
 			}
 		}
 	}
@@ -361,6 +363,15 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Rollables.
 		html.find(".rollable, .showable").on("click", this._onRollable.bind(this));
 
+		html.find(".profile-img").on("contextmenu", () => {
+			if (!this.actor.img) return;
+			new ImagePopout(this.actor.img, {
+				title: this.actor.name,
+				shareable: this.actor.isOwner ?? game.user?.isGM,
+				uuid: this.actor.uuid
+			}).render(true);
+		});
+
 		// // View playbook.
 		html.find(".charplaybook").on("change", async (event) => {
 			const currPlaybook = this.actor.playbook;
@@ -381,9 +392,6 @@ export default class PbtaActorSheet extends ActorSheet {
 			if (selected) await this.actor.createEmbeddedDocuments("Item", [await fromUuid(selected.uuid)], { keepId: true, originalUuid: selected.uuid });
 		});
 		html.find(".view-playbook[data-playbook]").on("click", this._onViewPlaybook.bind(this));
-
-		// // Toggle look.
-		html.find(".toggle--look").on("click", this._toggleLook.bind(this, html));
 
 		// // Owned Item management
 		html.find(".item-create").on("click", this._onItemCreate.bind(this));
@@ -689,20 +697,6 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Initialize variables.
 		event.preventDefault();
 		this.actor.items.find((i) => i.type === "playbook")?.sheet.render(true);
-	}
-
-	/**
-	 * Listen for toggling the look column.
-	 * @param {HTMLElement} html
-	 * @param {MouseEvent} event
-	 */
-	_toggleLook(html, event) {
-		// Add a class to the sidebar.
-		html.find(".sheet-look").toggleClass("closed");
-
-		// Add a class to the toggle button.
-		let $look = html.find(".toggle--look");
-		$look.toggleClass("closed");
 	}
 
 	/* -------------------------------------------- */

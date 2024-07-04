@@ -30,7 +30,7 @@ export default class PbtaItemSheet extends ItemSheet {
 			actor: this.actor,
 			item: this.item,
 			source: source.system,
-			system: this.item.system,
+			system: foundry.utils.duplicate(this.item.system),
 			enriched: {
 				description: this.item.system.description
 			},
@@ -44,9 +44,6 @@ export default class PbtaItemSheet extends ItemSheet {
 			flags: this.item.flags,
 			isGM: game.user.isGM
 		};
-
-		// Add playbooks.
-		context.playbooks = game.pbta.utils.getPlaybookLabels();
 
 		// Handle rich text fields.
 		const enrichmentOptions = {
@@ -124,11 +121,6 @@ export default class PbtaItemSheet extends ItemSheet {
 
 				if (context.system?.choices) {
 					context.enriched.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
-				}
-				if (Object.keys(context.system.moveTypes) && context.system.moveType) {
-					if (context.system.moveTypes[context.system.moveType]?.playbook) {
-						context.isPlaybookMove = true;
-					}
 				}
 			} else if (this.item.type === "npcMove") {
 				context.system.rollExample = sheetConfig?.rollFormula ?? "2d6";

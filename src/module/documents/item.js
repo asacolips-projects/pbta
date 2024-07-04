@@ -36,9 +36,8 @@ export default class ItemPbta extends Item {
 	/**
 	 * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
 	 * @param {object} options
-	 * @param {boolean} options.descriptionOnly
 	 */
-	async roll(options = { descriptionOnly: false }) {
+	async roll(options = {}) {
 		if (
 			options.descriptionOnly
 			|| this.type === "equipment"
@@ -61,7 +60,6 @@ export default class ItemPbta extends Item {
 				speaker: ChatMessage.getSpeaker({ actor: this.actor })
 			});
 		} else {
-			delete options.descriptionOnly;
 			const formula = this._getRollFormula(options);
 			options = foundry.utils.mergeObject(options, {
 				choices: this.system.choices,
@@ -169,39 +167,39 @@ export default class ItemPbta extends Item {
 				};
 				if (!game.pbta.sheetConfig.skipAttributeGrant) {
 					const attributesUpdate = await this.handleAttributes(data);
-					const choiceUpdate = await this.handleChoices(data);
-					if (Object.keys(choiceUpdate).length > 0) {
-						this.updateSource(choiceUpdate);
-						const items = [];
-						const grantedItems = [];
-						for (const set of choiceUpdate["system.choiceSets"]) {
-							for (const choice of set.choices) {
-								if (choice.granted) {
-									const item = await fromUuid(choice.uuid);
-									if (item) {
-										items.push(item.toObject());
-										grantedItems.push(item.id);
-									} else {
-										console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
-									}
+					foundry.utils.mergeObject(changes, attributesUpdate);
+				}
+				const choiceUpdate = await this.handleChoices(data);
+				if (Object.keys(choiceUpdate).length > 0) {
+					this.updateSource(choiceUpdate);
+					const items = [];
+					const grantedItems = [];
+					for (const set of choiceUpdate["system.choiceSets"]) {
+						for (const choice of set.choices) {
+							if (choice.granted) {
+								const item = await fromUuid(choice.uuid);
+								if (item) {
+									items.push(item.toObject());
+									grantedItems.push(item.id);
+								} else {
+									console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
 								}
 							}
 						}
-						await ItemPbta.createDocuments(items, {
-							keepId: true,
-							parent: this.parent,
-							renderSheet: null
-						});
-						this.updateSource({ "flags.pbta": { grantedItems } });
 					}
-					foundry.utils.mergeObject(changes, attributesUpdate);
-					if (this.system.actorType) {
-						const stats = foundry.utils.duplicate(this.parent.system.stats);
-						Object.entries(this.system.stats)
-							.filter(([key, data]) => key in stats)
-							.forEach(([key, data]) => stats[key].value = data.value);
-						changes["system.stats"] = stats;
-					}
+					await ItemPbta.createDocuments(items, {
+						keepId: true,
+						parent: this.parent,
+						renderSheet: null
+					});
+					this.updateSource({ "flags.pbta": { grantedItems } });
+				}
+				if (this.system.actorType) {
+					const stats = foundry.utils.duplicate(this.parent.system.stats);
+					Object.entries(this.system.stats)
+						.filter(([key, data]) => key in stats)
+						.forEach(([key, data]) => stats[key].value = data.value);
+					changes["system.stats"] = stats;
 				}
 				await this.parent.update(changes);
 			} else if (!this.system.actorType) {
@@ -234,7 +232,16 @@ export default class ItemPbta extends Item {
 		if (Object.keys(data.system?.attributes ?? {}).length > 0) {
 			const selected = {};
 			for (const attribute in data.system.attributes) {
-				const { label, choices, custom, max, path, type, value } = data.system.attributes[attribute];
+				const {
+					label,
+					choices,
+					custom,
+					description,
+					max,
+					path,
+					type,
+					value
+				} = data.system.attributes[attribute];
 				if (choices.length > 1 || custom) {
 					if (custom) {
 						const choice = { custom, value };
@@ -253,7 +260,12 @@ export default class ItemPbta extends Item {
 					}
 					await Dialog.wait({
 						title: `${game.i18n.localize("PBTA.Attribute")}: ${label}`,
-						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", { attribute, choices, type }),
+						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", {
+							attribute,
+							choices,
+							description,
+							type
+						}),
 						default: "ok",
 						// @todo add some warning about pending grants
 						close: () => {
@@ -275,6 +287,7 @@ export default class ItemPbta extends Item {
 									const choice = fd.object[attribute];
 									let { custom, max, options, value } = choices[choice];
 									if (custom) value = fd.object.custom;
+									if (description) selected[`system.${path}.${attribute}.description`] = description;
 									if (value) selected[`system.${path}.${attribute}.value`] = value;
 									if (max) selected[[`system.${path}.${attribute}.max`]] = max;
 									if (options) selected[`system.${path}.${attribute}.options`] = options;
@@ -283,13 +296,14 @@ export default class ItemPbta extends Item {
 						}
 					}, { jQuery: false });
 				} else if (!custom) {
-					let { value, max = null, options = null } = data.system.attributes[attribute];
-					if (data.system.attributes[attribute].choices.length) {
-						const choice = data.system.attributes[attribute].choices[0];
+					let { choices, max, options, value } = data.system.attributes[attribute];
+					if (choices.length) {
+						const choice = choices[0];
 						value = choice.value;
 						max = choice.max ?? max;
 						options = choice.options ?? options;
 					}
+					if (description) selected[`system.${path}.${attribute}.description`] = description;
 					if (value) selected[`system.${path}.${attribute}.value`] = value;
 					if (max) selected[[`system.${path}.${attribute}.max`]] = max;
 					if (options) selected[[`system.${path}.${attribute}.options`]] = options;
@@ -304,14 +318,16 @@ export default class ItemPbta extends Item {
 			for (const choiceSet of data.system.choiceSets) {
 				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
 				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
-				const validChoices = await Promise.all(
-					choices.filter(async (c) => {
+				const validChoices = (await Promise.all(
+					choices.map(async (c) => {
 						const item = await fromUuid(c.uuid);
-						return !c.granted
+						c.name = item.name;
+						const isValid = !c.granted
 							&& c.advancement <= this.parent.advancements
 							&& !this.actor.items.has(item.id);
-					})
-				);
+						return isValid ? c : null;
+					}))
+				).filter((c) => c);
 				if (!validChoices.length) continue;
 				if (choiceSet.grantOn === 0) {
 					validChoices.forEach((i) => {
@@ -617,7 +633,13 @@ export default class ItemPbta extends Item {
 	_filterAttributes(attributes, path) {
 		return Object.fromEntries(
 			Object.entries(attributes)
-				.filter(([key, data]) => [this.system.slug, this.name, true].includes(data.playbook))
+				.filter(([key, data]) => {
+					const filtersSet = new Set([this.system.slug, this.name, true]);
+					const playbookSet = Array.isArray(data.playbook)
+						? new Set(data.playbook)
+						: new Set([data.playbook]);
+					return filtersSet.intersection(playbookSet).size;
+				})
 				.map(([key, data]) => {
 					data.type ??= "Details";
 					if (data.type === "Resource") {

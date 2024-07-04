@@ -198,10 +198,16 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 					} else {
 						const cosmetic = ["label", "customLabel", "description", "playbook", "limited"];
 						cosmetic.forEach((v) => {
-							const isValid = !foundry.utils.isEmpty(newGroup[attr][v]);
-							if (isValid && newGroup[attr][v] !== oldGroup[attr][v]) {
+							const newProp = newGroup[attr][v];
+							const oldProp = oldGroup[attr][v];
+							const isValid = !foundry.utils.isEmpty(newProp);
+							if (
+								isValid
+								&& !(newProp.equals?.(oldProp) ?? true)
+								&& newProp !== oldProp
+							) {
 								configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.${v}`);
-								updatesDiff[actorType][`system.${attrGroup}.${attr}.${v}`] = newGroup[attr][v];
+								updatesDiff[actorType][`system.${attrGroup}.${attr}.${v}`] = newProp;
 							}
 						});
 						// Handle updating ListOne values.
@@ -327,6 +333,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 									updatesDiff[actorType][`system.${attrGroup}.${attr}.positive.value`] = newPositive.value;
 									updatesDiff[actorType][`system.${attrGroup}.${attr}.value`] = newGroup[attr].value ?? 0;
 									updatesDiff[actorType][`system.${attrGroup}.${attr}.steps`] = newGroup[attr].steps;
+								}
+							} else if (newType === "Roll") {
+								if (newGroup[attr].showResults !== oldGroup[attr].showResults) {
+									configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.showResults`);
+									updatesDiff[actorType][`system.${attrGroup}.${attr}.showResults`] = newGroup[attr].showResults ?? true;
 								}
 							}
 						}

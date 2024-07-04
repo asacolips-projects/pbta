@@ -483,8 +483,12 @@ export function convertAttr(attrGroup, position) {
 
 			case "Text":
 			case "LongText":
+				attr.value = attrValue.default ?? "";
+				break;
+
 			case "Roll":
 				attr.value = attrValue.default ?? "";
+				attr.showResults = attrValue.showResults ?? true;
 				break;
 
 			case "Checkbox":
@@ -844,6 +848,7 @@ export async function getPlaybooks() {
 				actorType: p.system.actorType
 			};
 		});
+	if (!CONFIG.PBTA.playbooks.length) game.pbta.noPlaybooks = true;
 }
 
 /**

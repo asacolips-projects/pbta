@@ -61,15 +61,6 @@
             {{selectOptions system.moveTypes selected=system.moveType labelAttr="label" blank="—" }}
           </select>
         </div>
-
-        {{#if isPlaybookMove}}
-        <div class="form-group">
-          <label>{{localize "PBTA.Playbook"}}</label>
-          <select name="system.playbook">
-            {{selectOptions playbooks selected=system.playbook blank="—" }}
-          </select>
-        </div>
-        {{/if}}
       </div>
   </section>
 </form>

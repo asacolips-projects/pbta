@@ -9,12 +9,7 @@
 
   .sheet-header {
     column-gap: 10px;
-    max-height: 80px;
     min-height: 50px;
-
-    .cell--image {
-      flex: 0 0 80px;
-    }
 
     input {
       &::placeholder {
@@ -34,10 +29,6 @@
     .sheet-attributes {
       flex-wrap: nowrap;
       align-items: center;
-
-      .cell--image {
-        flex: 0 0 158px;
-      }
     }
 
     .sheet-attributes-top {
@@ -81,33 +72,11 @@
     column-gap: 16px;
     margin-bottom: 16px;
 
-    .sheet-look {
-      width: auto;
-      // max-width: 100%;
-      height: 100%;
-      position: relative;
-
-      &::before {
-        display: block;
-        content: '';
-        position: absolute;
-        top: 0;
-        right: -9px;
-        bottom: 0;
-        width: 2px;
-        background: $ct-gray;
-      }
-    }
-
     .sheet-main {
       flex: 3;
       width: auto;
       height: 100%;
       align-items: stretch;
-
-      .sheet-tabs.tabs {
-        max-height: 37px;
-      }
 
       .sheet-body {
         height: 100%;
