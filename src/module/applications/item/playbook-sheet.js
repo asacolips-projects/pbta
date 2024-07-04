@@ -133,6 +133,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		const { value, options, max } = attributes[key];
 		if (type === "Resource") attributes[key].choices.push({ value, max });
 		else if (["ListMany", "ListOne"].includes(type)) {
+			if (!Object.keys(options).length) options[0] = {};
 			attributes[key].choices.push({ options });
 		} else attributes[key].choices.push({ value });
 		this.item.update({ "system.attributes": attributes });
