@@ -21,12 +21,12 @@ export default class ActorPbta extends Actor {
 	 */
 	get conditionGroups() {
 		return Object.entries(this.system.attributes)
-			.filter((attr) => attr[1]?.condition)
-			.map((condition) => {
+			.filter(([key, data]) => data?.condition)
+			.map(([key, data]) => {
 				return {
-					key: condition[0],
-					label: condition[1].label,
-					conditions: Object.values(condition[1].options)
+					key,
+					label: data.label,
+					conditions: Object.values(data.options)
 						.filter((v) => v.value && /(?!\d+-)([+-]*\d+)/.test(v.userLabel ?? v.label))
 						.map((v) => {
 							const label = v.userLabel || v.label;
