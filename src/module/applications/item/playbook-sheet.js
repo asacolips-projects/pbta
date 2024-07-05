@@ -133,6 +133,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		const { value, options, max } = attributes[key];
 		if (type === "Resource") attributes[key].choices.push({ value, max });
 		else if (["ListMany", "ListOne"].includes(type)) {
+			if (!Object.keys(options).length) options[0] = {};
 			attributes[key].choices.push({ options });
 		} else attributes[key].choices.push({ value });
 		this.item.update({ "system.attributes": attributes });
@@ -222,7 +223,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 			if (moveTypes?.[item.system.moveType]?.creation) return false;
 		}
 
-		const { img, type, uuid } = item;
+		const { img, name, type, uuid } = item;
 
 		const { id: setId } = event.target.closest(".choiceset").dataset;
 		const choiceSets = this.item.system.choiceSets;
@@ -238,6 +239,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 				.filter((c) => c.uuid !== uuid);
 		}
 		choiceSets[setId].choices.push({
+			name,
 			img,
 			uuid,
 			granted: false,

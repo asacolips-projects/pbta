@@ -1,4 +1,11 @@
 export class AttributeChoiceValueField extends foundry.data.fields.DataField {
+	static get _defaults() {
+		return foundry.utils.mergeObject(super._defaults, {
+			required: true,
+			nullable: true
+		});
+	}
+
 	_cast(value) {
 		if (typeof value !== "string") return value;
 		if (["true", "false"].includes(value)) return value === "true";

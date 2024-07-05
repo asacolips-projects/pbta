@@ -25,8 +25,8 @@ export default class PlaybookData extends ItemTemplateData {
 				new foundry.data.fields.SchemaField({
 					label: new foundry.data.fields.StringField({ initial: "", required: true }),
 					description: new foundry.data.fields.StringField({ blank: true }),
-					value: new AttributeChoiceValueField({ initial: "", required: true, nullable: true }),
-					max: new AttributeChoiceValueField({ initial: null, nullable: true }),
+					value: new AttributeChoiceValueField({ initial: "" }),
+					max: new AttributeChoiceValueField({ initial: null, required: false }),
 					custom: new foundry.data.fields.BooleanField(),
 					path: new foundry.data.fields.StringField({ initial: "details", required: true }),
 					type: new foundry.data.fields.StringField({
@@ -35,7 +35,7 @@ export default class PlaybookData extends ItemTemplateData {
 					}),
 					choices: new foundry.data.fields.ArrayField(
 						new foundry.data.fields.SchemaField({
-							value: new foundry.data.fields.HTMLField({ initial: "" }),
+							value: new AttributeChoiceValueField({ initial: "" }),
 							options: new foundry.data.fields.ObjectField()
 						})
 					),
