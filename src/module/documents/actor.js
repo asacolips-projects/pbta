@@ -23,16 +23,17 @@ export default class ActorPbta extends Actor {
 		return Object.entries(this.system.attributes)
 			.filter(([key, data]) => data?.condition)
 			.map(([key, data]) => {
+				const regex = /(?!\d+-)([+-]*\d+)/;
 				return {
 					key,
 					label: data.label,
 					conditions: Object.values(data.options)
-						.filter((v) => v.value && /(?!\d+-)([+-]*\d+)/.test(v.userLabel ?? v.label))
+						.filter((v) => v.value && regex.test(v.userLabel ?? v.label))
 						.map((v) => {
 							const label = v.userLabel || v.label;
 							return {
 								label,
-								mod: Roll.safeEval(label.match(/(?!\d+-)([+-]*\d+)/)[0])
+								mod: Roll.safeEval(label.match(regex)[0])
 							};
 						})
 				};
