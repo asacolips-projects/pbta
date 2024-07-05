@@ -120,6 +120,47 @@ export default class ActorPbta extends Actor {
 		}
 	}
 
+	/* -------------------------------------------- */
+	/*  Event Handlers                              */
+	/* -------------------------------------------- */
+
+	async _onUpdate(changed, options, user) {
+		if ((await super._onUpdate(changed, options, user)) === false) return false;
+
+		const tokens = this.isToken ? [this.token] : this.getActiveTokens(true, true);
+		if (tokens.length) {
+			const conditionAttr = new Set(
+				Object.keys(this.system.attributes).filter((key) => this.system.attributes[key]?.condition)
+			);
+			const attributes = new Set(Object.keys(changed.system?.attributes ?? {}));
+			for (const attr of conditionAttr.intersection(attributes)) {
+				const options = Object.entries(changed.system.attributes[attr]?.options ?? {});
+				for (const [key, data] of options) {
+					if (data.value === undefined) continue;
+					const { label, userLabel } = this.system.attributes[attr].options[key];
+					this._displayTokenCondition(userLabel || label, data.value);
+				}
+			}
+		}
+	}
+
+	_displayTokenCondition(label, enabled) {
+		const tokens = this.isToken ? [this.token] : this.getActiveTokens(true, true);
+		for (const token of tokens) {
+			const t = token.object;
+			const text = `${enabled ? "+" : "-"}(${label})`;
+			canvas.interface.createScrollingText(t.center, text, {
+				anchor: CONST.TEXT_ANCHOR_POINTS.CENTER,
+				direction: enabled ? CONST.TEXT_ANCHOR_POINTS.TOP : CONST.TEXT_ANCHOR_POINTS.BOTTOM,
+				distance: (2 * t.h),
+				fontSize: 28,
+				stroke: 0x000000,
+				strokeThickness: 4,
+				jitter: 0.25
+			});
+		}
+	}
+
 	/**
 	 * Listen for click events on rollables.
 	 * @param {MouseEvent} event
