@@ -21,18 +21,19 @@ export default class ActorPbta extends Actor {
 	 */
 	get conditionGroups() {
 		return Object.entries(this.system.attributes)
-			.filter((attr) => attr[1]?.condition)
-			.map((condition) => {
+			.filter(([key, data]) => data?.condition)
+			.map(([key, data]) => {
+				const regex = /(?!\d+-)([+-]*\d+)/;
 				return {
-					key: condition[0],
-					label: condition[1].label,
-					conditions: Object.values(condition[1].options)
-						.filter((v) => v.value && /(?!\d+-)([+-]*\d+)/.test(v.userLabel ?? v.label))
+					key,
+					label: data.label,
+					conditions: Object.values(data.options)
+						.filter((v) => v.value && regex.test(v.userLabel ?? v.label))
 						.map((v) => {
 							const label = v.userLabel || v.label;
 							return {
 								label,
-								mod: Roll.safeEval(label.match(/(?!\d+-)([+-]*\d+)/)[0])
+								mod: Roll.safeEval(label.match(regex)[0])
 							};
 						})
 				};
@@ -116,6 +117,47 @@ export default class ActorPbta extends Actor {
 					ui.combat.render();
 				}
 			}
+		}
+	}
+
+	/* -------------------------------------------- */
+	/*  Event Handlers                              */
+	/* -------------------------------------------- */
+
+	async _onUpdate(changed, options, user) {
+		if ((await super._onUpdate(changed, options, user)) === false) return false;
+
+		const tokens = this.isToken ? [this.token] : this.getActiveTokens(true, true);
+		if (tokens.length) {
+			const conditionAttr = new Set(
+				Object.keys(this.system.attributes).filter((key) => this.system.attributes[key]?.condition)
+			);
+			const attributes = new Set(Object.keys(changed.system?.attributes ?? {}));
+			for (const attr of conditionAttr.intersection(attributes)) {
+				const options = Object.entries(changed.system.attributes[attr]?.options ?? {});
+				for (const [key, data] of options) {
+					if (data.value === undefined) continue;
+					const { label, userLabel } = this.system.attributes[attr].options[key];
+					this._displayTokenCondition(userLabel || label, data.value);
+				}
+			}
+		}
+	}
+
+	_displayTokenCondition(label, enabled) {
+		const tokens = this.isToken ? [this.token] : this.getActiveTokens(true, true);
+		for (const token of tokens) {
+			const t = token.object;
+			const text = `${enabled ? "+" : "-"}(${label})`;
+			canvas.interface.createScrollingText(t.center, text, {
+				anchor: CONST.TEXT_ANCHOR_POINTS.CENTER,
+				direction: enabled ? CONST.TEXT_ANCHOR_POINTS.TOP : CONST.TEXT_ANCHOR_POINTS.BOTTOM,
+				distance: (2 * t.h),
+				fontSize: 28,
+				stroke: 0x000000,
+				strokeThickness: 4,
+				jitter: 0.25
+			});
 		}
 	}
 
