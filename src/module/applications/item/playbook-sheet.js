@@ -28,10 +28,13 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		};
 		const choicesByAdvancement = {};
 		await Promise.all(this.item.system.choiceSets.map(async (cs, index) => {
-			await Promise.all(cs.choices.map(async (c) => {
-				const { name } = await fromUuid(c.uuid);
-				c.name = name;
+			const choices = await Promise.all(cs.choices.map(async (c) => {
+				const item = await fromUuid(c.uuid);
+				if (!item) return;
+				c.name = item.name;
+				return c;
 			}));
+			cs.choices = choices.filter((c) => c?.name);
 
 			if (!choicesByAdvancement[cs.advancement]) choicesByAdvancement[cs.advancement] = {};
 			if (!choicesByAdvancement[cs.advancement][index]) choicesByAdvancement[cs.advancement][index] = [];
