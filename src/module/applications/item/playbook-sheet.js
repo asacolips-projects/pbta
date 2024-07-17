@@ -5,7 +5,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["pbta", "sheet", "item", "playbook"],
-			width: 550,
+			width: 600,
 			dragDrop: [
 				{ dragSelector: ".choiceset-item .item", dropSelector: ".choiceset" }
 			]
