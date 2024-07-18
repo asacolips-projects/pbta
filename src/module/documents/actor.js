@@ -71,28 +71,21 @@ export default class ActorPbta extends Actor {
 		return game.pbta.sheetConfig.rollFormula ?? defaultFormula;
 	}
 
-	async clearForwardAdv() {
-		const forwardUsed = this.system?.resources?.forward?.value;
-		const rollModeUsed = this.getFlag("pbta", "rollMode") !== "def";
-		if (forwardUsed || rollModeUsed) {
-			const updates = {};
-			if (forwardUsed) {
-				updates["system.resources.forward.value"] = 0;
-			}
-			if (rollModeUsed && game.settings.get("pbta", "advForward")) {
-				updates["flags.pbta.rollMode"] = "def";
-			}
-			await this.update(updates);
-		}
+	async clearAdv(updates) {
+		if (!game.settings.get("pbta", "advForward")) return;
+		const rollMode = this.getFlag("pbta", "rollMode") ?? "def";
+		if (rollMode !== "def") updates["flags.pbta.rollMode"] = "def";
 	}
 
-	async decrementHold() {
+	async clearForward(updates, roll) {
+		if (!roll.options.conditionsConsumed.includes("forward")) return;
+		if (this.system?.resources?.forward?.value) updates["system.resources.forward.value"] = 0;
+	}
+
+	async decrementHold(updates, roll) {
+		if (!roll.options.conditionsConsumed.includes("hold")) return;
 		let hold = this.system?.resources?.hold?.value;
-		if (hold) {
-			const updates = {};
-			updates["system.resources.hold.value"] = --hold;
-			await this.update(updates);
-		}
+		if (hold) updates["system.resources.hold.value"] = --hold;
 	}
 
 	async updateCombatMoveCount() {
@@ -207,12 +200,11 @@ export default class ActorPbta extends Actor {
 			speaker: ChatMessage.getSpeaker({ actor: this }),
 			rollMode: game.settings.get("core", "rollMode")
 		});
-		if (r.options.conditionsConsumed.includes("forward")) {
-			await this.clearForwardAdv();
-		}
-		if (r.options.conditionsConsumed.includes("hold")) {
-			await this.decrementHold();
-		}
+		const updates = {};
+		await this.clearAdv(updates);
+		await this.clearForward(updates, r);
+		await this.decrementHold(updates, r);
+		if (Object.keys(updates).length) await this.update(updates);
 		await this.updateCombatMoveCount();
 	}
 
@@ -237,13 +229,10 @@ export default class ActorPbta extends Actor {
 			speaker: ChatMessage.getSpeaker({ actor: this }),
 			rollMode: game.settings.get("core", "rollMode")
 		});
-		await this.update(updates);
-		if (roll.options.conditionsConsumed.includes("forward")) {
-			await this.clearForwardAdv();
-		}
-		if (roll.options.conditionsConsumed.includes("hold")) {
-			await this.decrementHold();
-		}
+		await this.clearAdv(updates);
+		await this.clearForward(updates, roll);
+		await this.decrementHold(updates, roll);
+		if (Object.keys(updates).length) await this.update(updates);
 		await this.updateCombatMoveCount();
 	}
 
