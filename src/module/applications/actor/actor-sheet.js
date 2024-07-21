@@ -168,7 +168,10 @@ export default class PbtaActorSheet extends ActorSheet {
 			// Set a warning for tokens.
 			context.isToken = this.actor.token !== null;
 
-			await this._prepareAdvancement(context);
+			if (context.system.playbook?.uuid) {
+				const xp = Object.values(context.system.attributes).find((data) => data.type === "Xp");
+				context.canAdvance = !xp || xp.value >= xp.max;
+			}
 		}
 
 		this._sortStats(context);
@@ -354,11 +357,6 @@ export default class PbtaActorSheet extends ActorSheet {
 				}
 			}
 		}
-	}
-
-	async _prepareAdvancement(context) {
-		const xp = Object.values(context.system.attributes).find((data) => data.type === "Xp");
-		context.canAdvance = !xp || xp.value >= xp.max;
 	}
 
 	/* -------------------------------------------- */
