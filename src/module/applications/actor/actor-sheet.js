@@ -167,6 +167,8 @@ export default class PbtaActorSheet extends ActorSheet {
 
 			// Set a warning for tokens.
 			context.isToken = this.actor.token !== null;
+
+			await this._prepareAdvancement(context);
 		}
 
 		this._sortStats(context);
@@ -354,6 +356,11 @@ export default class PbtaActorSheet extends ActorSheet {
 		}
 	}
 
+	async _prepareAdvancement(context) {
+		const xp = Object.values(context.system.attributes).find((data) => data.type === "Xp");
+		context.canAdvance = !xp || xp.value >= xp.max;
+	}
+
 	/* -------------------------------------------- */
 
 	/** @override */
@@ -391,7 +398,8 @@ export default class PbtaActorSheet extends ActorSheet {
 			// @todo replace for slug
 			if (selected) await this.actor.createEmbeddedDocuments("Item", [await fromUuid(selected.uuid)], { keepId: true, originalUuid: selected.uuid });
 		});
-		html.find(".view-playbook[data-playbook]").on("click", this._onViewPlaybook.bind(this));
+		html.find(".view-playbook.active").on("click", this._onViewPlaybook.bind(this));
+		html.find(".advancement.active").on("click", this._onAdvance.bind(this));
 
 		// // Owned Item management
 		html.find(".item-create").on("click", this._onItemCreate.bind(this));
@@ -697,6 +705,18 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Initialize variables.
 		event.preventDefault();
 		this.actor.items.find((i) => i.type === "playbook")?.sheet.render(true);
+	}
+
+	async _onAdvance(event) {
+		event.preventDefault();
+		const advancements = this.actor.system.advancements;
+		const xp = Object.entries(this.actor.system.attributes).find(([key, data]) => data.type === "Xp");
+		const updates = { "system.advancements": advancements + 1 };
+		if (xp) {
+			const key = xp[0];
+			updates[`system.attributes.${key}.value`] = 0;
+		}
+		await this.actor.update(updates);
 	}
 
 	/* -------------------------------------------- */
