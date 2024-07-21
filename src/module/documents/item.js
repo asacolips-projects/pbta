@@ -12,12 +12,12 @@ export default class ItemPbta extends Item {
 
 	/** @override */
 	getRollData() {
-		let rollData = {
-			...this.system,
+		const rollData = {
+			...foundry.utils.duplicate(this.system),
 			type: this.type
 		};
 		if (this.actor && this.actor.system?.stats) {
-			rollData = foundry.utils.mergeObject(rollData, this.actor.getRollData());
+			foundry.utils.mergeObject(rollData, this.actor.getRollData());
 		}
 		rollData.formula = this.getFormula();
 		return rollData;
