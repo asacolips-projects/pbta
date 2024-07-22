@@ -11,6 +11,10 @@
 	}
 
 	.choiceset {
+		margin: 0;
+		padding: 0.5em;
+
+		.items-field,
 		.drop-zone {
 			text-align: center;
 		}
@@ -18,11 +22,26 @@
 		&:nth-child(even of .choiceset) {
 			background-color: rgba(188, 188, 188, 0.4);
 		}
+
+		.grant-on-form,
+		.choiceset-item {
+			input[type="number"] {
+				text-align: center;
+				width: 32px;
+				flex: 0 0 auto;
+			}
+
+			.item {
+				flex: 2;
+			}
+		}
 	}
 
 	ol {
 		&.attributes,
 		&.choicesets {
+			margin: 0;
+			padding: 0;
 			list-style-type: none;
 		}
 	}
