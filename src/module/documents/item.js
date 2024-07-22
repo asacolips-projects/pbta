@@ -328,6 +328,7 @@ export default class ItemPbta extends Item {
 					}))
 				).filter((c) => c);
 				if (!validChoices.length) continue;
+				choiceSet.granted = true;
 				if (choiceSet.grantOn === 0) {
 					validChoices.forEach((i) => {
 						const index = choices.findIndex((c) => c.uuid === i.uuid);
