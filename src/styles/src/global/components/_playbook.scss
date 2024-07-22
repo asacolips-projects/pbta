@@ -12,11 +12,15 @@
 
 	.choiceset {
 		margin: 0;
-		padding: 0.5em;
+		padding: 0.25em 0.5em;
 
 		.items-field,
 		.drop-zone {
 			text-align: center;
+		}
+
+		&:nth-child(1 of .choiceset) {
+			padding-top: 0;
 		}
 
 		&:nth-child(even of .choiceset) {
@@ -37,12 +41,31 @@
 		}
 	}
 
+	h1 {
+		margin: 0;
+	}
+
 	ol {
 		&.attributes,
 		&.choicesets {
 			margin: 0;
 			padding: 0;
 			list-style-type: none;
+		}
+	}
+
+	footer {
+		button {
+			width: auto;
+			background: $c-white;
+			border: 1px solid $c-black;
+			line-height: 1;
+
+			&:hover,
+			&:focus {
+			background-color: $c-black;
+			color: $c-white;
+			}
 		}
 	}
 }
