@@ -22,18 +22,16 @@ export default class RollPbtA extends Roll {
 	}
 
 	checkAdvDis(type) {
-		let stat = "";
-		if (typeof this.options.stat === "object") {
-			stat = this.options.stat.key;
-		} else {
-			stat = this.options.stat ?? this.options.rollType;
-		}
+		const { stat: statOption, rollMode, rollType } = this.options;
+		let stat = rollType;
+		if (typeof statOption === "object" && statOption.key) stat = statOption.key;
+		else if (typeof statOption === "string") stat = statOption;
 		if (this.data.stats[stat]?.toggle) {
 			const { modifier } = game.pbta.sheetConfig?.statToggle || {};
 			if (modifier === type) return true;
 		}
 
-		return this.options.rollMode === type;
+		return rollMode === type;
 	}
 
 	/** @override */
