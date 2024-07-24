@@ -51,7 +51,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 		super.activateListeners(html);
 		html.find('button[name="help"]').click((ev) => {
 			event.preventDefault();
-			window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
+			window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp");
 		});
 		html.find('button[name="reset"]').click(this._onResetDefaults.bind(this));
 		if (!this.sheetOverriden) {
