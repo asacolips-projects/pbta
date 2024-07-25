@@ -732,13 +732,13 @@ export function getTagList(document) {
 	const deprecatedTags = getDeprecatedTagList();
 	const tagNames = [...generalTags, ...generalModuleTags, ...deprecatedTags];
 	if (document.collectionName === "actors") {
-		const allActorTags = parseTags(actorTags);
+		const allActorTags = parseTags(actorTags.all);
 
 		const allModuleActorTags = parseTags(moduleActorTags);
 
 		tagNames.push(...allActorTags, ...allModuleActorTags);
 	} else if (document.collectionName === "items") {
-		const allItemTags = parseTags(itemTags);
+		const allItemTags = parseTags(itemTags.all);
 
 		const allModuleItemTags = parseTags(moduleItemTags);
 
