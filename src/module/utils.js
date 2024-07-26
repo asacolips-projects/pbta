@@ -725,7 +725,7 @@ export function getTagList(document) {
 		return game.pbta.tagList;
 	}
 	const { general = "[]", actor: actorTags = {}, item: itemTags = {} } = game.settings.get("pbta", "tagConfig") ?? {};
-	const { general: moduleGeneral = "[]", actor: moduleActorTags = {}, item: moduleItemTags = {} } = game.pbta.tagConfigOverride ?? {};
+	const { general: moduleGeneral = "[]", actor: moduleActorTags = "[]", item: moduleItemTags = "[]" } = game.pbta.tagConfigOverride ?? {};
 	const generalTags = parseTags(general);
 	const generalModuleTags = parseTags(moduleGeneral);
 	// @todo remove deprecated tags in a future version.
