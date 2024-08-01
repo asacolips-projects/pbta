@@ -174,23 +174,24 @@ export default class ItemPbta extends Item {
 					const items = [];
 					const grantedItems = [];
 					for (const set of choiceUpdate["system.choiceSets"]) {
-						for (const choice of set.choices) {
-							if (choice.granted) {
-								const item = await fromUuid(choice.uuid);
-								if (item) {
-									items.push(item.toObject());
-									grantedItems.push(item.id);
-								} else {
-									console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
-								}
+						const newChoices = set.choices.filter((choice) => choice.granted);
+						for (const choice of newChoices) {
+							const item = await fromUuid(choice.uuid);
+							if (item) {
+								items.push(item.toObject());
+								grantedItems.push(item.id);
+							} else {
+								console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
 							}
 						}
 					}
-					await ItemPbta.createDocuments(items, {
-						keepId: true,
-						parent: this.parent,
-						renderSheet: null
-					});
+					if (items.length) {
+						await ItemPbta.createDocuments(items, {
+							keepId: true,
+							parent: this.parent,
+							renderSheet: null
+						});
+					}
 					this.updateSource({ "flags.pbta": { grantedItems } });
 				}
 				if (this.system.actorType) {
