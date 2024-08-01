@@ -12,6 +12,7 @@ TYPES:
     tag: "Tag"
 PBTA:
   ActorType: "Actor Type"
+  Advance: "Advance"
   Advancement: "Advancement"
   AdvancementNumber: "Advancement {number}"
   Advantage: "Advantage"
