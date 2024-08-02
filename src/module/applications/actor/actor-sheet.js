@@ -167,6 +167,11 @@ export default class PbtaActorSheet extends ActorSheet {
 
 			// Set a warning for tokens.
 			context.isToken = this.actor.token !== null;
+
+			if (context.system.playbook?.uuid) {
+				const xp = Object.values(context.system.attributes).find((data) => data.type === "Xp");
+				context.canAdvance = !xp || xp.value >= xp.max;
+			}
 		}
 
 		this._sortStats(context);
@@ -391,7 +396,8 @@ export default class PbtaActorSheet extends ActorSheet {
 			// @todo replace for slug
 			if (selected) await this.actor.createEmbeddedDocuments("Item", [await fromUuid(selected.uuid)], { keepId: true, originalUuid: selected.uuid });
 		});
-		html.find(".view-playbook[data-playbook]").on("click", this._onViewPlaybook.bind(this));
+		html.find(".view-playbook.active").on("click", this._onViewPlaybook.bind(this));
+		html.find(".advancement.active").on("click", this._onAdvance.bind(this));
 
 		// // Owned Item management
 		html.find(".item-create").on("click", this._onItemCreate.bind(this));
@@ -697,6 +703,48 @@ export default class PbtaActorSheet extends ActorSheet {
 		// Initialize variables.
 		event.preventDefault();
 		this.actor.items.find((i) => i.type === "playbook")?.sheet.render(true);
+	}
+
+	async _onAdvance(event) {
+		event.preventDefault();
+		const advancements = this.actor.system.advancements;
+		const xp = Object.entries(this.actor.system.attributes).find(([key, data]) => data.type === "Xp");
+		const updates = { "system.advancements": advancements + 1 };
+		if (xp) {
+			const key = xp[0];
+			updates[`system.attributes.${key}.value`] = 0;
+		}
+		await this.actor.update(updates);
+		// TODO this is a duplicate ot ItemPbta#_preCreate code and could be moved into a proper method instead
+		const playbook = this.actor.items.find((i) => i.type === "playbook");
+		const choiceUpdate = await playbook.handleChoices(playbook);
+		if (Object.keys(choiceUpdate).length > 0) {
+			await playbook.update(choiceUpdate);
+			const items = [];
+			const grantedItems = playbook.flags?.pbta?.grantedItems ?? [];
+			for (const set of choiceUpdate["system.choiceSets"]) {
+				const newChoices = set.choices
+					.filter((choice) => choice.granted && !grantedItems.some((id) => choice.uuid.includes(id)));
+
+				for (const choice of newChoices) {
+					const item = await fromUuid(choice.uuid);
+					if (item) {
+						items.push(item.toObject());
+						grantedItems.push(item.id);
+					} else {
+						console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
+					}
+				}
+			}
+			if (items.length) {
+				await CONFIG.Item.documentClass.createDocuments(items, {
+					keepId: true,
+					parent: this.parent,
+					renderSheet: null
+				});
+			}
+			await playbook.update({ "flags.pbta": { grantedItems } });
+		}
 	}
 
 	/* -------------------------------------------- */
