@@ -12,12 +12,12 @@ export default class ItemPbta extends Item {
 
 	/** @override */
 	getRollData() {
-		let rollData = {
-			...this.system,
+		const rollData = {
+			...foundry.utils.duplicate(this.system),
 			type: this.type
 		};
 		if (this.actor && this.actor.system?.stats) {
-			rollData = foundry.utils.mergeObject(rollData, this.actor.getRollData());
+			foundry.utils.mergeObject(rollData, this.actor.getRollData());
 		}
 		rollData.formula = this.getFormula();
 		return rollData;
@@ -89,13 +89,12 @@ export default class ItemPbta extends Item {
 					}
 				}
 			});
-			if (r.options.conditionsConsumed.includes("forward")) {
-				await this.actor?.clearForwardAdv();
-			}
-			if (r.options.conditionsConsumed.includes("hold")) {
-				await this.actor?.decrementHold();
-			}
-			await this.actor.updateCombatMoveCount();
+			const updates = {};
+			await this.actor?.clearAdv(updates);
+			await this.actor?.clearForward(updates, r);
+			await this.actor?.decrementHold(updates, r);
+			if (Object.keys(updates).length) await this.actor?.update(updates);
+			await this.actor?.updateCombatMoveCount();
 		}
 	}
 
@@ -160,6 +159,11 @@ export default class ItemPbta extends Item {
 		}
 
 		const compendiumSource = this._stats.compendiumSource;
+		const actorTypes = foundry.utils.duplicate(
+			Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes ?? {})
+				.filter(([a, v]) => this.constructor._filterActorTypes([a, v], this.type)))
+		);
+		const actorType = Object.keys(actorTypes)[0];
 		if (this.type === "playbook") {
 			if (this.parent) {
 				const changes = {
@@ -202,21 +206,17 @@ export default class ItemPbta extends Item {
 					changes["system.stats"] = stats;
 				}
 				await this.parent.update(changes);
-			} else if (!this.system.actorType) {
-				const actorTypes = foundry.utils.duplicate(
-					Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
-						.filter(([a, v]) => this.constructor._filterActorTypes([a, v], this.type)))
-				);
-				if (Object.keys(actorTypes).length) {
-					const actorType = Object.keys(actorTypes)[0];
-					const attributes = this._getValidAttributes(this.system.actorType);
-					const stats = actorTypes[this.system.actorType || actorType]?.stats;
-					this.updateSource({
-						"system.attributes": attributes,
-						"system.stats": stats
-					});
-				}
+			} else if (actorType && !this.system.actorType) {
+				const attributes = this._getValidAttributes(actorType, actorTypes);
+				const stats = actorTypes[actorType]?.stats;
+				this.updateSource({
+					"system.actorType": actorType,
+					"system.attributes": attributes,
+					"system.stats": stats
+				});
 			}
+		} else if (actorType && this.system.actorType === "") {
+			this.updateSource({ "system.actorType": actorType });
 		}
 
 		// Handle everything else if not imported from compendiums

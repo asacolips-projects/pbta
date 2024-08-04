@@ -139,9 +139,7 @@ Hooks.once("setup", () => {
 		}, {});
 	}
 
-	if (game.modules.get("babele")?.active) {
-		Hooks.on("babele.ready", () => utils.getPlaybooks());
-	} else {
+	if (!game.modules.get("babele")?.active) {
 		utils.getPlaybooks();
 	}
 });
@@ -191,6 +189,11 @@ Hooks.once("ready", () => {
 
 	// Perform the migration
 	migrations.migrateWorld();
+});
+
+Hooks.once("babele.ready", () => {
+	// It is a mystery why Babele calls "babele.ready" twice
+	Hooks.once("babele.ready", () => utils.getPlaybooks());
 });
 
 Hooks.on("renderChatMessage", (data, html, options) => {
