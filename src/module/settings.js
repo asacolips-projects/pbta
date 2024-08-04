@@ -5,16 +5,17 @@ import { PbtaTagConfigDialog } from "./forms/tag-config.js";
  * Register all of the system's settings.
  */
 export function registerSettings() {
-	game.settings.registerMenu("pbta", "sheetConfigMenu", {
-		name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
-		label: game.i18n.localize("PBTA.Settings.sheetConfig.title"),
-		hint: game.i18n.localize("PBTA.Settings.sheetConfig.hint"),
-		icon: "fas fa-file-alt",               // A Font Awesome icon used in the submenu button
-		type: PbtaSettingsConfigDialog,   // A FormApplication subclass which should be created
-		restricted: true,                   // Restrict this submenu to gamemaster only?
-		scope: "world"
-	});
-
+	if (!game.pbta.moduleConfig) {
+		game.settings.registerMenu("pbta", "sheetConfigMenu", {
+			name: game.i18n.localize("PBTA.Settings.sheetConfig.name"),
+			label: game.i18n.localize("PBTA.Settings.sheetConfig.title"),
+			hint: game.i18n.localize("PBTA.Settings.sheetConfig.hint"),
+			icon: "fas fa-file-alt",               // A Font Awesome icon used in the submenu button
+			type: PbtaSettingsConfigDialog,   // A FormApplication subclass which should be created
+			restricted: true,                   // Restrict this submenu to gamemaster only?
+			scope: "world"
+		});
+	}
 	game.settings.registerMenu("pbta", "tagConfigMenu", {
 		name: game.i18n.localize("PBTA.Settings.tagConfig.name"),
 		label: game.i18n.localize("PBTA.Settings.tagConfig.label"),
@@ -123,14 +124,6 @@ export function registerSettings() {
 		config: false,
 		type: Object,
 		default: {}
-	});
-
-	game.settings.register("pbta", "sheetConfigOverride", {
-		name: "Override PBTA Sheet Config",
-		scope: "world",
-		config: false,
-		type: Boolean,
-		default: false
 	});
 
 	game.settings.register("pbta", "tagConfig", {
