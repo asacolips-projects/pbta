@@ -129,11 +129,10 @@
       background: $c-gray;
       color: $c-white;
       width: 32px;
-      height: 32px;
-      line-height: 2.3;
       text-align: center;
       opacity: 0.5;
       transition: all ease-in-out 0.25s;
+      padding: 6px;
 
       &.active {
         cursor: pointer;
@@ -152,7 +151,7 @@
       width: 100%;
       border-left: none;
       border-right: none;
-      // border-radius: 0 4px 4px 0;
+      border-radius: 0;
     }
 
     .advancement {
