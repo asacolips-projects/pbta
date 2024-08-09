@@ -35,6 +35,7 @@ Hooks.once("init", async function () {
 	globalThis.pbta = game.pbta = Object.assign(game.system, globalThis.pbta);
 
 	CONFIG.ui.combat = applications.combat.PbtACombatTracker;
+	CONFIG.ui.actors = applications.sidebar.ActorDirectoryPbtA;
 	CONFIG.Combatant.documentClass = documents.CombatantPbtA;
 
 	// Define DataModels
