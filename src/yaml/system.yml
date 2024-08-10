@@ -42,7 +42,7 @@ languages:
     path: lang/fr.json
 grid:
   distance: 5
-  units: 5
+  units: ft
 socket: true
 url: https://github.com/asacolips-projects/pbta
 manifest: https://asacolips-artifacts.s3.amazonaws.com/pbta/latest/system.json
