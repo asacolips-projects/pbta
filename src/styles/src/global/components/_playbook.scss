@@ -21,6 +21,7 @@
 
 		&:nth-child(1 of .choiceset) {
 			padding-top: 0;
+			border-radius: 5px;
 		}
 
 		&:nth-child(even of .choiceset) {
