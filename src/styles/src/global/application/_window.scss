@@ -25,7 +25,6 @@
 
     &:not(.fa-classic, .fa-light, .fa-regular, .fa-solid, .fa-thin, .fal, .far, .fas, .fat) {
       font-family: $font-stack-base;
-      font-size: var(--font-size-14);
     }
 
     &:not([type="range"], [type="color"])  {

@@ -2,7 +2,7 @@ name: pbta
 id: pbta
 title: Powered by the Apocalypse
 description: Run games for any PbtA system in Foundry VTT!
-version: "1.0.24"
+version: "1.1.0"
 compatibility:
   minimum: "12"
   verified: "12"
@@ -42,7 +42,7 @@ languages:
     path: lang/fr.json
 grid:
   distance: 5
-  units: 5
+  units: ft
 socket: true
 url: https://github.com/asacolips-projects/pbta
 manifest: https://asacolips-artifacts.s3.amazonaws.com/pbta/latest/system.json

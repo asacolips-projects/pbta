@@ -120,37 +120,49 @@
   column-gap: 10px;
 
   .sheet-playbook {
-    display: flex;
-  }
+    .view-playbook,
+    [data-action="advancement"] {
+      flex: 0 0 auto;
+      border-radius: 4px 0 0 4px;
+      margin-right: 0;
+      overflow: hidden;
+      background: $c-gray;
+      color: $c-white;
+      width: 32px;
+      text-align: center;
+      opacity: 0.5;
+      transition: all ease-in-out 0.25s;
+      padding: 6px;
 
-  .charplaybook {
-    width: 100%;
-    border-radius: 0 4px 4px 0;
-  }
+      &.active {
+        cursor: pointer;
 
-  .view-playbook {
-    border-radius: 4px 0 0 4px;
-    margin-right: 0;
-    overflow: hidden;
-    background: $c-black;
-    color: $c-white;
-    width: 32px;
-    height: 32px;
-    line-height: 2.3;
-    text-align: center;
-    opacity: 0.5;
-    transition: all ease-in-out 0.25s;
+        &:hover {
+          opacity: 1;
+        }
+      }
 
-    &[data-playbook] {
-      cursor: pointer;
-
-      &:hover {
-        opacity: 1;
+      i {
+        vertical-align: middle;
       }
     }
 
-    i {
-      vertical-align: middle;
+    .charplaybook {
+      width: 100%;
+      border-left: none;
+      border-right: none;
+      border-radius: 0;
+    }
+
+    .advancement {
+      flex: 0 0 auto;
+      width: 32px;
+      border-radius: 0;
+      text-align: center;
+
+      &:last-child {
+        border-radius: 0 4px 4px 0;
+      }
     }
   }
 }

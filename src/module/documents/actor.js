@@ -375,11 +375,13 @@ export default class ActorPbta extends Actor {
 		const folders = collection?._formatFolderSelectOptions() ?? [];
 		const label = game.i18n.localize(this.metadata.label);
 		const title = game.i18n.format("DOCUMENT.Create", { type: label });
+		const type = data.type || types[0];
 
 		// Render the document creation form
 		const html = await renderTemplate("templates/sidebar/document-create.html", {
 			folders,
 			name: data.name || game.i18n.format("DOCUMENT.New", { type: label }),
+			defaultName: this.implementation.defaultName({ type, parent, pack }),
 			folder: data.folder,
 			hasFolders: folders.length >= 1,
 			type: data.type || CONFIG[documentName]?.defaultType || types[0],
@@ -395,6 +397,13 @@ export default class ActorPbta extends Actor {
 			title: title,
 			content: html,
 			label: title,
+			render: (html) => {
+				if (!types.length) return;
+				html[0].querySelector('[name="type"]').addEventListener("change", (e) => {
+					const nameInput = html[0].querySelector('[name="name"]');
+					nameInput.placeholder = this.implementation.defaultName({ type: e.target.value, parent, pack });
+				});
+			},
 			callback: (html) => {
 				const form = html[0].querySelector("form");
 				const fd = new FormDataExtended(form);

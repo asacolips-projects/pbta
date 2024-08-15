@@ -82,20 +82,9 @@ export default class PbtACombatTracker extends CombatTracker {
 				}
 				combatant.canPing = (combatant.sceneId === canvas.scene?.id) && game.user.hasPermission("PING_CANVAS");
 				combatant.effects = new Set();
-				if (combatant.token) {
-					combatant.token.effects.forEach((e) => combatant.effects.add(e));
-					if (combatant.token.overlayEffect) {
-						combatant.effects.add(combatant.token.overlayEffect);
-					}
-				}
-				if (combatant.actor) {
-					for (const effect of combatant.actor.temporaryEffects) {
-						if (effect.statuses.has(CONFIG.specialStatusEffects.DEFEATED)) {
-							combatant.defeated = true;
-						} else if (effect.icon) {
-							combatant.effects.add(effect.icon);
-						}
-					}
+				for (const effect of (combatant.actor?.temporaryEffects || [])) {
+					if (effect.statuses.has(CONFIG.specialStatusEffects.DEFEATED)) combatant.defeated = true;
+					else if (effect.img) combatant.effects.add(effect.img);
 				}
 
 				// If this is the GM or the owner, push to the combatants list.

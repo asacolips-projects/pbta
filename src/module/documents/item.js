@@ -179,23 +179,24 @@ export default class ItemPbta extends Item {
 					const items = [];
 					const grantedItems = [];
 					for (const set of choiceUpdate["system.choiceSets"]) {
-						for (const choice of set.choices) {
-							if (choice.granted) {
-								const item = await fromUuid(choice.uuid);
-								if (item) {
-									items.push(item.toObject());
-									grantedItems.push(item.id);
-								} else {
-									console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
-								}
+						const newChoices = set.choices.filter((choice) => choice.granted);
+						for (const choice of newChoices) {
+							const item = await fromUuid(choice.uuid);
+							if (item) {
+								items.push(item.toObject());
+								grantedItems.push(item.id);
+							} else {
+								console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
 							}
 						}
 					}
-					await ItemPbta.createDocuments(items, {
-						keepId: true,
-						parent: this.parent,
-						renderSheet: null
-					});
+					if (items.length) {
+						await ItemPbta.createDocuments(items, {
+							keepId: true,
+							parent: this.parent,
+							renderSheet: null
+						});
+					}
 					this.updateSource({ "flags.pbta": { grantedItems } });
 				}
 				if (this.system.actorType) {
@@ -317,7 +318,7 @@ export default class ItemPbta extends Item {
 		if (data.system?.choiceSets?.length > 0) {
 			for (const choiceSet of data.system.choiceSets) {
 				const { advancement, choices, desc, granted, repeatable, title } = choiceSet;
-				if (advancement > this.parent.advancement || (granted && !repeatable)) continue;
+				if (advancement > this.parent.advancements || (granted && !repeatable)) continue;
 				const validChoices = (await Promise.all(
 					choices.map(async (c) => {
 						const item = await fromUuid(c.uuid);
@@ -329,6 +330,7 @@ export default class ItemPbta extends Item {
 					}))
 				).filter((c) => c);
 				if (!validChoices.length) continue;
+				choiceSet.granted = true;
 				if (choiceSet.grantOn === 0) {
 					validChoices.forEach((i) => {
 						const index = choices.findIndex((c) => c.uuid === i.uuid);
@@ -500,10 +502,13 @@ export default class ItemPbta extends Item {
 		const folders = collection?._formatFolderSelectOptions() ?? [];
 		const label = game.i18n.localize(this.metadata.label);
 		const title = game.i18n.format("DOCUMENT.Create", { type: label });
+		const type = data.type || types[0];
+
 		// Render the document creation form
 		const html = await renderTemplate("templates/sidebar/document-create.html", {
 			folders,
 			name: data.name || game.i18n.format("DOCUMENT.New", { type: label }),
+			defaultName: this.implementation.defaultName({ type, parent, pack }),
 			folder: data.folder,
 			hasFolders: folders.length >= 1,
 			type: data.type || CONFIG[documentName]?.defaultType || types[0],
@@ -520,6 +525,13 @@ export default class ItemPbta extends Item {
 			title: title,
 			content: html,
 			label: title,
+			render: (html) => {
+				if (!types.length) return;
+				html[0].querySelector('[name="type"]').addEventListener("change", (e) => {
+					const nameInput = html[0].querySelector('[name="name"]');
+					nameInput.placeholder = this.implementation.defaultName({ type: e.target.value, parent, pack });
+				});
+			},
 			callback: (html) => {
 				const form = html[0].querySelector("form");
 				const fd = new FormDataExtended(form);

@@ -7,20 +7,37 @@
 	<div class="sheet-header__fields flexrow">
 		<input class="input--title" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
 		{{#if (and isCharacter (not limited))}}
-		<span class="sheet-playbook">
-			{{#if system.playbook.uuid}}
-			<span class="view-playbook" data-playbook="{{system.playbook.uuid}}" data-tooltip="{{localize 'PBTA.ViewPlaybook'}}" data-tooltip-direction="UP">
+		<div class="sheet-playbook flexrow">
+			<div class="view-playbook {{#if system.playbook.uuid}}active{{/if}}"
+				data-playbook="{{system.playbook.uuid}}"
+				data-tooltip="{{localize 'PBTA.ViewPlaybook'}}"
+				data-tooltip-direction="UP"
+			>
+				{{#if system.playbook.uuid}}
 				<i class="fas fa-eye"></i>
-			</span>
-			{{else}}
-			<span class="view-playbook">
+				{{else}}
 				<i class="fas fa-eye-slash"></i>
-			</span>
-			{{/if}}
+				{{/if}}
+			</div>
 			<select class="input--title charplaybook">
 			{{selectOptions playbooks selected=system.playbook.uuid valueAttr="uuid" labelAttr="name" blank=(localize "PBTA.Playbook") sort=true}}
 			</select>
-		</span>
+			<input class="input--title advancement"
+				type="number"
+				name="system.advancements"
+				value="{{system.advancements}}"
+				min="0"
+				data-tooltip="PBTA.Advancements"
+				data-tooltip-direction="UP"
+			>
+			<div class="advancement {{#if canAdvance}}active{{/if}}"
+				data-action="advancement"
+				data-tooltip="PBTA.Advance"
+				data-tooltip-direction="UP"
+			>
+				<i class="fas fa-arrow-up"></i>
+			</div>
+		</div>
 		{{/if}}
 	</div>
 </header>
