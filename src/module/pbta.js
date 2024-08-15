@@ -237,11 +237,7 @@ Hooks.once("ready", async function () {
 		}
 	});
 
-	CONFIG.PBTA = PBTA;
-
-	if (game.modules.get("babele")?.active && game.i18n.lang !== "en") {
-		Hooks.on("babele.ready", () => utils.getPlaybooks());
-	} else {
+	if (!(game.modules.get("babele")?.active && game.i18n.lang !== "en")) {
 		utils.getPlaybooks();
 	}
 
@@ -259,6 +255,11 @@ Hooks.once("ready", async function () {
 
 	// Perform the migration
 	migrations.migrateWorld();
+});
+
+Hooks.once("babele.ready", () => {
+	// It is a mystery why Babele calls "babele.ready" twice
+	Hooks.once("babele.ready", () => utils.getPlaybooks());
 });
 
 Hooks.on("renderChatMessage", (data, html, options) => {

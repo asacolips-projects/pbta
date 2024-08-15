@@ -159,6 +159,11 @@ export default class ItemPbta extends Item {
 		}
 
 		const compendiumSource = this._stats.compendiumSource;
+		const actorTypes = foundry.utils.duplicate(
+			Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes ?? {})
+				.filter(([a, v]) => this.constructor._filterActorTypes([a, v], this.type)))
+		);
+		const actorType = Object.keys(actorTypes)[0];
 		if (this.type === "playbook") {
 			if (this.parent) {
 				const changes = {
@@ -202,21 +207,17 @@ export default class ItemPbta extends Item {
 					changes["system.stats"] = stats;
 				}
 				await this.parent.update(changes);
-			} else if (!this.system.actorType) {
-				const actorTypes = foundry.utils.duplicate(
-					Object.fromEntries(Object.entries(game.pbta.sheetConfig?.actorTypes)
-						.filter(([a, v]) => this.constructor._filterActorTypes([a, v], this.type)))
-				);
-				if (Object.keys(actorTypes).length) {
-					const actorType = Object.keys(actorTypes)[0];
-					const attributes = this._getValidAttributes(this.system.actorType);
-					const stats = actorTypes[this.system.actorType || actorType]?.stats;
-					this.updateSource({
-						"system.attributes": attributes,
-						"system.stats": stats
-					});
-				}
+			} else if (actorType && !this.system.actorType) {
+				const attributes = this._getValidAttributes(actorType, actorTypes);
+				const stats = actorTypes[actorType]?.stats;
+				this.updateSource({
+					"system.actorType": actorType,
+					"system.attributes": attributes,
+					"system.stats": stats
+				});
 			}
+		} else if (actorType && this.system.actorType === "") {
+			this.updateSource({ "system.actorType": actorType });
 		}
 
 		// Handle everything else if not imported from compendiums

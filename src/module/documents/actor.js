@@ -414,9 +414,7 @@ export default class ActorPbta extends Actor {
 
 				// First we need to find the base actor type to model this after.
 				if (!["character", "npc"].includes(data.type)) {
-					data.system = {
-						customType: data.type
-					};
+					foundry.utils.setProperty(data, "system.customType", data.type);
 					data.type = "other";
 				}
 
