@@ -117,6 +117,21 @@ export function registerSettings() {
 		default: true
 	});
 
+	game.settings.register("pbta", "hideAdvancement", {
+		name: game.i18n.localize("PBTA.Settings.hideAdvancement.name"),
+		hint: game.i18n.localize("PBTA.Settings.hideAdvancement.hint"),
+		scope: "world",
+		config: true,
+		type: String,
+		choices: {
+			none: "PBTA.Settings.hideAdvancement.OptNone",
+			input: "PBTA.Settings.hideAdvancement.OptInput",
+			both: "PBTA.Settings.hideAdvancement.OptBoth"
+		},
+		default: "none",
+		onChange: (value) => ui.sidebar.tabs.actors.render()
+	});
+
 	game.settings.register("pbta", "sheetConfig", {
 		name: "PBTA Sheet Config",
 		scope: "world",

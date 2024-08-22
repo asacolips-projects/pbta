@@ -109,7 +109,8 @@ export default class PbtaActorSheet extends ActorSheet {
 				"hideOngoing",
 				"hideHold",
 				"hideRollMode",
-				"hideUses"
+				"hideUses",
+				"hideAdvancement"
 			].reduce((obj, key) => {
 				obj[key] = game.settings.get("pbta", key);
 				return obj;

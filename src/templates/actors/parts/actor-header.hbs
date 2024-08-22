@@ -22,6 +22,7 @@
 			<select class="input--title charplaybook">
 			{{selectOptions playbooks selected=system.playbook.uuid valueAttr="uuid" labelAttr="name" blank=(localize "PBTA.Playbook") sort=true}}
 			</select>
+			{{#unless (ne sheetSettings.hideAdvancement "none")}}
 			<input class="input--title advancement"
 				type="number"
 				name="system.advancements"
@@ -30,6 +31,8 @@
 				data-tooltip="PBTA.Advancements"
 				data-tooltip-direction="UP"
 			>
+			{{/unless}}
+			{{#unless (eq sheetSettings.hideAdvancement "both")}}
 			<div class="advancement {{#if canAdvance}}active{{/if}}"
 				data-action="advancement"
 				data-tooltip="PBTA.Advance"
@@ -37,6 +40,7 @@
 			>
 				<i class="fas fa-arrow-up"></i>
 			</div>
+			{{/unless}}
 		</div>
 		{{/if}}
 	</div>

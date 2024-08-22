@@ -166,6 +166,12 @@ PBTA:
     hideUses:
       name: "Hide uses"
       hint: "Hides uses remaining for each move on the move's summary for characters and NPCs."
+    hideAdvancement:
+      name: "Hide Advancements"
+      hint: "Hides the Advancements in the actor sheet. Any option that isn't \"None\" also hides the \"(Advancement #)\" on the Actors sidebar."
+      OptNone: "None"
+      OptInput: "Input Box"
+      OptBoth: "Both"
     itemIcons:
       name: "Enable Item Icons"
       hint: "Enable visual icons for moves, spells, and equipment in character sheets (requires browser reload)."
