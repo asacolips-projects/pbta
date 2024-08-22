@@ -2,7 +2,7 @@ export default class PbtACombatTracker extends CombatTracker {
 	/** @inheritdoc */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
-			template: "systems/pbta/templates/combat/combat-tracker.html"
+			template: "systems/pbta/templates/sidebar/combat-tracker.html"
 		});
 	}
 
