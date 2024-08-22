@@ -7,6 +7,13 @@ export default class ActorDirectoryPbtA extends ActorDirectory {
 		return options;
 	}
 
+	async getData(options) {
+		const data = await super.getData(options);
+		return foundry.utils.mergeObject(data, {
+			hideAdvancement: game.settings.get("pbta", "hideAdvancement") !== "none"
+		});
+	}
+
 	_getEntryContextOptions() {
 		const options = super._getEntryContextOptions();
 		return options.concat({

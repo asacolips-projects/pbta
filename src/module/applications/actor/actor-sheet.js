@@ -109,7 +109,8 @@ export default class PbtaActorSheet extends ActorSheet {
 				"hideOngoing",
 				"hideHold",
 				"hideRollMode",
-				"hideUses"
+				"hideUses",
+				"hideAdvancement"
 			].reduce((obj, key) => {
 				obj[key] = game.settings.get("pbta", key);
 				return obj;
@@ -715,34 +716,11 @@ export default class PbtaActorSheet extends ActorSheet {
 			updates[`system.attributes.${key}.value`] = 0;
 		}
 		await this.actor.update(updates);
-		// TODO this is a duplicate ot ItemPbta#_preCreate code and could be moved into a proper method instead
 		const playbook = this.actor.items.find((i) => i.type === "playbook");
 		const choiceUpdate = await playbook.handleChoices(playbook);
 		if (Object.keys(choiceUpdate).length > 0) {
 			await playbook.update(choiceUpdate);
-			const items = [];
-			const grantedItems = playbook.flags?.pbta?.grantedItems ?? [];
-			for (const set of choiceUpdate["system.choiceSets"]) {
-				const newChoices = set.choices
-					.filter((choice) => choice.granted && !grantedItems.some((id) => choice.uuid.includes(id)));
-
-				for (const choice of newChoices) {
-					const item = await fromUuid(choice.uuid);
-					if (item) {
-						items.push(item.toObject());
-						grantedItems.push(item.id);
-					} else {
-						console.warn("PBTA.Warnings.Playbook.ItemMissing", { localize: true });
-					}
-				}
-			}
-			if (items.length) {
-				await CONFIG.Item.documentClass.createDocuments(items, {
-					keepId: true,
-					parent: this.parent,
-					renderSheet: null
-				});
-			}
+			const grantedItems = await playbook.grantChoices(choiceUpdate);
 			await playbook.update({ "flags.pbta": { grantedItems } });
 		}
 	}

@@ -7,9 +7,9 @@
 	{{#if (eq this.type "character")}}
 		<span class="actor-level">
 			{{#if this.system.playbook.name}}
-			{{this.system.playbook.name}} ({{localize "PBTA.AdvancementNumber" number=this.system.advancements}})
+			{{this.system.playbook.name}} {{#unless @root.hideAdvancement}}<span class="advancement-label">({{localize "PBTA.AdvancementNumber" number=this.system.advancements}})</span>{{/unless}}
 			{{else}}
-			{{localize "PBTA.NoPlaybook"}} ({{localize "PBTA.AdvancementNumber" number=this.system.advancements}})
+			{{localize "PBTA.NoPlaybook"}} {{#unless @root.hideAdvancement}}<span class="advancement-label">({{localize "PBTA.AdvancementNumber" number=this.system.advancements}})</span>{{/unless}}
 			{{/if}}
 		</span>
 	{{/if}}
