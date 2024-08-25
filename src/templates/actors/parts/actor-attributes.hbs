@@ -10,7 +10,7 @@
 			{{#if attr.description}}<p class="cell__description cell__description--attr">{{attr.description}}</p>{{/if}}
 			{{!-- Text area --}}
 			{{#if (eq attr.type "LongText")}}
-				{{editor attr.enriched target=attr.attrName button=true owner=../owner editable=../editable}}
+				{{editor attr.enriched target=attr.attrName button=true owner=@root.owner editable=@root.editable engine="prosemirror" collaborate=false}}
 			{{!-- Checkbox --}}
 			{{else if (eq attr.type "Checkbox")}}
 				{{#if attr.checkboxLabel}}<label>{{/if}}

@@ -1,14 +1,14 @@
 <div class="tab" data-group="primary" data-tab="description">
 	<div class="form-group-stacked">
 		<label>{{localize "PBTA.Common.Description"}}</label>
-		{{editor enriched.description target="system.description" button=true owner=owner editable=editable}}
+		{{editor enriched.description target="system.description" button=true owner=owner editable=editable engine="prosemirror" collaborate=false}}
 	</div>
 
 	{{#if system.moveResults}}
 	{{#each system.moveResults as |result key|}}
 		<div class="move-result form-group-stacked">
 			<label>{{result.label}}</label>
-			{{editor (getValue ../enriched.moveResults key) target=result.rangeName button=true owner=../owner editable=../editable}}
+			{{editor (getValue ../enriched.moveResults key) target=result.rangeName button=true owner=@root.owner editable=@root.editable engine="prosemirror" collaborate=false}}
 		</div>
 	{{/each}}
 	{{/if}}
@@ -16,7 +16,7 @@
 	{{#if hasChoices}}
 	<div class="form-group-stacked">
 		<label>{{localize "PBTA.Choices"}}</label>
-		{{editor enriched.choices target="system.choices" button=true owner=owner editable=editable}}
+		{{editor enriched.choices target="system.choices" button=true owner=owner editable=editable engine="prosemirror" collaborate=false}}
 	</div>
 	{{/if}}
 </div>

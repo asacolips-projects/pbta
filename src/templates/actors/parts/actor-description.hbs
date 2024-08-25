@@ -3,7 +3,7 @@
 		{{#each system.details as |result key|}}
 			<div class="cell cell--bio {{key}}">
 				{{#if result.label}}<label class="cell__title">{{result.label}}</label>{{/if}}
-				{{editor result.enriched target=(concat "system.details" key "value" join=".") button=true owner=../owner editable=../editable}}
+				{{editor result.enriched target=(concat "system.details" key "value" join=".") button=true owner=@root.owner editable=@root.editable engine="prosemirror" collaborate=false}}
 			</div>
 		{{/each}}
 	</div>

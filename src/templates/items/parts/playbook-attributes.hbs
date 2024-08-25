@@ -26,7 +26,7 @@
 			{{#each attribute.choices as |choice choiceKey|}}
 			<li class="form-group" data-id="{{@index}}">
 				{{#if (or (eq attribute.type "LongText") (eq attribute.type "Details"))}}
-				{{editor choice.enriched target=(concat "system.attributes." @../key ".choices." @index ".value") button=true owner=@root.owner editable=@root.editable}}
+				{{editor choice.enriched target=(concat "system.attributes." @../key ".choices." @index ".value") button=true owner=@root.owner editable=@root.editable engine="prosemirror" collaborate=false}}
 				<input type="text" name="system.attributes.{{@../key}}.choices.{{@index}}.value" value="{{choice.enriched}}" hidden>
 
 				{{else if (eq attribute.type "Number")}}

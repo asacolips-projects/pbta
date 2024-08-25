@@ -97,6 +97,10 @@
       .editor {
         height: 100%;
         min-height: 30px;
+
+        .editor-container {
+          min-height: 500px;
+        }
       }
     }
   }
@@ -120,20 +124,13 @@
     .tox-tinymce,
     .tox-editor-container,
     .tox-sidebar-wrap,
-    .tox-edit-area {
+    .tox-edit-area,
+    .editor-container {
       min-height: 170px;
       height: 100% !important;
     }
 
     .tox-tinymce {
-      height: 100% !important;
-
-      .tox-toolbar-overlord,
-      .tox-toolbar__primary {
-        background: transparent;
-        border-bottom: 1px solid $c-black;
-      }
-
       button[title="Formats"],
       button[title="Table"],
       button[title="Horizontal line"],
@@ -141,9 +138,35 @@
         display: none;
       }
     }
+
+    .prosemirror {
+      menu {
+        li {
+          &:has(
+            button.tables,
+            button.format,
+            button.fonts,
+            button[data-action="horizontal-rule"],
+            button[data-action="link"],
+            button[data-action="toggle-matches"]
+          ) {
+            display: none;
+          }
+
+          button {
+            font-size: var(--font-size-12)
+          }
+        }
+      }
+    }
+  }
+
+  .editor-container {
+    margin: 0.5em 0 0;
   }
 
   .editor-content {
+    min-height: 30px;
     background: rgba(0, 0, 0, 0.075);
     padding: 0 4px;
     border-radius: 4px;

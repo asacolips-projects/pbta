@@ -84,6 +84,12 @@
     .button {
       color: $c-white;
     }
+
+    .editor.prosemirror menu {
+      button {
+        color: inherit;
+      }
+    }
   }
 
   button,
@@ -160,22 +166,43 @@
 }
 
 .window-content {
-  .tox-tinymce {
-    height: 100% !important;
+  .editor {
+    &.tinymce {
+      .tox-tinymce {
+        height: 100%;
 
-    .tox-toolbar-overlord,
-    .tox-toolbar__primary {
-      background: transparent;
-      border-bottom: 1px solid $c-black;
+        .tox-toolbar-overlord,
+        .tox-toolbar__primary {
+          background: transparent;
+          border-bottom: 1px solid $c-black;
+        }
+
+        button {
+          padding: 0;
+          border: 0;
+          background: transparent;
+          margin: 0;
+          width: auto;
+          height: auto;
+        }
+      }
     }
 
-    button {
-      padding: 0;
-      border: 0;
-      background: transparent;
-      margin: 0;
-      width: auto;
-      height: auto;
+    &.prosemirror {
+      menu {
+        background: transparent;
+        border-bottom: 1px solid $c-black;
+        border-radius: 0;
+        padding: 0 2px 2px;
+
+        li {
+          flex: 1;
+
+          button {
+            background: transparent;
+          }
+        }
+      }
     }
   }
 }
