@@ -48,14 +48,39 @@
     .editor {
       min-height: 60px;
       height: 100% !important;
+
+      &.prosemirror {
+        menu {
+          li {
+            &:has(
+              button.format,
+              button.fonts
+            ) {
+              flex: 0 calc(50% - 2px);
+            }
+          }
+        }
+      }
     }
 
     .tox-tinymce,
     .tox-editor-container,
     .tox-sidebar-wrap,
-    .tox-edit-area {
+    .tox-edit-area,
+    .editor-container {
       min-height: 170px;
       height: 100% !important;
+    }
+
+    .editor-container {
+      margin: 0.5em 0 0;
+    }
+
+    .editor-content {
+      background: rgba(0, 0, 0, 0.075);
+      padding: 0 4px;
+      border-radius: 4px;
+      height: 100%;
     }
 
     .tox-tinymce {
