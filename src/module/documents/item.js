@@ -330,6 +330,8 @@ export default class ItemPbta extends Item {
 					choices.map(async (c) => {
 						const item = await fromUuid(c.uuid);
 						c.name = item.name;
+						c.tags = item.system.tags;
+						c.desc = item.system.description;
 						const isValid = !c.granted
 							&& c.advancement <= this.parent.advancements
 							&& !this.actor.items.has(item.id);
@@ -375,8 +377,23 @@ export default class ItemPbta extends Item {
 								});
 							}
 						}
+					},
+					render: (html) => {
+						for (const el of html.querySelectorAll(".item-name")) {
+							el.addEventListener("click", (event) => {
+								event.preventDefault();
+								const toggler = $(event.currentTarget);
+								const item = toggler.parents(".item");
+								const description = item.find(".item-description");
+
+								toggler.toggleClass("open");
+								if (description.hasClass("expanded")) description.slideUp(200);
+								else description.slideDown(200);
+								description.toggleClass("expanded");
+							});
+						}
 					}
-				}, { jQuery: false });
+				}, { height: 400, jQuery: false });
 			}
 		}
 		return { "system.choiceSets": data.system.choiceSets };

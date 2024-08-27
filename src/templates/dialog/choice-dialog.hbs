@@ -1,9 +1,9 @@
 <form class="pbta-choice-dialog">
     <div>{{desc}}</div>
-    <ol>
+    <ol class="items-list">
         {{#each choices}}
         {{#if (lte this.advancement ../parent.advancements)}}
-        <li class="flexrow" data-uuid="{{this.uuid}}">
+        <li class="item flexrow" data-uuid="{{this.uuid}}">
             <div class="item-name flexrow">
                 <img src="{{this.img}}" height="32" width="32">
                 <label>{{this.name}}</label>
@@ -13,6 +13,10 @@
             {{else}}
 			<input type="checkbox" name="{{this.uuid}}" {{checked this.granted}}>
             {{/if}}
+            <div class="item-description">
+                {{{pbtaTags this.tags}}}
+                <div class="description">{{{this.desc}}}</div>
+            </div>
         </li>
         {{/if}}
         {{/each}}

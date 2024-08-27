@@ -1,19 +1,52 @@
-.pbta-attribute-dialog,
-.pbta-choice-dialog {
-	li.flexrow {
-		align-items: center;
-
-		input.choice {
-			flex: 0;
-		}
-
-		.item-name.flexrow {
-			align-items: center;
-			gap: 4px;
-
-			img {
-				flex: 0 0 auto;
+.dialog-content {
+	.pbta-attribute-dialog,
+	.pbta-choice-dialog {
+		.items-list {
+			margin: 0;
+			padding: 0;
+			.item + .item {
+				border-top: 2px solid $ct-gray;
 			}
+
+			li.flexrow {
+				align-items: center;
+
+				input.choice {
+					flex: 0;
+				}
+
+				.item-name.flexrow {
+					align-items: center;
+					gap: 4px;
+
+					img {
+						flex: 0 0 auto;
+					}
+				}
+
+				.item-description {
+					display: none;
+					flex: none;
+					width: 100%;
+
+					&.expanded {
+					display: block;
+					}
+
+					.result {
+					border-top: 1px solid $ct-gray;
+					padding-top: 6px;
+					}
+				}
+			}
+		}
+	}
+
+	&:has(.pbta-attribute-dialog, .pbta-choice-dialog) {
+		overflow-y: auto;
+
+		+ .dialog-buttons {
+			flex: 0;
 		}
 	}
 }
