@@ -1006,7 +1006,13 @@ export async function preloadHandlebarsTemplates() {
  * A collection of Handlebars template helpers which can be used within HTML templates.
  */
 class PbtAHandlebarsHelpers {
+	/**
+	 * Generates a tag list from a given string.
+	 * @param {string} tagsInput
+	 * @returns {string}
+	 */
 	static pbtaTags(tagsInput) {
+		if (!tagsInput) return "";
 		const tags = JSON.parse(tagsInput);
 		const tagList = tags.map((tag) => `<div class="tag">${tag.value}</div>`).join("");
 		const output = `<div class="tags">${tagList}</div>`;
