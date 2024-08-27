@@ -41,7 +41,7 @@
 						<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
 					</div>
 					<div class="item-description {{#if item.isExpanded}}expanded{{/if}}">
-						{{#if item.system.tags}}{{{pbtaTags item.system.tags}}}{{/if}}
+						{{{pbtaTags item.system.tags}}}
 						<div class="description">{{{item.system.description}}}</div>
 					</div>
 				</li>
