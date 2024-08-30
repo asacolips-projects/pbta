@@ -98,7 +98,6 @@ export default class PbtaActorSheet extends ActorSheet {
 				pbta: { rollMode: "def" } }, this.actor?.flags ?? {}
 			),
 			enrichmentOptions: {
-				async: true,
 				secrets: this.actor.isOwner,
 				rollData: this.actor.getRollData(),
 				relativeTo: this.actor
@@ -320,7 +319,6 @@ export default class PbtaActorSheet extends ActorSheet {
 			item.img = item.img || Item.DEFAULT_ICON;
 			const sourceItem = this.actor.items.get(item._id) ?? {};
 			const enrichmentOptions = {
-				async: true,
 				secrets: this.actor.isOwner,
 				rollData: sourceItem?.getRollData() ?? {},
 				relativeTo: sourceItem

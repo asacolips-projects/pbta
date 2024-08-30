@@ -260,7 +260,6 @@ export default class ItemPbta extends Item {
 					if (["Details", "LongText"].includes(type)) {
 						for (const choice of choices) {
 							choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", {
-								async: true,
 								secrets: this.isOwner,
 								rollData: this?.getRollData() ?? {},
 								relativeTo: this
@@ -333,7 +332,6 @@ export default class ItemPbta extends Item {
 						c.name = item.name;
 						c.tags = item.system.tags;
 						c.desc = await TextEditor.enrichHTML(item.system.description, {
-							async: true,
 							secrets: this.actor.isOwner,
 							rollData: this.actor.getRollData(),
 							relativeTo: this.actor
