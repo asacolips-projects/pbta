@@ -331,7 +331,12 @@ export default class ItemPbta extends Item {
 						const item = await fromUuid(c.uuid);
 						c.name = item.name;
 						c.tags = item.system.tags;
-						c.desc = item.system.description;
+						c.desc = await TextEditor.enrichHTML(item.system.description, {
+							async: true,
+							secrets: this.actor.isOwner,
+							rollData: this.actor.getRollData(),
+							relativeTo: this.actor
+						});
 						const isValid = !c.granted
 							&& c.advancement <= this.parent.advancements
 							&& !this.actor.items.has(item.id);

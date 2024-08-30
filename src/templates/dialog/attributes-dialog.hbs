@@ -8,7 +8,7 @@
 				{{#if choice.custom}}
 					<input type="text" name="custom" data-dtype="String"/>
 				{{else}}
-					{{editor choice.enriched editable=false}}
+					{{editor choice.enriched editable=false engine="prosemirror"}}
 				{{/if}}
 
 			{{else if (eq ../type "Number")}}

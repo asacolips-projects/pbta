@@ -15,7 +15,7 @@
             {{/if}}
             <div class="item-description">
                 {{{pbtaTags this.tags}}}
-                <div class="description">{{{this.desc}}}</div>
+                <div class="description">{{editor this.desc editable=false engine="prosemirror"}}</div>
             </div>
         </li>
         {{/if}}
