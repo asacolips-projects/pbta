@@ -65,7 +65,8 @@ export default class ItemPbta extends Item {
 				choices: this.system.choices,
 				details: this.system.description,
 				moveResults: this.system.moveResults,
-				resources: this.actor?.system.resources
+				resources: this.actor?.system.resources,
+				system: this.system
 			});
 			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), options);
 			const choice = await r.configureDialog({
