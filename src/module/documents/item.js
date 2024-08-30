@@ -65,7 +65,8 @@ export default class ItemPbta extends Item {
 				choices: this.system.choices,
 				details: this.system.description,
 				moveResults: this.system.moveResults,
-				resources: this.actor?.system.resources
+				resources: this.actor?.system.resources,
+				system: this.system
 			});
 			const r = new CONFIG.Dice.RollPbtA(formula, this.getRollData(), options);
 			const choice = await r.configureDialog({
@@ -259,7 +260,6 @@ export default class ItemPbta extends Item {
 					if (["Details", "LongText"].includes(type)) {
 						for (const choice of choices) {
 							choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", {
-								async: true,
 								secrets: this.isOwner,
 								rollData: this?.getRollData() ?? {},
 								relativeTo: this
@@ -331,7 +331,11 @@ export default class ItemPbta extends Item {
 						const item = await fromUuid(c.uuid);
 						c.name = item.name;
 						c.tags = item.system.tags;
-						c.desc = item.system.description;
+						c.desc = await TextEditor.enrichHTML(item.system.description, {
+							secrets: this.actor.isOwner,
+							rollData: this.actor.getRollData(),
+							relativeTo: this.actor
+						});
 						const isValid = !c.granted
 							&& c.advancement <= this.parent.advancements
 							&& !this.actor.items.has(item.id);
