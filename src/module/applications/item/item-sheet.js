@@ -139,7 +139,8 @@ export default class PbtaItemSheet extends ItemSheet {
 	async activateListeners(html) {
 		super.activateListeners(html);
 		if (this.item.type === "equipment") {
-			const tagify = this._tagify(html);
+			const whitelist = game.pbta.utils.getTagList(this.item, "item");
+			const tagify = this._tagify(html, "system.tags", whitelist, 20);
 			tagify.on("edit:start", ({ detail: { tag, data } }) => game.pbta.utils.TagHandler.onEdit(tagify, { tag, data }));
 		}
 		html.find(".regenerate-slug").on("click", this._onItemRegenerateSlug.bind(this));
@@ -152,27 +153,29 @@ export default class PbtaItemSheet extends ItemSheet {
 
 	/**
 	 * Add tagging widget.
-	 * @param {HTMLElement} html
+	 * @param {HTMLElement} html	The form containing the tags' input field.
+	 * @param {string} inputName	The "name" attribute of the input field.
+	 * @param {object[]} whitelist	A list of tags to be available to choose from.
+	 * @param {number} maxItems	The number of tags displayed when selecting the input field.
+	 * @param {object} config	More Tagify configs, such as additional methods
 	 * @returns {Tagify | undefined}
 	 */
-	_tagify(html) {
-		let $input = html.find('input[name="system.tags"]');
+	_tagify(html, inputName, whitelist, maxItems = 20, config = game.pbta.utils.TagHandler.config) {
+		const $input = html.find(`input[name="${inputName}"]`);
 		if ($input.length > 0) {
 			if (!this.isEditable) {
 				$input.attr("readonly", true);
 			}
-			const whitelist = game.pbta.utils.getTagList(this.item, "item");
 
-			// init Tagify script on the above inputs
 			return new Tagify($input[0], {
 				whitelist,
 				dropdown: {
-					maxItems: 20,           // <- mixumum allowed rendered suggestions
+					maxItems, // <- mixumum allowed rendered suggestions
 					classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
 					enabled: 0,             // <- show suggestions on focus
 					closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
 				},
-				...game.pbta.utils.TagHandler.config
+				...config
 			});
 		}
 	}
