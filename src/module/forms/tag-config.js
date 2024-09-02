@@ -60,7 +60,7 @@ export class PbtaTagConfigDialog extends FormApplication {
 
 	async activateListeners(html) {
 		super.activateListeners(html);
-		const tags = await this._tagify(html);
+		const tags = await this.createTagify(html);
 		for (const t of tags) {
 			t.on("edit:start", ({ detail: { tag, data } }) => game.pbta.utils.TagHandler.onEdit(t, { tag, data }));
 		}
@@ -110,7 +110,7 @@ export class PbtaTagConfigDialog extends FormApplication {
 	 * @param {HTMLElement} html
 	 * @returns {Promise<Tagify[]>}
 	 */
-	async _tagify(html) {
+	async createTagify(html) {
 		const data = foundry.utils.deepClone(await this.getData());
 		const { userTags, moduleTags } = data;
 
