@@ -128,7 +128,7 @@ PBTA:
       statsRequired1: "Les 'stats' sont requises pour le"
       statsRequired2: "groupe."
       statString1: "La caractéristique"
-      statString2: "doit être une chaîne de caractères, comme "Cool""
+      statString2: "doit être une chaîne de caractères, comme \"Cool\""
       tomlError: "Il y a une erreur de syntaxe dans votre configuration TOML à la ligne {line}, colonne {column}. Voir la console pour plus de détails."
   Migration:
     Begin: "Application de la migration du système PbtA pour la version {version}. Veuillez patienter et ne pas fermer votre jeu ou éteindre votre serveur."
@@ -138,7 +138,7 @@ PBTA:
       help: "Aide & Tutoriel du système"
     stats:
       name: "Caractéristiques"
-      hint: "Saisissez une liste de caractéristiques/capacités séparées par des virgules, comme "For,Dex,Con,Int,Sag,Cha""
+      hint: "Saisissez une liste de caractéristiques/capacités séparées par des virgules, comme \"For,Dex,Con,Int,Sag,Cha\""
     AutoCollapseCard:
       name: "Réduire les descriptions des cartes d'objet dans le chat"
       hint: "Réduire automatiquement les descriptions des cartes d'objet dans le journal de chat"
@@ -168,7 +168,7 @@ PBTA:
       hint: "Cache les utilisations restantes pour chaque manœuvre dans le résumé des manœuvres pour les personnages et les PNJ."
     hideAdvancement:
       name: "Cacher les progressions"
-      hint: "Cache les progressions dans la fiche d'acteur. Toute option qui n'est pas "Aucun" cache également le "(Progression #)" dans la barre latérale des Acteurs."
+      hint: "Cache les progressions dans la fiche d'acteur. Toute option qui n'est pas \"Aucun\" cache également le \"(Progression #)\" dans la barre latérale des Acteurs."
       OptNone: "Aucun"
       OptInput: "Boîte de saisie"
       OptBoth: "Les deux"
