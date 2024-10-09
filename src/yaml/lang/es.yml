@@ -10,41 +10,60 @@ TYPES:
     playbook: "Libreto"
     tag: "Etiqueta"
 PBTA:
+  ActorType: "Tipo de actor"
+  Advance: "Mejorar"
+  Advancement: "Mejora"
+  Advancements: "Mejoras"
+  AdvancementNumber: "Mejora {number}"
   Advantage: "Ventaja"
   Ask: "Consultar"
   AskTitle: "{name}: Elige un atributo"
+  Attribute: "Atributo"
+  Attributes: "Atributos"
   Biography: "Biografía"
-  ClearMoves: "Clear Moves"
+  Category: "Categoría"
+  ClearMoves: "Eliminar movimientos"
   ChatMessage:
-    ShiftUp: "Shift Up"
-    ShiftDown: "Shift Down"
+    ShiftUp: "Aumentar"
+    ShiftDown: "Disminuir"
+  Choice: "Elección"
   Choices: "Elecciones"
   ConditionsApplied: "Estados aplicados:"
   Create: "Crear"
   Description: "Descripción"
-  description: "¡Disfruta de cualquier juego PbtA en FoundryVTT!"
+  Details: "Detalles"
   Disadvantage: "Desventaja"
+  DropItemsHere: "Arrastrar los elementos aquí"
   Equipment: "Equipo"
-  EquipmentType: "Tipo de equipo"
   failure: "Complicaciones (marca PX)"
   Formula: "Fórmula de tirada personalizada"
   Forward: "Siguiente"
+  ItemGrantAdd: "Añadir elemento otorgado"
+  ItemGrants: "Elementos otorgados"
+  KeepItems: "Conservar elementos"
   Modifier: "Modificador"
   MoveGroup: "Grupo de movimiento"
   MoveGroupHelp: "Varios movimientos con el mismo grupo de movimientos serán seleccionables al crear un nuevo personaje con el creador de personajes."
   Moves: "Movimientos"
-  MoveType: "Tipo de movimiento"
   Name: "Nombre"
   New: "Nuevo"
   Normal: "Normal"
   NoTemplate: "Sin plantilla"
   Ongoing: "Continuo"
+  Hold: "Guardar"
   partial: "Éxito parcial"
   Playbook: "Libreto"
+  NoPlaybook: "Sin libreto"
+  PlaybookGrantOn: "Otorgar"
+  PlaybookGrantOnAdvancement: "Al mejorar"
+  PlaybookGrantOnInstantly: "Instantáneamente"
+  PlaybookAddNewListOption: "Añadir nueva opción"
   Prompt: "Mensaje"
   PromptTitle: "{name}: Introduce el modificador"
   Qty: "Cant"
   Quantity: "Cantidad"
+  Repeatable: "Repetible"
+  ResetAdvancements: "Restablecer mejoras"
   Resource: "Recurso"
   RequiresMove: "Requiere movimiento"
   Roll: "Tirada"
@@ -59,14 +78,17 @@ PBTA:
   SheetClassNPC: "Hoja de PNJ de PbtA por defecto"
   SheetClassOther: "Hoja de Otro de PbtA por defecto"
   SheetClassItem: "Hoja de Elemento de PbtA por defecto"
+  SheetClassPlaybook: "Hoja de Libreto de PbtA por defecto"
+  StartingGrants: "Otorgados iniciales"
   success: "Éxito"
   Tags: "Etiquetas"
   TagsHelp: "(Utiliza el tabulador para autocompletar, las comas para crear nuevas etiquetas y hacer doble clic en una etiqueta para editarla.)"
   TagsPlaceholder: "Escribe las etiquetas"
+  Title: "Título"
   title: "Powered by the Apocalypse"
   Type: "Tipo"
   Uses: "Usos"
-  ViewPlaybook: "View playbook"
+  ViewPlaybook: "Mostrar libreto"
   Weight: "Peso"
   Wt: "Ps"
   Common:
@@ -76,9 +98,14 @@ PBTA:
   Dialog:
     Ask1: "Elige un atributo para este movimiento."
     ChooseConditions: "Elige los modificadores de estado que correspondan:"
+    ChooseSituationalModifiersTitle: "Modificador situacional"
+    ChooseSituationalModifiers: "Elige todos los modificadores situacionales que correspondan:"
+    ForwardMessage: "Utilizar <strong>{value}</strong> Siguiente."
+    OngoingMessage: "Utilizar <strong>{value}</strong> Continuo."
+    HoldMessage: "Utilizar <strong>{value}</strong> Guardado."
     Prompt1: "Elige el modificador para este movimiento."
-    HowManyToken: "How many token would you like to use?"
-    ErrorAboveMax: "You can't spend more token than you have."
+    HowManyToken: "¿Cuántos tokens quieres utilizar?"
+    ErrorAboveMax: "No puedes utilizar más tokens de los que tienes."
   Messages:
     sheetConfig:
       actorTypeRequired: "se requiere el tipo de actor."
@@ -101,17 +128,17 @@ PBTA:
       statsRequired1: "'stats' se requieren para"
       statsRequired2: "grupo."
       statString1: "Estadística"
-      statString2: "tiene que ser texto, como \"Frialdad\""
+      statString2: 'tiene que ser texto, como "Frialdad"'
       tomlError: "Hay un error sintáctico en línea {line} columna {column} en la configuración del TOML. Consulta la consola para más detalles."
+  Migration:
+    Begin: "Aplicar la migración del PbtA System a la versión {version}. Por favor, ten paciencia y no cierres la partida ni apagues el servidor."
+    Complete: "¡Migración del PbtA System a la versión {version} completada!"
   Settings:
     button:
-      help: "Ayuda y Tutorial del PbtA System"
-    hideSidebarButtons:
-      name: "Ocultar los botones de la barra lateral de configuración de la partida"
-      hint: "Elimina los botones {button1} y {button2} de la barra lateral de Configuración de la partida."
+      help: "Ayuda y Tutorial del sistema"
     stats:
       name: "Estadísticas"
-      hint: "Introduce una lista de estadísticas/características separadas por comas, como \"Fue,Des,Con,Int,Sab,Car\""
+      hint: 'Introduce una lista de estadísticas/características separadas por comas, como "Fue,Des,Con,Int,Sab,Car"'
     AutoCollapseCard:
       name: "Contraer descripciones de las tarjetas de elementos en el chat"
       hint: "Contrae automáticamente las descripciones de las tarjetas de los elementos en el chat"
@@ -125,17 +152,26 @@ PBTA:
       name: Ocultar fórmula de la tirada
       hint: Oculta el input de la fórmula de tirada personalizada en las hojas de personaje.
     hideForward:
-      name: Ocultar siguiente
+      name: Ocultar Siguiente
       hint: Oculta el input de siguiente input en las hojas de personaje.
     hideOngoing:
-      name: Ocultar continuo
+      name: Ocultar Continuo
       hint: Oculta el input de continuo input en las hojas de personaje.
+    hideHold:
+      name: "Ocultar Guardar"
+      hint: "Oculta el imput de guardar de las hojas de personaje."
     hideRollMode:
       name: Ocultar modo de tirada
       hint: Oculta la sustitución de fórmula de tirada (normal/ventaja/desventaja) en las hojas de personaje.
     hideUses:
       name: Ocultar usos
       hint: Oculta los usos restantes de cada movimiento en el resumen de movimientos de personajes y PNJs.
+    hideAdvancement:
+      name: "Ocultar Mejoras"
+      hint: 'Oculta las mejoras en la hoja de personaje. Cualquier opción que no sea "Ninguna" también oculta "(Mejora #)" en la barra lateral del actor.'
+      OptNone: "Ninguna"
+      OptInput: "Input Box"
+      OptBoth: "Ambas"
     itemIcons:
       name: "Activar iconos de objetos"
       hint: "Muestra los iconos de los movimientos, conjuros y equipo en las hojas de personaje (requiere recargar el navegador).."
@@ -177,9 +213,30 @@ PBTA:
         World: "Etiquetas del Mundo"
         all: "Todas {documentType}"
       title: "Configurar Etiquetas"
+  Slug:
+    label: "PbtA ID"
+    tooltip: "Regenerar PbtA ID"
+  Stat:
+    label: "Atributo"
+    labelPl: "Atributos"
+    Shifting:
+      fail: "Falló el cambio."
+      label: "Cambiar {stat}"
+      shifts: "{actor} cambia {stats}"
+      up: "Aumenta {stat}"
+      down: "Disminuye {stat}"
   Warnings:
+    Playbook:
+      ChoiceSetAlreadyGrant: "Choice Set already has the granted item."
+      DeleteWarning: "Este {type} se eliminará permanentemente, no se puede recuperar, y eliminará {num} elemntos otorgados."
+      ItemMissing: "No existe el elemento"
+      UpdateAttributes: "Los atributos del libreto no coinciden con los disponibles para este tipo de actor. Puedes hacer clic en esta advertencia para actualizar los atributos, pero ten en cuenta que los atributos antiguos de este libreto podrían eliminarse si ya no están disponibles."
+    Macro:
+      NoActorSelected: "No selected or assigned actor could be found to target with macro."
+      MissingTargetWarn: "Your controlled actor '{actor}' does not have an item with name '{name}'."
+      MultipleTargetsWarn: "Your controlled actor '{actor}' has more than one item with name '{name}'. The first match will be chosen."
+    TagDeprecation: "Las etiquetas como elementos han sido eliminadas, utiliza el menú de Configuración de Etiquetas en los ajustes de la partida para crear tus etiquetas."
     UnlinkedToken:
       Equipment: "El equipo no se puede reorganizar si el token no está vinculado a un actor."
       Moves: "Los movimientos no se pueden reorganizar si el token no está vinculado a un actor."
-    TagDeprecation: "Las etiquetas como elementos han sido eliminadas, utiliza el menú de Configuración de Etiquetas en los ajustes de la partida para crear tus etiquetas."
 PBTA_OTHER: "Otro"
