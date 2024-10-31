@@ -11,6 +11,7 @@ import { registerSettings } from "./settings.js";
 import * as applications from "./applications/_module.js";
 import * as canvas from "./canvas/_module.js";
 import * as dataModels from "./data/_module.js";
+import * as dataFields from "./data/fields.js";
 import * as dice from "./dice/_module.js";
 import * as documents from "./documents/_module.js";
 import * as migrations from "./migration.js";
@@ -25,6 +26,7 @@ globalThis.pbta = {
 	canvas,
 	config: PBTA,
 	dataModels,
+	dataFields,
 	dice,
 	documents,
 	migrations,
