@@ -200,10 +200,11 @@ export default class PbtaActorSheet extends ActorSheet {
 				continue;
 			}
 			const playbook = attrValue.playbook;
+			const { slug, name } = this.actor.playbook;
 			if (
 				playbook
 				&& typeof playbook !== "boolean"
-				&& !(playbook.includes(this.actor.playbook.slug) || playbook.includes(this.actor.playbook.name))
+				&& !((slug.length && playbook.includes(slug)) || (name.length && playbook.includes(name)))
 			) {
 				delete context.system.attributes[attrKey];
 				continue;
