@@ -236,6 +236,7 @@ PBTA:
       MissingTargetWarn: "Your controlled actor '{actor}' does not have an item with name '{name}'."
       MultipleTargetsWarn: "Your controlled actor '{actor}' has more than one item with name '{name}'. The first match will be chosen."
     TagDeprecation: "Tags as items have been deprecated, use the Tag Configuration menu on the game settings to create your tags."
+    TooManyModules: "You have more than one module attempting to override PbtA's sheet config: {names}"
     UnlinkedToken:
       Equipment: "Equipment cannot be rearranged while this token is not linked to an actor."
       Moves: "Moves cannot be rearranged while this token is not linked to an actor."

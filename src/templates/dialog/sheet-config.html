@@ -6,9 +6,6 @@
     <i class="fas fa-question-circle"></i> {{localize "PBTA.Settings.button.help"}}
   </button>
 
-  {{#if sheetConfigOverride}}
-  <div class="notification error">{{localize "PBTA.Settings.sheetConfig.sheetConfigDisabledModule"}}</div>
-  {{else}}
   <section class="pbta-sheet-config-editor">
     <textarea name="tomlString" class="pbta-sheet-config">
     {{~" "}}{{{tomlString}}}{{" "~}}
@@ -24,5 +21,4 @@
       <i class="fas fa-sync"></i> {{localize 'PERMISSION.Reset'}}
     </button>
   </div>
-  {{/if}}
 </form>
