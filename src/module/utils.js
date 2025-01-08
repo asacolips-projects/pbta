@@ -784,6 +784,13 @@ export class TagHandler {
 		`;
 	}
 
+	static dropdownItemTemplate(tagData) {
+		return `<div ${this.getAttributes(tagData)}
+			class='${this.settings.classNames.dropdownItem} ${this.isTagDuplicate(tagData.value) ? this.settings.classNames.dropdownItemSelected: ""} ${tagData.class || ""}'
+			tabindex="0"
+			role="option">${game.i18n.localize(tagData.mappedValue || tagData.value)}</div>`;
+	}
+
 	/**
 	 * Allows User input of tags with descriptions in
 	 * the form of "tag name"|"tag description"
@@ -810,7 +817,8 @@ export class TagHandler {
 				focusableTags: true
 			},
 			templates: {
-				tag: this.tagTemplate   // <- Add a custom template so descriptions show in a tooltip
+				tag: this.tagTemplate,   // <- Add a custom template so descriptions show in a tooltip
+				dropdownItem: this.dropdownItemTemplate
 			},
 			transformTag: this.transformTag
 		};
