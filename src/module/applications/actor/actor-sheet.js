@@ -804,7 +804,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			/**
 			 * @todo create a replacePlaybook method with this and @see activateListeners() also handle stats
 			 */
-			if (item.type === "playbook" && currPlaybook) {
+			if (currPlaybook) {
 				const deleted = await currPlaybook.delete();
 				if (!deleted) return false;
 			}
