@@ -1022,7 +1022,18 @@ class PbtAHandlebarsHelpers {
 	static pbtaTags(tagsInput) {
 		if (!tagsInput) return "";
 		const tags = JSON.parse(tagsInput);
-		const tagList = tags.map((tag) => `<div class="tag">${tag.value}</div>`).join("");
+		const tagList = tags
+			.map(
+				(tag) =>
+					`<tag 
+						data-tooltip="${game.i18n.localize(tag.description) ?? ""}"
+						class="tag">
+						<div>
+							<span class='tagify__tag-text'>${game.i18n.localize(tag.value)}</span>
+						</div>
+					</tag>`
+			)
+			.join("");
 		const output = `<div class="tags">${tagList}</div>`;
 		return output;
 	}
