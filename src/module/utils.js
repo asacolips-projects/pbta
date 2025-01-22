@@ -1025,13 +1025,9 @@ class PbtAHandlebarsHelpers {
 		const tagList = tags
 			.map(
 				(tag) =>
-					`<tag 
-						data-tooltip="${game.i18n.localize(tag.description) ?? ""}"
-						class="tag">
-						<div>
-							<span class='tagify__tag-text'>${game.i18n.localize(tag.value)}</span>
-						</div>
-					</tag>`
+					`<div class="tag" data-tooltip="${game.i18n.localize(tag.description) ?? ""}">
+						<span class='tagify__tag-text'>${game.i18n.localize(tag.value)}</span>
+					</div>`
 			)
 			.join("");
 		const output = `<div class="tags">${tagList}</div>`;
