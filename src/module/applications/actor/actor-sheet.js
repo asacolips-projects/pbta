@@ -340,7 +340,7 @@ export default class PbtaActorSheet extends ActorSheet {
 					}
 				}
 			}
-			item.isExpanded = this._expanded.has(item.id);
+			item.isExpanded = this._expanded.has(item._id);
 			// If this is a move, sort into various arrays.
 			if (item.type === moveType) {
 				if (context.moves[item.system.moveType]) {
