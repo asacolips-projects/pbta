@@ -1,0 +1,19 @@
+<p class="sheet-config-notes">
+  {{{localize 'PBTA.Settings.sheetConfig.notes2'}}}
+  <br>{{{localize 'PBTA.Settings.sheetConfig.notes3'}}}
+</p>
+<div>
+  <button type="button" name="help">
+    <i class="fas fa-book-open"></i> {{localize "PBTA.Settings.button.help"}}
+  </button>
+</div>
+
+{{#if sheetConfigOverride}}
+<div class="notification error">{{localize "PBTA.Settings.sheetConfig.sheetConfigDisabledModule"}}</div>
+{{else}}
+<section class="pbta-sheet-config-editor">
+  <textarea name="tomlString" class="pbta-sheet-config">
+  {{~" "}}{{{tomlString}}}{{" "~}}
+  </textarea>
+</section>
+{{/if}}

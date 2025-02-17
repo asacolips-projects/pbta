@@ -1,28 +1,43 @@
 import { codeMirrorAddToml } from "./codemirror.toml.js";
 
-export class PbtaSettingsConfigDialog extends FormApplication {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class PbtaSettingsConfigDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 	constructor(...args) {
-		super(...args);
+		super(args);
 		if (this.sheetOverriden) {
-			this.options.classes.push("sheetOverriden");
-			this.options.width = this.position.height = "auto";
-			this.options.resizable = false;
+			this.options.window.classes.push("sheetOverriden");
+			this.options.position.width = this.position.height = "auto";
+			this.options.window.resizable = false;
 		}
 	}
 
-	/** @override */
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
-			title: game.i18n.localize("PBTA.Settings.sheetConfig.title"),
-			id: "pbta-sheet-config",
-			classes: ["pbta", "pbta-sheet-config"],
-			template: "systems/pbta/templates/dialog/sheet-config.html",
-			width: 720,
-			height: 800,
+	static DEFAULT_OPTIONS = {
+		id: "pbta-sheet-config",
+		classes: ["pbta", "pbta-sheet-config"],
+		canCreate: true,
+		window: {
+			contentClasses: ["standard-form"],
+			icon: "fa-solid fa-code",
 			resizable: true,
-			closeOnSubmit: true
-		});
-	}
+			title: "PBTA.Settings.sheetConfig.title"
+		},
+		position: {
+			width: 720,
+			height: 800
+		},
+		actions: { reset: PbtaSettingsConfigDialog.#onReset },
+		tag: "form",
+		form: {
+			closeOnSubmit: true,
+			handler: PbtaSettingsConfigDialog.#onSubmit
+		}
+	};
+
+	static PARTS = {
+		body: { template: "systems/pbta/templates/dialog/sheet-config.hbs", root: true },
+		footer: { template: "templates/generic/form-footer.hbs" }
+	};
 
 	/* -------------------------------------------- */
 
@@ -32,29 +47,32 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/** @override */
-	async getData(options) {
+	async _prepareContext(options) {
+		const context = await super._prepareContext(options);
 		const sheetConfig = game.settings.get("pbta", "sheetConfig") || {};
-		return {
-			...foundry.utils.deepClone(sheetConfig),
-			sheetConfigOverride: this.sheetOverriden,
-			tomlString: sheetConfig.tomlString || ""
-		};
+		context.sheetConfigOverride = this.sheetOverriden;
+		context.tomlString = sheetConfig.tomlString || "";
+		context.buttons = this.#prepareButtons();
+		return context;
+	}
+
+	#prepareButtons() {
+		return [
+			// { type: "submit", icon: "fa-solid fa-save", label: "PERMISSION.Submit", action: "submit" },
+			{ type: "submit", icon: "fa-solid fa-save", label: "PERMISSION.Submit" },
+			{ type: "button", icon: "fa-solid fa-sync", label: "PERMISSION.Reset", action: "reset" }
+		];
 	}
 
 	/* -------------------------------------------- */
 	/*  Event Listeners and Handlers                */
 	/* -------------------------------------------- */
 
-	/** @override */
-	activateListeners(html) {
-		super.activateListeners(html);
-		html.find('button[name="help"]').click((ev) => {
-			event.preventDefault();
-			window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp");
-		});
-		html.find('button[name="reset"]').click(this._onResetDefaults.bind(this));
-		if (!this.sheetOverriden) {
+	_onRender(context, options) {
+		this.element.querySelector('button[name="help"]').addEventListener("click", () =>
+			window.open("https://github.com/asacolips-projects/pbta/wiki", "_blank")
+		);
+		if (!context.sheetOverriden) {
 			// Load toml syntax. This is a failsafe in case other modules that use
 			// CodeMirror (such as Custom CSS Rules) are enabled.
 			if (!CodeMirror.modes.toml) {
@@ -62,7 +80,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 			}
 
 			// Enable the CodeMirror code editor.
-			this.codeEditor = CodeMirror.fromTextArea(html.find(".pbta-sheet-config")[0], {
+			this.codeEditor = CodeMirror.fromTextArea(this.element.querySelector(".pbta-sheet-config"), {
 				mode: "toml",
 				indentUnit: 4,
 				smartIndent: true,
@@ -76,27 +94,9 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 		}
 	}
 
-	/**
-	 * Handles retrieving data from the form.
-	 *
-	 * @override
-	 *
-	 * @param {Array} args All arguments passed to this method, which will be forwarded to super
-	 * @returns {object} The form data
-	 * @memberof SettingsForm
-	 */
-	_getSubmitData(...args) {
-		this.codeEditor.save();
-		return super._getSubmitData(...args);
-	}
-
 	/* -------------------------------------------- */
 
-	/**
-	 * Handle button click to reset default settings
-	 * @param {event} event   The initial button click event
-	 */
-	async _onResetDefaults(event) {
+	static async #onReset(event) {
 		event.preventDefault();
 		await game.settings.set("pbta", "sheetConfig", {});
 		ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.reset"));
@@ -112,11 +112,11 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/** @override */
-	async _updateObject(event, formData) {
+	static async #onSubmit(event, form, formData) {
+		this.codeEditor.save();
 		let computed = {};
 
-		computed = game.pbta.utils.parseTomlString(formData.tomlString) ?? null;
+		computed = game.pbta.utils.parseTomlString(formData.object.tomlString) ?? null;
 		if (computed) {
 			let confirm = true;
 			if (game.pbta.sheetConfig?.actorTypes?.character && game.pbta.sheetConfig?.actorTypes?.npc) {
@@ -126,9 +126,9 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 				throw new Error("Cancelled");
 			}
 			if (computed) {
-				formData.computed = computed;
+				formData.object.computed = computed;
 			}
-			await game.settings.set("pbta", "sheetConfig", formData);
+			await game.settings.set("pbta", "sheetConfig", formData.object);
 		}
 	}
 
