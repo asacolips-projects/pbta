@@ -4,6 +4,7 @@
   .entry-name {
     text-overflow: ellipsis;
     padding-right: 10px;
+    line-height: 36px;
   }
 }
 
@@ -19,6 +20,7 @@
       .actor-level {
           font-size: x-small;
           color: var(--color-text-light-primary);
+          line-height: 12px;
       }
   }
 }
