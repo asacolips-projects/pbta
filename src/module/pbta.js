@@ -132,46 +132,14 @@ Hooks.once("setup", function () {
 
 	if (game.user.isGM) {
 		Hooks.on("renderSettings", (app, html) => {
-			const header = document.createElement("h2");
-			header.innerText = game.i18n.localize("Powered by the Apocalypse");
-
-			const pbtaSettings = document.createElement("div");
-			html.find("#settings-game")?.after(header, pbtaSettings);
-
-			const buttons = [
-				{
-					action: (ev) => {
-						ev.preventDefault();
-						let menu = game.settings.menus.get("pbta.sheetConfigMenu");
-						let app = new menu.type();
-						app.render(true);
-					},
-					iconClasses: ["fas", "fa-file-alt"],
-					label: "PBTA.Settings.sheetConfig.label"
-				},
-				{
-					action: (ev) => {
-						ev.preventDefault();
-						window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
-					},
-					iconClasses: ["fas", "fa-question-circle"],
-					label: "PBTA.Settings.button.help"
-				}
-			].map(({ action, iconClasses, label }) => {
-				const button = document.createElement("button");
-				button.type = "button";
-
-				const icon = document.createElement("i");
-				icon.classList.add(...iconClasses);
-
-				button.append(icon, game.i18n.localize(label));
-
-				button.addEventListener("click", action);
-
-				return button;
-			});
-
-			pbtaSettings.append(...buttons);
+			const div = document.createElement("div");
+			div.innerHTML = `
+				<span>
+					<i class="fas fa-book-open"></i>
+					<a href="https://github.com/asacolips-projects/pbta/wiki" target="_blank">${game.i18n.localize("PBTA.Settings.button.help")}</a>
+				</span>
+			`;
+			html.querySelector(".info .system").insertAdjacentElement("afterend", div);
 		});
 	}
 });
