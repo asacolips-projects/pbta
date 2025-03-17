@@ -574,16 +574,6 @@ export default class ItemPbta extends Item {
 		});
 	}
 
-	/**
-	 * Apply listeners to chat messages.
-	 * @param {HTML} html  Rendered chat message.
-	 */
-	static chatListeners(html) {
-		html.on("click", ".card-buttons button", this._onChatCardAction.bind(this));
-		html.on("click", ".cell__title", this._onChatCardToggleContent.bind(this));
-		html.on("click", ".result-label", this._onChatCardResultToggleContent.bind(this));
-	}
-
 	static async _onChatCardAction(event) {
 		event.preventDefault();
 		const button = event.currentTarget;

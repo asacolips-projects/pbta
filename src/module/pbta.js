@@ -225,22 +225,27 @@ Hooks.once("babele.ready", () => {
 	Hooks.once("babele.ready", () => utils.getPlaybooks());
 });
 
-Hooks.on("renderChatMessage", (data, html, options) => {
-	if (game.settings.get("pbta", "autoCollapseItemCards")) {
-		html.find(".card-content").hide();
+Hooks.on("renderChatMessageHTML", (data, html, options) => {
+	const cardContent = html.querySelector(".card-content");
+	const resultDetails = html.querySelector(".result-details");
+	const resultChoices = html.querySelector(".result-choices");
+	const cardButtons = html.querySelector(".pbta-chat-card .card-buttons");
+	if (cardContent && game.settings.get("pbta", "autoCollapseItemCards")) {
+		cardContent.style.display = "none";
 	}
-	if (game.settings.get("pbta", "autoCollapseItemCardsResult")) {
-		html.find(".result-details").hide();
-		html.find(".result-choices").hide();
+	if (resultDetails && resultChoices && game.settings.get("pbta", "autoCollapseItemCardsResult")) {
+		resultDetails.style.display = "none";
+		resultChoices.style.display = "none";
 	}
-	const cardButtons = html.find(".pbta-chat-card .card-buttons");
-	if (!game.user.isGM || !game.pbta.sheetConfig?.rollShifting) {
-		cardButtons.hide();
+	if (cardButtons && (!game.user.isGM || !game.pbta.sheetConfig?.rollShifting)) {
+		cardButtons.style.display = "none";
 	}
+	for (const button of html.querySelectorAll(".card-buttons button")) {
+		button.addEventListener("click", documents.ItemPbta._onChatCardAction);
+	}
+	html.querySelector(".cell__title").addEventListener("click", documents.ItemPbta._onChatCardToggleContent);
+	html.querySelector(".result-label").addEventListener("click", documents.ItemPbta._onChatCardResultToggleContent);
 });
-
-Hooks.on("renderChatLog", (app, html, data) => documents.ItemPbta.chatListeners(html));
-Hooks.on("renderChatPopout", (app, html, data) => documents.ItemPbta.chatListeners(html));
 
 /**
  * Configure explicit lists of attributes that are trackable on the token HUD and in the combat tracker.
