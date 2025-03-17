@@ -87,8 +87,8 @@ Hooks.once("init", async function () {
 		types: ["playbook"],
 		label: "PBTA.SheetClassPlaybook"
 	});
-	DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, "core", TokenConfig);
-	DocumentSheetConfig.registerSheet(TokenDocument, "core", applications.token.PbtaTokenConfig, {
+	foundry.applications.apps.DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, "core", foundry.applications.sheets.TokenConfig);
+	foundry.applications.apps.DocumentSheetConfig.registerSheet(TokenDocument, "core", applications.token.PbtaTokenConfig, {
 		makeDefault: true,
 		label: () => game.i18n.format("SHEETS.DefaultDocumentSheet", { document: game.i18n.localize("DOCUMENT.Token") })
 	});
