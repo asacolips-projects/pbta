@@ -21,6 +21,17 @@ export default class PbtaItemSheet extends ItemSheet {
 		return `${path}/${this.item.type}-sheet.html`;
 	}
 
+	/**
+	 * Returns an object of allowed actors types for this item.
+	 * @returns {object}
+	 */
+	get validCharacterTypes() {
+		return Object.fromEntries(
+			Object.entries(game.pbta.sheetConfig.actorTypes)
+				.filter(([k, v]) => this.item.constructor._filterActorTypes([k, v], this.item.type))
+		);
+	}
+
 	/* -------------------------------------------- */
 
 	/** @override */
