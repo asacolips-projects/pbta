@@ -211,12 +211,8 @@ export default class PlaybookSheet extends PbtaItemSheet {
 	async _onDropItem(event, data) {
 		const item = await Item.implementation.fromDropData(data);
 
-		const { sheetConfig } = game.pbta;
 		const actorType = this.item.system.actorType;
-		const validCharacterTypes = Object.fromEntries(
-			Object.entries(sheetConfig.actorTypes)
-				.filter(([k, v]) => [k, v?.baseType].includes("character"))
-		);
+		const validCharacterTypes = this.validCharacterTypes;
 
 		const hasMultipleCharacterTypes = Object.keys(validCharacterTypes).length > 1;
 		if (hasMultipleCharacterTypes && ![actorType, ""].includes(item.system.actorType)) return false;
