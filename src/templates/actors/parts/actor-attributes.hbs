@@ -107,7 +107,15 @@
 					{{/if}}
 				</div>
 
-			{{!-- Fallback to a text field. --}}
+
+
+            {{else if (eq attr.type "MultiText")}}
+                {{#each attr.values as |value valueKey|}}
+                    <input type="text" class="input input--{{key}}" name="system.attributes.{{key}}.values.{{valueKey}}" value="{{value}}"/>
+                {{/each}}
+
+
+            {{!-- Fallback to a text field. --}}
 			{{else}}
 				<input type="text" class="input input--{{key}}" name="system.attributes.{{key}}.value" value="{{attr.value}}"/>
 			{{/if}}

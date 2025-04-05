@@ -163,7 +163,6 @@ export function validateSheetConfig(sheetConfig) {
 export function parseTomlString(tomlString) {
 	let computed = {};
 	let errors = [];
-
 	// Try to retrieve the TOML string.
 	if (tomlString) {
 		// Get the parsed value.
@@ -446,6 +445,8 @@ export function convertAttr(attrGroup, position) {
 		attr.playbook = attrValue.playbook ?? null;
 		attr.limited = attrValue.limited ?? false;
 		attr.position = attrValue.position ?? position;
+		// TODO is this a good default value?
+		attr.lines = attrValue.lines ?? null;
 
 		if (!attrValue.type) {
 			// If an object structure was used and no type was specified, it's invalid.
@@ -477,6 +478,10 @@ export function convertAttr(attrGroup, position) {
 			case "Text":
 			case "LongText":
 				attr.value = attrValue.default ?? "";
+				break;
+
+			case "MultiText":
+				attr.values = attrValue.default ?? Array(attr.lines).fill("");
 				break;
 
 			case "Roll":

@@ -346,7 +346,33 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 									configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.showResults`);
 									updatesDiff[actorType][`system.${attrGroup}.${attr}.showResults`] = newGroup[attr].showResults ?? true;
 								}
+							} else if (newType === "MultiText") {
+								console.log("in new type code", newGroup[attr], oldGroup[attr]);
+								// TODO: lines should have a default value somewhere? or error if it's missing, eg
+								// check lines val here
+								if (newGroup[attr]?.lines !== oldGroup[attr]?.lines) {
+									// TODO: is "options" correct here?
+									configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
+									updatesDiff[actorType][`system.${attrGroup}.${attr}.lines`] = newGroup[attr]?.lines ?? 3; // note default value here
+
+									// newGroup[attr]?.values = Array(newGroup[attr]?.lines).fill("");
+
+									// TODO: preserve as many values as possible, don't wipe them out like this
+									configDiff.values.push(`${actorType}.${attrGroup}.${attr}`);
+									updatesDiff[actorType][`system.${attrGroup}.${attr}.values`] = newGroup[attr]?.values ?? Array(newGroup[attr]?.lines).fill("");
+
+									// const oldClone = foundry.utils.duplicate(oldGroup);
+									// for (let optK of Object.keys(newGroup[attr].values)) {
+									// 	delete oldClone[attr]?.values[optK];
+									// }
+									// for (let optK of Object.keys(oldClone[attr]?.values)) {
+									// 	configDiff.del.push(`${actorType}.${attrGroup}.${attr}.values.${optK}`);
+									// 	updatesDiff[actorType][`system.${attrGroup}.${attr}.values`][`-=${optK}`] = null;
+									// }
+
+								}
 							}
+
 						}
 					}
 				}

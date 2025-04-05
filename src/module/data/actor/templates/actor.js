@@ -16,6 +16,7 @@ export class ActorDataTemplate extends foundry.abstract.TypeDataModel {
 
 	prepareDerivedData() {
 		for (const data of Object.values(this.attributes)) {
+			console.log("preparing derived data for", data);
 			if (["ListOne", "ListMany"].includes(data.type) && data.options) {
 				for (let optV of Object.values(data.options)) {
 					if (optV.values) {
@@ -24,6 +25,15 @@ export class ActorDataTemplate extends foundry.abstract.TypeDataModel {
 					}
 				}
 			}
+
+			if (data.type === "MultiText" && data.lines && !data.options) {
+				// if (data.options) {
+				//
+				// } else {
+					data.options = Array(data.lines).fill("");
+				// }
+			}
+
 		}
 	}
 

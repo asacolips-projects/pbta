@@ -178,6 +178,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		this._sortAttrs(context);
 
 		// Return template data
+		console.log("actor data?", context);
 		return context;
 	}
 
@@ -191,6 +192,7 @@ export default class PbtaActorSheet extends ActorSheet {
 	 * @param {object} context Data prop on actor.
 	 */
 	async _prepareAttrs(context) {
+		console.log("attribute system", context.system.attributes);
 		for (let [attrKey, attrValue] of Object.entries(context.system.attributes)) {
 			if (!attrValue.position) continue;
 			const position = `attr${attrValue.position.capitalize()}`;
