@@ -1,0 +1,139 @@
+# Configure Rolls
+rollFormula = "2d6"
+rollShifting = true
+
+# Define roll result ranges.
+[rollResults]
+[rollResults.crit]
+range = "12+"
+label = "Critical Success!"
+[rollResults.success]
+range = "10-11"
+label = "Success!"
+[rollResults.partial]
+range = "7-9"
+label = "Partial success"
+[rollResults.failure]
+range = "6-"
+label = "Miss..."
+
+########################################
+## CHARACTERS ##########################
+########################################
+# Define the character group.
+[character]
+
+# Define stats.
+[character.stats]
+vitality = "Vitality"
+composure = "Composure"
+reason = "Reason"
+presence = "Presence"
+sensitivity = "Sensitivity"
+
+# Define attributes.
+[character.attributesLeft]
+[character.attributesLeft.conditions]
+type = "LongText"
+label = "Conditions"
+description = "When a Condition applies, take disadvantage."
+
+[character.attributesLeft.style]
+type = "LongText"
+label = "Style"
+description = "Pick one, or make up your own."
+[character.attributesLeft.takesYouBack]
+type = "LongText"
+label = "Takes You Back"
+description = "Pick three, or make up your own"
+
+[character.attributesLeft.xp]
+type = "Xp"
+label = "XP Track"
+description = "When you answer a Dawn question 'yes', or when a move says to, mark XP."
+max = 6
+default = 0
+
+
+[character.attributesLeft.advances]
+type = "ListMany"
+label = "Advances"
+description = "When you Advance, pick any one."
+options = [
+    "Increase an ability by 1 (max 3).|2",
+    "Choose an additional Latchkey muove.|2",
+    "Write a custom Latchkey move for your character.",
+    "Unmark all the items in Your Corner of the House."
+]
+# Define sidebar details.
+[character.attributesTop]
+
+[character.attributesTop.dawnquestions]
+type = "ListMany"
+label = "Dawn questions"
+description = "The first is always marked. The second is always marked after it is unlocked. At the beginning of a session, mark two more (four total marked)."
+options = [
+    "Did the Latchkeys resolve a mystery?",
+    "Did you receive a Signal from the Other Side? (locked until you mark THE SANDSTONE ARCH)",
+    "Did you share a good memory from your childhood?",
+    "Were you vulnerable with someone?",
+    "Did you go out of your way to reconnect with Deep Lake?",
+    "Did you deliver a chilling monologue about something that happened to you in the past?",
+    "Did you cut loose for once?"
+]
+
+[character.attributesTop.keyofthechild]
+type = "ListMany"
+label = "The Key of the Child"
+description = "When you turn this Key, mark and narrate any you wish."
+options = [
+    "A flashback showing your latchkey kid routine whenever you got home from school.",
+    "A flashback showing how you were an outsider among your school peers.",
+    "A flashback to the moment when you realized your parents were imperfect.",
+    "A flashback to when you felt genuine happiness as a child.",
+    "A flashback to when you experienced childhood trauma.",
+    "A flashback to the moment when you realized childhood wasn't forever.",
+    "A flashback to when you first discovered TV Odyssey."
+]
+[character.attributesTop.keyofdesolation]
+type = "ListMany"
+label = "The Key of Desolation"
+description = "When you turn this key, mark the first empty box."
+options = [
+    "THE SANDSTONE ARCH. Unlock the Dawn question: 'Did you receive a Signal from the Other Side?'",
+    "THE FATHOMLESS WELL. Your Reason modifier is reduced by 1 and your Sensitivity modifier is increased by 1 (max 3).															",
+    "THE WANDERING MONOLITH. Gain the Consult The Big Man Move.",
+    "THE CHROMATIC DESERT. You can no longer be perceived by other characters and all memory of you is erased—it’s like you never existed. You can continue to conduct investigations, but the Clues you find are only available if you narrate them into an Odyssey tape scene.",
+    "THE PURE-WHITE SIGNAL. You lose contact with this world altogether. Tell the Keeper to play a white Odyssey tape and then retire this character.",
+]
+
+# Define groups for moves.
+[character.moveTypes]
+basic = "Basic Moves"
+class = "Latchkey Moves"
+other = "Other Moves"
+
+# Define groups for equipment.
+[character.equipmentTypes]
+housecorner = "Your corner of the house"
+
+
+########################################
+## NPCS ################################
+########################################
+# Define stats.
+[npc]
+[npc.attributesLeft]
+[npc.attributesLeft.decription]
+type = "LongText"
+label = "Description"
+[npc.attributesLeft.quote]
+type = "LongText"
+label = "Quote"
+
+# Define logical groups for moves.
+[npc.moveTypes]
+custom = "Moves"
+
+[npc.equipmentTypes]
+loot = "Loot"
