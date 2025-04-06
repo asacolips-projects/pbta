@@ -7,7 +7,7 @@ PBTA.attrTypes = [
 	"Resource",
 	"Text",
 	"LongText",
-	"MultiText",
+	"TextMany",
 	"Checkbox",
 	"ListMany",
 	"ListOne",

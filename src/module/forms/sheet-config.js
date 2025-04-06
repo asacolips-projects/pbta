@@ -346,7 +346,7 @@ export class PbtaSettingsConfigDialog extends FormApplication {
 									configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.showResults`);
 									updatesDiff[actorType][`system.${attrGroup}.${attr}.showResults`] = newGroup[attr].showResults ?? true;
 								}
-							} else if (newType === "MultiText") {
+							} else if (newType === "TextMany") {
 								console.log("in new type code", newGroup[attr], oldGroup[attr]);
 								// TODO: lines should have a default value somewhere? or error if it's missing, eg
 								// check lines val here

@@ -480,7 +480,7 @@ export function convertAttr(attrGroup, position) {
 				attr.value = attrValue.default ?? "";
 				break;
 
-			case "MultiText":
+			case "TextMany":
 				attr.values = attrValue.default ?? Array(attr.lines).fill("");
 				break;
 
