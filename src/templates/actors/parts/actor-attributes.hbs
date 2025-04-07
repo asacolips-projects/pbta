@@ -109,7 +109,7 @@
 
 
 
-            {{else if (eq attr.type "MultiText")}}
+            {{else if (eq attr.type "TextMany")}}
                 {{#each attr.values as |value valueKey|}}
                     <input type="text" class="input input--{{key}}" name="system.attributes.{{key}}.values.{{valueKey}}" value="{{value}}"/>
                 {{/each}}
