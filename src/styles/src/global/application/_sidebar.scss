@@ -1,26 +1,12 @@
-.directory-item {
-  .entity-name,
-  .document-name,
-  .entry-name {
-    text-overflow: ellipsis;
-    padding-right: 10px;
-    line-height: 36px;
-  }
-}
-
 .actors-sidebar {
   .directory-item.actor {
-      h4 {
-          line-height: normal;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-      }
+    a.entry-name.ellipsis {
+      line-height: normal;
+    }
 
-      .actor-level {
-          font-size: x-small;
-          color: var(--color-text-light-primary);
-          line-height: 12px;
-      }
+    .actor-level {
+      font-size: x-small;
+      color: var(--color-text-secondary);
+    }
   }
 }
