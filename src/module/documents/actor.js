@@ -89,26 +89,13 @@ export default class ActorPbta extends Actor {
 	}
 
 	async updateCombatMoveCount() {
-		if (game.combat && game.combat.combatants) {
-			let combatant = game.combat.combatants.find((c) => c.actor.id === this.id);
+		if (game.combat?.combatants?.size) {
+			const combatant = game.combat.combatants.find((c) => c.actor.id === this.id);
 			if (combatant) {
-				let moveCount = combatant.getFlag("pbta", "moveCount") ?? 0;
-				moveCount = moveCount ? Number(moveCount) + 1 : 1;
-				let combatantUpdate = {
+				await game.combat.updateEmbeddedDocuments("Combatant", [{
 					_id: combatant.id,
-					"flags.pbta.moveCount": moveCount
-				};
-				// Emit a socket for the GM client.
-				if (!game.user.isGM) {
-					game.socket.emit("system.pbta", {
-						combatantUpdate: combatantUpdate
-					});
-				} else {
-					let combatantUpdates = [];
-					combatantUpdates.push(combatantUpdate);
-					await game.combat.updateEmbeddedDocuments("Combatant", combatantUpdates);
-					ui.combat.render();
-				}
+					initiative: (combatant.initiative ?? 0) + 1
+				}]);
 			}
 		}
 	}
