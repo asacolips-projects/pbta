@@ -135,7 +135,7 @@ PBTA:
     Complete: "PbtA System Migration to version {version} completed!"
   Settings:
     button:
-      help: "System Help & Tutorial"
+      help: "Wiki"
     stats:
       name: "Stats"
       hint: "Enter a comma-separated list of stats/abilities, such as \"Str,Dex,Con,Int,Wis,Cha\""

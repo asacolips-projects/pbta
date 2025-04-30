@@ -228,6 +228,7 @@ module.exports = {
 		Color: false,
 		DetectionMode: false,
 		DocumentSheetConfig: false,
+		HandlebarsApplicationMixin: false,
 		fromUuidSync: false,
 		globalThis: false,
 		toml: false,

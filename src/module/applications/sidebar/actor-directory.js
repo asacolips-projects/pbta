@@ -1,17 +1,17 @@
-export default class ActorDirectoryPbtA extends ActorDirectory {
-	static entryPartial = "systems/pbta/templates/sidebar/actor-document-partial.hbs";
+export default class ActorDirectoryPbtA extends foundry.applications.sidebar.tabs.ActorDirectory {
+	static _entryPartial = "systems/pbta/templates/sidebar/actor-document-partial.hbs";
 
-	static get defaultOptions() {
-		const options = super.defaultOptions;
-		options.renderUpdateKeys.push("system.advancements", "system.playbook.name");
-		return options;
-	}
+	static DEFAULT_OPTIONS = {
+		collection: "Actor",
+		renderUpdateKeys: ["name", "img", "ownership", "sort", "folder", "system.advancements", "system.playbook.name"]
+	};
 
-	async getData(options) {
-		const data = await super.getData(options);
-		return foundry.utils.mergeObject(data, {
+	async _prepareContext(options) {
+		const context = await super._prepareContext(options);
+		Object.assign(context, {
 			hideAdvancement: game.settings.get("pbta", "hideAdvancement") !== "none"
 		});
+		return context;
 	}
 
 	_getEntryContextOptions() {
@@ -19,15 +19,13 @@ export default class ActorDirectoryPbtA extends ActorDirectory {
 		return options.concat({
 			name: "PBTA.ResetAdvancements",
 			icon: '<i class="fas fa-undo"></i>',
-			condition: (header) => {
-				const li = header.closest(".directory-item");
-				const document = this.collection.get(li.data("documentId"));
+			condition: (li) => {
+				const document = this.collection.get(li.dataset.documentId);
 				const advancements = foundry.utils.getProperty(document, "system.advancements") > 0;
 				return advancements && game.user.isGM;
 			},
-			callback: (header) => {
-				const li = header.closest(".directory-item");
-				const document = this.collection.get(li.data("documentId"));
+			callback: (li) => {
+				const document = this.collection.get(li.dataset.documentId);
 				return document.update({ "system.advancements": 0 });
 			}
 		});

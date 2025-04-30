@@ -43,7 +43,7 @@ export default class ItemPbta extends Item {
 			|| this.type === "equipment"
 			|| (this.type !== "npcMove" && !this.system.rollType)
 		) {
-			const content = await renderTemplate("systems/pbta/templates/chat/chat-move.html", {
+			const content = await foundry.applications.handlebars.renderTemplate("systems/pbta/templates/chat/chat-move.html", {
 				actor: this.actor,
 				tokenId: this.actor?.token?.uuid || null,
 				item: this,
@@ -259,7 +259,7 @@ export default class ItemPbta extends Item {
 					}
 					if (["Details", "LongText"].includes(type)) {
 						for (const choice of choices) {
-							choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", {
+							choice.enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(choice.value ?? "", {
 								secrets: this.isOwner,
 								rollData: this?.getRollData() ?? {},
 								relativeTo: this
@@ -268,7 +268,7 @@ export default class ItemPbta extends Item {
 					}
 					await Dialog.wait({
 						title: `${game.i18n.localize("PBTA.Attribute")}: ${label}`,
-						content: await renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", {
+						content: await foundry.applications.handlebars.renderTemplate("systems/pbta/templates/dialog/attributes-dialog.hbs", {
 							attribute,
 							choices,
 							description,
@@ -331,7 +331,7 @@ export default class ItemPbta extends Item {
 						const item = await fromUuid(c.uuid);
 						c.name = item.name;
 						c.tags = item.system.tags;
-						c.desc = await TextEditor.enrichHTML(item.system.description, {
+						c.desc = await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, {
 							secrets: this.actor.isOwner,
 							rollData: this.actor.getRollData(),
 							relativeTo: this.actor
@@ -354,7 +354,7 @@ export default class ItemPbta extends Item {
 
 				await Dialog.wait({
 					title: `${game.i18n.localize("PBTA.Choice")}: ${title}`,
-					content: await renderTemplate("systems/pbta/templates/dialog/choice-dialog.hbs", { choices: validChoices, desc, parent: this.parent }),
+					content: await foundry.applications.handlebars.renderTemplate("systems/pbta/templates/dialog/choice-dialog.hbs", { choices: validChoices, desc, parent: this.parent }),
 					default: "ok",
 					// @todo add some warning about pending grants
 					close: () => {
@@ -533,7 +533,7 @@ export default class ItemPbta extends Item {
 		const type = data.type || types[0];
 
 		// Render the document creation form
-		const html = await renderTemplate("templates/sidebar/document-create.html", {
+		const html = await foundry.applications.handlebars.renderTemplate("templates/sidebar/document-create.html", {
 			folders,
 			name: data.name || game.i18n.format("DOCUMENT.New", { type: label }),
 			defaultName: this.implementation.defaultName({ type, parent, pack }),
@@ -572,16 +572,6 @@ export default class ItemPbta extends Item {
 			rejectClose: false,
 			options
 		});
-	}
-
-	/**
-	 * Apply listeners to chat messages.
-	 * @param {HTML} html  Rendered chat message.
-	 */
-	static chatListeners(html) {
-		html.on("click", ".card-buttons button", this._onChatCardAction.bind(this));
-		html.on("click", ".cell__title", this._onChatCardToggleContent.bind(this));
-		html.on("click", ".result-label", this._onChatCardResultToggleContent.bind(this));
 	}
 
 	static async _onChatCardAction(event) {

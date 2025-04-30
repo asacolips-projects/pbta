@@ -30,8 +30,6 @@ Hooks.once("init", async function () {
 	globalThis.pbta = game.pbta = Object.assign(game.system, globalThis.pbta);
 
 	CONFIG.ui.actors = applications.sidebar.ActorDirectoryPbtA;
-	CONFIG.ui.combat = applications.sidebar.PbtACombatTracker;
-	CONFIG.Combatant.documentClass = documents.CombatantPbtA;
 
 	// Define DataModels
 	CONFIG.Actor.dataModels.character = dataModels.CharacterData;
@@ -60,35 +58,35 @@ Hooks.once("init", async function () {
 	CONFIG.Token.objectClass = canvas.TokenPbta;
 
 	// Register sheet application classes
-	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("pbta", applications.actor.PbtaActorSheet, {
+	foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+	foundry.documents.collections.Actors.registerSheet("pbta", applications.actor.PbtaActorSheet, {
 		types: ["character"],
 		makeDefault: true,
 		label: "PBTA.SheetClassCharacter"
 	});
-	Actors.registerSheet("pbta", applications.actor.PbtaActorOtherSheet, {
+	foundry.documents.collections.Actors.registerSheet("pbta", applications.actor.PbtaActorOtherSheet, {
 		types: ["other"],
 		makeDefault: true,
 		label: "PBTA.SheetClassOther"
 	});
-	Actors.registerSheet("pbta", applications.actor.PbtaActorNpcSheet, {
+	foundry.documents.collections.Actors.registerSheet("pbta", applications.actor.PbtaActorNpcSheet, {
 		types: ["npc"],
 		makeDefault: true,
 		label: "PBTA.SheetClassNPC"
 	});
-	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("pbta", applications.item.PbtaItemSheet, {
+	foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
+	foundry.documents.collections.Items.registerSheet("pbta", applications.item.PbtaItemSheet, {
 		makeDefault: true,
 		label: "PBTA.SheetClassItem"
 	});
-	Items.unregisterSheet("pbta", applications.item.PbtaItemSheet, { types: ["playbook"] });
-	Items.registerSheet("pbta", applications.item.PlaybookSheet, {
+	foundry.documents.collections.Items.unregisterSheet("pbta", applications.item.PbtaItemSheet, { types: ["playbook"] });
+	foundry.documents.collections.Items.registerSheet("pbta", applications.item.PlaybookSheet, {
 		makeDefault: true,
 		types: ["playbook"],
 		label: "PBTA.SheetClassPlaybook"
 	});
-	DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, "core", TokenConfig);
-	DocumentSheetConfig.registerSheet(TokenDocument, "core", applications.token.PbtaTokenConfig, {
+	foundry.applications.apps.DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, "core", foundry.applications.sheets.TokenConfig);
+	foundry.applications.apps.DocumentSheetConfig.registerSheet(TokenDocument, "core", applications.token.PbtaTokenConfig, {
 		makeDefault: true,
 		label: () => game.i18n.format("SHEETS.DefaultDocumentSheet", { document: game.i18n.localize("DOCUMENT.Token") })
 	});
@@ -132,46 +130,14 @@ Hooks.once("setup", function () {
 
 	if (game.user.isGM) {
 		Hooks.on("renderSettings", (app, html) => {
-			const header = document.createElement("h2");
-			header.innerText = game.i18n.localize("Powered by the Apocalypse");
-
-			const pbtaSettings = document.createElement("div");
-			html.find("#settings-game")?.after(header, pbtaSettings);
-
-			const buttons = [
-				{
-					action: (ev) => {
-						ev.preventDefault();
-						let menu = game.settings.menus.get("pbta.sheetConfigMenu");
-						let app = new menu.type();
-						app.render(true);
-					},
-					iconClasses: ["fas", "fa-file-alt"],
-					label: "PBTA.Settings.sheetConfig.label"
-				},
-				{
-					action: (ev) => {
-						ev.preventDefault();
-						window.open("https://asacolips.gitbook.io/pbta-system/", "pbtaHelp", "width=1032,height=720");
-					},
-					iconClasses: ["fas", "fa-question-circle"],
-					label: "PBTA.Settings.button.help"
-				}
-			].map(({ action, iconClasses, label }) => {
-				const button = document.createElement("button");
-				button.type = "button";
-
-				const icon = document.createElement("i");
-				icon.classList.add(...iconClasses);
-
-				button.append(icon, game.i18n.localize(label));
-
-				button.addEventListener("click", action);
-
-				return button;
-			});
-
-			pbtaSettings.append(...buttons);
+			const div = document.createElement("div");
+			div.innerHTML = `
+				<span>
+					<i class="fas fa-book-open"></i>
+					<a href="https://github.com/asacolips-projects/pbta/wiki" target="_blank">${game.i18n.localize("PBTA.Settings.button.help")}</a>
+				</span>
+			`;
+			html.querySelector(".info .system").insertAdjacentElement("afterend", div);
 		});
 	}
 });
@@ -257,22 +223,27 @@ Hooks.once("babele.ready", () => {
 	Hooks.once("babele.ready", () => utils.getPlaybooks());
 });
 
-Hooks.on("renderChatMessage", (data, html, options) => {
-	if (game.settings.get("pbta", "autoCollapseItemCards")) {
-		html.find(".card-content").hide();
+Hooks.on("renderChatMessageHTML", (data, html, options) => {
+	const cardContent = html.querySelector(".card-content");
+	const resultDetails = html.querySelector(".result-details");
+	const resultChoices = html.querySelector(".result-choices");
+	const cardButtons = html.querySelector(".pbta-chat-card .card-buttons");
+	if (cardContent && game.settings.get("pbta", "autoCollapseItemCards")) {
+		cardContent.style.display = "none";
 	}
-	if (game.settings.get("pbta", "autoCollapseItemCardsResult")) {
-		html.find(".result-details").hide();
-		html.find(".result-choices").hide();
+	if (resultDetails && resultChoices && game.settings.get("pbta", "autoCollapseItemCardsResult")) {
+		resultDetails.style.display = "none";
+		resultChoices.style.display = "none";
 	}
-	const cardButtons = html.find(".pbta-chat-card .card-buttons");
-	if (!game.user.isGM || !game.pbta.sheetConfig?.rollShifting) {
-		cardButtons.hide();
+	if (cardButtons && (!game.user.isGM || !game.pbta.sheetConfig?.rollShifting)) {
+		cardButtons.style.display = "none";
 	}
+	for (const button of html.querySelectorAll(".card-buttons button")) {
+		button.addEventListener("click", documents.ItemPbta._onChatCardAction);
+	}
+	html.querySelector(".cell__title").addEventListener("click", documents.ItemPbta._onChatCardToggleContent);
+	html.querySelector(".result-label").addEventListener("click", documents.ItemPbta._onChatCardResultToggleContent);
 });
-
-Hooks.on("renderChatLog", (app, html, data) => documents.ItemPbta.chatListeners(html));
-Hooks.on("renderChatPopout", (app, html, data) => documents.ItemPbta.chatListeners(html));
 
 /**
  * Configure explicit lists of attributes that are trackable on the token HUD and in the combat tracker.

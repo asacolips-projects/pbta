@@ -1007,7 +1007,7 @@ export async function preloadHandlebarsTemplates() {
 	}
 
 	// Load the template parts
-	return loadTemplates(paths);
+	return foundry.applications.handlebars.loadTemplates(paths);
 }
 
 /**
