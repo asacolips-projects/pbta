@@ -365,7 +365,7 @@ export default class ActorPbta extends Actor {
 		const type = data.type || types[0];
 
 		// Render the document creation form
-		const html = await renderTemplate("templates/sidebar/document-create.html", {
+		const html = await foundry.applications.handlebars.renderTemplate("templates/sidebar/document-create.html", {
 			folders,
 			name: data.name || game.i18n.format("DOCUMENT.New", { type: label }),
 			defaultName: this.implementation.defaultName({ type, parent, pack }),

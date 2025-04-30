@@ -62,17 +62,17 @@ export default class RollPbtA extends Roll {
 
 			conditionsConsumed: this.options.conditionsConsumed,
 			conditions: this.options.conditions,
-			choices: await TextEditor.enrichHTML(this.options.choices),
-			details: await TextEditor.enrichHTML(this.options.details),
+			choices: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.options.choices),
+			details: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.options.details),
 			originalMod: this.options.originalMod,
 			result: resultType,
-			resultDetails: await TextEditor.enrichHTML(resultDetails),
+			resultDetails: await foundry.applications.ux.TextEditor.implementation.enrichHTML(resultDetails),
 			resultLabel: resultRanges[resultType]?.label ?? resultType,
 			resultRanges,
 			stat: this.options.stat,
 			title: this.options.title
 		};
-		return renderTemplate(template, chatData);
+		return foundry.applications.handlebars.renderTemplate(template, chatData);
 	}
 
 	/**
@@ -153,7 +153,7 @@ export default class RollPbtA extends Roll {
 				resources
 			});
 
-			const content = await renderTemplate(template ?? this.constructor.EVALUATION_TEMPLATE, templateData);
+			const content = await foundry.applications.handlebars.renderTemplate(template ?? this.constructor.EVALUATION_TEMPLATE, templateData);
 			return new Promise((resolve) => {
 				title = title ? game.i18n.format("PBTA.RollLabel", { label: title }) : game.i18n.localize("PBTA.RollMove");
 				let buttons = {

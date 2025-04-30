@@ -45,7 +45,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 		for (let [k, v] of Object.entries(context.system.attributes)) {
 			if (["Details", "LongText"].includes(v.type) && context.system.attributes[k].choices) {
 				for (const choice of context.system.attributes[k].choices) {
-					choice.enriched = await TextEditor.enrichHTML(choice.value ?? "", context.enrichmentOptions);
+					choice.enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(choice.value ?? "", context.enrichmentOptions);
 				}
 			}
 		}
@@ -190,7 +190,7 @@ export default class PlaybookSheet extends PbtaItemSheet {
 	}
 
 	async _onDrop(event) {
-		const data = TextEditor.getDragEventData(event);
+		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 		if (!["Item", "Folder"].includes(data.type)) return super._onDrop(event, data);
 
 		if (data.type === "Folder") return this._onDropFolder(event, data);

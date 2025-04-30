@@ -58,29 +58,29 @@ Hooks.once("init", async function () {
 	CONFIG.Token.objectClass = canvas.TokenPbta;
 
 	// Register sheet application classes
-	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("pbta", applications.actor.PbtaActorSheet, {
+	foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+	foundry.documents.collections.Actors.registerSheet("pbta", applications.actor.PbtaActorSheet, {
 		types: ["character"],
 		makeDefault: true,
 		label: "PBTA.SheetClassCharacter"
 	});
-	Actors.registerSheet("pbta", applications.actor.PbtaActorOtherSheet, {
+	foundry.documents.collections.Actors.registerSheet("pbta", applications.actor.PbtaActorOtherSheet, {
 		types: ["other"],
 		makeDefault: true,
 		label: "PBTA.SheetClassOther"
 	});
-	Actors.registerSheet("pbta", applications.actor.PbtaActorNpcSheet, {
+	foundry.documents.collections.Actors.registerSheet("pbta", applications.actor.PbtaActorNpcSheet, {
 		types: ["npc"],
 		makeDefault: true,
 		label: "PBTA.SheetClassNPC"
 	});
-	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("pbta", applications.item.PbtaItemSheet, {
+	foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
+	foundry.documents.collections.Items.registerSheet("pbta", applications.item.PbtaItemSheet, {
 		makeDefault: true,
 		label: "PBTA.SheetClassItem"
 	});
-	Items.unregisterSheet("pbta", applications.item.PbtaItemSheet, { types: ["playbook"] });
-	Items.registerSheet("pbta", applications.item.PlaybookSheet, {
+	foundry.documents.collections.Items.unregisterSheet("pbta", applications.item.PbtaItemSheet, { types: ["playbook"] });
+	foundry.documents.collections.Items.registerSheet("pbta", applications.item.PlaybookSheet, {
 		makeDefault: true,
 		types: ["playbook"],
 		label: "PBTA.SheetClassPlaybook"

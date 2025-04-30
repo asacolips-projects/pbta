@@ -2,7 +2,9 @@
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export default class PbtaItemSheet extends ItemSheet {
+export default class PbtaItemSheet extends foundry.appv1.sheets.ItemSheet {
+	static _warnedAppV1 = true;
+
 	/** @override */
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
@@ -64,7 +66,7 @@ export default class PbtaItemSheet extends ItemSheet {
 		};
 
 		if (context.system?.description) {
-			context.enriched.description = await TextEditor.enrichHTML(context.system.description, enrichmentOptions);
+			context.enriched.description = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.description, enrichmentOptions);
 		}
 
 		const sheetConfig = game.pbta.sheetConfig;
@@ -103,7 +105,7 @@ export default class PbtaItemSheet extends ItemSheet {
 			for (let [key, moveResult] of Object.entries(context.system.moveResults)) {
 				context.system.moveResults[key].rangeName = `system.moveResults.${key}.value`;
 				context.enriched.moveResults[key].value =
-					await TextEditor.enrichHTML(moveResult.value, enrichmentOptions);
+					await foundry.applications.ux.TextEditor.implementation.enrichHTML(moveResult.value, enrichmentOptions);
 			}
 
 			if (this.item.type === "move") {
@@ -130,7 +132,7 @@ export default class PbtaItemSheet extends ItemSheet {
 				context.system.stats.formula = { label: game.i18n.localize("PBTA.Formula") };
 
 				if (context.system?.choices) {
-					context.enriched.choices = await TextEditor.enrichHTML(context.system.choices, enrichmentOptions);
+					context.enriched.choices = await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.choices, enrichmentOptions);
 				}
 			} else if (this.item.type === "npcMove") {
 				context.system.rollExample = sheetConfig?.rollFormula ?? "2d6";

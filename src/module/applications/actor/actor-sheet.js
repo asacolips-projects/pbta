@@ -2,7 +2,9 @@
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export default class PbtaActorSheet extends ActorSheet {
+export default class PbtaActorSheet extends foundry.appv1.sheets.ActorSheet {
+	static _warnedAppV1 = true;
+
 	/** @override */
 	constructor(...args) {
 		super(...args);
@@ -121,7 +123,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		await this._prepareAttrs(context);
 
 		for (let [k, v] of Object.entries(context.system.details)) {
-			context.system.details[k].enriched = await TextEditor.enrichHTML(v?.value ?? "", context.enrichmentOptions);
+			context.system.details[k].enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(v?.value ?? "", context.enrichmentOptions);
 		}
 
 		// Add playbooks.
@@ -213,7 +215,7 @@ export default class PbtaActorSheet extends ActorSheet {
 			if (attrValue.type === "LongText") {
 				context.system[position][attrKey].attrName = `system.attributes.${attrKey}.value`;
 				context.system[position][attrKey].enriched =
-					await TextEditor.enrichHTML(attrValue.value, context.enrichmentOptions);
+					await foundry.applications.ux.TextEditor.implementation.enrichHTML(attrValue.value, context.enrichmentOptions);
 			}
 			if (attrValue.type === "Roll" && attrValue.showResults === undefined) {
 				attrValue.showResults = true;
@@ -327,16 +329,16 @@ export default class PbtaActorSheet extends ActorSheet {
 			// Enrich text fields.
 			if (item.system?.description) {
 				item.system.description =
-					await TextEditor.enrichHTML(item.system.description, enrichmentOptions);
+					await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, enrichmentOptions);
 			}
 			if (item.system?.choices) {
-				item.system.choices = await TextEditor.enrichHTML(item.system.choices, enrichmentOptions);
+				item.system.choices = await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.choices, enrichmentOptions);
 			}
 			if (item.system?.moveResults) {
 				for (let [mK, mV] of Object.entries(item.system.moveResults)) {
 					if (mV.value) {
 						item.system.moveResults[mK].value =
-							await TextEditor.enrichHTML(mV.value, enrichmentOptions);
+							await foundry.applications.ux.TextEditor.implementation.enrichHTML(mV.value, enrichmentOptions);
 					}
 				}
 			}
@@ -648,7 +650,7 @@ export default class PbtaActorSheet extends ActorSheet {
 		this._statShifting = {};
 		this.render(false);
 
-		const content = await renderTemplate("systems/pbta/templates/chat/stat-shift.hbs", {
+		const content = await foundry.applications.handlebars.renderTemplate("systems/pbta/templates/chat/stat-shift.hbs", {
 			actor: this.actor,
 			labels,
 			up: up ? this.actor.system.stats[up] : "",
