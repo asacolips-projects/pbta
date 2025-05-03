@@ -54,8 +54,8 @@ else {
 
 // Update URLs.
 system.url = `https://github.com/${argv.project}`;
-system.manifest = `https://${bucket}.s3.amazonaws.com/${system.name}/${artifactBranch}/system.json`;
-system.download = `https://${bucket}.s3.amazonaws.com/${system.name}/${artifactVersion}/${system.name}.zip`;
+system.manifest = `https://${bucket}.s3.amazonaws.com/${system.id}/${artifactBranch}/system.json`;
+system.download = `https://${bucket}.s3.amazonaws.com/${system.id}/${artifactVersion}/${system.id}.zip`;
 
 fs.writeFileSync('./dist/system.json', JSON.stringify(system, null, 2));
 console.log(`Build: ${system.version}`);
