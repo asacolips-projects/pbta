@@ -234,8 +234,8 @@ Hooks.on("renderChatMessageHTML", (data, html, options) => {
 	for (const button of html.querySelectorAll(".card-buttons button")) {
 		button.addEventListener("click", documents.ItemPbta._onChatCardAction);
 	}
-	html.querySelector(".cell__title").addEventListener("click", documents.ItemPbta._onChatCardToggleContent);
-	html.querySelector(".result-label").addEventListener("click", documents.ItemPbta._onChatCardResultToggleContent);
+	html.querySelector(".cell__title")?.addEventListener("click", documents.ItemPbta._onChatCardToggleContent);
+	html.querySelector(".result-label")?.addEventListener("click", documents.ItemPbta._onChatCardResultToggleContent);
 });
 
 /**
