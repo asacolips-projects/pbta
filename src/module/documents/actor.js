@@ -89,8 +89,8 @@ export default class ActorPbta extends Actor {
 	}
 
 	async updateCombatMoveCount() {
-		if (game.combat?.combatants?.size) {
-			const combatant = game.combat.combatants.find((c) => c.actor.id === this.id);
+		for (const combat of game.combats) {
+			const combatant = combat?.getCombatantByActor(this.id);
 			if (combatant) {
 				await game.combat.updateEmbeddedDocuments("Combatant", [{
 					_id: combatant.id,

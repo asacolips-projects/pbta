@@ -42,13 +42,6 @@ Hooks.once("init", async function () {
 	CONFIG.Item.dataModels.playbook = dataModels.PlaybookData;
 	CONFIG.Item.dataModels.tag = dataModels.ItemData;
 
-	game.socket.on("system.pbta", (data) => {
-		if (game.user.isGM && data.combatantUpdate) {
-			game.combat.updateEmbeddedDocuments("Combatant", Array.isArray(data.combatantUpdate) ? data.combatantUpdate : [data.combatantUpdate]);
-			ui.combat.render();
-		}
-	});
-
 	CONFIG.Dice.RollPbtA = dice.RollPbtA;
 	CONFIG.Dice.rolls.push(dice.RollPbtA);
 
