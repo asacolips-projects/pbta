@@ -98,9 +98,8 @@ export class PbtaSettingsConfigDialog extends HandlebarsApplicationMixin(Applica
 
 	static async #onReset(event) {
 		event.preventDefault();
-		await game.settings.set("pbta", "sheetConfig", {});
+		this.codeEditor.setValue("");
 		ui.notifications.info(game.i18n.localize("PBTA.Messages.sheetConfig.reset"));
-		this.render();
 	}
 
 	async close(options) {
