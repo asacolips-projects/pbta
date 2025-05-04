@@ -105,18 +105,15 @@ export class PbtaSettingsConfigDialog extends HandlebarsApplicationMixin(Applica
 
 	async close(options) {
 		super.close(options);
-		if (typeof this._submitting !== "undefined") {
-			window.location.reload();
-		}
+		if (this.updatedSheet) SettingsConfig.reloadConfirm({ world: true });
 	}
 
 	/* -------------------------------------------- */
 
 	static async #onSubmit(event, form, formData) {
 		this.codeEditor.save();
-		let computed = {};
-
-		computed = game.pbta.utils.parseTomlString(formData.object.tomlString) ?? null;
+		formData.object.tomlString = this.codeEditor.getTextArea().value;
+		const computed = game.pbta.utils.parseTomlString(formData.object.tomlString) ?? null;
 		if (computed) {
 			let confirm = true;
 			if (game.pbta.sheetConfig?.actorTypes?.character && game.pbta.sheetConfig?.actorTypes?.npc) {
@@ -128,7 +125,11 @@ export class PbtaSettingsConfigDialog extends HandlebarsApplicationMixin(Applica
 			if (computed) {
 				formData.object.computed = computed;
 			}
-			await game.settings.set("pbta", "sheetConfig", formData.object);
+			// Check if there was any actual change
+			if (JSON.stringify(game.settings.get("pbta", "sheetConfig")) !== JSON.stringify(formData.object)) {
+				await game.settings.set("pbta", "sheetConfig", formData.object);
+				this.updatedSheet = true;
+			}
 		}
 	}
 
@@ -186,6 +187,8 @@ export class PbtaSettingsConfigDialog extends HandlebarsApplicationMixin(Applica
 			for (let attrGroup of attrGroups) {
 				let newGroup = newConfig.actorTypes[actorType][attrGroup];
 				let oldGroup = currentConfig.actorTypes[actorType][attrGroup];
+				// Skip entire process if groups are equal
+				if (JSON.stringify(newGroup) === JSON.stringify(oldGroup)) continue;
 
 				if (!oldGroup && newGroup) {
 					configDiff.add.push(`${actorType}.${attrGroup}`);
@@ -210,7 +213,7 @@ export class PbtaSettingsConfigDialog extends HandlebarsApplicationMixin(Applica
 							const isValid = !foundry.utils.isEmpty(newProp);
 							if (
 								isValid
-								&& !(newProp.equals?.(oldProp) ?? true)
+								&& !newProp.equals?.(oldProp) // Array comparison
 								&& newProp !== oldProp
 							) {
 								configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.${v}`);
