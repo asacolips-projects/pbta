@@ -137,7 +137,102 @@ export function registerSettings() {
 		scope: "world",
 		config: false,
 		type: Object,
-		default: {}
+		default: {
+			tomlString: "rollFormula = \"2d6\"\nstatToggle = false\n\n# Define roll result ranges.\n[rollResults]\n  [rollResults.failure]\n    range = \"6-\"\n    label = \"Complications...\"\n  [rollResults.partial]\n    range = \"7-9\"\n    label = \"Partial success\"\n  [rollResults.success]\n    range = \"10\" # or \"10-12\" if using crits\n    label = \"Success!\"\n  [rollResults.critical]\n    range = false # or \"13+\" to enable\n    label = \"Critical Success!\"\n\n########################################\n## CHARACTERS ##########################\n########################################\n[character]\n\n  # Define stats.\n  [character.stats]\n    cool = \"Cool\"\n    hard = \"Hard\"\n    hot = \"Hot\"\n    sharp = \"Sharp\"\n    weird = \"Weird\"\n\n  # Define attributes.\n  [character.attributesTop]\n    [character.attributesTop.armor]\n      type = \"Number\"\n    [character.attributesTop.harm]\n      type = \"Clock\"\n      max = 32\n    [character.attributesTop.improvement]\n      type = \"Xp\"\n      max = 5\n    [character.attributesTop.customResource]\n      type = \"Resource\"\n      label = \"Custom Resource\"\n\n  # Define sidebar details.\n  [character.attributesLeft]\n    look = \"LongText\"\n    hx = \"LongText\"\n    number = \"Number\"\n    text = \"Text\"\n    [character.attributesLeft.toggle]\n\t    type = \"Checkbox\"\n      label = \"Toggle\"\n      checkboxLabel = \"Test Label\"\n      \n  # Define equipment types\n  [character.equipmentTypes]\n    gear = \"Gear\"\n\n  # Define logical groups for moves.\n  [character.moveTypes]\n    basic = \"Basic\"\n    advanced = \"Advanced\"\n\n########################################\n## NPCS ################################\n########################################\n# Define stats.\n[npc]\n  stats = false\n\n  # Define attributes.\n  [npc.attributesTop]\n    [npc.attributesTop.armor]\n      type = \"Number\"\n    [npc.attributesTop.harm]\n      type = \"Clock\"\n      max = 6\n    [npc.attributesTop.damage]\n      type = \"Roll\"\n      default = \"d10\"\n\n  [npc.attributesLeft]\n    [npc.attributesLeft.bio]\n      type = \"LongText\"\n\n  # Define equipment types\n  [npc.equipmentTypes]\n    gear = \"Gear\"\n    \n  # Define logical groups for moves.\n  [npc.moveTypes]\n    basic = \"Basic\"",
+			computed: {
+				rollFormula: "2d6",
+				statToggle: false,
+				rollResults: {
+					failure: {
+						range: "6-",
+						label: "Complications..."
+					},
+					partial: {
+						range: "7-9",
+						label: "Partial success"
+					},
+					success: {
+						range: "10",
+						label: "Success!"
+					},
+					critical: {
+						range: false,
+						label: "Critical Success!"
+					}
+				},
+				character: {
+					stats: {
+						cool: "Cool",
+						hard: "Hard",
+						hot: "Hot",
+						sharp: "Sharp",
+						weird: "Weird"
+					},
+					attributesTop: {
+						armor: {
+							type: "Number"
+						},
+						harm: {
+							type: "Clock",
+							max: 32
+						},
+						improvement: {
+							type: "Xp",
+							max: 5
+						},
+						customResource: {
+							type: "Resource",
+							label: "Custom Resource"
+						}
+					},
+					attributesLeft: {
+						look: "LongText",
+						hx: "LongText",
+						number: "Number",
+						text: "Text",
+						toggle: {
+							type: "Checkbox",
+							label: "Toggle",
+							checkboxLabel: "Test Label"
+						}
+					},
+					equipmentTypes: {
+						gear: "Gear"
+					},
+					moveTypes: {
+						basic: "Basic",
+						advanced: "Advanced"
+					}
+				},
+				npc: {
+					stats: false,
+					attributesTop: {
+						armor: {
+							type: "Number"
+						},
+						harm: {
+							type: "Clock",
+							max: 6
+						},
+						damage: {
+							type: "Roll",
+							default: "d10"
+						}
+					},
+					attributesLeft: {
+						bio: {
+							type: "LongText"
+						}
+					},
+					equipmentTypes: {
+						gear: "Gear"
+					},
+					moveTypes: {
+						basic: "Basic"
+					}
+				}
+			}
+		}
 	});
 
 	game.settings.register("pbta", "sheetConfigOverride", {
