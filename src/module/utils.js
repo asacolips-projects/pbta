@@ -816,6 +816,7 @@ export class TagHandler {
 			a11y: {
 				focusableTags: true
 			},
+			delimiters: null,
 			templates: {
 				tag: this.tagTemplate,   // <- Add a custom template so descriptions show in a tooltip
 				dropdownItem: this.dropdownItemTemplate
