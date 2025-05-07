@@ -526,13 +526,13 @@ export default class ItemPbta extends Item {
 
 		for (const [k, v] of Object.entries(createOptions)) {
 			if (k in applicationOptions) {
-			  foundry.utils.logCompatibilityWarning("The ClientDocument.createDialog signature has changed. "
-				+ "It now accepts database operation options in its second parameter, "
-				+ "and options for DialogV2.prompt in its third parameter.", { since: 13, until: 15, once: true });
-			  const dialogOption = applicationOptions[k];
-			  if (dialogOption) foundry.utils.setProperty(dialogOptions, `${dialogOption}.${k}`, v);
-			  else dialogOptions[k] = v;
-			  delete createOptions[k];
+				foundry.utils.logCompatibilityWarning("The ClientDocument.createDialog signature has changed. "
+					+ "It now accepts database operation options in its second parameter, "
+					+ "and options for DialogV2.prompt in its third parameter.", { since: 13, until: 15, once: true });
+				const dialogOption = applicationOptions[k];
+				if (dialogOption) foundry.utils.setProperty(dialogOptions, `${dialogOption}.${k}`, v);
+				else dialogOptions[k] = v;
+				delete createOptions[k];
 			}
 		}
 
