@@ -794,15 +794,21 @@ export class TagHandler {
 	/**
 	 * Allows User input of tags with descriptions in
 	 * the form of "tag name"|"tag description"
+	 *
+	 * @example Name
+	 * @example Name | Description
+	 *
 	 * @param {any} tagData
+	 * @param {[]} original	Array with the original tag if the tag was edited
 	 */
-	static transformTag(tagData) {
+	static transformTag(tagData, original) {
+		const isEdit = Boolean(original);
 		let parts = tagData.value.split(/\|/);
 		let value = parts[0].trim();
 		let description = parts[1]?.replace(/\|/, "").trim();
 
 		tagData.value = value;
-		tagData.description = description || tagData.description;
+		tagData.description = description ?? (isEdit ? "" : tagData.description);
 	}
 
 	static onEdit(tagify, { tag, data }) {
