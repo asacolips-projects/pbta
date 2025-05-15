@@ -152,7 +152,7 @@ export default class PbtaItemSheet extends ItemSheet {
 		if (this.item.type === "equipment") {
 			const whitelist = game.pbta.utils.getTagList(this.item, "item");
 			const tagify = this._tagify(html, "system.tags", whitelist, 20);
-			tagify.on("edit:start", ({ detail: { tag, data } }) => game.pbta.utils.TagHandler.onEdit(tagify, { tag, data }));
+			tagify.on("edit:start", ({ detail: { tag, data } }) => CONFIG.TagHandler.onEdit(tagify, { tag, data }));
 		}
 		html.find(".regenerate-slug").on("click", this._onItemRegenerateSlug.bind(this));
 	}
@@ -171,7 +171,7 @@ export default class PbtaItemSheet extends ItemSheet {
 	 * @param {object} config	More Tagify configs, such as additional methods
 	 * @returns {Tagify | undefined}
 	 */
-	_tagify(html, inputName, whitelist, maxItems = 20, config = game.pbta.utils.TagHandler.config) {
+	_tagify(html, inputName, whitelist, maxItems = 20, config = CONFIG.TagHandler.config) {
 		const $input = html.find(`input[name="${inputName}"]`);
 		if ($input.length > 0) {
 			if (!this.isEditable) {

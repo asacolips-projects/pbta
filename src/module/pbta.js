@@ -55,6 +55,7 @@ Hooks.once("init", async function () {
 	CONFIG.Dice.rolls.push(dice.RollPbtA);
 
 	CONFIG.PBTA = PBTA;
+	CONFIG.TagHandler = utils.TagHandler;
 	CONFIG.Actor.documentClass = documents.ActorPbta;
 	CONFIG.Item.documentClass = documents.ItemPbta;
 	CONFIG.Token.objectClass = canvas.TokenPbta;
