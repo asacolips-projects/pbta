@@ -62,7 +62,7 @@ export class PbtaTagConfigDialog extends FormApplication {
 		super.activateListeners(html);
 		const tags = await this.createTagify(html);
 		for (const t of tags) {
-			t.on("edit:start", ({ detail: { tag, data } }) => game.pbta.utils.TagHandler.onEdit(t, { tag, data }));
+			t.on("edit:start", ({ detail: { tag, data } }) => CONFIG.TagHandler.onEdit(t, { tag, data }));
 		}
 		this.setPosition();
 	}
@@ -116,9 +116,9 @@ export class PbtaTagConfigDialog extends FormApplication {
 
 		const TAGS = [];
 
-		TAGS.push(new Tagify(html.find('input[name="userTags.general"]')[0], game.pbta.utils.TagHandler.config));
+		TAGS.push(new Tagify(html.find('input[name="userTags.general"]')[0], CONFIG.TagHandler.config));
 		if (html.find('input[name="moduleTags.general"]').length) {
-			TAGS.push(new Tagify(html.find('input[name="moduleTags.general"]')[0], game.pbta.utils.TagHandler.config));
+			TAGS.push(new Tagify(html.find('input[name="moduleTags.general"]')[0], CONFIG.TagHandler.config));
 		}
 		delete userTags.general;
 		delete moduleTags.general;
@@ -126,7 +126,7 @@ export class PbtaTagConfigDialog extends FormApplication {
 		const initializeTagify = (tags, path) => {
 			for (let tag in tags) {
 				for (let t in tags[tag]) {
-					TAGS.push(new Tagify(html.find(`input[name="${path}.${tag}.${t}"]`)[0], game.pbta.utils.TagHandler.config));
+					TAGS.push(new Tagify(html.find(`input[name="${path}.${tag}.${t}"]`)[0], CONFIG.TagHandler.config));
 				}
 			}
 		};
