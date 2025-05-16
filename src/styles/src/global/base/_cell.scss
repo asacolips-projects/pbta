@@ -292,3 +292,11 @@
     justify-self: stretch;
   }
 }
+
+.cell--TextMany {
+  > input[type=text] {
+    margin-bottom: 5px;
+    text-align: left;
+    font-size: var(--font-size-14);
+  }
+}
