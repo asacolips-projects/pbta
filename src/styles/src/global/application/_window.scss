@@ -159,9 +159,7 @@
   }
 }
 
-:not(.application, .image-popout, .journal-sheet, .sidebar-popout) .window-content,
-.journal-entry-page .window-content,
-.window-content .journal-entry-content {
+:not(.application, .image-popout, .journal-sheet, .sidebar-popout .journal-entry-page) .window-content {
   background: $c-white url('#{$asset-path}/concrete-seamless.webp');
 }
 
