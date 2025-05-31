@@ -1,10 +1,10 @@
 <div class="sheet-header">
-	{{#if (or isNPC limited)}}
-	<div class="cell cell--image">
-		<img class="profile-img" src="{{actor.img}}" data-edit="img" />
-	</div>
-	{{/if}}
 	<div class="sheet-header__fields flexrow">
+		{{#if (or isNPC limited)}}
+		<div class="cell cell--image">
+			<img class="profile-img" src="{{actor.img}}" data-edit="img" />
+		</div>
+		{{/if}}
 		<input class="input--title" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
 		{{#if (and isCharacter (not limited))}}
 		<div class="sheet-playbook flexrow">
