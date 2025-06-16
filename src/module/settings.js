@@ -129,7 +129,7 @@ export function registerSettings() {
 			both: "PBTA.Settings.hideAdvancement.OptBoth"
 		},
 		default: "none",
-		onChange: (value) => ui.sidebar.tabs.actors.render()
+		onChange: (value) => ui.actors.render()
 	});
 
 	game.settings.register("pbta", "sheetConfig", {
