@@ -133,3 +133,5 @@ rollFormula = "2d6"
   # Define logical groups for moves.
   [npc.moveTypes]
     actions = "Actions"
+  [npc.equipmentTypes]
+    loot = "Loot"
