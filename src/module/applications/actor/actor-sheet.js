@@ -49,7 +49,6 @@ export default class PbtaActorSheet extends foundry.appv1.sheets.ActorSheet {
 	/** @override */
 	get template() {
 		const path = "systems/pbta/templates/actors";
-		if (this.actor.limited) return `${path}/limited-sheet.html`;
 		return `${path}/actor-sheet.html`;
 	}
 
