@@ -23,18 +23,16 @@
     </span>
   </span>
 </h4>
-{{#if item.system.rollType}}
-  <div class="item-meta tags">
-    {{#if (not sheetSettings.hideUses)}}
-      <span class="tag tag--uses">{{localize "PBTA.Uses"}}: {{item.system.uses}}</span>
-    {{/if}}
-    {{#if (eq item.system.rollType 'formula')}}
-      <span class="tag tag--formula">{{item.system.rollFormula}}</span>
-    {{else}}
-      <span class="tag tag--formula">{{getLabel statSettings item.system.rollType}}</span>
-    {{/if}}
-  </div>
-{{/if}}
+<div class="item-meta tags">
+  {{#if (not sheetSettings.hideUses)}}
+    <span class="tag tag--uses">{{localize "PBTA.Uses"}}: {{item.system.uses}}</span>
+  {{/if}}
+  {{#if (eq item.system.rollType 'formula')}}
+    <span class="tag tag--formula">{{item.system.rollFormula}}</span>
+  {{else if item.system.rollType}}
+    <span class="tag tag--formula">{{getLabel statSettings item.system.rollType}}</span>
+  {{/if}}
+</div>
 <div class="item-controls">
   <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
   <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
