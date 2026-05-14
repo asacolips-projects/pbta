@@ -1,11 +1,11 @@
 id: pbta
 title: Powered by the Apocalypse
 description: Run games for any PbtA system in Foundry VTT!
-version: "1.1.22"
+version: "1.1.23"
 compatibility:
   minimum: "13"
-  verified: "13"
-  maximum: "13"
+  verified: "14"
+  maximum: "14"
 authors:
   - name: Asacolips
   - name: Matheus Clemente

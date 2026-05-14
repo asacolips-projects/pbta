@@ -213,7 +213,10 @@ export default class ItemPbta extends Item {
 	async grantChoices(choices) {
 		const items = [];
 		const grantedItems = foundry.utils.getProperty(this, "flags.pbta.grantedItems") ?? [];
-		for (const set of choices.system.choiceSets) {
+		const choiceSets = choices?.system?.choiceSets
+			?? choices?.["system.choiceSets"]
+			?? [];
+		for (const set of choiceSets) {
 			const newChoices = set.choices
 				.filter((choice) => choice.granted && !grantedItems.some((id) => choice.uuid.includes(id)));
 
