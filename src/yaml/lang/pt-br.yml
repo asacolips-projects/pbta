@@ -146,7 +146,8 @@ PBTA:
   MoveGroupHelp: Movimentos com o mesmo nome de grupo serão opções quando estiver
     criando um personagem usando o criador de personagens.
   Forward: Adiante
-  Ongoing: Constante
+  Ongoing: Contínuo
+  Hold: Reserve
   RollFormulaOverride: Rolar com a Fórmula
   Create: Criar
   New: Novo
