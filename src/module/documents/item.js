@@ -470,7 +470,7 @@ export default class ItemPbta extends Item {
 			} else {
 				const confirm = await Dialog.wait({
 					title: `${game.i18n.format("DOCUMENT.Delete", { type })}: ${this.name}`,
-					content: `<h4>${game.i18n.localize("AreYouSure")}</h4><p>${game.i18n.format("PBTA.Warnings.Playbook.DeleteWarning", { type, num: grantedItems.length })}</p>`,
+					content: `<h4>${game.i18n.localize("COMMON.AreYouSure")}</h4><p>${game.i18n.format("PBTA.Warnings.Playbook.DeleteWarning", { type, num: grantedItems.length })}</p>`,
 					focus: true,
 					default: "yes",
 					close: () => {
