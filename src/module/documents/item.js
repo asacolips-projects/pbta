@@ -414,8 +414,11 @@ export default class ItemPbta extends Item {
 				}
 				changed.system.choiceSets.forEach((cs) => {
 					if (cs.choices && Object.keys(cs.choices).length) {
-						if (Array.isArray(cs.choices)) cs.choices.sort(this._sortItemAdvancement);
-						else cs.choices = Object.values(cs.choices).sort(this._sortItemAdvancement);
+						if (!Array.isArray(cs.choices)) cs.choices = Object.values(cs.choices);
+						// choiceSets can be updated on a playbook, when they are fully populated and we want to sort them,
+						// or choiceSets 'granted' properties can be modified when a choice dialog has been shown,
+						// where they might not be fully populated, but we don't need to sort them again.
+						if (cs.choices[0].name) cs.choices.sort(this._sortItemAdvancement);
 					}
 				});
 			}
