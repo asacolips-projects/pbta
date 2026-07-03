@@ -9,7 +9,13 @@ export class ActorDataTemplate extends foundry.abstract.TypeDataModel {
 			attrTop: new foundry.data.fields.ObjectField({ readonly: true }),
 			details: new MappingField(new foundry.data.fields.SchemaField({
 				label: new foundry.data.fields.StringField({ initial: "" }),
-				value: new foundry.data.fields.HTMLField({ initial: "" })
+				value: new foundry.data.fields.HTMLField({ initial: "" }),
+				// `attributes` is a plain ObjectField, so extra properties like
+				// `limited` survive untouched there. `details` uses a strict
+				// SchemaField instead, which silently drops any property not
+				// listed here — `limited` has to be declared explicitly or it
+				// never persists on the actor, regardless of what getData() checks.
+				limited: new foundry.data.fields.BooleanField({ initial: false })
 			}))
 		};
 	}
