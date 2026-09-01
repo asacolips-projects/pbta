@@ -660,8 +660,7 @@ export default class PbtaActorSheet extends foundry.appv1.sheets.ActorSheet {
 		ChatMessage.create({
 			user: game.user.id,
 			content: content,
-			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-			type: CONST.CHAT_MESSAGE_STYLES.OTHER
+			speaker: ChatMessage.getSpeaker({ actor: this.actor })
 		});
 	}
 
