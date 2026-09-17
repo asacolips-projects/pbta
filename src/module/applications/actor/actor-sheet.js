@@ -122,6 +122,13 @@ export default class PbtaActorSheet extends foundry.appv1.sheets.ActorSheet {
 		await this._prepareAttrs(context);
 
 		for (let [k, v] of Object.entries(context.system.details)) {
+			// Descriptions marked `limited = true` are only meant to be seen by
+			// the actor's owner (e.g. a "Secrets" field), so hide them from
+			// anyone who only has Limited permission on this actor.
+			if (context.limited && v.limited) {
+				delete context.system.details[k];
+				continue;
+			}
 			context.system.details[k].enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(v?.value ?? "", context.enrichmentOptions);
 		}
 
