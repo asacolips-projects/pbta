@@ -142,14 +142,17 @@ export class PbtaSettingsConfigDialog extends HandlebarsApplicationMixin(Applica
 		let newConfig = game.pbta.utils.convertSheetConfig(duplicateConfig);
 
 		let configDiff = {
-			add: [],
-			del: [],
-			max: [],
-			softType: [],
-			hardType: [],
-			safe: [],
-			options: [],
-			values: []
+			// change types that don't delete any data from the world
+			add: [],       // adding entirely new attributes, actor types, etc
+			max: [],       // changing the max or steps values on a Resource, Clock, XP, etc
+			softType: [],  // attribute type changes with no data loss, eg Resource->Clock
+			safe: [],      // cosmetic changes to sheet labels or descriptions, with no data model changes
+			options: [],   // adding new options to a ListOne or ListMany attribute
+
+			// destructive changes that can delete data and trigger extra warnings in the UI
+			del: [],       // removing attributes, options from a ListMany, etc; destructive change
+			hardType: [],  // type changes where data cannot be preserved, eg Resource->ListOne
+			values: []     // removing options from a ListOne or ListMany
 		};
 		let updatesDiff = {
 			character: {},
@@ -348,7 +351,43 @@ export class PbtaSettingsConfigDialog extends HandlebarsApplicationMixin(Applica
 									configDiff.safe.push(`${actorType}.${attrGroup}.${attr}.showResults`);
 									updatesDiff[actorType][`system.${attrGroup}.${attr}.showResults`] = newGroup[attr].showResults ?? true;
 								}
+							} else if (newType === "TextMany") {
+								console.log("in new type code", newGroup[attr], oldGroup[attr]);
+								// TODO: lines should have a default value somewhere? or error if it's missing, eg
+								// check lines val here
+								if (newGroup[attr]?.lines !== oldGroup[attr]?.lines) {
+									// adding lines is safe, but deleting them can delete actor data
+									//
+									//
+									// TODO: don't put list value changes into the options list
+									// INSTEAD: detect if any actors have data in more than (newList) fields; if they
+									// do, push that into the del list
+									if (newGroup[attr]?.lines > oldGroup[attr]?.lines) {
+										configDiff.options.push(`${actorType}.${attrGroup}.${attr}`);
+									} else {
+										configDiff.del.push(`${actorType}.${attrGroup}.${attr}`);
+
+									}
+									updatesDiff[actorType][`system.${attrGroup}.${attr}.lines`] = newGroup[attr]?.lines ?? 3; // note default value here
+
+									// newGroup[attr]?.values = Array(newGroup[attr]?.lines).fill("");
+
+									// TODO: preserve as many values as possible, don't wipe them out like this
+									configDiff.values.push(`${actorType}.${attrGroup}.${attr}`);
+									updatesDiff[actorType][`system.${attrGroup}.${attr}.values`] = newGroup[attr]?.values ?? Array(newGroup[attr]?.lines).fill("");
+
+									// const oldClone = foundry.utils.duplicate(oldGroup);
+									// for (let optK of Object.keys(newGroup[attr].values)) {
+									// 	delete oldClone[attr]?.values[optK];
+									// }
+									// for (let optK of Object.keys(oldClone[attr]?.values)) {
+									// 	configDiff.del.push(`${actorType}.${attrGroup}.${attr}.values.${optK}`);
+									// 	updatesDiff[actorType][`system.${attrGroup}.${attr}.values`][`-=${optK}`] = null;
+									// }
+
+								}
 							}
+
 						}
 					}
 				}
