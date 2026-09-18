@@ -725,7 +725,7 @@ export function getTagList(document) {
 		return game.pbta.tagList;
 	}
 	const { general = "[]", actor: actorTags = {}, item: itemTags = {} } = game.settings.get("pbta", "tagConfig") ?? {};
-	const { general: moduleGeneral = "[]", actor: moduleActorTags = {}, item: moduleItemTags = {} } = game.pbta.tagConfigOverride ?? {};
+	const { general: moduleGeneral = "[]", actor: moduleActorTags = "[]", item: moduleItemTags = "[]" } = game.pbta.tagConfigOverride ?? {};
 	const generalTags = parseTags(general);
 	const generalModuleTags = parseTags(moduleGeneral);
 	// @todo remove deprecated tags in a future version.
@@ -733,20 +733,16 @@ export function getTagList(document) {
 	const tagNames = [...generalTags, ...generalModuleTags, ...deprecatedTags];
 	if (document.collectionName === "actors") {
 		const allActorTags = parseTags(actorTags.all);
-		const typeTags = parseTags(actorTags?.[document.type]);
 
-		const allModuleActorTags = parseTags(moduleActorTags.all);
-		const moduleTypeTags = parseTags(moduleActorTags?.[document.type]);
+		const allModuleActorTags = parseTags(moduleActorTags);
 
-		tagNames.push(...allActorTags, ...typeTags, ...allModuleActorTags, ...moduleTypeTags);
+		tagNames.push(...allActorTags, ...allModuleActorTags);
 	} else if (document.collectionName === "items") {
 		const allItemTags = parseTags(itemTags.all);
-		const typeTags = parseTags(itemTags?.[document.type]);
 
-		const allModuleItemTags = parseTags(moduleItemTags.all);
-		const moduleTypeTags = parseTags(moduleItemTags?.[document.type]);
+		const allModuleItemTags = parseTags(moduleItemTags);
 
-		tagNames.push(...allItemTags, ...typeTags, ...allModuleItemTags, ...moduleTypeTags);
+		tagNames.push(...allItemTags, ...allModuleItemTags);
 	}
 	tagNames.sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: "base" }));
 	game.pbta.tagList = tagNames;
