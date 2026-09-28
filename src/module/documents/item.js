@@ -116,7 +116,7 @@ export default class ItemPbta extends Item {
 				const { modifier } = game.pbta.sheetConfig?.statToggle || {};
 				if (!["dis", "adv"].includes(modifier)) {
 					formula += `${modifier >= 0 ? "+" : ""} ${modifier}`;
-					options.stat.value = modifier;
+					options.stat.value = (Number(value) || 0) + Number(modifier);
 				}
 			}
 		}
