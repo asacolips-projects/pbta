@@ -221,12 +221,10 @@ export default class RollPbtA extends Roll {
 			const { label, value, toggle } = this.data.stats[stat];
 			this.options.stat = { key: stat, label, value };
 			addToFormula(`@stats.${stat}.value`);
-			if (toggle) {
-				const { modifier } = game.pbta.sheetConfig?.statToggle || {};
-				if (!["dis", "adv"].includes(modifier)) {
-					addToFormula(`${modifier}`);
-					this.options.stat.value = (Number(value) || 0) + Number(modifier);
-				}
+			const { modifier } = game.pbta.sheetConfig?.statToggle || {};
+			if (toggle && !["dis", "adv"].includes(modifier)) {
+				addToFormula(`${modifier}`);
+				this.options.stat.value = (Number(value) || 0) + Number(modifier);
 			}
 		}
 
