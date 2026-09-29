@@ -218,9 +218,14 @@ export default class RollPbtA extends Roll {
 
 		// Append a situational bonus term
 		if (stat) {
-			const { label, value } = this.data.stats[stat];
+			const { label, value, toggle } = this.data.stats[stat];
 			this.options.stat = { key: stat, label, value };
 			addToFormula(`@stats.${stat}.value`);
+			const { modifier } = game.pbta.sheetConfig?.statToggle || {};
+			if (toggle && !["dis", "adv"].includes(modifier)) {
+				addToFormula(`${modifier}`);
+				this.options.stat.value = (Number(value) || 0) + Number(modifier);
+			}
 		}
 
 		// Customize the modifier
